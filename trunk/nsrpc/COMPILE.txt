@@ -1,0 +1,22 @@
+===================
+      COMPILE
+===================
+
+1. 관련 라이브러리 컴파일 & 설치
+ 1.1. srpc 설치 (srpc의 README.txt 파일 참조)
+ 1.2. boost library 설치 (http://boost.org 참고)
+ 1.3. ACE Framework 설치 (http://www.cs.wustl.edu/~schmidt/ACE_wrappers/ACE-INSTALL.html 참고)
+ 1.4. TProactor 설치
+ 1.5. CppUnit 설치 (http://cppunit.sf.net 참고)
+
+2. nsrpc 컴파일
+ 2.1. MSVC++
+   build\msvc\nsrpc_all.sln 솔루션 파일을 불러들인 후 컴파일한다
+    
+ 2.2. GCC
+   $ cd build/gnu
+   $ edit inc.mk
+   $ make # Release버전
+     또는
+   $ DEBUG=yes make # Debug버전
+
