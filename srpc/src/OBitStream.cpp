@@ -100,29 +100,30 @@ void OBitStream::reset(bool resetBuffer)
 }
 
 
-void OBitStream::write(const String& value, size_t maxLength, int sizeBitCount)
+void OBitStream::write(const std::string& value, size_t maxLength,
+    int sizeBitCount)
 {
     const UInt32 strLen =
         static_cast<UInt32>((std::min)(value.size(), maxLength));
     write(strLen, sizeBitCount);
-    for (String::size_type i = 0; i < strLen; ++i) {
+    for (std::string::size_type i = 0; i < strLen; ++i) {
         writeByte(value[i]);
     }
 }
 
 
-void OBitStream::write(const WString& value, size_t maxLength,
+void OBitStream::write(const std::wstring& value, size_t maxLength,
     int sizeBitCount)
 {
-    WString realValue = value;
+    std::wstring realValue = value;
     if (value.size() > maxLength) {
         realValue.resize(maxLength);
     }
-    const String utf8(toUtf8(realValue));
+    const std::string utf8(toUtf8(realValue));
     const UInt32 strLen =
         static_cast<UInt32>((std::min)(utf8.size(), maxLength));
     write(strLen, sizeBitCount);
-    for (String::size_type i = 0; i < strLen; ++i) {
+    for (std::string::size_type i = 0; i < strLen; ++i) {
         writeByte(utf8[i]);
     }
 }

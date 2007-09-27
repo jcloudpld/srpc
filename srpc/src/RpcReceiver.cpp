@@ -6,8 +6,7 @@
 namespace srpc {
 
 RpcReceiver::RpcReceiver(RpcNetwork* rpcNetwork) :
-    rpcNetwork_(0),
-    eventMap_(true)
+    rpcNetwork_(0)
 {
     if (rpcNetwork != 0) {
         setRpcNetwork(rpcNetwork);

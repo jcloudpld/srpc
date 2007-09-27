@@ -51,7 +51,7 @@ private:
     virtual void onPeerConnected(nsrpc::PeerId peerId);
     virtual void onPeerDisconnected(nsrpc::PeerId peerId);
     virtual void onConnectFailed(nsrpc::PeerId peerId);
-    virtual void onAddressResolved(const srpc::String& ipAddress,
+    virtual void onAddressResolved(const std::string& ipAddress,
         srpc::UInt16 port);
     virtual void onHostMigrated(nsrpc::PeerId peerId);
 private:

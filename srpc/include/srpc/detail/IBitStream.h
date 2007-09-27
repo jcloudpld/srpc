@@ -2,6 +2,7 @@
 #define SRPC_IBITSTREAM_H
 
 #include "../IStream.h"
+#include "../config/config.h"
 
 namespace srpc {
 
@@ -16,7 +17,7 @@ class StreamBuffer;
  *
  * 비트 단위의 Input stream.
  */
-class IBitStream : public IStream
+class SRPC_API IBitStream : public IStream
 {
 public:
     IBitStream(StreamBuffer& streamBuffer);
@@ -77,9 +78,14 @@ public:
         memcpy(&value, &numeric, sizeof(Float32));
     }
 
-    virtual void read(String& value, size_t maxLength, int sizeBitCount);
+    virtual void read(std::string& value, size_t maxLength, int sizeBitCount) {
+        readString(value, maxLength, sizeBitCount);
+    }
 
-    virtual void read(WString& value, size_t maxLength, int sizeBitCount);
+    virtual void read(std::wstring& value, size_t maxLength,
+        int sizeBitCount) {
+        readString(value, maxLength, sizeBitCount);
+    }
 
     virtual void read(void* buffer, UInt16 length);
 
@@ -112,6 +118,8 @@ private:
         }
         value = static_cast<T>(static_cast<Int32>(numeric));
     }
+    void readString(std::string& value, size_t maxLength, int sizeBits);
+    void readString(std::wstring& value, size_t maxLength, int sizeBits);
     void readBits(UInt32& value, int bitCount);
     void readBits(UInt64& value, int bitCount);
     UInt8 readByte() {

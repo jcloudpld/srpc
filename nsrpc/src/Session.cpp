@@ -34,7 +34,7 @@ Session::~Session()
 }
 
 
-bool Session::connect(const srpc::String& host, u_short port, size_t timeout)
+bool Session::connect(const std::string& host, u_short port, size_t timeout)
 {
     const ACE_INET_Addr address(port, host.c_str());
     const ACE_Time_Value connectionTimeout(makeTimeValue(timeout));

@@ -10,9 +10,9 @@
 namespace
 {
 
-srpc::String toString(const nsrpc::PeerAddresses& addresses)
+std::string toString(const nsrpc::PeerAddresses& addresses)
 {
-    srpc::OStringStream oss;
+    std::stringstream oss;
 
     for (size_t i = 0; i < addresses.size(); ++i) {
         if (i != 0) {
@@ -165,7 +165,7 @@ void Peer::onPeerConnected(nsrpc::PeerId peerId)
         ", [" << toString(p2pSession_->getAddresses(peerId)) <<
         "]) connected.\n";
 
-    srpc::OStringStream oss;
+    std::ostringstream oss;
     oss << "Hi~ P" << peerId;
     const nsrpc::PeerHint hint(peerId);
     chat(oss.str(), &hint); // unicast
@@ -182,7 +182,7 @@ void Peer::onPeerDisconnected(nsrpc::PeerId peerId)
 {
     std::cout << "* Peer(P" << peerId << ") disconnected.\n";
 
-    srpc::OStringStream oss;
+    std::ostringstream oss;
     oss << "Bye~ P" << peerId;
     chat(oss.str());
 
@@ -203,7 +203,7 @@ void Peer::onConnectFailed(nsrpc::PeerId peerId)
 }
 
 
-void Peer::onAddressResolved(const srpc::String& ipAddress, srpc::UInt16 port)
+void Peer::onAddressResolved(const std::string& ipAddress, srpc::UInt16 port)
 {
     std::cout << "* Address resolved(" << ipAddress << ":" << port <<
         ", [" << toString(p2pSession_->getAddresses(config_.getPeerId())) <<

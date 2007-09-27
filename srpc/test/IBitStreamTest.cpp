@@ -289,13 +289,13 @@ void IBitStreamTest::testReadFloat32()
 
 void IBitStreamTest::testReadString()
 {
-    String original("0123456789");
+    std::string original("0123456789");
     ostream_->write(original, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("total byte count",
         static_cast<int>(2 + original.size()),
         ostream_->getTotalSize());
 
-    String value;
+    std::string value;
     istream_->read(value, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("value",
         original, value);
@@ -308,9 +308,9 @@ void IBitStreamTest::testReadString()
 
 void IBitStreamTest::testReadShortString()
 {
-    String original("0123456789");
+    std::string original("0123456789");
     ostream_->write(original, UCHAR_MAX, Bits<UInt8>::size);
-    String value;
+    std::string value;
     istream_->read(value, USHRT_MAX, Bits<UInt8>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("value",
         original, value);
@@ -323,13 +323,13 @@ void IBitStreamTest::testReadShortString()
 
 void IBitStreamTest::testReadWString()
 {
-    WString original(L"0123456789");
+    std::wstring original(L"0123456789");
     ostream_->write(original, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("total byte count",
         static_cast<int>(2 + original.size()),
         ostream_->getTotalSize());
 
-    WString value;
+    std::wstring value;
     istream_->read(value, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_MESSAGE("value",
         original == value);
@@ -342,9 +342,9 @@ void IBitStreamTest::testReadWString()
 
 void IBitStreamTest::testReadWShortString()
 {
-    WString original(L"0123456789");
+    std::wstring original(L"0123456789");
     ostream_->write(original, UCHAR_MAX, Bits<UInt8>::size);
-    WString value;
+    std::wstring value;
     istream_->read(value, USHRT_MAX, Bits<UInt8>::size);
     CPPUNIT_ASSERT_MESSAGE("value",
         original == value);
@@ -439,12 +439,12 @@ void IBitStreamTest::testReadSignedInt()
 
 void IBitStreamTest::testReadZeroLengthString()
 {
-    String original("");
+    std::string original("");
     ostream_->write(original, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("2 + 0 bytes",
         2 + 0, ostream_->getTotalSize());
 
-    String value;
+    std::string value;
     istream_->read(value, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("value",
         original, value);
@@ -514,7 +514,7 @@ void IBitStreamTest::testReadBuffer()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("buffer size",
         length, static_cast<int>(strlen(actual)));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("buffer",
-        String(original), String(actual));
+        std::string(original), std::string(actual));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("total bit count",
         0, istream_->getTotalBitCount());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("total byte",

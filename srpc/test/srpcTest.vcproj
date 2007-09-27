@@ -157,9 +157,6 @@
 				RelativePath=".\IByteStreamTest.cpp">
 			</File>
 			<File
-				RelativePath=".\MockRpcNetwork.cpp">
-			</File>
-			<File
 				RelativePath=".\MultipleRpcReceiverTest.cpp">
 			</File>
 			<File

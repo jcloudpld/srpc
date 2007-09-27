@@ -29,7 +29,7 @@
 namespace nsrpc
 {
 
-ProactorType toProactorType(const srpc::String& typeString)
+ProactorType toProactorType(const std::string& typeString)
 {
     struct ProactorTable {
         ProactorType type_;

@@ -2,8 +2,14 @@
 #define NSRPC_PEERADDRESS_H
 
 #include <srpc/Types.h>
-#include <srpc/StringTypes.h>
-#include <srpc/ContainerTypes.h>
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4702)
+#endif
+#include <vector>
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
 
 namespace nsrpc
 {
@@ -18,13 +24,13 @@ namespace nsrpc
  */
 struct PeerAddress
 {
-    srpc::String ip_;
+    std::string ip_;
     srpc::UInt16 port_;
 
     PeerAddress() :
         port_(0) {}
 
-    PeerAddress(const srpc::String& ip, srpc::UInt16 port) :
+    PeerAddress(const std::string& ip, srpc::UInt16 port) :
         ip_(ip),
         port_(port) {}
 
@@ -34,7 +40,7 @@ struct PeerAddress
 };
 
 /// IP addresses
-typedef srpc::Vector<PeerAddress> PeerAddresses;
+typedef std::vector<PeerAddress> PeerAddresses;
 
 /** @} */ // addtogroup p2p
 

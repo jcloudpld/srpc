@@ -1,5 +1,5 @@
-#ifndef SRPC_STLUTILS_H
-#define SRPC_STLUTILS_H
+#ifndef SRPC_STLHELPERS_H
+#define SRPC_STLHELPERS_H
 
 #include <boost/checked_delete.hpp>
 #include <algorithm>
@@ -54,4 +54,4 @@ inline typename Map::value_type::second_type search_map(const Map& the_map,
 
 } // namespace srpc
 
-#endif // SRPC_STLUTILS_H
+#endif // SRPC_STLHELPERS_H

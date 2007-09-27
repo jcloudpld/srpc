@@ -140,7 +140,7 @@ private:
         callee_ = "handler10";
     }
 private:
-    String callee_;
+    std::string callee_;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ReceivingFunctorTest );
@@ -166,7 +166,7 @@ void ReceivingFunctorTest::testP0()
 
     functor.call(this, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("callee",
-        String("handler0"), callee_);
+        std::string("handler0"), callee_);
 }
 
 
@@ -182,7 +182,7 @@ void ReceivingFunctorTest::testP1()
 
     functor.call(this, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("callee",
-        String("handler1"), callee_);
+        std::string("handler1"), callee_);
 }
 
 
@@ -198,7 +198,7 @@ void ReceivingFunctorTest::testP2()
 
     functor.call(this, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("callee",
-        String("handler2"), callee_);
+        std::string("handler2"), callee_);
 }
 
 
@@ -215,7 +215,7 @@ void ReceivingFunctorTest::testP3()
 
     functor.call(this, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("callee",
-        String("handler3"), callee_);
+        std::string("handler3"), callee_);
 }
 
 
@@ -232,7 +232,7 @@ void ReceivingFunctorTest::testP4()
 
     functor.call(this, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("callee",
-        String("handler4"), callee_);
+        std::string("handler4"), callee_);
 }
 
 
@@ -249,7 +249,7 @@ void ReceivingFunctorTest::testP5()
 
     functor.call(this, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("callee",
-        String("handler5"), callee_);
+        std::string("handler5"), callee_);
 }
 
 
@@ -266,7 +266,7 @@ void ReceivingFunctorTest::testP6()
 
     functor.call(this, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("callee",
-        String("handler6"), callee_);
+        std::string("handler6"), callee_);
 }
 
 
@@ -283,5 +283,5 @@ void ReceivingFunctorTest::testP7()
 
     functor.call(this, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("callee",
-        String("handler7"), callee_);
+        std::string("handler7"), callee_);
 }

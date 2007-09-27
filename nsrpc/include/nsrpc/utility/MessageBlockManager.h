@@ -4,11 +4,11 @@
 #include "ObjectAllocator.h"
 #include "VariousMemoryAllocator.h"
 #include <ace/Message_Block.h>
+#include <ace/Thread_Mutex.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4127)
 #endif
-#include <ace/Thread_Mutex.h>
 #include <ace/Null_Mutex.h>
 #ifdef _MSC_VER
 #  pragma warning (pop)
@@ -45,10 +45,6 @@ public:
 
     /// ACE_Message_Block을 요청한다.
     ACE_Message_Block* create(size_t size) {
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127)
-#endif
         ACE_Message_Block* nb = 0;
         ACE_NEW_MALLOC_RETURN(nb,
             static_cast<ACE_Message_Block*> (
@@ -60,9 +56,6 @@ public:
                 &messageBlockAllocator_),
             0);
         return nb;
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
     }
 protected: // for Test
     MessageBlockAllocator messageBlockAllocator_;

@@ -4,7 +4,7 @@
 #include "NamingService.h"
 #include <srpc/RpcForwarder.h>
 #include <srpc/RpcReceiver.h>
-#include <srpc/ContainerTypes.h>
+#include <map>
 
 namespace ns {
 
@@ -33,7 +33,7 @@ private: // encapsulation
     DECLARE_SRPC_METHOD_3(onResolve, srpc::RString, name, srpc::RString, value,
         srpc::RBool, succeeded);
 private:
-    typedef srpc::Map<srpc::String, srpc::String> NameValues;
+    typedef std::map<std::string, std::string> NameValues;
     NameValues nameValues_;
 };
 

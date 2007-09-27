@@ -2,8 +2,8 @@
 #define NSRPC_VARIOUSMEMORYALLOCATOR_H
 
 #include "detail/BaseAllocator.h"
-#include <srpc/ContainerTypes.h>
 #include <ace/Guard_T.h>
+#include <vector>
 #include <algorithm>
 #include <functional>
 
@@ -60,7 +60,7 @@ private:
             chunk_ = 0;
         }
     };
-    typedef srpc::Vector<Block> Blocks;
+    typedef std::vector<Block> Blocks;
 public:
     /**
      * ctor

@@ -3,7 +3,6 @@
 
 #include "config/config.h"
 #include "config/Proactor.h"
-#include <srpc/StringTypes.h>
 
 // forward decl.
 class NSRPC_Proactor;
@@ -40,7 +39,7 @@ enum ProactorType
 
 
 /// 문자열을 ProactorType으로 변환
-ProactorType NSRPC_API toProactorType(const srpc::String& pt);
+ProactorType NSRPC_API toProactorType(const std::string& pt);
 
 
 /**

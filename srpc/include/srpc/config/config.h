@@ -1,9 +1,6 @@
 #ifndef SRPC_CONFIG_H
 #define SRPC_CONFIG_H
 
-/// boost::pool_allocator, boost::fast_pool_allocator를 사용할 경우 uncomment.
-#define USE_BOOST_POOL_ALLOCATOR
-
 #if defined (_MSC_VER)
 #   include "config_msvc.h"
 #elif defined(__GNUC__)

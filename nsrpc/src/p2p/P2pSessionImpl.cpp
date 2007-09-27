@@ -67,7 +67,7 @@ P2pSessionImpl::~P2pSessionImpl()
 
 
 bool P2pSessionImpl::open(srpc::UInt16 port,
-    const srpc::String& password)
+    const std::string& password)
 {
     //if (endpoint_.isOpened()) {
     //    return true;
@@ -136,7 +136,7 @@ void P2pSessionImpl::connect(const PeerAddresses& hostAddresses)
 
 
 void P2pSessionImpl::setRelayServer(const PeerAddress& address,
-    const srpc::String& cipherKey)
+    const std::string& cipherKey)
 {
     peerManager_.addRelayServer(address);
     relayServerAddress_ = peerManager_.getRelayServer()->getTargetAddress();
@@ -576,7 +576,7 @@ void P2pSessionImpl::sendAcknowledgement(PeerId peerId,
 
 
 bool P2pSessionImpl::authenticate(PeerId peerId,
-    const srpc::String& sessionPassword, srpc::UInt32 sessionKey)
+    const std::string& sessionPassword, srpc::UInt32 sessionKey)
 {
     if (! peerManager_.isHost()) {
         if (p2pProperty_.sessionKey_ != 0) {
@@ -665,7 +665,7 @@ bool P2pSessionImpl::isHostConnected() const
 }
 
 
-void P2pSessionImpl::resolved(const srpc::String& ipAddress, srpc::UInt16 port)
+void P2pSessionImpl::resolved(const std::string& ipAddress, srpc::UInt16 port)
 {
     const PeerPtr me(peerManager_.getMe());
     if (me.isNull()) {

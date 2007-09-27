@@ -27,7 +27,7 @@ public:
 
     /// 세션 인증
     virtual bool authenticate(PeerId peerId,
-        const srpc::String& sessionPassword, srpc::UInt32 sessionKey) = 0;
+        const std::string& sessionPassword, srpc::UInt32 sessionKey) = 0;
 
     /**
      * 새로운 피어가 접속하였다.

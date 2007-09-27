@@ -31,10 +31,10 @@ public:
     DECLARE_SRPC_METHOD_3(onResolve, srpc::RString, name, srpc::RString, value,
         srpc::RBool, succeeded);
 
-    const srpc::String& getName() const {
+    const std::string& getName() const {
         return name_;
     }
-    const srpc::String& getValue() const {
+    const std::string& getValue() const {
         return value_;
     }
     bool isSucceeded() const {
@@ -43,8 +43,8 @@ public:
 private:
     void reset();
 private:
-    srpc::String name_;
-    srpc::String value_;
+    std::string name_;
+    std::string value_;
     bool succeeded_;
 };
 

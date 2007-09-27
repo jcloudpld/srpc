@@ -3,6 +3,7 @@
 
 #include "../OStream.h"
 #include "../utility/Endian.h"
+#include "../config/config.h"
 
 namespace srpc {
 
@@ -17,7 +18,7 @@ class StreamBuffer;
  *
  * 바이트 단위의 Output stream.
  */
-class OByteStream : public OStream
+class SRPC_API OByteStream : public OStream
 {
 public:
     OByteStream(StreamBuffer& streamBuffer);
@@ -62,10 +63,10 @@ private:
         writeNumeric(*static_cast<UInt32*>(static_cast<void*>(&value)));
     }
 
-    virtual void write(const String& value, size_t maxLength,
+    virtual void write(const std::string& value, size_t maxLength,
         int sizeBitCount);
 
-    virtual void write(const WString& value, size_t maxLength,
+    virtual void write(const std::wstring& value, size_t maxLength,
         int sizeBitCount);
 
     virtual void write(const void* buffer, UInt16 length);

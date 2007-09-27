@@ -3,9 +3,16 @@
 
 #include <srpc/config/config.h>
 #include <srpc/RpcPacketType.h>
-#include <srpc/ContainerTypes.h>
 #include <srpc/detail/RpcId.h>
 #include <boost/utility.hpp>
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4702)
+#endif
+#include <vector>
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
 #include <cassert>
 
 namespace srpc {
@@ -21,7 +28,7 @@ class RpcCommand;
  */
 class SRPC_API RpcNetwork : public boost::noncopyable
 {
-    typedef Vector<RpcReceiver*> RpcReceivers;
+    typedef std::vector<RpcReceiver*> RpcReceivers;
 public:
     RpcNetwork();
     virtual ~RpcNetwork() {}

@@ -2,7 +2,6 @@
 #define SRPC_ISTREAM_H
 
 #include "Types.h"
-#include "StringTypes.h"
 #include "utility/Bits.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -64,11 +63,11 @@ public:
     virtual void read(Float32& value, int bitCount = Bits<Int32>::size) = 0;
 
     /// 최대 maxLength 길이의 문자열을 읽어온다
-    virtual void read(String& value, size_t maxLength,
+    virtual void read(std::string& value, size_t maxLength,
         int sizeBitCount) = 0;
 
     /// 최대 maxLength 길이의 문자열을 읽어온다
-    virtual void read(WString& value, size_t maxLength,
+    virtual void read(std::wstring& value, size_t maxLength,
         int sizeBitCount) = 0;
 
     /**

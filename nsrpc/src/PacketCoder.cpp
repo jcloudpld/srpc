@@ -2,29 +2,19 @@
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/utility/Logger.h>
 #include <srpc/utility/Hash.h>
-#include <srpc/utility/CUtils.h>
+#include <sstream>
 
 namespace nsrpc
 {
 
 PacketCoder::Seed PacketCoder::generateCipherSeed(srpc::UInt32 base) const
 {
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4996)
-#endif
-
-    char hash[20];
-    snprintf(hash, 20, "%u", base);
-
-    char seed[20];
-    snprintf(seed, 20, "%u", srpc::hash(seed, strlen(seed)));
-
-    return seed;
-
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
+    std::ostringstream oss;
+    oss << base;
+    const std::string baseString(oss.str());
+    oss.str("");
+    oss << srpc::hash(baseString.c_str(), baseString.length());
+    return oss.str();
 }
 
 

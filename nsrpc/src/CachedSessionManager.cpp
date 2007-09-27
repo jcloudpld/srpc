@@ -44,7 +44,7 @@ private:
 #endif
 
 // poolSize의 10%를 여분으로 둠
-CachedSessionManager::CachedSessionManager(const srpc::String& name,
+CachedSessionManager::CachedSessionManager(const std::string& name,
     size_t poolSize, const SessionFactory& sessionFactory) :
     sessionAllocator_(new SessionAllocator(sessionFactory, *this)),
     sessionPool_(

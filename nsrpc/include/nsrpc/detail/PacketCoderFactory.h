@@ -2,7 +2,7 @@
 #define NSRPC_PACKETCODERFACTORY_H
 
 #include "../config/config.h"
-#include <boost/noncopyable.hpp>
+#include <string>
 
 namespace nsrpc
 {

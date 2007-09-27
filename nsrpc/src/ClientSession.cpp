@@ -72,7 +72,7 @@ ClientSession::~ClientSession()
 }
 
 
-bool ClientSession::connect(const srpc::String& ip, u_short port,
+bool ClientSession::connect(const std::string& ip, u_short port,
     size_t timeout)
 {
     ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);

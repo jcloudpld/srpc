@@ -51,14 +51,14 @@ public:
         PacketCoder* packetCoder);
     virtual ~P2pSessionImpl();
 private: // information hiding
-    virtual bool open(srpc::UInt16 port, const srpc::String& password);
+    virtual bool open(srpc::UInt16 port, const std::string& password);
     virtual void close();
 
     virtual void host(size_t maxPeers, bool hostMigration);
     virtual void connect(const PeerAddresses& hostAddresses);
 
     virtual void setRelayServer(const PeerAddress& address,
-        const srpc::String& cipherKey);
+        const std::string& cipherKey);
 
     virtual void tick();
 
@@ -140,7 +140,7 @@ private:
 
     // = SystemServiceHandler overriding
     virtual bool authenticate(PeerId peerId,
-        const srpc::String& sessionPassword, srpc::UInt32 sessionKey);
+        const std::string& sessionPassword, srpc::UInt32 sessionKey);
     virtual bool peerConnected(PeerId peerId,
         const ACE_INET_Addr& targetAddress, const RAddresses& peerAddresses);
     virtual void peerDisconnected(PeerId peerId);
@@ -156,7 +156,7 @@ private:
     virtual bool isHostConnected() const;
 
     // = StunServiceHandler overriding
-    virtual void resolved(const srpc::String& ipAddress, srpc::UInt16 port);
+    virtual void resolved(const std::string& ipAddress, srpc::UInt16 port);
 
     // = RelayServiceHandler overriding
     virtual ACE_Message_Block* acquire(size_t blockSize);

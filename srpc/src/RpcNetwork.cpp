@@ -53,7 +53,7 @@ void RpcNetwork::onReceive(IStream& istream, const void* rpcHint)
     }
 
     if (! isHandled) {
-        OStringStream oss;
+        std::ostringstream oss;
         oss << "RPC Id: " << rpcId;
         throw srpc::UnknownRpcMethodException(__FILE__, __LINE__,
             oss.str().c_str());

@@ -2,10 +2,10 @@
 #define NSRPC_LOGMANAGER_H
 
 #include "../config/config.h"
-#include <srpc/StringTypes.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
-#include <iosfwd>
+#include <fstream>
+#include <string>
 
 class ACE_Log_Msg_Callback;
 
@@ -38,7 +38,7 @@ public:
 
     virtual bool hasLog() const = 0;
 
-    virtual srpc::String getLog() = 0;
+    virtual std::string getLog() = 0;
 private:
     friend class LogManager;
     virtual ACE_Log_Msg_Callback* getCallback() = 0;
@@ -85,7 +85,7 @@ public:
     static void redirectToOStream(std::ostream* output,
         bool streamOnly = true);
 
-    void redirectToFile(const srpc::String& filename, bool ostreamOnly = true);
+    void redirectToFile(const std::string& filename, bool ostreamOnly = true);
 
     static void redirectToStderr(bool stderrOnly = true);
 

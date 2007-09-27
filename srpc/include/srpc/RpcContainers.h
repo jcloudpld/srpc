@@ -1,10 +1,19 @@
 #ifndef SRPC_RPCCONTAINERS_H
 #define SRPC_RPCCONTAINERS_H
 
-#include "ContainerTypes.h"
 #include "RpcTypes.h"
 #include "Exception.h"
-#include "detail/Allocator.h"
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4702)
+#endif
+#include <list>
+#include <map>
+#include <set>
+#include <vector>
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
 #include <algorithm>
 #include <functional>
 
@@ -70,23 +79,23 @@ public:
 /// std::vector에 대한 RpcType
 template <typename RpcType, size_t sizeBits = Bits<UInt8>::size>
 class RVector :
-    public RpcContainer<Vector<RpcType>, VectorReservePolicy, sizeBits>
+    public RpcContainer<std::vector<RpcType>, VectorReservePolicy, sizeBits>
 {};
 
 
 /// std::list에 대한 RpcType
 template <typename RpcType, size_t sizeBits = Bits<UInt8>::size>
 class RList :
-    public RpcContainer<List<RpcType>, NoReservePolicy, sizeBits>
+    public RpcContainer<std::list<RpcType>, NoReservePolicy, sizeBits>
 {};
 
 
 /// std::set에 대한 RpcType
 template <typename RpcType, size_t sizeBits = Bits<UInt8>::size>
-class RSet : public Set<RpcType>
+class RSet : public std::set<RpcType>
 {
 public:
-    typedef Set<RpcType> Base;
+    typedef std::set<RpcType> Base;
     typedef typename Base::iterator iterator;
 public:
     void write(OStream& ostream) {
@@ -119,10 +128,10 @@ public:
 
 /// std::map에 대한 RpcType
 template <typename K, typename V, size_t sizeBits = Bits<UInt8>::size>
-class RMap : public Map<K, V>
+class RMap : public std::map<K, V>
 {
 public:
-    typedef Map<K, V> Base;
+    typedef std::map<K, V> Base;
     typedef typename Base::value_type value_type;
     typedef typename Base::iterator iterator;
 public:
@@ -146,10 +155,10 @@ public:
             throw StreamingException(__FILE__, __LINE__,
                 "container size is not valid");
         }
-        K key;
-        V value;
         for (UInt32 i = 0; i < size; ++i) {
+            K key;
             key.read(istream);
+            V value;
             value.read(istream);
             this->insert(value_type(key, value));
         }

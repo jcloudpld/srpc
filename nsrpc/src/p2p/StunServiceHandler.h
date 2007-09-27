@@ -27,7 +27,7 @@ public:
     virtual ~StunServiceHandler() {}
 
     /// address resolved
-    virtual void resolved(const srpc::String& ipAddress, srpc::UInt16 port) = 0;
+    virtual void resolved(const std::string& ipAddress, srpc::UInt16 port) = 0;
 };
 
 /** @} */ // addtogroup p2p

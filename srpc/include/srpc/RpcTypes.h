@@ -2,11 +2,11 @@
 #define SRPC_RPCTYPES_H
 
 #include "Types.h"
-#include "StringTypes.h"
 #include "IStream.h"
 #include "OStream.h"
 #include <boost/type_traits/is_enum.hpp>
 #include <boost/static_assert.hpp>
+#include <string>
 
 namespace srpc {
 
@@ -184,11 +184,11 @@ typedef RpcUIntType<UInt64> RUInt64;
 typedef RpcIntType<Float32> RFloat32;
 typedef RpcIntType<Float64> RFloat64;
 
-typedef RpcStringType<String, USHRT_MAX> RString;
-typedef RpcStringType<String, UCHAR_MAX> RShortString;
+typedef RpcStringType<std::string, USHRT_MAX> RString;
+typedef RpcStringType<std::string, UCHAR_MAX> RShortString;
 
-typedef RpcStringType<WString, USHRT_MAX> RWString;
-typedef RpcStringType<WString, UCHAR_MAX> RWShortString;
+typedef RpcStringType<std::wstring, USHRT_MAX> RWString;
+typedef RpcStringType<std::wstring, UCHAR_MAX> RWShortString;
 
 /** @} */ // addtogroup serialization
 

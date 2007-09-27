@@ -3,8 +3,15 @@
 
 #include "../StreamBuffer.h"
 #include "../Exception.h"
-#include "../ContainerTypes.h"
 #include "../utility/StlUtils.h"
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4702)
+#endif
+#include <vector>
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
 #include <cassert>
 
 namespace srpc {
@@ -21,7 +28,7 @@ namespace srpc {
  */
 class VectorStreamBuffer : public StreamBuffer
 {
-    typedef Vector<Item> Buffer;
+    typedef std::vector<Item> Buffer;
     typedef Buffer::size_type Index;
 
     enum { defaultStreamCapacity = 512 };

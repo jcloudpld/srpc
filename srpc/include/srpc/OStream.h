@@ -2,7 +2,6 @@
 #define SRPC_OSTREAM_H
 
 #include "Types.h"
-#include "StringTypes.h"
 #include "utility/Bits.h"
 #include <boost/utility.hpp>
 #include <string>
@@ -71,11 +70,11 @@ public:
     virtual void write(Float32 value, int bitCount = Bits<Int32>::size) = 0;
 
     /// 최대 maxLength 길이의 문자열을 스트림버퍼에 기록한다
-    virtual void write(const String& value, size_t maxLength,
+    virtual void write(const std::string& value, size_t maxLength,
         int sizeBitCount) = 0;
 
     /// 최대 maxLength 길이의 문자열을 스트림버퍼에 기록한다
-    virtual void write(const WString& value, size_t maxLength,
+    virtual void write(const std::wstring& value, size_t maxLength,
         int sizeBitCount) = 0;
 
     /**

@@ -221,7 +221,6 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
         p3_.read(istream);
         p4_.read(istream);
         p5_.read(istream);
-
         p6_.read(istream);
     }
 

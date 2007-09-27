@@ -16,9 +16,9 @@ void run(bool useBitStream, const char* state, RType defvalue)
 
     const srpc::StreamFactory::StreamType streamType = useBitStream ?
         srpc::StreamFactory::stBit : srpc::StreamFactory::stByte;
-    boost::scoped_ptr<srpc::OStream> ostream(
+    boost::scoped_ptr<OStream> ostream(
         srpc::StreamFactory::createOStream(streamType, buffer));
-    boost::scoped_ptr<srpc::IStream> istream(
+    boost::scoped_ptr<IStream> istream(
         srpc::StreamFactory::createIStream(streamType, buffer));
 
     {

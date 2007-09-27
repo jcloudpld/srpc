@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <nsrpc/utility/LogManager.h>
-#include <srpc/ContainerTypes.h>
 #include <ace/Log_Msg_Callback.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -12,7 +11,8 @@
 #endif
 #include <ace/Lock_Adapter_T.h>
 #include <ace/OS.h>
-#include <fstream>
+#include <sstream>
+#include <queue>
 
 namespace nsrpc
 {
@@ -27,7 +27,7 @@ namespace
  */
 class LogRepositoryImpl : public LogRepository, public ACE_Log_Msg_Callback
 {
-    typedef srpc::Queue<srpc::String> Logs;
+    typedef std::queue<std::string> Logs;
 public:
     LogRepositoryImpl(bool isThreadSafe, LogEventHandler* logEventHandler) :
         logEventHandler_(logEventHandler) {
@@ -50,8 +50,8 @@ private:
         }
     }
 
-    srpc::String getLog() {
-        srpc::String log;
+    std::string getLog() {
+        std::string log;
         if (! logEventHandler_) {
             ACE_GUARD_RETURN(ACE_Lock, monitor, *lock_, "");
             if (hasLog_i()) {
@@ -158,7 +158,7 @@ void LogManager::redirectToOStream(std::ostream* output,
 }
 
 
-void LogManager::redirectToFile(const srpc::String& filename, 
+void LogManager::redirectToFile(const std::string& filename, 
     bool ostreamOnly)
 {
     log_stream_.reset(new std::ofstream);

@@ -55,7 +55,7 @@ void AceLogManagerTest::testCallback()
     nsrpc::LogManager::unsilent();
     nsrpc::LogManager::redirectToCallback(*repository_);
 
-    const srpc::String logString("Hello, World!!");
+    const std::string logString("Hello, World!!");
     int aceError = ACE_Log_Msg::last_error_adapter();
     ACE_Log_Msg *ace = ACE_Log_Msg::instance();
     ace->conditional_set(__FILE__, __LINE__, 0, aceError);
@@ -78,11 +78,11 @@ void AceLogManagerTest::testCallbackWithEventHandler()
             log_ = log;
         }
 
-        const srpc::String& getLog() const {
+        const std::string& getLog() const {
             return log_;
         }
     private:
-        srpc::String log_;
+        std::string log_;
     };
 
     DummyLogEventHandler logEventHandler;
@@ -92,7 +92,7 @@ void AceLogManagerTest::testCallbackWithEventHandler()
     nsrpc::LogManager::unsilent();
     nsrpc::LogManager::redirectToCallback(*repository);
 
-    const srpc::String logString("Hello, World!!");
+    const std::string logString("Hello, World!!");
     int aceError = ACE_Log_Msg::last_error_adapter();
     ACE_Log_Msg *ace = ACE_Log_Msg::instance();
     ace->conditional_set(__FILE__, __LINE__, 0, aceError);

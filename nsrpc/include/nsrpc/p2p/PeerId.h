@@ -2,7 +2,6 @@
 #define NSRPC_PEERID_H
 
 #include <srpc/RpcTypes.h>
-#include <srpc/ContainerTypes.h>
 
 namespace nsrpc
 {
@@ -45,7 +44,7 @@ inline bool isRelayServer(PeerId peerId)
 typedef srpc::RpcIntType<PeerId> RPeerId;
 
 
-typedef srpc::Vector<PeerId> PeerIds;
+typedef std::vector<PeerId> PeerIds;
 
 /**
  * @struct PeerIdPair

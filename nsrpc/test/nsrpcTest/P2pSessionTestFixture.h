@@ -53,7 +53,7 @@ private:
         connectFailedPeerId_ = peerId;
     }
 
-    virtual void onAddressResolved(const srpc::String& /*ipAddress*/,
+    virtual void onAddressResolved(const std::string& /*ipAddress*/,
         srpc::UInt16 /*port*/) {
         addressChanged_ = true;
     }
@@ -96,7 +96,7 @@ protected:
         return addresses;
     }
 protected:
-    void openHost(const srpc::String& password = "", size_t maxPeers = 0,
+    void openHost(const std::string& password = "", size_t maxPeers = 0,
         bool hostMigration = false) {
         CPPUNIT_ASSERT_MESSAGE("host open",
             hostSession_->open(ACE_DEFAULT_SERVER_PORT, password));

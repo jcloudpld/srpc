@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DummyStreamBuffer.h"
 #include <srpc/detail/OBitStream.h>
-#include <srpc/StreamFactory.h>
 
 using namespace srpc;
 
@@ -68,7 +67,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(OBitStreamTest);
 
 void OBitStreamTest::setUp()
 {
-    ostream_ = StreamFactory::createOStream(StreamFactory::stBit, buffer_);
+    ostream_ = new OBitStream(buffer_);
 }
 
 
@@ -247,7 +246,7 @@ void OBitStreamTest::testWriteFloat32()
 
 void OBitStreamTest::testWriteString()
 {
-    const String s("0123456789");
+    const std::string s("0123456789");
     ostream_->write(s, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
         0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
@@ -260,7 +259,7 @@ void OBitStreamTest::testWriteString()
 
 void OBitStreamTest::testWriteShortString()
 {
-    const String s(256, 'X');
+    const std::string s(256, 'X');
     ostream_->write(s, UCHAR_MAX, Bits<UInt8>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
         0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
@@ -311,7 +310,7 @@ void OBitStreamTest::testOutOfMemory()
 
 void OBitStreamTest::testWriteZeroLengthString()
 {
-    const String s("");
+    const std::string s("");
     ostream_->write(s, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
         0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());

@@ -2,16 +2,9 @@
 #define NSRPC_OBJECTALLOCATOR_H
 
 #include "detail/BaseAllocator.h"
-#include <srpc/ContainerTypes.h>
 #include <ace/Guard_T.h>
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127 4244 4267 4312 4996)
-#endif
 #include <ace/Null_Mutex.h>
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
+#include <vector>
 
 namespace nsrpc
 {
@@ -31,7 +24,7 @@ namespace nsrpc
 template <typename Object, class Mutex = ACE_Null_Mutex>
 class ObjectAllocator : public BaseAllocator
 {
-    typedef srpc::Vector<Object*> Pool;
+    typedef std::vector<Object*> Pool;
 public:
     /**
      * ctor

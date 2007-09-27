@@ -188,7 +188,7 @@ void RpcTypesTest::testRString()
 
 void RpcTypesTest::testRShortString()
 {
-    RShortString expected(String(256, 'X'));
+    RShortString expected(std::string(256, 'X'));
     expected.write(*ostream_);
 
     RShortString actual;
@@ -340,9 +340,9 @@ void RpcTypesTest::testEnum()
 
 void RpcTypesTest::testRUserDefinedString()
 {
-    typedef RpcStringType<String, 10> RUserDefinedString;
+    typedef RpcStringType<std::string, 10> RUserDefinedString;
 
-    RUserDefinedString expected(String(12, 'X'));
+    RUserDefinedString expected(std::string(12, 'X'));
     expected.write(*ostream_);
 
     RUserDefinedString actual;
@@ -357,7 +357,7 @@ void RpcTypesTest::testRMap()
 {
     RMap<RInt32, RShortString> expected;
     for (int i = 0; i < 10; ++i) {
-        OStringStream oss;
+        std::ostringstream oss;
         oss << "#" << i;
         expected.insert(std::make_pair(i, oss.str()));
     }

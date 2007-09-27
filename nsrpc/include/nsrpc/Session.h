@@ -6,9 +6,6 @@
 #include "detail/Asynch_RW.h"
 #include "detail/MessageBlockProvider.h"
 #include "detail/CsProtocol.h"
-#include <srpc/StringTypes.h>
-#include <ace/INET_Addr.h>
-#include <boost/scoped_ptr.hpp>
 
 namespace nsrpc
 {
@@ -65,7 +62,7 @@ public:
     virtual ~Session();
 public:
     /// remote host에 접속한다(ACE_Socket_Connector 이용)
-    bool connect(const srpc::String& host, u_short port, size_t timeout);
+    bool connect(const std::string& host, u_short port, size_t timeout);
 
     /**
      * 메세지를 전송한다. 전송이 실패할 경우 접속을 해제한다.

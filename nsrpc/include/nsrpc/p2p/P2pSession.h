@@ -5,6 +5,7 @@
 #include "PeerStats.h"
 #include "PeerAddress.h"
 #include <boost/noncopyable.hpp>
+#include <string>
 
 class ACE_Reactor;
 
@@ -35,7 +36,7 @@ public:
      * @param port local listening port
      * @param password P2P session password
      */
-    virtual bool open(srpc::UInt16 port, const srpc::String& password = "") = 0;
+    virtual bool open(srpc::UInt16 port, const std::string& password = "") = 0;
 
     /// Disconnect & Deinitialize this session.
     virtual void close() = 0;
@@ -61,7 +62,7 @@ public:
      *                  If the key is null string, a default key is used.
      */
     virtual void setRelayServer(const PeerAddress& address,
-        const srpc::String& cipherKey = "") = 0;
+        const std::string& cipherKey = "") = 0;
 
     /**
      * tick. (handle events, etc)

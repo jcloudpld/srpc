@@ -22,7 +22,7 @@ public:
         set(hash(idStr, strlen(idStr)));
     }
 
-    RpcId(const String& idStr) {
+    RpcId(const std::string& idStr) {
         set(hash(idStr.c_str(), idStr.size()));
     }
 };

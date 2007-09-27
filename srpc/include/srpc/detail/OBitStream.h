@@ -2,6 +2,7 @@
 #define SRPC_OBITSTREAM_H
 
 #include "../OStream.h"
+#include "../config/config.h"
 
 namespace srpc {
 
@@ -16,7 +17,7 @@ class StreamBuffer;
  *
  * 비트 단위의 Output stream.
  */
-class OBitStream : public OStream
+class SRPC_API OBitStream : public OStream
 {
 public:
     OBitStream(StreamBuffer& streamBuffer);
@@ -67,10 +68,10 @@ private:
             Bits<Float32>::size);
     }
 
-    virtual void write(const String& value, size_t maxLength,
+    virtual void write(const std::string& value, size_t maxLength,
         int sizeBitCount);
 
-    virtual void write(const WString& value, size_t maxLength,
+    virtual void write(const std::wstring& value, size_t maxLength,
         int sizeBitCount);
 
     virtual void write(const void* buffer, UInt16 length);

@@ -2,7 +2,7 @@
 #define SRPC_EXCEPTION_H
 
 #include "config/config.h"
-#include "utility/CUtils.h"
+#include <sstream>
 #include <stdexcept>
 
 namespace srpc {
@@ -18,26 +18,19 @@ namespace srpc {
  */
 class SRPC_API_INLINE Exception : public std::runtime_error
 {
-    enum { MAX_BUFFER_SIZE = 128 };
 public:
     Exception(const char* file, int fileno, const char* msg) :
         std::runtime_error("") {
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4996)
-#endif
-        snprintf(what_, MAX_BUFFER_SIZE, "Exception: (%s:%d), %s",
-            file, fileno, msg);
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
+        std::ostringstream oss;
+        oss << "Exception: (" << file << "," << fileno << "), " << msg;
+        what_ = oss.str();
     }
 
     virtual const char* what() const {
-        return what_;
+        return what_.c_str();
     }
 private:
-    char what_[MAX_BUFFER_SIZE];
+    std::string what_;
 };
 
 

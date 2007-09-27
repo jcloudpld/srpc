@@ -30,10 +30,10 @@ namespace srpc {
 
 namespace {
 
-typedef String::value_type Char;
-typedef WString::value_type WChar;
-typedef String::const_iterator cstringiterator;
-typedef WString::const_iterator cwstringiterator;
+typedef std::string::value_type Char;
+typedef std::wstring::value_type WChar;
+typedef std::string::const_iterator cstringiterator;
+typedef std::wstring::const_iterator cwstringiterator;
 
 
 inline bool invalidLeadingOctet(UInt8 octet)
@@ -116,13 +116,13 @@ inline int getContOctetOutCount(wchar_t word)
 
 } // namespace
 
-String toUtf8(const WString& ucs)
+std::string toUtf8(const std::wstring& ucs)
 {
     const wchar_t octetModifierTable[] =
         { 0x00, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc };
 
-    String utf8;
-    utf8.reserve(ucs.length() * sizeof(WString::value_type));
+    std::string utf8;
+    utf8.reserve(ucs.length() * sizeof(std::wstring::value_type));
 
     const cwstringiterator end = ucs.end();
     for(cwstringiterator current = ucs.begin(); current != end; ++current) {
@@ -148,13 +148,13 @@ String toUtf8(const WString& ucs)
 }
 
 
-WString fromUtf8(const String& utf8)
+std::wstring fromUtf8(const std::string& utf8)
 {
     const wchar_t octetModifierTable[] =
         { 0xff, 0x1f, 0x0f, 0x07, 0x03, 0x01 };
     const int minvalTable[] = { 0, 0x80, 0x800, 0x10000, 0x110000, 0x4000000 };
 
-    WString ucs;
+    std::wstring ucs;
     ucs.reserve(utf8.length());
 
     const cstringiterator end = utf8.end();

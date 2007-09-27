@@ -25,7 +25,7 @@ public:
         srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed);
     DECLARE_SRPC_METHOD_1(onConfirmSeed, srpc::RShortString, encryptSeed);
 private:
-    srpc::String exchangingDecryptSeed_;
+    std::string exchangingDecryptSeed_;
 };
 
 

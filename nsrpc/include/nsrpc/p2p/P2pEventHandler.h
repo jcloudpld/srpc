@@ -45,7 +45,7 @@ public:
      * @param port public or NAT mapped port number
      * - called periodically.
      */
-    virtual void onAddressResolved(const srpc::String& ipAddress,
+    virtual void onAddressResolved(const std::string& ipAddress,
         srpc::UInt16 port) = 0;
 
     /**

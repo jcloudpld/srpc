@@ -4,10 +4,9 @@
 #include "../config/config.h"
 #include "CsProtocol.h"
 #include "MessageBlockProvider.h"
-#include <srpc/StringTypes.h>
 #ifdef _MSC_VER
 #  pragma warning( push)
-#  pragma warning( disable : 4127 4244 4251 4267 4311 4312 4355 4996)
+#  pragma warning( disable : 4127 4244 4251 4267 4311 4312 4355)
 #endif
 #include <ace/Event_Handler.h>
 #include <ace/Reactor_Notification_Strategy.h>
@@ -19,8 +18,8 @@
 #ifdef _MSC_VER
 #  pragma warning( pop)
 #endif
-#include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
+#include <string>
 
 class ACE_Reactor;
 
@@ -57,7 +56,7 @@ public:
      * @param port 서버의 포트 번호
      * @param timeout 접속 시간 제한 (밀리초 단위)
      */
-    bool connect(const srpc::String& ip, u_short port, size_t timeout);
+    bool connect(const std::string& ip, u_short port, size_t timeout);
 
     /**
      * 서버로 부터 접속을 해제합니다.

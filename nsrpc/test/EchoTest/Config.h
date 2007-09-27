@@ -2,7 +2,6 @@
 #define ECHOTEST_CONFIG_H
 
 #include <srpc/Types.h>
-#include <srpc/StringTypes.h>
 #include <string>
 
 /**
@@ -22,7 +21,7 @@ public:
     bool isClient() const {
         return mode_ == "client" || mode_ == "both";
     }
-    srpc::String getConnectHost() const {
+    std::string getConnectHost() const {
         return connectHost_;
     }
     srpc::UInt16 getPort() const {
@@ -46,7 +45,7 @@ public:
     bool useBitPacking() const {
         return streamType_ == "bit";
     }
-    srpc::String getProactorType() const {
+    std::string getProactorType() const {
         return proactorType_;
     }
     bool isVerbose() const {
@@ -55,16 +54,16 @@ public:
 private:
     void printUsage();
 private:
-    srpc::String mode_;
-    srpc::String connectHost_;
+    std::string mode_;
+    std::string connectHost_;
     srpc::UInt16 port_;
     srpc::UInt32 threads_;
     srpc::UInt32 connections_;
     srpc::UInt32 echoCount_;
     srpc::UInt32 blockSize_;
     bool useRpc_;
-    srpc::String streamType_;
-    srpc::String proactorType_;
+    std::string streamType_;
+    std::string proactorType_;
     bool verbose_;
 };
 

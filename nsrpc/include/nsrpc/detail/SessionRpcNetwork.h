@@ -4,18 +4,8 @@
 #include <nsrpc/detail/CsProtocol.h>
 #include <nsrpc/config/config.h>
 #include <srpc/RpcNetwork.h>
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127 4244 4267 4312 4996)
-#endif
-#include <ace/Thread_Mutex.h>
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
-#include <boost/scoped_ptr.hpp>
 
 class ACE_Recursive_Thread_Mutex;
-class ACE_Message_Block;
 
 namespace srpc
 {

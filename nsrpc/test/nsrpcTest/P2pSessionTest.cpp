@@ -281,7 +281,7 @@ void P2pSessionTest::testConnectFailed()
 
 void P2pSessionTest::testConnectWithInvalidPassword()
 {
-    const srpc::String password("12345");
+    const std::string password("12345");
 
     hostSession_->close();
     openHost(password);
@@ -306,7 +306,7 @@ void P2pSessionTest::testConnectWithInvalidPassword()
 
 void P2pSessionTest::testConnectWithValidPassword()
 {
-    const srpc::String password("12345");
+    const std::string password("12345");
 
     hostSession_->close();
     openHost(password);

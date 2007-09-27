@@ -3,21 +3,17 @@
 
 #include "../config/config.h"
 #include "../config/Proactor.h"
-#include <srpc/StringTypes.h>
-#include <srpc/ContainerTypes.h>
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127 4244 4267 4312 4996)
-#endif
 #include <ace/Message_Block.h>
 #include <ace/Time_Value.h>
-#include <ace/INET_Addr.h>
-#include <ace/OS_NS_time.h>
+#include <boost/noncopyable.hpp>
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4702)
+#endif
+#include <vector>
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
-#include <boost/noncopyable.hpp>
-#include <cassert>
 
 class NSRPC_Handler;
 class NSRPC_Proactor;
@@ -28,18 +24,6 @@ namespace nsrpc
 /** @addtogroup utility
 * @{
 */
-
-/**
- * @struct InitAce
- * ACE 라이브러리를 초기화한다
- */
-struct NSRPC_API InitAce
-{
-    InitAce();
-
-    ~InitAce();
-};
-
 
 /**
  * ACE_Time_Value 객체를 만든다.
@@ -107,8 +91,17 @@ private:
 };
 
 
-/// array of ACE_INET_Addr
-typedef srpc::Vector<ACE_INET_Addr> InetAddresses;
+/// ACE 라이브러리를 초기화한다
+struct InitAce
+{
+    InitAce() {
+        ACE::init();
+    }
+
+    ~InitAce() {
+        ACE::fini();
+    }
+};
 
 
 /// 소켓의 송신/수신 버퍼를 최대치로 설정한다.
@@ -131,7 +124,7 @@ void NSRPC_API cancelTimer(NSRPC_Proactor& proactor,
 
 
 /// local IP 주소를 얻는다.
-InetAddresses NSRPC_API getLocalAddresses(u_short port);
+std::vector<ACE_INET_Addr> NSRPC_API getLocalAddresses(u_short port);
 
 
 /// 사설 아이피 주소인가?
@@ -143,7 +136,7 @@ bool NSRPC_API isPublicAddress(const ACE_INET_Addr& address);
 
 
 /// 공인 아이피 주소 얻기
-srpc::String NSRPC_API obtainPublicIpAddress();
+std::string NSRPC_API obtainPublicIpAddress();
 
 /** @} */ // addtogroup utility
 

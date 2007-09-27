@@ -11,6 +11,8 @@
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
+#include <string>
+#include <sstream>
 
 namespace nsrpc
 {
@@ -29,12 +31,12 @@ namespace detail
  */
 class PeerCipherKeyCache: public boost::noncopyable
 {
-    typedef stdext::hash_map<PeerId, srpc::String> CipherKeyMap;
+    typedef stdext::hash_map<PeerId, std::string> CipherKeyMap;
 public:
     PeerCipherKeyCache(const PacketCoder& packetCoder) :
         packetCoder_(packetCoder) {}
 
-    const srpc::String& get(PeerId peerId) const {
+    const std::string& get(PeerId peerId) const {
         CipherKeyMap::const_iterator pos = cipherKeys_.find(peerId);
         if (pos == cipherKeys_.end()) {
             const PacketCoder::Seed seed =
@@ -46,7 +48,7 @@ public:
         return (*pos).second;
     }
 
-    void set(PeerId peerId, const srpc::String& cipherKey) {
+    void set(PeerId peerId, const std::string& cipherKey) {
         CipherKeyMap::iterator pos = cipherKeys_.find(peerId);
         if (pos != cipherKeys_.end()) {
             (*pos).second = cipherKey;

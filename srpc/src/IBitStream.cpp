@@ -74,7 +74,7 @@ void IBitStream::readBits(UInt64& value, int bitCount)
 }
 
 
-void IBitStream::read(String& value, size_t maxLength, int sizeBits)
+void IBitStream::readString(std::string& value, size_t maxLength, int sizeBits)
 {
     value.clear();
 
@@ -83,7 +83,7 @@ void IBitStream::read(String& value, size_t maxLength, int sizeBits)
 
     value.reserve(strLen);
     for (UInt32 i = 0; i < strLen; ++i) {
-        value += static_cast<String::value_type>(readByte());
+        value += static_cast<std::string::value_type>(readByte());
     }
 
     if (value.size() > maxLength) {
@@ -92,17 +92,18 @@ void IBitStream::read(String& value, size_t maxLength, int sizeBits)
 }
 
 
-void IBitStream::read(WString& value, size_t maxLength, int sizeBits)
+void IBitStream::readString(std::wstring& value, size_t maxLength,
+    int sizeBits)
 {
     value.clear();
 
     UInt32 strLen;
     read(strLen, sizeBits);
 
-    String utf8;
+    std::string utf8;
     utf8.reserve(strLen);
     for (UInt32 i = 0; i < strLen; ++i) {
-        utf8 += static_cast<String::value_type>(readByte());
+        utf8 += static_cast<std::string::value_type>(readByte());
     }
 
     value = fromUtf8(utf8);

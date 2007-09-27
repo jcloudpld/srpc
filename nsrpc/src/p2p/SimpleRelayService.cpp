@@ -51,7 +51,7 @@ SimpleRelayService::~SimpleRelayService()
 
 
 bool SimpleRelayService::open(srpc::UInt16 port,
-    const srpc::String& cipherKey)
+    const std::string& cipherKey)
 {
     if (! endpoint_.open(port)) {
         return false;

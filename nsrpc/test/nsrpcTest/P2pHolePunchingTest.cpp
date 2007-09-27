@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "P2pRelayTestFixture.h"
 #include <nsrpc/utility/SystemUtil.h>
-#include <srpc/ContainerTypes.h>
 
 /**
 * @class P2pHolePunchingTest
@@ -25,9 +24,9 @@ private:
 private:
     virtual PeerAddresses getHostAddresses() const {
         PeerAddresses hostAddresses;
-        const InetAddresses addresses =
+        const std::vector<ACE_INET_Addr> addresses =
             getLocalAddresses(ACE_DEFAULT_SERVER_PORT);
-        InetAddresses::const_iterator pos = addresses.begin();
+        std::vector<ACE_INET_Addr>::const_iterator pos = addresses.begin();
         for (; pos != addresses.end(); ++pos) {
             const ACE_INET_Addr& addr = *pos;
             hostAddresses.push_back(

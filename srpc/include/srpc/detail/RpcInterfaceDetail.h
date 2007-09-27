@@ -12,17 +12,17 @@
 #define SRPC_STRINGIZE(text) # text
 
 /// @internal
-#define SRPC_GET_RPCID(method) \
-    getRpcId_ ## method
-
-/// @internal
 #define DECLARE_SRPC_RPCID_GENERATOR(rpcInterface, method, paramCount) \
     public: \
-        static const srpc::RpcId& SRPC_GET_RPCID(method)() { \
+        static const srpc::RpcId& getRpcId_##method() { \
             static srpc::RpcId rpcId( \
                 SRPC_STRINGIZE(rpcInterface##_##method##_##paramCount)); \
             return rpcId; \
         }
+
+/// @internal
+#define SRPC_GET_RPCID(method) \
+    getRpcId_ ## method
 
 /** @} */ // addtogroup RpcInterface
 

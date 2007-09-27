@@ -4,7 +4,6 @@
 #include "config/config.h"
 #include "config/Proactor.h"
 #include "detail/SessionManager.h"
-#include <srpc/StringTypes.h>
 #include <boost/scoped_ptr.hpp>
 
 class NSRPC_Proactor;
@@ -39,7 +38,7 @@ public:
      *                 한다.
      * @param sessionFactory 새로운 세션을 만들 팩토리 인스턴스.
      */
-    CachedSessionManager(const srpc::String& name, size_t poolSize,
+    CachedSessionManager(const std::string& name, size_t poolSize,
         const SessionFactory& sessionFactory);
 
     virtual ~CachedSessionManager();
@@ -63,7 +62,7 @@ private:
     /// 이 세션 매니저에서 공유할 메세지 블럭 매니저.
     boost::scoped_ptr<SessionAllocator> sessionAllocator_;
     boost::scoped_ptr<CachedSessionPool> sessionPool_;
-    srpc::String name_;
+    std::string name_;
     
     bool shouldFinish_;
 };

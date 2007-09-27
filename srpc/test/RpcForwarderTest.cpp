@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "DummyRpcClient.h"
 #include "MockRpcNetwork.h"
+#include <srpc/detail/OBitStream.h>
+#include <srpc/detail/IBitStream.h>
 #include <srpc/detail/ForwardingFunctors.h>
 #include <srpc/detail/RpcId.h>
-#include <srpc/detail/OBitStream.h>
-#include <srpc/StreamFactory.h>
 
 using namespace srpc;
 
@@ -55,8 +55,8 @@ void RpcForwarderTest::setUp()
 {
     rpcNetwork_ = new MockRpcNetwork;
     request_ = new DummyRpcClient(rpcNetwork_);
-    istream_ = StreamFactory::createIStream(StreamFactory::stBit,
-        rpcNetwork_->getStreamBuffer());
+
+    istream_ = new IBitStream(rpcNetwork_->getStreamBuffer());
 }
 
 

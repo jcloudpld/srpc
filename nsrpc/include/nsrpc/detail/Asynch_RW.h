@@ -3,18 +3,9 @@
 
 #include "../utility/AceUtil.h"
 #include "../config/Proactor.h"
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127 4244 4251 4267 4312 4996)
-#endif
 #ifdef USE_TPROACTOR
 #  include <TProactor/Asynch_IO.h>
-#else
-#  include <ace/Asynch_IO.h>
 #endif // USE_TPROACTOR
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
 
 // stolen from TProactor test
 

@@ -18,7 +18,8 @@ void IByteStream::read(void* buffer, UInt16 length)
 }
 
 
-void IByteStream::read(String& value, size_t maxLength, int sizeBitCount)
+void IByteStream::readString(std::string& value, size_t maxLength,
+    size_t sizeBitCount)
 {
     assert((sizeBitCount == 8) || (sizeBitCount == 16));
 
@@ -29,7 +30,7 @@ void IByteStream::read(String& value, size_t maxLength, int sizeBitCount)
 #if 1
     value.reserve(size);
     for (UInt16 i = 0; i < size; ++i) {
-        value += static_cast<String::value_type>(readByte());
+        value += static_cast<std::string::value_type>(readByte());
     }
 #else
     // TODO: 표준에 부합되는가?
@@ -41,7 +42,9 @@ void IByteStream::read(String& value, size_t maxLength, int sizeBitCount)
     }
 }
 
-void IByteStream::read(WString& value, size_t maxLength, int sizeBitCount)
+
+void IByteStream::readString(std::wstring& value, size_t maxLength,
+    size_t sizeBitCount)
 {
     assert((sizeBitCount == 8) || (sizeBitCount == 16));
 
@@ -49,11 +52,11 @@ void IByteStream::read(WString& value, size_t maxLength, int sizeBitCount)
 
     const UInt32 size = readStringSize(sizeBitCount);
 
-    String utf8;
+    std::string utf8;
 #if 1
     utf8.reserve(size);
     for (UInt16 i = 0; i < size; ++i) {
-        utf8 += static_cast<String::value_type>(readByte());
+        utf8 += static_cast<std::string::value_type>(readByte());
     }
 #else
     // TODO: 표준에 부합되는가?

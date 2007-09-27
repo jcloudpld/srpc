@@ -1,22 +1,10 @@
 #include "stdafx.h"
 #include <nsrpc/utility/AceUtil.h>
 #include <ace/Proactor.h>
-#include <ace/Init_ACE.h>
 #include <cassert>
 
 namespace nsrpc
 {
-
-InitAce::InitAce()
-{
-    ACE::init();
-}
-
-InitAce::~InitAce()
-{
-    ACE::fini();
-}
-
 
 void disableSignals(int sigmin, int sigmax)
 {
@@ -84,9 +72,9 @@ void cancelTimer(NSRPC_Proactor& proactor, long& timerId)
 }
 
 
-InetAddresses getLocalAddresses(u_short port)
+std::vector<ACE_INET_Addr> getLocalAddresses(u_short port)
 {
-    InetAddresses addresses;
+    std::vector<ACE_INET_Addr> addresses;
 
     ACE_TCHAR hostname[MAXHOSTNAMELEN + 1];
     if (ACE_OS::hostname(hostname, MAXHOSTNAMELEN + 1) != -1) {
@@ -145,18 +133,19 @@ bool isPublicAddress(const ACE_INET_Addr& address)
 }
 
 
-srpc::String obtainPublicIpAddress()
+std::string obtainPublicIpAddress()
 {
-    const InetAddresses addresses = nsrpc::getLocalAddresses(0);
+    typedef std::vector<ACE_INET_Addr> Addresses;
+    Addresses addresses = nsrpc::getLocalAddresses(0);
 
-    InetAddresses::const_iterator posPublic =
+    Addresses::const_iterator posPublic =
         std::find_if(addresses.begin(), addresses.end(),
         nsrpc::isPublicAddress);
     if (posPublic != addresses.end()) {
         return (*posPublic).get_host_addr();
     }
 
-    InetAddresses::const_iterator posPrivate =
+    Addresses::const_iterator posPrivate =
         std::find_if(addresses.begin(), addresses.end(),
         nsrpc::isPrivateAddress);
     if (posPrivate != addresses.end()) {

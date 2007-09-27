@@ -29,11 +29,10 @@ namespace srpc {
 class RpcEventMap
 {
 public:
-    /// 주의! boost::pool과 srpc::Map을 같이 쓸 경우 문제가 발생할 수 있다.
     typedef std::map<RpcId, RpcEvent*> RpcEvents;
     typedef RpcEvents::value_type value_type;
 public:
-    RpcEventMap(bool deleteRpcEvents) :
+    RpcEventMap(bool deleteRpcEvents = true) :
         deleteRpcEvents_(deleteRpcEvents) {}
 
     ~RpcEventMap() {
@@ -44,7 +43,6 @@ public:
     }
 
     void insert(const RpcId& rpcId, RpcEvent* event) {
-        assert(event != 0);
         assert(! isExists(rpcId));
         rpcEvents_.insert(value_type(rpcId, event));
     }

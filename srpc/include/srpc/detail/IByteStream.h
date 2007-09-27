@@ -3,6 +3,7 @@
 
 #include "../IStream.h"
 #include "../utility/Endian.h"
+#include "../config/config.h"
 
 namespace srpc {
 
@@ -17,7 +18,7 @@ class StreamBuffer;
  *
  * 바이트 단위의 Input stream.
  */
-class IByteStream : public IStream
+class SRPC_API IByteStream : public IStream
 {
 public:
     IByteStream(StreamBuffer& streamBuffer);
@@ -63,9 +64,14 @@ private:
         readNumeric(*static_cast<UInt32*>(static_cast<void*>(&value)));
     }
 
-    virtual void read(String& value, size_t maxLength, int sizeBitCount);
+    virtual void read(std::string& value, size_t maxLength, int sizeBitCount) {
+        readString(value, maxLength, sizeBitCount);
+    }
 
-    virtual void read(WString& value, size_t maxLength, int sizeBitCount);
+    virtual void read(std::wstring& value, size_t maxLength,
+        int sizeBitCount) {
+        readString(value, maxLength, sizeBitCount);
+    }
 
     virtual void read(void* buffer, UInt16 length);
 
@@ -85,6 +91,9 @@ private:
         readBytes(&value, byteCount);
         value = toRpcByteOrder(value);
     }
+    void readString(std::string& value, size_t maxLength, size_t sizeBitCount);
+    void readString(std::wstring& value, size_t maxLength,
+        size_t sizeBitCount);
     UInt32 readStringSize(size_t sizeBitCount);
     void readBytes(void* value, size_t byteCount);
     UInt8 readByte();

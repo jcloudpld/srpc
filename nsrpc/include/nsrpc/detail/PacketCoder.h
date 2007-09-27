@@ -4,7 +4,7 @@
 #include "../config/config.h"
 #include "Protocol.h"
 #include <srpc/utility/Endian.h>
-#include <srpc/StringTypes.h>
+#include <srpc/Types.h>
 #include <ace/Message_Block.h>
 #include <boost/noncopyable.hpp>
 
@@ -23,7 +23,7 @@ namespace nsrpc
 class NSRPC_API PacketCoder : public boost::noncopyable
 {
 public:
-    typedef srpc::String Seed;
+    typedef std::string Seed;
 public:
     virtual ~PacketCoder() {}
 

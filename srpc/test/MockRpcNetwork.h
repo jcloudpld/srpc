@@ -4,7 +4,7 @@
 #include "DummyStreamBuffer.h"
 #include <srpc/RpcNetwork.h>
 #include <srpc/detail/RpcCommand.h>
-#include <srpc/OStream.h>
+#include <srpc/detail/OBitStream.h>
 
 /**
  * @class MockRpcNetwork
@@ -12,15 +12,16 @@
 class MockRpcNetwork : public srpc::RpcNetwork
 {
 public:
-    MockRpcNetwork();
-    virtual ~MockRpcNetwork();
+    MockRpcNetwork() :
+        ostream_(buffer_),
+        sendFailed_(false) {}
 
     void setMarshalingError() {
         buffer_.setPushError();
     }
 
-    srpc::OStream& getOutputStream() {
-        return *ostream_;
+    srpc::OBitStream& getOutputStream() {
+        return ostream_;
     }
 
     srpc::StreamBuffer& getStreamBuffer() {
@@ -36,10 +37,19 @@ public:
     }
 private:
     virtual void send(srpc::RpcCommand& command,
-        srpc::RpcPacketType packetType, const void* rpcHint);
+        srpc::RpcPacketType /*packetType*/, const void* rpcHint)  {
+        try {
+            command.marshal(ostream_);
+            sentRpcHint_ = static_cast<int>(reinterpret_cast<size_t>(rpcHint));
+            //sendFailed_ = false;
+        }
+        catch (const srpc::Exception&) {
+            sendFailed_ = true;
+        }
+    }
 private:
     DummyStreamBuffer buffer_;
-    boost::scoped_ptr<srpc::OStream> ostream_;
+    srpc::OBitStream ostream_;
     bool sendFailed_;
     int sentRpcHint_;
 };

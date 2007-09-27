@@ -1,17 +1,11 @@
 #ifndef NSRPC_MEMORYPOOL_H
 #define NSRPC_MEMORYPOOL_H
 
-#include <srpc/ContainerTypes.h>
 #include <ace/Guard_T.h>
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127 4244 4267 4312 4996)
-#endif
 #include <ace/Null_Mutex.h>
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
 #include <boost/noncopyable.hpp>
+#include <vector>
+#include <queue>
 
 namespace nsrpc
 {
@@ -59,9 +53,9 @@ class MemoryPool : public boost::noncopyable
 {
 protected:
     /// Resource pointer를 키값으로 오름차순으로 정렬한다.
-    typedef srpc::Vector<Resource*> ActiveResources;
+    typedef std::vector<Resource*> ActiveResources;
     /// vector를 사용한 것 보다 효율이 좋다(복사가 적고 할당이 많다)
-    typedef srpc::Queue<Resource*> InactiveResources;
+    typedef std::queue<Resource*> InactiveResources;
 public:
     /**
      * ctor

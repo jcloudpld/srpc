@@ -2,7 +2,6 @@
 #define NSRPC_P2PADDRESS_H
 
 #include "../PeerAddress.h"
-#include <srpc/ContainerTypes.h>
 #ifdef _MSC_VER
 #  pragma warning( push )
 #  pragma warning( disable : 4127 4251 4541 4511 4512 )
@@ -10,6 +9,14 @@
 #include <ace/INET_Addr.h>
 #ifdef _MSC_VER
 #  pragma warning( pop )
+#endif
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4702)
+#endif
+#include <list>
+#ifdef _MSC_VER
+#  pragma warning (pop)
 #endif
 
 namespace nsrpc
@@ -23,7 +30,7 @@ namespace detail
 */
 
 /// IP addresses
-typedef srpc::List<ACE_INET_Addr> Addresses;
+typedef std::list<ACE_INET_Addr> Addresses;
 
 
 /// convert from PeerAddresses to Addresses

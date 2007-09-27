@@ -57,7 +57,7 @@ private:
 private:
     const srpc::UInt32 echoCount_;
     const srpc::UInt32 blockSize_;
-    const srpc::String body_;
+    const std::string body_;
     srpc::UInt32 echoedCount_;
 };
 
@@ -95,7 +95,7 @@ private:
 private:
     srpc::UInt32 echoCount_;
     srpc::UInt32 blockSize_;
-    const srpc::String body_;
+    const std::string body_;
     srpc::UInt32 echoedCount_;
 };
 

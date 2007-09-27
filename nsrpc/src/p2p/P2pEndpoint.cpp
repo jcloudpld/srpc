@@ -105,8 +105,9 @@ bool P2pEndpoint::setAddresses(srpc::UInt16 port)
 {
     clearAddresses();
 
-    const InetAddresses addresses = nsrpc::getLocalAddresses(port);
-    for (InetAddresses::const_iterator pos = addresses.begin();
+    const std::vector<ACE_INET_Addr> addresses =
+        nsrpc::getLocalAddresses(port);
+    for (std::vector<ACE_INET_Addr>::const_iterator pos = addresses.begin();
         pos != addresses.end(); ++pos) {
         localAddresses_.push_back(*pos);
     }

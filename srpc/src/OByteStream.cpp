@@ -14,7 +14,7 @@ OByteStream::OByteStream(StreamBuffer& streamBuffer) :
 }
 
 
-void OByteStream::write(const String& value, size_t maxLength,
+void OByteStream::write(const std::string& value, size_t maxLength,
     int sizeBitCount)
 {
     const UInt16 strLen =
@@ -24,14 +24,14 @@ void OByteStream::write(const String& value, size_t maxLength,
 }
 
 
-void OByteStream::write(const WString& value, size_t maxLength,
+void OByteStream::write(const std::wstring& value, size_t maxLength,
     int sizeBitCount)
 {
-    WString realValue(value);
+    std::wstring realValue(value);
     if (realValue.size() > maxLength) {
         realValue.resize(maxLength);
     }
-    const String utf8(toUtf8(realValue));
+    const std::string utf8(toUtf8(realValue));
     const UInt16 strLen = static_cast<UInt16>(utf8.size());
     writeStringLength(strLen, sizeBitCount);
     writeBytes(utf8.data(), utf8.size());

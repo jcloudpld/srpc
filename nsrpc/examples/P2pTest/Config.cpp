@@ -2,11 +2,11 @@
 #include "Config.h"
 #include <iostream>
 
-nsrpc::PeerAddress toPeerAddress(const srpc::String& address)
+nsrpc::PeerAddress toPeerAddress(const std::string& address)
 {
     nsrpc::PeerAddress result;
-    srpc::String::size_type pos = address.find(':');
-    if (pos != srpc::String::npos) {
+    std::string::size_type pos = address.find(':');
+    if (pos != std::string::npos) {
         result.ip_ = address.substr(0, pos);
         result.port_ =
             static_cast<srpc::UInt16>(atoi(address.substr(pos + 1).c_str()));
@@ -23,7 +23,7 @@ bool Config::parseArgs(int argc, char* argv[])
 
     bool isOk = true;
     for (int i = 1; i < argc; ++i) {
-        srpc::String arg(argv[i]);
+        std::string arg(argv[i]);
         if (arg == "-?") {
             isOk = false;
             break;

@@ -13,7 +13,6 @@ namespace srpc {
 */
 
 // = 기본 데이터 타입 선언
-
 typedef boost::int8_t Int8;
 typedef boost::uint8_t UInt8;
 

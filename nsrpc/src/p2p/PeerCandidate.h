@@ -4,7 +4,7 @@
 #include "P2pMessages.h"
 #include <nsrpc/p2p/detail/P2pAddress.h>
 #include <nsrpc/utility/SmartPtr.h>
-#include <srpc/ContainerTypes.h>
+#include <vector>
 
 namespace nsrpc
 {
@@ -27,7 +27,7 @@ class PeerCandidate;
 class PeerCandidateManager
 {
     typedef SmartPtr<PeerCandidate> PeerCandidatePtr;
-    typedef srpc::Vector<PeerCandidatePtr> PeerCandidates;
+    typedef std::vector<PeerCandidatePtr> PeerCandidates;
 public:
     PeerCandidateManager(PeerNetworkSender& networkSender,
         const P2pConfig& p2pConfig, PeerId myPeerId);
