@@ -8,6 +8,8 @@
 #include "detail/CsProtocol.h"
 #include <srpc/StringTypes.h>
 #include <ace/INET_Addr.h>
+#include <ace/Atomic_Op.h>
+#include <ace/Thread_Mutex.h>
 #include <boost/scoped_ptr.hpp>
 
 namespace nsrpc
