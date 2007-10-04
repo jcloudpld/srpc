@@ -18,7 +18,7 @@ PacketCoder::Seed PacketCoder::generateCipherSeed(srpc::UInt32 base) const
     snprintf(hash, 20, "%u", base);
 
     char seed[20];
-    snprintf(seed, 20, "%u", srpc::hash(seed, strlen(seed)));
+    snprintf(seed, 20, "%u", srpc::hash(hash, strlen(hash)));
 
     return seed;
 
