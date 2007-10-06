@@ -1,10 +1,10 @@
 #ifndef SRPC_RPCNETWORK_H
 #define SRPC_RPCNETWORK_H
 
-#include <srpc/config/config.h>
-#include <srpc/RpcPacketType.h>
-#include <srpc/ContainerTypes.h>
-#include <srpc/detail/RpcId.h>
+#include "config/config.h"
+#include "RpcPacketType.h"
+#include "ContainerTypes.h"
+#include "detail/RpcId.h"
 #include <boost/utility.hpp>
 #include <cassert>
 
