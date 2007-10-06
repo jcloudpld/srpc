@@ -1,9 +1,9 @@
 #ifndef SRPC_RPCCOMMAND_H
 #define SRPC_RPCCOMMAND_H
 
-#include <srpc/Types.h>
-#include <srpc/config/config.h>
-#include <srpc/detail/RpcId.h>
+#include "../config/config.h"
+#include "../Types.h"
+#include "../detail/RpcId.h"
 #include <boost/utility.hpp>
 
 namespace srpc {
