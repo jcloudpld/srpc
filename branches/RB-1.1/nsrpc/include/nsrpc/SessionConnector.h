@@ -1,6 +1,7 @@
 #ifndef NSRPC_SESSIONCONNECTOR_H
 #define NSRPC_SESSIONCONNECTOR_H
 
+#include "config/config.h"
 #include "config/Proactor.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
