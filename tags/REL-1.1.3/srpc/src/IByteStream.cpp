@@ -1,0 +1,120 @@
+#include "stdafx.h"
+#include <srpc/detail/IByteStream.h>
+#include <srpc/utility/Unicode.h>
+#include <srpc/StreamBuffer.h>
+#include <srpc/Exception.h>
+
+namespace srpc {
+
+IByteStream::IByteStream(StreamBuffer& streamBuffer) :
+    streamBuffer_(streamBuffer)
+{
+}
+
+
+void IByteStream::read(void* buffer, UInt16 length)
+{
+    readBytes(buffer, length);
+}
+
+
+void IByteStream::read(String& value, size_t maxLength, int sizeBitCount)
+{
+    assert((sizeBitCount == 8) || (sizeBitCount == 16));
+
+    value.clear();
+
+    const UInt32 size = readStringSize(sizeBitCount);
+
+#if 1
+    value.reserve(size);
+    for (UInt16 i = 0; i < size; ++i) {
+        value += static_cast<String::value_type>(readByte());
+    }
+#else
+    // TODO: 표준에 부합되는가?
+    value.resize(size);
+    readBytes(&(value[0]), size);
+#endif
+    if (value.size() > maxLength) {
+        value.resize(maxLength);
+    }
+}
+
+void IByteStream::read(WString& value, size_t maxLength, int sizeBitCount)
+{
+    assert((sizeBitCount == 8) || (sizeBitCount == 16));
+
+    value.clear();
+
+    const UInt32 size = readStringSize(sizeBitCount);
+
+    String utf8;
+#if 1
+    utf8.reserve(size);
+    for (UInt16 i = 0; i < size; ++i) {
+        utf8 += static_cast<String::value_type>(readByte());
+    }
+#else
+    // TODO: 표준에 부합되는가?
+    utf8.resize(size);
+    readBytes(&(utf8[0]), size);
+#endif
+
+    value = fromUtf8(utf8);
+
+    if (value.size() > maxLength) {
+        value.resize(maxLength);
+    }
+}
+
+
+UInt32 IByteStream::readStringSize(size_t sizeBitCount)
+{
+    if (sizeBitCount == 8) {
+        return readByte();
+    }
+    
+    UInt16 word = 0;
+    readNumeric(word);
+    return word;
+}
+
+
+void IByteStream::readBytes(void* value, size_t byteCount)
+{
+    assert((0 <= byteCount) && (byteCount <= Bits<UInt32>::size));
+
+    if (byteCount > 0) {
+        streamBuffer_.copyTo(static_cast<StreamBuffer::Item*>(value),
+            byteCount);
+    }
+}
+
+
+UInt8 IByteStream::readByte()
+{
+    if (streamBuffer_.empty()) {
+        throw StreamingException(__FILE__, __LINE__, "buffer is empty");
+    }
+
+    const UInt8 value = streamBuffer_.front();
+    streamBuffer_.pop();
+    return value;
+}
+
+
+void IByteStream::reset(bool resetBuffer)
+{
+    if (resetBuffer) {
+        streamBuffer_.reset();
+    }
+}
+
+
+int IByteStream::getTotalSize() const
+{
+    return static_cast<int>(streamBuffer_.size());
+}
+
+} // namespace srpc
