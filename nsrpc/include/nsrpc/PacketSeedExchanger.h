@@ -22,11 +22,6 @@ class NSRPC_API PacketSeedExchanger :
 {
     DECLARE_SRPC_EVENT_DISPATCHER(PacketSeedExchanger);
 public:
-    // = Factory
-    static PacketSeedExchanger* createForServer();
-
-    static PacketSeedExchanger* createForClient();
-public:
     PacketSeedExchanger() :
         packetCoder_(0) {}
 

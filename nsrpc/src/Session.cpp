@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <nsrpc/Session.h>
+#include <nsrpc/SessionConfig.h>
 #include <nsrpc/detail/SessionDestroyer.h>
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/detail/CsProtocol.h>
@@ -13,13 +14,11 @@ namespace nsrpc
 
 // = Session
 
-Session::Session(SessionDestroyer& sessionDestroyer,
-    PacketCoder* packetCoder, SynchMessageBlockManager& messageBlockManager,
-    NSRPC_Proactor* proactor) :
-    sessionDestroyer_(sessionDestroyer),
-    packetCoder_(packetCoder),
-    messageBlockManager_(messageBlockManager),
-    proactor_(proactor)
+Session::Session(const SessionConfig& config) :
+    sessionDestroyer_(*config.sessionDestroyer_),
+    messageBlockManager_(*config.messageBlockManager_),
+    packetCoder_(config.packetCoder_),
+    proactor_(config.proactor_)
 {
     recvBlock_ =
         messageBlockManager_.create(packetCoder_->getDefaultPacketSize());

@@ -12,12 +12,8 @@
 class TestSession : public nsrpc::Session
 {
 public:
-    TestSession(nsrpc::SessionDestroyer& sessionDestroyer,
-        nsrpc::PacketCoder* packetCoder,
-        nsrpc::SynchMessageBlockManager& messageBlockManager,
-        NSRPC_Proactor* proactor) :
-        nsrpc::Session(sessionDestroyer, packetCoder, messageBlockManager,
-            proactor),
+    TestSession(const nsrpc::SessionConfig& config) :
+        nsrpc::Session(config),
         arrivedMessageSize_(0),
         acquireSendBlockCallCount_(0),
         acquireRecvBlockCallCount_(0) {}

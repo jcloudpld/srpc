@@ -2,6 +2,7 @@
 #include <nsrpc/RpcClientSession.h>
 #include <nsrpc/detail/SessionRpcNetwork.h>
 #include <nsrpc/detail/PacketCoder.h>
+#include <nsrpc/PacketSeedExchangerFactory.h>
 #include <nsrpc/PacketSeedExchanger.h>
 
 namespace nsrpc
@@ -15,7 +16,7 @@ RpcClientSession::RpcClientSession(ACE_Reactor* reactor,
     PacketCoderFactory* packetCoderFactory, bool useBitPacking) :
     ClientSession(reactor, packetCoderFactory),
     rpcNetwork_(new SessionRpcNetwork(useBitPacking)),
-    seedExchanger_(PacketSeedExchanger::createForClient())
+    seedExchanger_(PacketSeedExchangerFactory::createForClient())
 {
     initRpcNetwork();
 

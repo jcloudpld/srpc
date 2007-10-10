@@ -18,13 +18,14 @@ namespace nsrpc
 class SessionAllocator
 {
 public:
-    SessionAllocator(const SessionFactory& sessionFactory,
+    SessionAllocator(SessionFactory& sessionFactory,
         SessionDestroyer& sessionDestroyer) :
-        sessionFactory_(sessionFactory),
-        sessionDestroyer_(sessionDestroyer) {}
+        sessionFactory_(sessionFactory) {
+        sessionFactory_.setSessionDestroyer(sessionDestroyer);
+    }
 
     Session* malloc() {
-        return sessionFactory_.create(sessionDestroyer_);
+        return sessionFactory_.create();
     }
 
     void free(Session* session) {
@@ -32,8 +33,7 @@ public:
         boost::checked_delete(session);
     }
 private:
-    const SessionFactory& sessionFactory_;
-    SessionDestroyer& sessionDestroyer_;
+    SessionFactory& sessionFactory_;
 };
 
 // = CachedSessionManager
@@ -45,7 +45,7 @@ private:
 
 // poolSize의 10%를 여분으로 둠
 CachedSessionManager::CachedSessionManager(const srpc::String& name,
-    size_t poolSize, const SessionFactory& sessionFactory) :
+    size_t poolSize, SessionFactory& sessionFactory) :
     sessionAllocator_(new SessionAllocator(sessionFactory, *this)),
     sessionPool_(
         new CachedSessionPool(poolSize, poolSize / 10, *sessionAllocator_)),

@@ -6,7 +6,8 @@
 #include <nsrpc/CachedSessionManager.h>
 #include <nsrpc/SessionFactory.h>
 #include <nsrpc/RpcSession.h>
-#include <nsrpc/PacketSeedExchanger.h>
+#include <nsrpc/RpcSessionConfig.h>
+#include <nsrpc/PacketSeedExchangerFactory.h>
 
 /**
  * @class TestRpcSession
@@ -14,13 +15,8 @@
 class TestRpcSession : public nsrpc::RpcSession
 {
 public:
-    TestRpcSession(nsrpc::SessionDestroyer& sessionDestroyer,
-        nsrpc::PacketCoder* packetCoder,
-        nsrpc::SynchMessageBlockManager& messageBlockManager,
-        NSRPC_Proactor* proactor, nsrpc::SessionRpcNetwork* rpcNetwork) :
-        nsrpc::RpcSession(sessionDestroyer,
-            packetCoder, messageBlockManager, proactor, rpcNetwork,
-            nsrpc::PacketSeedExchanger::createForServer()) {}
+    TestRpcSession(const nsrpc::RpcSessionConfig& config) :
+        nsrpc::RpcSession(config) {}
 private:
     virtual void onDisconnected() {}
 };
@@ -34,20 +30,30 @@ class RpcSessionFactory : public nsrpc::SessionFactory
 public:
     RpcSessionFactory(NSRPC_Proactor* proactor = 0,
         bool useBitPacking = true) :
-        nsrpc::SessionFactory(proactor, useBitPacking) {
+        proactor_(proactor),
+        useBitPacking_(useBitPacking),
+        sessionDestroyer_(0) {
         messageBlockManager_.reset(
             new nsrpc::SynchMessageBlockManager(10, 1024));
     }
 
-    virtual nsrpc::Session* create(
-        nsrpc::SessionDestroyer& sessionDestroyer) const {
-        return new TestRpcSession(sessionDestroyer,
-            nsrpc::PacketCoderFactory().create(),
-            *messageBlockManager_, getProactor(),
-            new nsrpc::SessionRpcNetwork(useBitPacking()));
+    virtual void setSessionDestroyer(
+        nsrpc::SessionDestroyer& sessionDestroyer) {
+        sessionDestroyer_ = &sessionDestroyer;
+    }
+
+    virtual nsrpc::Session* create() const {
+        const nsrpc::RpcSessionConfig config(sessionDestroyer_,
+            messageBlockManager_.get(), nsrpc::PacketCoderFactory().create(),
+            proactor_, new nsrpc::SessionRpcNetwork(useBitPacking_),
+            nsrpc::PacketSeedExchangerFactory::createForServer());
+        return new TestRpcSession(config);
     }
 private:
+    NSRPC_Proactor* proactor_;
+    bool useBitPacking_;
     boost::scoped_ptr<nsrpc::SynchMessageBlockManager> messageBlockManager_;
+    nsrpc::SessionDestroyer* sessionDestroyer_;
 };
 
 
