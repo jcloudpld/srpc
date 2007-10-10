@@ -352,6 +352,12 @@
 				RelativePath=".\PacketSeedExchanger.cpp">
 			</File>
 			<File
+				RelativePath=".\PacketSeedExchangerFactory.cpp">
+			</File>
+			<File
+				RelativePath=".\PacketSeedExchangerImpl.cpp">
+			</File>
+			<File
 				RelativePath=".\ProactorFactory.cpp">
 			</File>
 			<File
@@ -432,6 +438,9 @@
 				RelativePath=".\CsPacketCoder.h">
 			</File>
 			<File
+				RelativePath=".\PacketSeedExchangerImpl.h">
+			</File>
+			<File
 				RelativePath=".\stdafx.h">
 			</File>
 			<Filter
@@ -445,6 +454,9 @@
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\PacketSeedExchanger.h">
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\PacketSeedExchangerFactory.h">
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\ProactorFactory.h">
