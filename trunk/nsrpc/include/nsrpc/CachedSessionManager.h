@@ -40,7 +40,7 @@ public:
      * @param sessionFactory 새로운 세션을 만들 팩토리 인스턴스.
      */
     CachedSessionManager(const srpc::String& name, size_t poolSize,
-        const SessionFactory& sessionFactory);
+        SessionFactory& sessionFactory);
 
     virtual ~CachedSessionManager();
 

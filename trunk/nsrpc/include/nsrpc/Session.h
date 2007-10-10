@@ -2,7 +2,6 @@
 #define NSRPC_SESSION_H
 
 #include "config/config.h"
-#include "config/Proactor.h"
 #include "detail/Asynch_RW.h"
 #include "detail/MessageBlockProvider.h"
 #include "detail/CsProtocol.h"
@@ -16,8 +15,9 @@ namespace nsrpc
 {
 
 class SessionDestroyer;
-class PacketCoder;
 class SynchMessageBlockManager;
+class PacketCoder;
+struct SessionConfig;
 
 /** @addtogroup session
 * @{
@@ -52,18 +52,7 @@ public:
         }
     };
 public:
-    /**
-     * ctor
-     * @param sessionDestroyer 세션 관리자 인스턴스.
-     * @param packetCoder PacketCoder 인스턴스.
-     *          메모리 소유권을 넘겨야 한다(동적 할당).
-     * @param messageBlockManager 메모리 블럭 관리자.
-     * @param proactor Proactor 인스턴스. 0이면 싱글톤이 사용된다.
-     */
-    Session(SessionDestroyer& sessionDestroyer,
-        PacketCoder* packetCoder,
-        SynchMessageBlockManager& messageBlockManager,
-        NSRPC_Proactor* proactor = 0);
+    Session(const SessionConfig& config);
     virtual ~Session();
 public:
     /// remote host에 접속한다(ACE_Socket_Connector 이용)
@@ -157,11 +146,12 @@ private:
     }
 private:
     SessionDestroyer& sessionDestroyer_;
+    SynchMessageBlockManager& messageBlockManager_;
+
     NSRPC_Proactor* proactor_;
     boost::scoped_ptr<PacketCoder> packetCoder_;
     CsPacketHeader headerForReceive_;
 
-    SynchMessageBlockManager& messageBlockManager_;
     ACE_Message_Block* recvBlock_;
 
     Asynch_RW_Stream stream_;

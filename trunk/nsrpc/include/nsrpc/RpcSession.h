@@ -20,6 +20,7 @@ namespace nsrpc
 
 class SessionRpcNetwork;
 class PacketSeedExchanger;
+struct RpcSessionConfig;
 
 /**
  * @class RpcSession
@@ -32,15 +33,7 @@ class NSRPC_API RpcSession : public Session,
 {
     DECLARE_SRPC_EVENT_DISPATCHER(RpcSession);
 public:
-    /**
-     * @param rpcNetwork 메모리 소유권을 넘겨야 한다
-     * @param seedExchanger 메모리 소유권을 넘겨야 한다
-     */
-    RpcSession(SessionDestroyer& sessionDestroyer,
-        PacketCoder* packetCoder,
-        SynchMessageBlockManager& messageBlockManager,
-        NSRPC_Proactor* proactor, SessionRpcNetwork* rpcNetwork,
-        PacketSeedExchanger* seedExchanger);
+    RpcSession(const RpcSessionConfig& config);
     virtual ~RpcSession();
 public: // for Test
     srpc::RpcNetwork* getRpcNetwork();

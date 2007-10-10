@@ -8,7 +8,8 @@
 #include <nsrpc/utility/MessageBlockManager.h>
 #include <nsrpc/SessionFactory.h>
 #include <nsrpc/RpcSession.h>
-#include <nsrpc/PacketSeedExchanger.h>
+#include <nsrpc/RpcSessionConfig.h>
+#include <nsrpc/PacketSeedExchangerFactory.h>
 #include <nsrpc/detail/PacketCoder.h>
 
 /**
@@ -18,11 +19,8 @@ class EchoClientSession : public nsrpc::Session
 {
 public:
     EchoClientSession(srpc::UInt32 echoCount, srpc::UInt32 blockSize,
-        nsrpc::SessionDestroyer& sessionDestroyer,
-        nsrpc::SynchMessageBlockManager& messageBlockManager,
-        NSRPC_Proactor* proactor) :
-        nsrpc::Session(sessionDestroyer, nsrpc::PacketCoderFactory().create(),
-            messageBlockManager, proactor),
+        const nsrpc::SessionConfig& config) :
+        nsrpc::Session(config),
         echoCount_(echoCount),
         blockSize_(blockSize),
         body_(blockSize - getPacketCoder().getHeaderSize(), 'X'),
@@ -70,13 +68,8 @@ class EchoClientRpcSession :
 {
 public:
     EchoClientRpcSession(srpc::UInt32 echoCount, srpc::UInt32 blockSize,
-        nsrpc::SessionDestroyer& sessionDestroyer,
-        nsrpc::SynchMessageBlockManager& messageBlockManager,
-        NSRPC_Proactor* proactor, nsrpc::SessionRpcNetwork* rpcNetwork) :
-        nsrpc::RpcSession(sessionDestroyer,
-            nsrpc::PacketCoderFactory().create(), messageBlockManager,
-            proactor, rpcNetwork,
-            nsrpc::PacketSeedExchanger::createForClient()),
+        const nsrpc::RpcSessionConfig& config) :
+        nsrpc::RpcSession(config),
         echoCount_(echoCount),
         blockSize_(blockSize),
         body_(blockSize - getPacketCoder().getHeaderSize(), 'R') {}
@@ -108,27 +101,40 @@ class ClientSessionFactory : public nsrpc::SessionFactory
 public:
     ClientSessionFactory(const Config& config,
         NSRPC_Proactor* proactor, bool useBitPacking) :
-        nsrpc::SessionFactory(proactor, useBitPacking),
         config_(config),
-        messageBlockManager_(100, 1024) {}
+        proactor_(proactor),
+        useBitPacking_(useBitPacking),
+        messageBlockManager_(100, 1024),
+        sessionDestroyer_(0) {}
 
-    virtual nsrpc::Session* create(
-        nsrpc::SessionDestroyer& sessionDestroyer) const {
+    virtual void setSessionDestroyer(
+        nsrpc::SessionDestroyer& sessionDestroyer) {
+        sessionDestroyer_ = &sessionDestroyer;
+    }
+
+    virtual nsrpc::Session* create() const {
         nsrpc::SynchMessageBlockManager& messageBlockManager =
             const_cast<ClientSessionFactory*>(this)->messageBlockManager_;
         if (config_.useRpc()) {
             return new EchoClientRpcSession(config_.getEchoCount(),
-                config_.getBlockSize(), sessionDestroyer,
-                messageBlockManager, getProactor(),
-                new nsrpc::SessionRpcNetwork(useBitPacking()));
+                config_.getBlockSize(),
+                nsrpc::RpcSessionConfig(sessionDestroyer_,
+                    &messageBlockManager,
+                    nsrpc::PacketCoderFactory().create(), proactor_,
+                    new nsrpc::SessionRpcNetwork(useBitPacking_),
+                    nsrpc::PacketSeedExchangerFactory::createForClient()));
         }
         return new EchoClientSession(config_.getEchoCount(),
-            config_.getBlockSize(), sessionDestroyer, messageBlockManager,
-            getProactor());
+            config_.getBlockSize(),
+            nsrpc::SessionConfig(sessionDestroyer_, &messageBlockManager,
+                nsrpc::PacketCoderFactory().create(), proactor_));
     }
 private:
     const Config& config_;
+    NSRPC_Proactor* proactor_;
+    bool useBitPacking_;
     nsrpc::SynchMessageBlockManager messageBlockManager_;
+    nsrpc::SessionDestroyer* sessionDestroyer_;
 };
 
 #endif // ECHOTEST_ECHOCLIENT_H
