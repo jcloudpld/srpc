@@ -208,7 +208,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
+			Name="src"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
@@ -290,6 +290,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\stdafx.h">
+			</File>
+			<File
 				RelativePath=".\StreamFactory.cpp">
 			</File>
 			<File
@@ -297,147 +300,139 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
-			<File
-				RelativePath=".\stdafx.h">
-			</File>
+			Name="include"
+			Filter="">
 			<Filter
-				Name="include"
+				Name="srpc"
 				Filter="">
+				<File
+					RelativePath="..\include\srpc\Exception.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\IStream.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\OStream.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcContainers.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcForwarder.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcInterface.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcNetwork.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcP2p.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcPacketType.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcPrototype.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcReceiver.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\RpcTypes.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\StreamBuffer.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\StreamFactory.h">
+				</File>
+				<File
+					RelativePath="..\include\srpc\Types.h">
+				</File>
 				<Filter
-					Name="srpc"
+					Name="config"
 					Filter="">
 					<File
-						RelativePath="..\include\srpc\Exception.h">
+						RelativePath="..\include\srpc\config\config.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\IStream.h">
+						RelativePath="..\include\srpc\config\config_gcc.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\OStream.h">
+						RelativePath="..\include\srpc\config\config_msvc.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="detail"
+					Filter="">
+					<File
+						RelativePath="..\include\srpc\detail\ForwardingFunctors.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcContainers.h">
+						RelativePath="..\include\srpc\detail\IBitStream.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcForwarder.h">
+						RelativePath="..\include\srpc\detail\IByteStream.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcInterface.h">
+						RelativePath="..\include\srpc\detail\Mutex.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcNetwork.h">
+						RelativePath="..\include\srpc\detail\OBitStream.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcP2p.h">
+						RelativePath="..\include\srpc\detail\OByteStream.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcPacketType.h">
+						RelativePath="..\include\srpc\detail\ReceivingFunctors.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcPrototype.h">
+						RelativePath="..\include\srpc\detail\RpcCommand.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcReceiver.h">
+						RelativePath="..\include\srpc\detail\RpcEvent.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\RpcTypes.h">
+						RelativePath="..\include\srpc\detail\RpcForwarderDetail.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\StreamBuffer.h">
+						RelativePath="..\include\srpc\detail\RpcId.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\StreamFactory.h">
+						RelativePath="..\include\srpc\detail\RpcInterfaceDetail.h">
 					</File>
 					<File
-						RelativePath="..\include\srpc\Types.h">
+						RelativePath="..\include\srpc\detail\RpcPrototypeDetail.h">
 					</File>
-					<Filter
-						Name="config"
-						Filter="">
-						<File
-							RelativePath="..\include\srpc\config\config.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\config\config_gcc.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\config\config_msvc.h">
-						</File>
-					</Filter>
-					<Filter
-						Name="detail"
-						Filter="">
-						<File
-							RelativePath="..\include\srpc\detail\ForwardingFunctors.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\IBitStream.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\IByteStream.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\Mutex.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\OBitStream.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\OByteStream.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\ReceivingFunctors.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\RpcCommand.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\RpcEvent.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\RpcForwarderDetail.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\RpcId.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\RpcInterfaceDetail.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\RpcPrototypeDetail.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\RpcReceiverDetail.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\TypeList.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\detail\VectorStreamBuffer.h">
-						</File>
-					</Filter>
-					<Filter
-						Name="utility"
-						Filter="">
-						<File
-							RelativePath="..\include\srpc\utility\Bits.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\utility\Endian.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\utility\Hash.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\utility\StlUtils.h">
-						</File>
-						<File
-							RelativePath="..\include\srpc\utility\Unicode.h">
-						</File>
-					</Filter>
+					<File
+						RelativePath="..\include\srpc\detail\RpcReceiverDetail.h">
+					</File>
+					<File
+						RelativePath="..\include\srpc\detail\TypeList.h">
+					</File>
+					<File
+						RelativePath="..\include\srpc\detail\VectorStreamBuffer.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="utility"
+					Filter="">
+					<File
+						RelativePath="..\include\srpc\utility\Bits.h">
+					</File>
+					<File
+						RelativePath="..\include\srpc\utility\Endian.h">
+					</File>
+					<File
+						RelativePath="..\include\srpc\utility\Hash.h">
+					</File>
+					<File
+						RelativePath="..\include\srpc\utility\StlUtils.h">
+					</File>
+					<File
+						RelativePath="..\include\srpc\utility\Unicode.h">
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
