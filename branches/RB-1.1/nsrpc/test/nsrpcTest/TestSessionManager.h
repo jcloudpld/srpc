@@ -2,6 +2,7 @@
 #define NSRPC_TESTSESSIONMANAGER_H
 
 #include "TestSession.h"
+#include <nsrpc/SessionConfig.h>
 #include <nsrpc/detail/SessionManager.h>
 #include <nsrpc/utility/MessageBlockManager.h>
 #include <nsrpc/utility/AceUtil.h>
@@ -31,9 +32,9 @@ public:
 
     virtual nsrpc::Session* acquire() {
         ++sessionCount_;
-        lastSession_ = new TestSession(*this,
-            nsrpc::PacketCoderFactory().create(), *messageBlockManager_,
-            proactor_);
+        nsrpc::SessionConfig config(this, messageBlockManager_.get(),
+            nsrpc::PacketCoderFactory().create(), proactor_);
+        lastSession_ = new TestSession(config);
         return lastSession_;
     }
 
