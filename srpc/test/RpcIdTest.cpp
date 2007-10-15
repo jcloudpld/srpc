@@ -5,7 +5,7 @@ using namespace srpc;
 
 /**
 * @class RpcIdTest 
-* RpcId test
+* RRpcId test
 */
 class RpcIdTest  : public CppUnit::TestFixture
 {
@@ -22,7 +22,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RpcIdTest );
 void RpcIdTest::testRpcId()
 {
     CPPUNIT_ASSERT_EQUAL_MESSAGE("same",
-        RpcId("abc"), RpcId("abc"));
+        RRpcId("abc"), RRpcId("abc"));
     CPPUNIT_ASSERT_MESSAGE("not same",
-        RpcId("a") != RpcId("b"));
+        RRpcId("a") != RRpcId("b"));
 }

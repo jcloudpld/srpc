@@ -81,10 +81,10 @@ void RpcForwarderTest::testParm0()
 {
     request_->rpc0(reinterpret_cast<const void*>(12345));
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpc0_0"), id);
+        RRpcId("DummyRpc_rpc0_0"), id);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("hint",
         12345, rpcNetwork_->getSentRpcHint());
 }
@@ -94,10 +94,10 @@ void RpcForwarderTest::testParm1()
 {
     request_->rpc1(1);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpc1_1"), id);
+        RRpcId("DummyRpc_rpc1_1"), id);
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1", 1, p1);
@@ -108,10 +108,10 @@ void RpcForwarderTest::testParm2()
 {
     request_->rpc2(1, 2);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpc2_2"), id);
+        RRpcId("DummyRpc_rpc2_2"), id);
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1", 1, p1);
@@ -125,10 +125,10 @@ void RpcForwarderTest::testParm3()
 {
     request_->rpc3(1, 2, 3);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpc3_3"), id);
+        RRpcId("DummyRpc_rpc3_3"), id);
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1", 1, p1);
@@ -145,10 +145,10 @@ void RpcForwarderTest::testParm4()
 {
     request_->rpc4(1, 2, 3, 4);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpc4_4"), id);
+        RRpcId("DummyRpc_rpc4_4"), id);
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1", 1, p1);
@@ -168,10 +168,10 @@ void RpcForwarderTest::testParm5()
 {
     request_->rpc5(1, 2, 3, 4, 5);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpc5_5"), id);
+        RRpcId("DummyRpc_rpc5_5"), id);
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1", 1, p1);
@@ -194,10 +194,10 @@ void RpcForwarderTest::testParm6()
 {
     request_->rpc6(1, 2, 3, 4, 5, 6);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpc6_6"), id);
+        RRpcId("DummyRpc_rpc6_6"), id);
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1", 1, p1);
@@ -223,10 +223,10 @@ void RpcForwarderTest::testParm7()
 {
     request_->rpc7(1, 2, 3, 4, 5, 6, 7);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpc7_7"), id);
+        RRpcId("DummyRpc_rpc7_7"), id);
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1", 1, p1);
@@ -255,10 +255,10 @@ void RpcForwarderTest::testParmBits()
 {
     request_->rpcBits(1, 2);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        RpcId("DummyRpc_rpcBits_2"), id);
+        RRpcId("DummyRpc_rpcBits_2"), id);
     Int32 p1;
     istream_->read(p1, 15);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1", 1, p1);

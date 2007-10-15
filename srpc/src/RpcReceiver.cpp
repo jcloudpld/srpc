@@ -20,7 +20,7 @@ RpcReceiver::~RpcReceiver()
 }
 
 
-bool RpcReceiver::handle(const RpcId& rpcId, IStream& istream,
+bool RpcReceiver::handle(RpcId rpcId, IStream& istream,
     const void* rpcHint)
 {
     RpcEvent* rpcEvent = lookupEvent(rpcId);
@@ -51,7 +51,7 @@ void RpcReceiver::resetRpcNetwork()
 }
 
 
-RpcEvent* RpcReceiver::lookupEvent(const RpcId& rpcId)
+RpcEvent* RpcReceiver::lookupEvent(RpcId rpcId)
 {
     RpcEvent* event = eventMap_.getRpcEvent(rpcId);
     if (! event) {

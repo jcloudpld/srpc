@@ -54,13 +54,13 @@ void MultipleRpcReceiverTest::tearDown()
 
 void MultipleRpcReceiverTest::testDummyRpcParm1()
 {
-    RpcId rpcId("DummyRpc_rpc1_1");
+    RRpcId rpcId("DummyRpc_rpc1_1");
     rpcId.write(*ostream_);
     RInt32(-1).write(*ostream_);
     ostream_->align();
     rpcNetwork_->onReceive(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         -1, response_->getP1());
 }
@@ -68,13 +68,13 @@ void MultipleRpcReceiverTest::testDummyRpcParm1()
 
 void MultipleRpcReceiverTest::testDummyRpc2Parm1()
 {
-    RpcId rpcId("DummyRpc2_rpc1_1");
+    RRpcId rpcId("DummyRpc2_rpc1_1");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     ostream_->align();
     rpcNetwork_->onReceive(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response2_->getRpcId());
+        rpcId.get(), response2_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response2_->getP1());
 }
@@ -82,7 +82,7 @@ void MultipleRpcReceiverTest::testDummyRpc2Parm1()
 
 void MultipleRpcReceiverTest::testUnknownRpcMethod()
 {
-    RpcId rpcId("DummyRpc_rpc1_unknown");
+    RRpcId rpcId("DummyRpc_rpc1_unknown");
     rpcId.write(*ostream_);
     RInt32(-1).write(*ostream_);
     ostream_->align();
