@@ -26,7 +26,7 @@ void RpcEventTest::testCalling()
     RInt32(-100).write(*ostream_);
 
     DummyRpcEvent event;
-    event.dispatch(event, *istream_);
+    event.dispatch(&event, *istream_);
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         100, event.getP1());

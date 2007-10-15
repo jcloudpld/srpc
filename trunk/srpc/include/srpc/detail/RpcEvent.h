@@ -23,11 +23,10 @@ public:
     RpcEvent(ReceivingFunctor& functor) :
         unmarshalDispatcher_(functor) {}
 
-    template <class RpcClass>
-    void dispatch(RpcClass& rpcClass, IStream& istream,
+    void dispatch(void* rpcClassThisPtr, IStream& istream,
         const void* rpcHint = 0) {
         unmarshalDispatcher_(istream);
-        unmarshalDispatcher_.call(&rpcClass, rpcHint);
+        unmarshalDispatcher_.call(rpcClassThisPtr, rpcHint);
     }
 public:
     virtual RpcEvent* clone() const = 0;
