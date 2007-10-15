@@ -306,6 +306,9 @@
 				Name="srpc"
 				Filter="">
 				<File
+					RelativePath="..\include\srpc\ContainerTypes.h">
+				</File>
+				<File
 					RelativePath="..\include\srpc\Exception.h">
 				</File>
 				<File
@@ -348,6 +351,9 @@
 					RelativePath="..\include\srpc\StreamFactory.h">
 				</File>
 				<File
+					RelativePath="..\include\srpc\StringTypes.h">
+				</File>
+				<File
 					RelativePath="..\include\srpc\Types.h">
 				</File>
 				<Filter
@@ -366,6 +372,9 @@
 				<Filter
 					Name="detail"
 					Filter="">
+					<File
+						RelativePath="..\include\srpc\detail\Allocator.h">
+					</File>
 					<File
 						RelativePath="..\include\srpc\detail\ForwardingFunctors.h">
 					</File>
