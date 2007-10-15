@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <nsrpc/RpcSession.h>
+#include <nsrpc/RpcSessionConfig.h>
 #include <nsrpc/PacketSeedExchanger.h>
 #include <nsrpc/detail/SessionRpcNetwork.h>
 #include <nsrpc/detail/PacketCoder.h>
@@ -16,22 +17,19 @@ IMPLEMENT_SRPC_EVENT_DISPATCHER(RpcSession);
 #  pragma warning (disable: 4355)
 #endif
 
-RpcSession::RpcSession(SessionDestroyer& sessionDestroyer,
-    PacketCoder* packetCoder, SynchMessageBlockManager& messageBlockManager,
-    NSRPC_Proactor* proactor, SessionRpcNetwork* rpcNetwork,
-    PacketSeedExchanger* seedExchanger) :
-    Session(sessionDestroyer, packetCoder, messageBlockManager, proactor),
-    rpcNetwork_(rpcNetwork),
-    seedExchanger_(seedExchanger)
+RpcSession::RpcSession(const RpcSessionConfig& config) :
+    Session(config),
+    rpcNetwork_(config.rpcNetwork_),
+    seedExchanger_(config.seedExchanger_)
 {
-    assert(rpcNetwork != 0);
+    assert(rpcNetwork_.get() != 0);
 
     rpcNetwork_->initialize(this, this);
 
     srpc::RpcReceiver::setRpcNetwork(getRpcNetwork());
     srpc::RpcForwarder::setRpcNetwork(getRpcNetwork());
 
-    seedExchanger_->initialize(packetCoder, rpcNetwork);
+    seedExchanger_->initialize(config.packetCoder_, rpcNetwork_.get());
 }
 
 #ifdef _MSC_VER
