@@ -5,6 +5,7 @@
 #include "RpcEvent.h"
 #include "RpcId.h"
 #include "utility/StlUtils.h"
+#include "../ContainerTypes.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4702)
@@ -29,8 +30,7 @@ namespace srpc {
 class RpcEventMap
 {
 public:
-    /// 주의! boost::pool과 srpc::Map을 같이 쓸 경우 문제가 발생할 수 있다.
-    typedef std::map<RpcId, RpcEvent*> RpcEvents;
+    typedef srpc::Map<RpcId, RpcEvent*> RpcEvents;
     typedef RpcEvents::value_type value_type;
 public:
     RpcEventMap(bool deleteRpcEvents) :
@@ -97,21 +97,22 @@ public:
 /// SRPC 헬퍼를 구현한다.
 #define IMPLEMENT_SRPC_EVENT_DISPATCHER_DETAIL(rpcClass) \
     srpc::RpcEventMap& rpcClass :: getStaticEventMap() { \
-        static srpc::RpcEventMap staticEventMap(false); \
+        static srpc::RpcEventMap staticEventMap(true); \
         return staticEventMap; \
     } \
     void rpcClass::dispatch(srpc::RpcEvent& event, srpc::IStream& istream, \
         const void* rpcHint) { \
-        event.dispatch(*this, istream, rpcHint); \
+        event.dispatch(this, istream, rpcHint); \
     }
 
 /// RPC 메쏘드를 등록한다
 #define REGISTER_SRPC_METHOD(rpcClass, method) \
-    static SRPC_RPC_EVENT(rpcClass, method) rpcClass##_##method##_event; \
+    static SRPC_RPC_EVENT(rpcClass, method)* \
+        rpcClass##_##method##_event(new SRPC_RPC_EVENT(rpcClass, method)); \
     srpc::EventRegister<SRPC_RPC_EVENT(rpcClass, method), rpcClass> \
         rpcClass##_##method##_EventRegister( \
             rpcClass::SRPC_GET_RPCID(method)(), \
-            &rpcClass##_##method##_event);
+            rpcClass##_##method##_event);
 
 // = IMPLEMENT_SRPC_METHOD_DETAIL_n
 
