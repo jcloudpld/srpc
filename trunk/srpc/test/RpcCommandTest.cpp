@@ -25,10 +25,10 @@ void RpcCommandTest::testMarshal()
     DummyRpcCommand rpcCommand(100, -100);
     rpcCommand.marshal(*ostream_);
 
-    RpcId id;
+    RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        rpcCommand.getRpcId(), id);
+        rpcCommand.getRpcId(), id.get());
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",

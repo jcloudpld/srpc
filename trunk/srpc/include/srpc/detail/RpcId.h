@@ -6,23 +6,24 @@
 
 namespace srpc {
 
+/// RPC ID
+typedef UInt32 RpcId;
+
 /**
- * @class RpcId
- *
- * RPC ID
-  */
-class RpcId : public RUInt32
+ * @class RRpcId
+ */
+class RRpcId : public RpcUIntType<RpcId>
 {
 public:
-    RpcId() {
-        set(0);
+    explicit RRpcId(RpcId rpcId = 0) {
+        set(rpcId);
     }
 
-    RpcId(const char* idStr) {
+    explicit RRpcId(const char* idStr) {
         set(hash(idStr, strlen(idStr)));
     }
 
-    RpcId(const String& idStr) {
+    RRpcId(const String& idStr) {
         set(hash(idStr.c_str(), idStr.size()));
     }
 };

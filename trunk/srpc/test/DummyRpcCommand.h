@@ -9,7 +9,7 @@ class DummyRpcCommand : public srpc::RpcCommand
 {
 public:
     DummyRpcCommand(srpc::RInt32 p1, srpc::RInt32 p2) :
-        srpc::RpcCommand("DummyRpcCommand", marshalFunctor_),
+      srpc::RpcCommand(srpc::RRpcId("DummyRpcCommand"), marshalFunctor_),
         marshalFunctor_(p1, p2) {}
 private:
     srpc::ForwardingFunctorT<SRPC_TYPELIST_2(srpc::RInt32, srpc::RInt32)>

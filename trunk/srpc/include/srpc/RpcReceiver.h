@@ -28,7 +28,7 @@ public:
     virtual ~RpcReceiver();
 
     /// RPC 요청을 파싱하여 RPC method를 실행한다.
-    bool handle(const RpcId& rpcId, IStream& istream, const void* rpcHint = 0);
+    bool handle(RpcId rpcId, IStream& istream, const void* rpcHint = 0);
 
     void setRpcNetwork(RpcNetwork* rpcNetwork);
     void resetRpcNetwork();
@@ -38,11 +38,11 @@ private:
     virtual void dispatch(RpcEvent& rpcEvent, IStream& istream,
         const void* rpcHint) = 0;
 protected:
-    void setRpcEvent(const srpc::RpcId& rpcId, srpc::RpcEvent* event) {
+    void setRpcEvent(RpcId rpcId, RpcEvent* event) {
         eventMap_.insert(rpcId, event);
     }
 private:
-    RpcEvent* lookupEvent(const RpcId& rpcId);
+    RpcEvent* lookupEvent(RpcId rpcId);
     bool handleEvent(RpcEvent& rpcEvent, IStream& istream,
         const void* rpcHint);
 private:

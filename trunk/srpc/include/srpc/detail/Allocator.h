@@ -3,7 +3,7 @@
 
 #include "../config/config.h"
 
-#ifdef USE_BOOST_POOL_ALLOCATOR
+#ifdef USE_BOOST_POOL_ALLOCATOR_FOR_SRPC
 
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -17,13 +17,13 @@
 #define SrpcNormalAllocator boost::pool_allocator
 #define SrpcNodeAllocator boost::fast_pool_allocator
 
-#else // ! USE_BOOST_POOL_ALLOCATOR
+#else // ! USE_BOOST_POOL_ALLOCATOR_FOR_SRPC
 
 #include <memory>
 
 #define SrpcNormalAllocator std::allocator
 #define SrpcNodeAllocator std::allocator
 
-#endif // USE_BOOST_POOL_ALLOCATOR
+#endif // USE_BOOST_POOL_ALLOCATOR_FOR_SRPC
 
 #endif // SRPC_ALLOCATOR_H
