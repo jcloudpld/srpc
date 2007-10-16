@@ -224,10 +224,10 @@ void RpcTypesTest::testRBool()
 
 void RpcTypesTest::testRRpcId()
 {
-    RpcId expected("RpcId");
+    RRpcId expected("RRpcId.h");
     expected.write(*ostream_);
 
-    RpcId actual;
+    RRpcId actual;
     actual.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("RpcId",
         expected.get(), actual.get());

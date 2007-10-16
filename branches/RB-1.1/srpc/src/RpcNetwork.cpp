@@ -39,7 +39,7 @@ void RpcNetwork::unregisterRpcReceiver(RpcReceiver* receiver)
 void RpcNetwork::onReceive(IStream& istream, const void* rpcHint)
 {
     bool isHandled = false;
-    RpcId rpcId;
+    RRpcId rpcId;
     rpcId.read(istream);
 
     const RpcReceivers::const_iterator end = receivers_.end();
