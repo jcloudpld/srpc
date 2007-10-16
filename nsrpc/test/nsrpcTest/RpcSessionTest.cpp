@@ -69,7 +69,7 @@ void RpcSessionTest::testSendRpcCommands()
     pause(1);
 
     const int sendCount = 5;
-    const RpcId rpcId("testRpcId");
+    const RRpcId rpcId("testRpcId");
     for (int i = 0; i < sendCount; ++i) {
         ForwardingFunctorT<SRPC_TYPELIST_1(RUInt32)> functor(337);
         RpcCommand command(rpcId, functor);

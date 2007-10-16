@@ -78,12 +78,12 @@ void RpcReceiverTest::tearDown()
 
 void RpcReceiverTest::testParm0()
 {
-    RpcId rpcId("DummyRpc_rpc0_0");
+    RRpcId rpcId("DummyRpc_rpc0_0");
     rpcId.write(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, 0);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("hint",
         0, response_->getHint());
 }
@@ -91,13 +91,13 @@ void RpcReceiverTest::testParm0()
 
 void RpcReceiverTest::testParm1()
 {
-    RpcId rpcId("DummyRpc_rpc1_1");
+    RRpcId rpcId("DummyRpc_rpc1_1");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(1));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("hint",
@@ -107,14 +107,14 @@ void RpcReceiverTest::testParm1()
 
 void RpcReceiverTest::testParm2()
 {
-    RpcId rpcId("DummyRpc_rpc2_2");
+    RRpcId rpcId("DummyRpc_rpc2_2");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(2).write(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(2));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -126,7 +126,7 @@ void RpcReceiverTest::testParm2()
 
 void RpcReceiverTest::testParm3()
 {
-    RpcId rpcId("DummyRpc_rpc3_3");
+    RRpcId rpcId("DummyRpc_rpc3_3");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(2).write(*ostream_);
@@ -134,7 +134,7 @@ void RpcReceiverTest::testParm3()
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(3));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -148,7 +148,7 @@ void RpcReceiverTest::testParm3()
 
 void RpcReceiverTest::testParm4()
 {
-    RpcId rpcId("DummyRpc_rpc4_4");
+    RRpcId rpcId("DummyRpc_rpc4_4");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(2).write(*ostream_);
@@ -157,7 +157,7 @@ void RpcReceiverTest::testParm4()
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(4));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -173,7 +173,7 @@ void RpcReceiverTest::testParm4()
 
 void RpcReceiverTest::testParm5()
 {
-    RpcId rpcId("DummyRpc_rpc5_5");
+    RRpcId rpcId("DummyRpc_rpc5_5");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(2).write(*ostream_);
@@ -183,7 +183,7 @@ void RpcReceiverTest::testParm5()
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(5));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -201,7 +201,7 @@ void RpcReceiverTest::testParm5()
 
 void RpcReceiverTest::testParm6()
 {
-    RpcId rpcId("DummyRpc_rpc6_6");
+    RRpcId rpcId("DummyRpc_rpc6_6");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(2).write(*ostream_);
@@ -212,7 +212,7 @@ void RpcReceiverTest::testParm6()
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(6));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -232,7 +232,7 @@ void RpcReceiverTest::testParm6()
 
 void RpcReceiverTest::testParm7()
 {
-    RpcId rpcId("DummyRpc_rpc7_7");
+    RRpcId rpcId("DummyRpc_rpc7_7");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(2).write(*ostream_);
@@ -244,7 +244,7 @@ void RpcReceiverTest::testParm7()
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(7));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -266,7 +266,7 @@ void RpcReceiverTest::testParm7()
 
 void RpcReceiverTest::testParm8()
 {
-    RpcId rpcId("DummyRpc_rpc8_8");
+    RRpcId rpcId("DummyRpc_rpc8_8");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(2).write(*ostream_);
@@ -279,7 +279,7 @@ void RpcReceiverTest::testParm8()
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(8));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -303,7 +303,7 @@ void RpcReceiverTest::testParm8()
 
 void RpcReceiverTest::testParm9()
 {
-    RpcId rpcId("DummyRpc_rpc9_9");
+    RRpcId rpcId("DummyRpc_rpc9_9");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(2).write(*ostream_);
@@ -317,7 +317,7 @@ void RpcReceiverTest::testParm9()
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(9));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -343,7 +343,7 @@ void RpcReceiverTest::testParm9()
 
 void RpcReceiverTest::testParm10()
 {
-    RpcId rpcId("DummyRpc_rpc10_10");
+    RRpcId rpcId("DummyRpc_rpc10_10");
     rpcId.write(*ostream_);
     RInt32(1).write(*ostream_);
     RInt32(-2).write(*ostream_);
@@ -358,7 +358,7 @@ void RpcReceiverTest::testParm10()
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(10));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -386,14 +386,14 @@ void RpcReceiverTest::testParm10()
 
 void RpcReceiverTest::testParmBits()
 {
-    RpcId rpcId("DummyRpc_rpcBits");
+    RRpcId rpcId("DummyRpc_rpcBits");
     rpcId.write(*ostream_);
     RInt15(1).write(*ostream_);
     RInt31(2).write(*ostream_);
 
     rpcNetwork_->onReceive(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId, response_->getRpcId());
+        rpcId.get(), response_->getRpcId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         1, response_->getP1());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -403,7 +403,7 @@ void RpcReceiverTest::testParmBits()
 
 void RpcReceiverTest::testAlign()
 {
-    RpcId rpcId("DummyRpc_rpcBits_2");
+    RRpcId rpcId("DummyRpc_rpcBits_2");
 
     for (int i = 0; i < 3; ++i) {
         rpcId.write(*ostream_);
@@ -415,7 +415,7 @@ void RpcReceiverTest::testAlign()
     for (int i = 0; i < 3; ++i) {
         rpcNetwork_->onReceive(*istream_);
         CPPUNIT_ASSERT_EQUAL_MESSAGE((boost::format("#%d - rpcId") % i).str(),
-            rpcId, response_->getRpcId());
+            rpcId.get(), response_->getRpcId());
         CPPUNIT_ASSERT_EQUAL_MESSAGE((boost::format("#%d - p1") % i).str(),
             1, response_->getP1());
         CPPUNIT_ASSERT_EQUAL_MESSAGE((boost::format("#%d - p2") % i).str(),
@@ -441,7 +441,7 @@ void RpcReceiverTest::testUnmarshalingError()
 
 void RpcReceiverTest::testUnknownRpcMethod()
 {
-    RpcId rpcId("DummyRpc_rpc0_unknown");
+    RRpcId rpcId("DummyRpc_rpc0_unknown");
     rpcId.write(*ostream_);
 
     try {
@@ -454,7 +454,7 @@ void RpcReceiverTest::testUnknownRpcMethod()
 
 void RpcReceiverTest::testRpcFailed()
 {
-    RpcId rpcId("DummyRpc_rpcFailed_0");
+    RRpcId rpcId("DummyRpc_rpcFailed_0");
     rpcId.write(*ostream_);
 
     try {

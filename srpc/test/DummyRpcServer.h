@@ -32,7 +32,7 @@ public:
     DECLARE_SRPC_METHOD_2(rpcBits, RInt15, p1, RInt31, p2);
     DECLARE_SRPC_METHOD_0(rpcFailed);
 public:
-    const srpc::RpcId& getRpcId() const {
+    const srpc::RpcId getRpcId() const {
         return rpcId_;
     }
     srpc::Int32 getP1() const {
@@ -96,7 +96,7 @@ public:
 
     DECLARE_SRPC_METHOD_1(rpc1, RInt32, p1);
 public:
-    const srpc::RpcId& getRpcId() const {
+    const srpc::RpcId getRpcId() const {
         return rpcId_;
     }
     srpc::Int32 getP1() const {
