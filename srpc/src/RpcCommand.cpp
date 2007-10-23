@@ -7,8 +7,10 @@ namespace srpc {
 
 void RpcCommand::marshal(OStream& ostream)
 {
+    ForwardingFunctor& marshaler = getMarshaler();
+
     ostream.write(rpcId_);
-    marshaler_(ostream);
+    marshaler.marshal(ostream);
     ostream.align();
 }
 

@@ -13,6 +13,23 @@ using namespace srpc;
 using namespace nsrpc;
 
 /**
+ * @class TestRpcCommand
+ */
+class TestRpcCommand : public RpcCommand
+{
+public:
+    TestRpcCommand(RpcId rpcId, UInt32 value) :
+        RpcCommand(rpcId),
+        marshaler_(value) {}
+private:
+    virtual ForwardingFunctor& getMarshaler() {
+        return marshaler_;
+    }
+private:
+    ForwardingFunctorT<SRPC_TYPELIST_1(RUInt32)> marshaler_;
+};
+
+/**
 * @class RpcSessionTest
 *
 * Session Test
@@ -66,13 +83,14 @@ void RpcSessionTest::tearDown()
 
 void RpcSessionTest::testSendRpcCommands()
 {
+    const UInt32 valueExpected = 337;
+
     pause(1);
 
     const int sendCount = 5;
     const RRpcId rpcId("testRpcId");
     for (int i = 0; i < sendCount; ++i) {
-        ForwardingFunctorT<SRPC_TYPELIST_1(RUInt32)> functor(337);
-        RpcCommand command(rpcId, functor);
+        TestRpcCommand command(rpcId, valueExpected);
         getLastSession().getRpcNetwork()->send(command);
     }
 
@@ -87,7 +105,7 @@ void RpcSessionTest::testSendRpcCommands()
             static_cast<int>(rpcId.get()),
             static_cast<int>(toRpcByteOrder(received[0])));
         CPPUNIT_ASSERT_EQUAL_MESSAGE("parameter",
-            337,
-            static_cast<int>(toRpcByteOrder(received[1])));
+            valueExpected,
+            toRpcByteOrder(received[1]));
     }
 }

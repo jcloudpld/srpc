@@ -24,9 +24,10 @@ class ForwardingFunctor;
 class SRPC_API RpcCommand : public boost::noncopyable
 {
 public:
-    RpcCommand(RpcId rpcId, ForwardingFunctor& functor)  :
-        rpcId_(rpcId),
-        marshaler_(functor) {}
+    RpcCommand(RpcId rpcId)  :
+        rpcId_(rpcId) {}
+
+    virtual ~RpcCommand() {}
 
     /**
      * RPC command를 ostream으로 마샬링한다
@@ -38,8 +39,9 @@ public:
         return rpcId_;
     }
 private:
+    virtual ForwardingFunctor& getMarshaler() = 0;
+private:
     RRpcId rpcId_;
-    ForwardingFunctor& marshaler_;
 };
 
 /** @} */ // addtogroup RpcForwarding
