@@ -20,19 +20,18 @@ class IStream;
 class RpcEvent : public boost::noncopyable
 {
 public:
-    RpcEvent(ReceivingFunctor& dispatcher) :
-        dispatcher_(dispatcher) {}
     virtual ~RpcEvent() {}
 
     void dispatch(void* rpcClassThisPtr, IStream& istream,
         const void* rpcHint = 0) {
-        dispatcher_(istream);
-        dispatcher_.call(rpcClassThisPtr, rpcHint);
+        ReceivingFunctor& dispatcher = getDispatcher();
+        dispatcher.unmarshal(istream);
+        dispatcher.call(rpcClassThisPtr, rpcHint);
     }
 public:
     virtual RpcEvent* clone() const = 0;
-private:
-    ReceivingFunctor& dispatcher_;
+
+    virtual ReceivingFunctor& getDispatcher() = 0;
 };
 
 /** @} */ // addtogroup RpcReceiving

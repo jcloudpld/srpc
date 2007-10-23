@@ -7,7 +7,8 @@ namespace srpc {
 
 RpcReceiver::RpcReceiver(RpcNetwork* rpcNetwork) :
     rpcNetwork_(0),
-    eventMap_(true)
+    eventMap_(true),
+    rpcEventsCloned_(false)
 {
     if (rpcNetwork != 0) {
         setRpcNetwork(rpcNetwork);
@@ -23,6 +24,10 @@ RpcReceiver::~RpcReceiver()
 bool RpcReceiver::handle(RpcId rpcId, IStream& istream,
     const void* rpcHint)
 {
+    if (shouldCloneRpcEvents()) {
+        cloneRpcEvents();
+    }
+
     RpcEvent* rpcEvent = lookupEvent(rpcId);
     if (! rpcEvent)
         return false;
@@ -51,20 +56,6 @@ void RpcReceiver::resetRpcNetwork()
 }
 
 
-RpcEvent* RpcReceiver::lookupEvent(RpcId rpcId)
-{
-    RpcEvent* event = eventMap_.getRpcEvent(rpcId);
-    if (! event) {
-        event = getDefaultEventMap().getRpcEvent(rpcId);
-        if (event != 0) {
-            RpcEvent* clonedEvent = event->clone();
-            setRpcEvent(rpcId, clonedEvent);
-        }
-    }
-    return event;
-}
-
-
 bool RpcReceiver::handleEvent(RpcEvent& rpcEvent, IStream& istream,
     const void* rpcHint)
 {
@@ -76,6 +67,22 @@ bool RpcReceiver::handleEvent(RpcEvent& rpcEvent, IStream& istream,
     istream.align();
 
     return true;
+}
+
+
+void RpcReceiver::cloneRpcEvents()
+{
+    const RpcEventMap::RpcEvents& defaultEvents =
+        getDefaultEventMap().getRpcEvents();
+    RpcEventMap::RpcEvents::const_iterator pos = defaultEvents.begin();
+    const RpcEventMap::RpcEvents::const_iterator end = defaultEvents.end();
+    for (; pos != end; ++pos) {
+        const RpcId rpcId = (*pos).first;
+        const RpcEvent* event = (*pos).second;
+        insertRpcEvent(rpcId, event->clone());
+    }
+
+    rpcEventsCloned_ = true;
 }
 
 } // namespace srpc
