@@ -27,7 +27,7 @@ public:
     virtual ~ReceivingFunctor() {}
 
     /// istream으로 부터 unmarshaling한다
-    virtual void operator()(IStream& istream) = 0;
+    virtual void unmarshal(IStream& istream) = 0;
 
     /// functor를 호출한다
     virtual void call(void* objPtr, const void* rpcHint) = 0;
@@ -48,7 +48,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_0()> : public ReceivingFunctor
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
 
-    virtual void operator()(IStream& /*istream*/) {}
+    virtual void unmarshal(IStream& /*istream*/) {}
 
     virtual void call(void* objPtr, const void* rpcHint) {
         (static_cast<T*>(objPtr)->*memFnPtr_)(rpcHint);
@@ -68,7 +68,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_1(P1)> : public ReceivingFunctor
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
 
-    virtual void operator()(IStream& istream) {
+    virtual void unmarshal(IStream& istream) {
         p1_.read(istream);
     }
 
@@ -92,7 +92,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_2(P1, P2)> : public ReceivingFunctor
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
 
-    virtual void operator()(IStream& istream) {
+    virtual void unmarshal(IStream& istream) {
         p1_.read(istream);
         p2_.read(istream);
     }
@@ -119,7 +119,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_3(P1, P2, P3)> :
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
 
-    virtual void operator()(IStream& istream) {
+    virtual void unmarshal(IStream& istream) {
         p1_.read(istream);
         p2_.read(istream);
         p3_.read(istream);
@@ -148,7 +148,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_4(P1, P2, P3, P4)> :
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
 
-    virtual void operator()(IStream& istream) {
+    virtual void unmarshal(IStream& istream) {
         p1_.read(istream);
         p2_.read(istream);
         p3_.read(istream);
@@ -180,7 +180,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_5(P1, P2, P3, P4, P5)> :
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
 
-    virtual void operator()(IStream& istream) {
+    virtual void unmarshal(IStream& istream) {
         p1_.read(istream);
         p2_.read(istream);
         p3_.read(istream);
@@ -215,7 +215,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
 
-    virtual void operator()(IStream& istream) {
+    virtual void unmarshal(IStream& istream) {
         p1_.read(istream);
         p2_.read(istream);
         p3_.read(istream);
@@ -254,7 +254,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7)> :
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
 
-    virtual void operator()(IStream& istream) {
+    virtual void unmarshal(IStream& istream) {
         p1_.read(istream);
         p2_.read(istream);
         p3_.read(istream);

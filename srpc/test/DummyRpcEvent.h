@@ -5,11 +5,13 @@
 #include <srpc/detail/ReceivingFunctors.h>
 #include <srpc/RpcTypes.h>
 
+/**
+ * @class DummyRpcEvent
+ */
 class DummyRpcEvent : public srpc::RpcEvent
 {
 public:
     DummyRpcEvent() :
-        srpc::RpcEvent(unmarshalFunctor_),
         unmarshalFunctor_(&DummyRpcEvent::handler2),
         p1_(0),
         p2_(0) {}
@@ -23,6 +25,9 @@ public:
 private:
     virtual srpc::RpcEvent* clone() const {
         return 0;
+    }
+    virtual srpc::ReceivingFunctor& getDispatcher() {
+        return unmarshalFunctor_;
     }
 private:
     void handler2(const srpc::RInt32& p1, const srpc::RInt32& p2,

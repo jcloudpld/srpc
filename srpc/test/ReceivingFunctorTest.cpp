@@ -160,7 +160,7 @@ void ReceivingFunctorTest::testP0()
 {
     ReceivingFunctorT<ReceivingFunctorTest, SRPC_TYPELIST_0()>
         functor(&ReceivingFunctorTest::handler0);
-    functor(*istream_);
+    functor.unmarshal(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
         4 * 10, istream_->getTotalSize());
 
@@ -174,7 +174,7 @@ void ReceivingFunctorTest::testP1()
 {
     ReceivingFunctorT<ReceivingFunctorTest, SRPC_TYPELIST_1(RInt32)>
         functor(&ReceivingFunctorTest::handler1);
-    functor(*istream_);
+    functor.unmarshal(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
         (4 * 10) - 4, istream_->getTotalSize());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
@@ -190,7 +190,7 @@ void ReceivingFunctorTest::testP2()
 {
     ReceivingFunctorT<ReceivingFunctorTest, SRPC_TYPELIST_2(RInt32, RInt32)>
         functor(&ReceivingFunctorTest::handler2);
-    functor(*istream_);
+    functor.unmarshal(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
         (4 * 10) - (4 * 2), istream_->getTotalSize());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
@@ -207,7 +207,7 @@ void ReceivingFunctorTest::testP3()
     ReceivingFunctorT<ReceivingFunctorTest,
         SRPC_TYPELIST_3(RInt32, RInt32, RInt32)>
         functor(&ReceivingFunctorTest::handler3);
-    functor(*istream_);
+    functor.unmarshal(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
         (4 * 10) - (4 * 3), istream_->getTotalSize());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p3",
@@ -224,7 +224,7 @@ void ReceivingFunctorTest::testP4()
     ReceivingFunctorT<ReceivingFunctorTest,
         SRPC_TYPELIST_4(RInt32, RInt32, RInt32, RInt32)>
         functor(&ReceivingFunctorTest::handler4);
-    functor(*istream_);
+    functor.unmarshal(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
         (4 * 10) - (4 * 4), istream_->getTotalSize());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p4",
@@ -241,7 +241,7 @@ void ReceivingFunctorTest::testP5()
     ReceivingFunctorT<ReceivingFunctorTest,
         SRPC_TYPELIST_5(RInt32, RInt32, RInt32, RInt32, RInt32)>
         functor(&ReceivingFunctorTest::handler5);
-    functor(*istream_);
+    functor.unmarshal(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
         (4 * 10) - (4 * 5), istream_->getTotalSize());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p5",
@@ -258,7 +258,7 @@ void ReceivingFunctorTest::testP6()
     ReceivingFunctorT<ReceivingFunctorTest,
         SRPC_TYPELIST_6(RInt32, RInt32, RInt32, RInt32, RInt32, RInt32)>
         functor(&ReceivingFunctorTest::handler6);
-    functor(*istream_);
+    functor.unmarshal(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
         (4 * 10) - (4 * 6), istream_->getTotalSize());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p6",
@@ -275,7 +275,7 @@ void ReceivingFunctorTest::testP7()
     ReceivingFunctorT<ReceivingFunctorTest,
         SRPC_TYPELIST_7(RInt32, RInt32, RInt32, RInt32, RInt32, RInt32,
         RInt32)> functor(&ReceivingFunctorTest::handler7);
-    functor(*istream_);
+    functor.unmarshal(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
         (4 * 10) - (4 * 7), istream_->getTotalSize());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p7",
