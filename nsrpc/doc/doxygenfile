@@ -205,3 +205,6 @@ DOT_CLEANUP            = NO
 # Configuration::addtions related to the search engine   
 #---------------------------------------------------------------------------
 SEARCHENGINE           = NO
+
+
+INPUT_ENCODING         = euc-kr
