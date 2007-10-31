@@ -4,8 +4,7 @@
 #include <nsrpc/p2p/detail/PeerTime.h>
 #include <nsrpc/p2p/detail/P2pProtocol.h>
 #include <nsrpc/p2p/P2pConfig.h>
-#include <hash_set>
-#include <deque>
+#include <srpc/ContainerTypes.h>
 
 class ACE_Message_Block;
 
@@ -204,7 +203,7 @@ struct UnknownUnreliableMessage : Message
  * @class ReliableMessages
  */
 template <class MessageType>
-class MessageSet : public stdext::hash_set<MessageType>
+class MessageSet : public srpc::HashSet<MessageType>
 {
 public:
     ~MessageSet() {

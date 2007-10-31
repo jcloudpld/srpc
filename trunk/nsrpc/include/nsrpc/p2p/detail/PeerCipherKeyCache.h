@@ -3,14 +3,7 @@
 
 #include <nsrpc/p2p/PeerId.h>
 #include <nsrpc/detail/PacketCoder.h>
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4702)
-#endif
-#include <hash_map>
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
+#include <srpc/ContainerTypes.h>
 
 namespace nsrpc
 {
@@ -29,7 +22,7 @@ namespace detail
  */
 class PeerCipherKeyCache: public boost::noncopyable
 {
-    typedef stdext::hash_map<PeerId, srpc::String> CipherKeyMap;
+    typedef srpc::HashMap<PeerId, srpc::String> CipherKeyMap;
 public:
     PeerCipherKeyCache(const PacketCoder& packetCoder) :
         packetCoder_(packetCoder) {}

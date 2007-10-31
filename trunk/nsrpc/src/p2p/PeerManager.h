@@ -2,15 +2,8 @@
 #define NSRPC_PEERMANAGER_H
 
 #include "Peer.h"
+#include <srpc/ContainerTypes.h>
 #include <boost/noncopyable.hpp>
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4702)
-#endif
-#include <hash_map>
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
 
 namespace nsrpc
 {
@@ -31,7 +24,7 @@ class PeerMessageHandler;
  */
 class PeerManager : public boost::noncopyable
 {
-    typedef stdext::hash_map<PeerId, PeerPtr> Peers;
+    typedef srpc::HashMap<PeerId, PeerPtr> Peers;
 public:
     PeerManager(PeerNetworkSender& networkSender,
         PeerMessageHandler& messageHandler,
