@@ -43,7 +43,6 @@ public:
         if (! empty()) {
             ++readIndex_;
             if (empty()) {
-                // TODO: 매번 버퍼를 비우므로 비효율적이다
                 reset();
             }
         }
@@ -65,7 +64,6 @@ public:
         readIndex_ += bufferSize;
         
         if (empty()) {
-            // TODO: 매번 버퍼를 비우므로 비효율적이다
             reset();
         }
     }

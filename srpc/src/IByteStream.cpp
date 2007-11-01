@@ -26,20 +26,14 @@ void IByteStream::read(String& value, size_t maxLength, int sizeBitCount)
 
     const UInt32 size = readStringSize(sizeBitCount);
 
-#if 1
-    value.reserve(size);
-    for (UInt16 i = 0; i < size; ++i) {
-        value += static_cast<String::value_type>(readByte());
-    }
-#else
-    // TODO: 표준에 부합되는가?
     value.resize(size);
     readBytes(&(value[0]), size);
-#endif
+
     if (value.size() > maxLength) {
         value.resize(maxLength);
     }
 }
+
 
 void IByteStream::read(WString& value, size_t maxLength, int sizeBitCount)
 {
@@ -50,16 +44,8 @@ void IByteStream::read(WString& value, size_t maxLength, int sizeBitCount)
     const UInt32 size = readStringSize(sizeBitCount);
 
     String utf8;
-#if 1
-    utf8.reserve(size);
-    for (UInt16 i = 0; i < size; ++i) {
-        utf8 += static_cast<String::value_type>(readByte());
-    }
-#else
-    // TODO: 표준에 부합되는가?
     utf8.resize(size);
     readBytes(&(utf8[0]), size);
-#endif
 
     value = fromUtf8(utf8);
 
