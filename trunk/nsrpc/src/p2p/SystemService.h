@@ -25,8 +25,7 @@ struct RPeerInfo
     RAddresses addresses_;
 
     RPeerInfo() :
-        peerId_(invalidPeerId),
-        addresses_(RAddresses()) {}
+        peerId_(invalidPeerId) {}
 
     RPeerInfo(PeerId peerId, const RAddresses& addresses) :
         peerId_(peerId),

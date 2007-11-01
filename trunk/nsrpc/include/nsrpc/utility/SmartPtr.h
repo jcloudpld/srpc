@@ -65,8 +65,6 @@ public:
 
 /**
  * 멀티쓰레드 기반의 SmartPtr traits.
- * @warning 아직 구현되지 않았음
- * @todo 윈도우, 리눅스 중심으로 구현할 것(boost 라이브러리 참조하면 될 듯)
  */
 class NSRPC_API MTSmartPtrTraits
 {
