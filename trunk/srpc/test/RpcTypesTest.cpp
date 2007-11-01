@@ -13,7 +13,6 @@ using namespace srpc;
 * Rpc Types test
 * - I(Bit|Byte)StreamTest와 어느 정도 유사하지만 RpcType 테스트를 한 눈에
 *   볼 수 있도록 의도적으로 중복 시킴
-* @todo 64비트 정수(실수) 추가
 */
 class RpcTypesTest : public BitStreamTexture
 {
