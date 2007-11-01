@@ -42,15 +42,17 @@ IMPLEMENT_SRPC_P2P_METHOD_5(RpcRelayServiceImpl, rpcRelayed,
     assert(hint.isValid());
 
     ACE_Message_Block* mblock =
-        serviceHandler_.acquire(messageBlock.bufferSize_);
-    const void* vbuffer = messageBlock.buffer_.get();
-    mblock->copy(static_cast<const char*>(vbuffer), messageBlock.bufferSize_);
+        serviceHandler_.acquire(messageBlock.getBufferLength());
+    const void* vbuffer = messageBlock.getBuffer();
+    mblock->copy(static_cast<const char*>(vbuffer),
+        messageBlock.getBufferLength());
     serviceHandler_.relayed(peerId, hint.getAddress(), mblock, packetType,
         sequenceNumber, sentTime);
 
     if (LogManager::isEnabledMask(LM_DEBUG)) {
         const ACE_INET_Addr fromAddress(hint.getAddress());
-        NSRPC_LOG_DEBUG2("rpcRelayed(%u bytes)", messageBlock.bufferSize_);
+        NSRPC_LOG_DEBUG2("rpcRelayed(%u bytes)",
+            messageBlock.getBufferLength());
     }
 }
 

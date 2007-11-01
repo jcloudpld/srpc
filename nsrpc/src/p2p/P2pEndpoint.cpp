@@ -76,8 +76,6 @@ void P2pEndpoint::close()
 bool P2pEndpoint::send(const ACE_INET_Addr& peerAddr,
     const ACE_Message_Block& mblock)
 {
-    // TODO: (ACE_OS::last_error() == EWOULDBLOCK)일 때의 처리
-
     const ssize_t sentSize =
         udp_->send(mblock.rd_ptr(), mblock.length(), peerAddr);
     if (sentSize != static_cast<ssize_t>(mblock.length())) {

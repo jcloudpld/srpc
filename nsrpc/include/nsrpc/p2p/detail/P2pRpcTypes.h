@@ -2,6 +2,7 @@
 #define NSRPC_P2PRPCTYPES_H
 
 #include "P2pAddress.h"
+#include "../P2pConfig.h"
 #include <srpc/RpcContainers.h>
 #include <boost/scoped_array.hpp>
 
@@ -136,67 +137,66 @@ inline PeerAddresses toPeerAddresses(const RAddresses& addresses)
     return peerAddresses;
 }
 
+
 /**
  * @struct RMessageBuffer
  * RpcType for raw memory buffer
- * @todo TODO: 좀더 효율적으로 할 방법이 없을까?
  */
 struct RMessageBuffer
 {
-    typedef boost::scoped_array<srpc::UInt8> BufferType;
+    typedef srpc::UInt16 LengthType;
+    typedef srpc::UInt8 DataType;
 
-    BufferType buffer_;
-    srpc::UInt16 bufferSize_;
-    srpc::UInt16 allocSize_;
+    const static LengthType maxBufferLength = P2pConfig::defaultMtu * 2;
 
-    RMessageBuffer() :
-        bufferSize_(0),
-        allocSize_(0) {}
-
-    RMessageBuffer(const RMessageBuffer& rhs) :
-        allocSize_(0) {
-        set(rhs.buffer_.get(), rhs.bufferSize_);
+    explicit RMessageBuffer(const void* buffer = 0, size_t length = 0) {
+        assign(buffer, static_cast<LengthType>(length));
     }
 
-    RMessageBuffer(const void* buffer, srpc::UInt16 length) :
-        allocSize_(0) {
-        set(buffer, length);
+    RMessageBuffer(const RMessageBuffer& rhs) {
+        assign(rhs);
     }
 
-    void set(const void* buffer, srpc::UInt16 length) {
-        bufferSize_ = length;
-        if (bufferSize_ > 0) {
-            allocate(bufferSize_);
-            memcpy(buffer_.get(), buffer, bufferSize_);
-        }
+    RMessageBuffer& operator=(const RMessageBuffer& rhs) {
+        assign(rhs);
+        return *this;
+    }
+
+    const void* getBuffer() const {
+        return buffer_;
+    }
+
+    LengthType getBufferLength() const {
+        return bufferLength_;
     }
 
     void write(srpc::OStream& ostream) {
-        ostream.write(bufferSize_);
-        if (bufferSize_ > 0) {
-            assert(buffer_.get() != 0);
-            ostream.write(buffer_.get(), bufferSize_);
-        }
+        ostream.write(bufferLength_);
+        ostream.write(buffer_, bufferLength_);
     }
 
     void read(srpc::IStream& istream) {
-        istream.read(bufferSize_);
-        if (bufferSize_ > 0) {
-            allocate(bufferSize_);
-            istream.read(buffer_.get(), bufferSize_);
-        }
+        istream.read(bufferLength_);
+        assert(bufferLength_ <= maxBufferLength);
+        istream.read(buffer_, bufferLength_);
     }
 private:
-    void allocate(srpc::UInt16 bufferSize) {
-        if ((bufferSize == 0) || (allocSize_ >= bufferSize)) {
-            assert(buffer_.get() != 0);
-            return;
-        }
-
-        BufferType newBuffer(new srpc::UInt8[bufferSize]);
-        buffer_.swap(newBuffer);
-        allocSize_ = bufferSize;
+    void copyBuffer(const void* buffer, srpc::UInt16 bufferLen) {
+        memcpy(buffer_, buffer, bufferLen);
     }
+
+    void assign(const RMessageBuffer& message) {
+        assign(message.buffer_, message.bufferLength_);
+    }
+
+    void assign(const void* buffer, LengthType bufferLen) {
+        assert(bufferLen <= maxBufferLength);
+        bufferLength_ = bufferLen;
+        copyBuffer(buffer, bufferLen);
+    }
+private:
+    DataType buffer_[maxBufferLength];
+    LengthType bufferLength_;
 };
 
 /** @} */ // addtogroup p2p

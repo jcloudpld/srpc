@@ -142,6 +142,16 @@ public:
         }
     }
 
+    template <typename Functor>
+    void forEachActiveResources(Functor func) {
+        ACE_GUARD(Mutex, monitor, lock_);
+
+        // func를 호출하는 동안 activeResources_가 변경될 수 있으므로 안전하게
+        // 복사한다
+        ActiveResources activeResources = activeResources_;
+        std::for_each(activeResources.begin(), activeResources.end(), func);
+    }
+
     /// 사용 중인 리소스의 수를 얻는다.
     size_t getActiveResourceCount() const {
         ACE_GUARD_RETURN(Mutex, monitor, lock_, 0);
@@ -158,14 +168,6 @@ public:
 
     size_t getPoolSize() const {
         return poolSize_;
-    }
-protected:
-    ActiveResources& getActiveResources() {
-        return activeResources_;
-    }
-
-    Mutex& getLock() {
-        return lock_;
     }
 private:
     void prepareResources() {

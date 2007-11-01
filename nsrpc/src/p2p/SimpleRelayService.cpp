@@ -196,7 +196,7 @@ IMPLEMENT_SRPC_P2P_METHOD_6(SimpleRelayService, rpcRelay,
         peerIdPair.from_, peerIdPair.to_,
         fromIp, fromAddress.get_port_number(),
         toIp, peerAddress.get_port_number(),
-        messageBlock.bufferSize_);
+        messageBlock.getBufferLength());
 
     const P2pPeerHint toHint(peerIdPair.to_, &peerAddress);
     rpcRelayed(peerIdPair.from_, messageBlock, packetType, sequenceNumber,
