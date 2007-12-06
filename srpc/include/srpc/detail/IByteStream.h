@@ -86,7 +86,7 @@ private:
         value = toRpcByteOrder(value);
     }
     UInt32 readStringSize(size_t sizeBitCount);
-    void readBytes(void* value, size_t byteCount);
+    void readBytes(void* buffer, size_t readSize);
     UInt8 readByte();
 private:
     StreamBuffer& streamBuffer_;

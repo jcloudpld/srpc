@@ -67,13 +67,11 @@ UInt32 IByteStream::readStringSize(size_t sizeBitCount)
 }
 
 
-void IByteStream::readBytes(void* value, size_t byteCount)
+void IByteStream::readBytes(void* buffer, size_t readSize)
 {
-    assert((0 <= byteCount) && (byteCount <= Bits<UInt32>::size));
-
-    if (byteCount > 0) {
-        streamBuffer_.copyTo(static_cast<StreamBuffer::Item*>(value),
-            byteCount);
+    if (readSize > 0) {
+        streamBuffer_.copyTo(static_cast<StreamBuffer::Item*>(buffer),
+            readSize);
     }
 }
 
