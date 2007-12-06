@@ -38,6 +38,7 @@ class RpcTypesTest : public BitStreamTexture
     CPPUNIT_TEST(testEnum);
     CPPUNIT_TEST(testRUserDefinedString);
     CPPUNIT_TEST(testRMap);
+    CPPUNIT_TEST(testRStringMaxLength);
     CPPUNIT_TEST_SUITE_END();
 private:
     void testRInt8();
@@ -61,6 +62,7 @@ private:
     void testEnum();
     void testRUserDefinedString();
     void testRMap();
+    void testRStringMaxLength();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RpcTypesTest );
@@ -370,4 +372,19 @@ void RpcTypesTest::testRMap()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("equal",
         true,
         std::equal(expected.begin(), expected.end(), actual.begin()));
+}
+
+
+void RpcTypesTest::testRStringMaxLength()
+{
+    const size_t maxLength = 9;
+    typedef RpcStringType<String, maxLength> RLimitedString;
+
+    RLimitedString expected = "1234567890";
+    expected.write(*ostream_);
+
+    RLimitedString actual;
+    actual.read(*istream_);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("RLimitedString",
+        expected.substr(0, maxLength), actual.ref());
 }
