@@ -18,7 +18,7 @@ using namespace nsrpc;
 class TestRpcCommand : public RpcCommand
 {
 public:
-    TestRpcCommand(RpcId rpcId, UInt32 value) :
+    TestRpcCommand(const RRpcId& rpcId, UInt32 value) :
         RpcCommand(rpcId),
         marshaler_(value) {}
 private:
