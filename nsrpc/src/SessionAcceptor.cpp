@@ -22,7 +22,7 @@ bool SessionAcceptor::open(const ACE_INET_Addr& listenAddr,
     const int pass_addresses = 1;
     const int reuse_addr = 1;
     const int validate_new_connection = 1;
-    const int reissue_accept = 1;
+    const int reissue_accept = 0;
     if (Parent::open(listenAddr, 0, pass_addresses, backlog, reuse_addr,
         proactor, validate_new_connection, reissue_accept, 0) != 0) {
         NSRPC_LOG_ERROR(ACE_TEXT("SessionAcceptor::start() - ")

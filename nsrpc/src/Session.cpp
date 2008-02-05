@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <nsrpc/Session.h>
 #include <nsrpc/SessionConfig.h>
+#include <nsrpc/detail/Asynch_RW.h>
 #include <nsrpc/detail/SessionDestroyer.h>
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/detail/CsProtocol.h>
@@ -97,8 +98,8 @@ void Session::disconnect()
         stopDisconnectTimer();
 
         connected = isConnected();
-        stream_.cancel();
-        stream_.close();
+        stream_->cancel();
+        stream_->close();
     }
 
     if (connected) {
@@ -118,10 +119,17 @@ void Session::disconnectGracefully()
 
     if (! disconnectReserved_) {
         disconnectReserved_ = true;
-        stream_.shutdown();
+        stream_->shutdown();
         startDisconnectTimer();
     }
 }
+
+
+bool Session::isConnected() const
+{
+    return isValidHandle(stream_->getHandle());
+}
+
 
 
 bool Session::readMessage(const NSRPC_Asynch_Read_Stream::Result& result)
@@ -192,7 +200,7 @@ bool Session::readMessageBody(size_t neededBytes)
 
 bool Session::read(size_t neededBytes)
 {
-    if (stream_.read(*recvBlock_, neededBytes) == -1) {
+    if (stream_->read(*recvBlock_, neededBytes) != 0) {
         NSRPC_LOG_DEBUG2(ACE_TEXT("Session::read() - ")
             ACE_TEXT("Asynch_RW_Stream::read(%d) FAILED(%m)."),
             neededBytes);
@@ -206,7 +214,7 @@ bool Session::read(size_t neededBytes)
 
 bool Session::write(ACE_Message_Block& mblock)
 {
-    if (stream_.write(mblock, mblock.length()) == -1) {
+    if (stream_->write(mblock, mblock.length()) != 0) {
         NSRPC_LOG_DEBUG2(ACE_TEXT("Session::write() - ")
             ACE_TEXT("Asynch_RW_Stream::write(%d) FAILED(%m)."),
             mblock.length());
@@ -220,7 +228,7 @@ bool Session::write(ACE_Message_Block& mblock)
 
 void Session::reset()
 {
-    stream_.reset();
+    stream_.reset(new Asynch_RW_Stream);
     stats_.reset();
     pendingReadCount_ = pendingWriteCount_ = 0;
     disconnectReserved_ = false;
@@ -257,15 +265,14 @@ void Session::open(ACE_HANDLE new_handle, ACE_Message_Block& /*message_block*/)
         assert(isSafeToDelete());
         reset();
 
-        if (stream_.open(*this, new_handle, 0, proactor_, true)) {
+        if (stream_->open(*this, new_handle, 0, proactor_, true)) {
             if (readMessageHeader()) {
                 onConnected();
                 return; // success
             }
         }
 
-        NSRPC_LOG_DEBUG(ACE_TEXT("Session::open() - ")
-            ACE_TEXT("FAILED(%m)."));
+        NSRPC_LOG_DEBUG(ACE_TEXT("Session::open() - FAILED(%m)."));
     }
 
     disconnect();
@@ -287,7 +294,7 @@ void Session::handle_read_stream(
         //    NSRPC_LOG_DEBUG(ACE_TEXT("The client close the socket."));
         //}
     }
-    //else if (! stream_.cancelled()) {
+    //else if (! stream_->cancelled()) {
     //    NSRPC_LOG_DEBUG(ACE_TEXT("Session::handle_read_stream() - ")
     //        ACE_TEXT("FAILED(%m)."));
     //}
@@ -310,7 +317,7 @@ void Session::handle_write_stream(
         return; // success
     }
 
-    if (! stream_.cancelled()) {
+    if (! stream_->cancelled()) {
         NSRPC_LOG_DEBUG(ACE_TEXT("Session::handle_write_stream() - ")
             ACE_TEXT("FAILED(%m)."));
     }
