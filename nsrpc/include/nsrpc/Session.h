@@ -15,12 +15,12 @@
 #else
 #  include <ace/Asynch_IO.h>
 #endif // USE_TPROACTOR
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
 #include <ace/INET_Addr.h>
 #include <ace/Atomic_Op.h>
 #include <ace/Thread_Mutex.h>
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
 #include <boost/scoped_ptr.hpp>
 
 namespace nsrpc
