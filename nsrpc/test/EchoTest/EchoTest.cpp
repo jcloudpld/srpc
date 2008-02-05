@@ -12,6 +12,7 @@
 #include <ace/Profile_Timer.h>
 #include <algorithm>
 #include <iostream>
+#include <conio.h>
 
 using namespace nsrpc;
 
@@ -25,7 +26,7 @@ void run(const Config& config)
         return;
     }
 
-    size_t poolSize = 100;
+    size_t poolSize = 5;
     if (config.getConnections() > poolSize) {
         poolSize = config.getConnections();
     }
@@ -93,6 +94,9 @@ void run(const Config& config)
     }
     else if (config.isServer()) { // server only
         for (;;) {
+            if (_kbhit()) {
+                break;
+            }
             nsrpc::pause(1000);
         }
     }
@@ -108,6 +112,9 @@ void run(const Config& config)
     serverSessionManager->wait();
 
     proactorTask.stop();
+
+    serverSessionManager.reset();
+    clientSessionManager.reset();
 }
 
 
