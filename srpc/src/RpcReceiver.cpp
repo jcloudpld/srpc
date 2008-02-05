@@ -59,6 +59,8 @@ void RpcReceiver::resetRpcNetwork()
 bool RpcReceiver::handleEvent(RpcEvent& rpcEvent, IStream& istream,
     const void* rpcHint)
 {
+    onReceiving(rpcEvent.getRpcId());
+
     // CAUTION: 다중상속으로 인해 잘못된 this 포인터를 이용하여 멤버 함수가
     // 호출되는 것을 방지하기 위해 우회(indirection)함
     // - 참고: http://www.codeproject.com/cpp/FastDelegate.asp

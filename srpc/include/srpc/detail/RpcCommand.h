@@ -24,7 +24,7 @@ class ForwardingFunctor;
 class SRPC_API RpcCommand : public boost::noncopyable
 {
 public:
-    RpcCommand(RpcId rpcId)  :
+    RpcCommand(const RRpcId& rpcId)  :
         rpcId_(rpcId) {}
 
     virtual ~RpcCommand() {}
@@ -35,7 +35,7 @@ public:
      */
     void marshal(OStream& ostream);
 
-    RpcId getRpcId() const {
+    const RRpcId& getRpcId() const {
         return rpcId_;
     }
 private:

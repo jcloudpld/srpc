@@ -131,6 +131,7 @@ public:
         { \
         public: \
             SRPC_RPC_EVENT(RpcClass, method)() : \
+                srpc::RpcEvent(RpcClass::SRPC_GET_RPCID(method)()), \
                 unmarshalFunctor_(&RpcClass::method##suffix) {} \
         private: \
             virtual srpc::RpcEvent* clone() const { \

@@ -31,8 +31,12 @@ public:
         RInt32, p4, RInt32, p5, RInt32, p6, RInt32, p7);
     DECLARE_SRPC_METHOD_2(rpcBits, RInt15, p1, RInt31, p2);
     DECLARE_SRPC_METHOD_0(rpcFailed);
+private:
+    virtual void onReceiving(const srpc::RRpcId& rpcId) {
+        lastRpcId_ = rpcId;
+    }
 public:
-    const srpc::RpcId getRpcId() const {
+    const srpc::RRpcId& getRpcId() const {
         return rpcId_;
     }
     srpc::Int32 getP1() const {
@@ -68,8 +72,12 @@ public:
     int getHint() const {
         return rpcHint_;
     }
+
+    const srpc::RRpcId& getLastRpcId() const {
+        return lastRpcId_;
+    }
 private:
-    srpc::RpcId rpcId_;
+    srpc::RRpcId rpcId_;
     srpc::Int32 p1_;
     srpc::Int32 p2_;
     srpc::Int32 p3_;
@@ -81,6 +89,8 @@ private:
     srpc::Int32 p9_;
     srpc::Int32 p10_;
     int rpcHint_;
+
+    srpc::RRpcId lastRpcId_;
 };
 
 

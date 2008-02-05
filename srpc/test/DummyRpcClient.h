@@ -15,6 +15,9 @@ class DummyRpcClient : public DummyRpc,
 public:
     DummyRpcClient(srpc::RpcNetwork* rpcNetwork = 0);
 
+    const srpc::RRpcId getLastRpcId() const {
+        return lastRpcId_;
+    }
 private: // encapsulation
     DECLARE_SRPC_METHOD_0(rpc0);
     DECLARE_SRPC_METHOD_1(rpc1, RInt32, p1);
@@ -30,6 +33,10 @@ private: // encapsulation
         RInt32, p4, RInt32, p5, RInt32, p6, RInt32, p7);
     DECLARE_SRPC_METHOD_2(rpcBits, RInt15, p1, RInt31, p2);
     DECLARE_SRPC_METHOD_0(rpcFailed);
+private:
+    virtual void onForwarding(const srpc::RRpcId& rpcId);
+private:
+    srpc::RRpcId lastRpcId_;
 };
 
 #endif // SRPC_DUMMYRPCCLIENT_H

@@ -12,6 +12,7 @@ class DummyRpcEvent : public srpc::RpcEvent
 {
 public:
     DummyRpcEvent() :
+        srpc::RpcEvent(srpc::RRpcId()),
         unmarshalFunctor_(&DummyRpcEvent::handler2),
         p1_(0),
         p2_(0) {}
