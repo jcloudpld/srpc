@@ -2,7 +2,7 @@
 #define NSRPC_SESSION_H
 
 #include "config/config.h"
-#include "detail/Asynch_RW.h"
+#include "config/Proactor.h"
 #include "detail/MessageBlockProvider.h"
 #include "detail/CsProtocol.h"
 #include <srpc/StringTypes.h>
@@ -14,6 +14,7 @@
 namespace nsrpc
 {
 
+class Asynch_RW_Stream;
 class SessionDestroyer;
 class SynchMessageBlockManager;
 class PacketCoder;
@@ -78,9 +79,7 @@ public:
     void disconnectGracefully();
 
     /// 접속 중인가?
-    bool isConnected() const {
-        return isValidHandle(stream_.getHandle());
-    }
+    bool isConnected() const;
 
     /// 통계 정보를 얻는다.
     const Stats& getStats() const {
@@ -154,7 +153,7 @@ private:
 
     ACE_Message_Block* recvBlock_;
 
-    Asynch_RW_Stream stream_;
+    boost::scoped_ptr<Asynch_RW_Stream> stream_;
 
     ACE_INET_Addr remoteAddress_;
     ACE_INET_Addr localAddress_;

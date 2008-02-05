@@ -2,6 +2,7 @@
 #define NSRPC_ASYNCH_RW_H
 
 #include "../utility/AceUtil.h"
+#include "../utility/Logger.h"
 #include "../config/Proactor.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -36,7 +37,8 @@ public:
         reset();
     }
 
-    virtual ~Asynch_RW_T() {
+    ~Asynch_RW_T() {
+        cancel();
         close();
     }
 
@@ -122,7 +124,7 @@ public:
 protected:
     ACE_HANDLE handle_;
     bool hasOwnership_; 
-    bool cancelled_;
+    volatile bool cancelled_;
 
     const void* completionKey_;
     READER reader_;
