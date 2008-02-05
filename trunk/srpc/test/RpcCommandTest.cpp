@@ -28,7 +28,7 @@ void RpcCommandTest::testMarshal()
     RRpcId id;
     id.read(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
-        rpcCommand.getRpcId(), id.get());
+        rpcCommand.getRpcId().get(), id.get());
     Int32 p1;
     istream_->read(p1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",

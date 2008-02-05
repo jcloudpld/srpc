@@ -18,9 +18,10 @@
 /// @internal
 #define DECLARE_SRPC_RPCID_GENERATOR(rpcInterface, method, paramCount) \
     public: \
-        static srpc::RpcId SRPC_GET_RPCID(method)() { \
+        static const srpc::RRpcId& SRPC_GET_RPCID(method)() { \
             static srpc::RRpcId rpcId( \
-                SRPC_STRINGIZE(rpcInterface##_##method##_##paramCount)); \
+                SRPC_STRINGIZE(rpcInterface##_##method##_##paramCount), \
+                SRPC_STRINGIZE(method)); \
             return rpcId; \
         }
 

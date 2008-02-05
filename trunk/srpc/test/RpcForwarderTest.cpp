@@ -27,6 +27,7 @@ class RpcForwarderTest  : public CppUnit::TestFixture
     CPPUNIT_TEST(testParm7);
     CPPUNIT_TEST(testParmBits);
     CPPUNIT_TEST(testMarshalingError);
+    CPPUNIT_TEST(testOnForwarding);
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
@@ -43,6 +44,7 @@ private:
     void testParm7();
     void testParmBits();
     void testMarshalingError();
+    void testOnForwarding();
 private:
     MockRpcNetwork* rpcNetwork_;
     DummyRpc* request_;
@@ -284,4 +286,22 @@ void RpcForwarderTest::testMarshalingError()
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("error",
         true, rpcNetwork_->sendFailed());
+}
+
+
+void RpcForwarderTest::testOnForwarding()
+{
+    request_->rpc6(1, 2, 3, 4, 5, 6);
+
+    DummyRpcClient* client = static_cast<DummyRpcClient*>(request_);
+
+    RRpcId id;
+    id.read(*istream_);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("id",
+        id.get(),
+        client->getLastRpcId().get());
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("RPC method name",
+        std::string("rpc6"),
+        std::string(client->getLastRpcId().getMethodName()));
 }

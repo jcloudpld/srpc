@@ -35,6 +35,8 @@ public:
 protected:
     virtual const RpcEventMap& getDefaultEventMap() const = 0;
 private:
+    virtual void onReceiving(const RRpcId& rpcId) { rpcId; }
+
     virtual void dispatch(RpcEvent& rpcEvent, IStream& istream,
         const void* rpcHint) = 0;
 private:

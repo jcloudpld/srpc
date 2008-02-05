@@ -26,3 +26,7 @@ DEFINE_SRPC_METHOD_7(DummyRpcClient, rpc7, RInt32, p1, RInt32, p2,
 DEFINE_SRPC_METHOD_2(DummyRpcClient, rpcBits, RInt15, p1, RInt31, p2);
 DEFINE_SRPC_METHOD_0(DummyRpcClient, rpcFailed);
 
+void DummyRpcClient::onForwarding(const srpc::RRpcId& rpcId)
+{
+    lastRpcId_ = rpcId;
+}

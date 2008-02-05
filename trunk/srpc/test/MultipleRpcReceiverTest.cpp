@@ -60,7 +60,7 @@ void MultipleRpcReceiverTest::testDummyRpcParm1()
     ostream_->align();
     rpcNetwork_->onReceive(*istream_);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("rpc id",
-        rpcId.get(), response_->getRpcId());
+        rpcId.get(), response_->getRpcId().get());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
         -1, response_->getP1());
 }

@@ -46,6 +46,8 @@ public:
         rpcNetwork_ = 0;
     }
 private:
+    virtual void onForwarding(const RRpcId& rpcId) { rpcId; }
+private:
     RpcNetwork* rpcNetwork_;
 };
 

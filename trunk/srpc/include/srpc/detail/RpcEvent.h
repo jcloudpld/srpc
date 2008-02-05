@@ -2,6 +2,7 @@
 #define SRPC_RPCEVENT_H
 
 #include "ReceivingFunctors.h"
+#include "RpcId.h"
 #include <boost/noncopyable.hpp>
 
 namespace srpc {
@@ -20,6 +21,9 @@ class IStream;
 class RpcEvent : public boost::noncopyable
 {
 public:
+    RpcEvent(const RRpcId& rpcId) :
+        rpcId_(rpcId) {}
+
     virtual ~RpcEvent() {}
 
     void dispatch(void* rpcClassThisPtr, IStream& istream,
@@ -28,10 +32,16 @@ public:
         dispatcher.unmarshal(istream);
         dispatcher.call(rpcClassThisPtr, rpcHint);
     }
+
+    const RRpcId& getRpcId() const {
+        return rpcId_;
+    }
 public:
     virtual RpcEvent* clone() const = 0;
 
     virtual ReceivingFunctor& getDispatcher() = 0;
+private:
+    RRpcId rpcId_;
 };
 
 /** @} */ // addtogroup RpcReceiving
