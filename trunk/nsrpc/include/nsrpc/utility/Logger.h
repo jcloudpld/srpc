@@ -18,38 +18,38 @@
 
 #if defined (ACE_NLOGGING)
     // = Debug
-#   define NSRPC_LOG_DEBUG(A) do {}
-#   define NSRPC_LOG_DEBUG2(A,B) do {}
-#   define NSRPC_LOG_DEBUG3(A,B,C) do {}
-#   define NSRPC_LOG_DEBUG4(A,B,C,D) do {}
-#   define NSRPC_LOG_DEBUG5(A,B,C,D,E) do {}
-#   define NSRPC_LOG_DEBUG6(A,B,C,D,E,F) do {}
-#   define NSRPC_LOG_DEBUG7(A,B,C,D,E,F,G) do {}
-#   define NSRPC_LOG_DEBUG8(A,B,C,D,E,F,G,H) do {}
-#   define NSRPC_LOG_DEBUG9(A,B,C,D,E,F,G,H,I) do {}
+#   define NSRPC_LOG_DEBUG(A) { A; }
+#   define NSRPC_LOG_DEBUG2(A,B) { A, B; }
+#   define NSRPC_LOG_DEBUG3(A,B,C) { A, B, C; }
+#   define NSRPC_LOG_DEBUG4(A,B,C,D) { A, B, C, D; }
+#   define NSRPC_LOG_DEBUG5(A,B,C,D,E) { A, B, C, D, E; }
+#   define NSRPC_LOG_DEBUG6(A,B,C,D,E,F) { A, B, C, D, E, F; }
+#   define NSRPC_LOG_DEBUG7(A,B,C,D,E,F,G) { A, B, C, D, E, F, G; }
+#   define NSRPC_LOG_DEBUG8(A,B,C,D,E,F,G,H) { A, B, C, D, E, F, G, H; }
+#   define NSRPC_LOG_DEBUG9(A,B,C,D,E,F,G,H,I) { A, B, C, D, E, F, G, H, I; }
     // = Info
-#   define NSRPC_LOG_INFO(A) do {}
-#   define NSRPC_LOG_INFO2(A,B) do {}
-#   define NSRPC_LOG_INFO3(A,B,C) do {}
-#   define NSRPC_LOG_INFO4(A,B,C,D) do {}
-#   define NSRPC_LOG_INFO5(A,B,C,D,E) do {}
-#   define NSRPC_LOG_INFO6(A,B,C,D,E,F) do {}
-#   define NSRPC_LOG_INFO6(A,B,C,D,E,F,G) do {}
+#   define NSRPC_LOG_INFO(A) { A; }
+#   define NSRPC_LOG_INFO2(A,B) { A, B; }
+#   define NSRPC_LOG_INFO3(A,B,C) { A, B, C; }
+#   define NSRPC_LOG_INFO4(A,B,C,D) { A, B, C, D; }
+#   define NSRPC_LOG_INFO5(A,B,C,D,E) { A, B, C, D, E; }
+#   define NSRPC_LOG_INFO6(A,B,C,D,E,F) { A, B, C, D, E, F; }
+#   define NSRPC_LOG_INFO7(A,B,C,D,E,F,G) { A, B, C, D, E, F, G; }
     // = Warning
-#   define NSRPC_LOG_WARNING(A) do {}
-#   define NSRPC_LOG_WARNING2(A,B) do {}
-#   define NSRPC_LOG_WARNING3(A,B,C) do {}
-#   define NSRPC_LOG_WARNING4(A,B,C,D) do {}
-#   define NSRPC_LOG_WARNING5(A,B,C,D,E) do {}
+#   define NSRPC_LOG_WARNING(A) { A; }
+#   define NSRPC_LOG_WARNING2(A,B) { A, B; }
+#   define NSRPC_LOG_WARNING3(A,B,C) { A, B, C; }
+#   define NSRPC_LOG_WARNING4(A,B,C,D) { A, B, C, D; }
+#   define NSRPC_LOG_WARNING5(A,B,C,D,E) { A, B, C, D, E; }
     // = Error
-#   define NSRPC_LOG_ERROR(A) do {}
-#   define NSRPC_LOG_ERROR2(A,B) do {}
-#   define NSRPC_LOG_ERROR3(A,B,C) do {}
-#   define NSRPC_LOG_ERROR4(A,B,C,D) do {}
-#   define NSRPC_LOG_ERROR5(A,B,C,D,E) do {}
-#   define NSRPC_LOG_ERROR6(A,B,C,D,E,F) do {}
-#   define NSRPC_LOG_ERROR7(A,B,C,D,E,F,G) do {}
-#   define NSRPC_LOG_ERROR8(A,B,C,D,E,F,G,H) do {}
+#   define NSRPC_LOG_ERROR(A) { A; }
+#   define NSRPC_LOG_ERROR2(A,B) { A, B; }
+#   define NSRPC_LOG_ERROR3(A,B,C) { A, B, C; }
+#   define NSRPC_LOG_ERROR4(A,B,C,D) { A, B, C, D; }
+#   define NSRPC_LOG_ERROR5(A,B,C,D,E) { A, B, C, D, E; }
+#   define NSRPC_LOG_ERROR6(A,B,C,D,E,F) { A, B, C, D, E, F; }
+#   define NSRPC_LOG_ERROR7(A,B,C,D,E,F,G) { A, B, C, D, E, F, G; }
+#   define NSRPC_LOG_ERROR8(A,B,C,D,E,F,G,H) { A, B, C, D, E, F, G, H; }
 
 #else // defined (ACE_NLOGGING)
     // = Debug
