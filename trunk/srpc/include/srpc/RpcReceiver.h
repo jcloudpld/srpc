@@ -50,12 +50,11 @@ private:
     bool handleEvent(RpcEvent& rpcEvent, IStream& istream,
         const void* rpcHint);
     bool shouldCloneRpcEvents() const {
-        return ! rpcEventsCloned_;
+        return eventMap_.isEmpty();
     }
 private:
     RpcNetwork* rpcNetwork_;
     RpcEventMap eventMap_;
-    bool rpcEventsCloned_;
 };
 
 } // namespace srpc

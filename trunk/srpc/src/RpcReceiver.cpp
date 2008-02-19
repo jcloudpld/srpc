@@ -7,8 +7,7 @@ namespace srpc {
 
 RpcReceiver::RpcReceiver(RpcNetwork* rpcNetwork) :
     rpcNetwork_(0),
-    eventMap_(true),
-    rpcEventsCloned_(false)
+    eventMap_(true)
 {
     if (rpcNetwork != 0) {
         setRpcNetwork(rpcNetwork);
@@ -83,8 +82,6 @@ void RpcReceiver::cloneRpcEvents()
         const RpcEvent* event = (*pos).second;
         insertRpcEvent(rpcId, event->clone());
     }
-
-    rpcEventsCloned_ = true;
 }
 
 } // namespace srpc
