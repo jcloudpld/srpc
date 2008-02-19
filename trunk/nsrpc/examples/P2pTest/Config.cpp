@@ -58,6 +58,10 @@ bool Config::parseArgs(int argc, char* argv[])
             }
             hostAddresses_.push_back(address);
         }
+        else if (arg.compare(0, 3, "-r=") == 0) {
+            packetLossRate_ =
+                static_cast<float>(atof(arg.substr(3).c_str()));
+        }
         else {
             std::cerr << "Unknown option '" << arg << "', ignoring it.\n";
         }
@@ -87,6 +91,7 @@ void Config::printUsage()
         "  -ra=<address:port> : relay server address\n" <<
         "  -ha=<address:port> : P2P host address(connect to host)\n" <<
         "  -h P2P host\n" <<
+        "  -r=<packet loss rate> : 0.0 ~ 1.0\n"
         "  -v verbose (default: off)\n" <<
         " ex) P2P host:\n" <<
         "   P2pTest -p=1 -l=10000 -ra=111.111.111.111:111 -h\n" <<

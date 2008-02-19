@@ -70,12 +70,7 @@ struct Message
     ACE_INET_Addr peerAddress_;
     PeerTime sentTime_;
 
-    Message() :
-        sequenceNumber_(invalidSequenceNumber),
-        mblock_(0),
-        sentTime_(0) {}
-
-    explicit Message(SequenceNumber sequenceNumber,
+    explicit Message(SequenceNumber sequenceNumber = invalidSequenceNumber,
         ACE_Message_Block* mblock = 0,
         const ACE_INET_Addr& peerAddress = ACE_INET_Addr(),
         PeerTime sentTime = 0) :
@@ -110,12 +105,8 @@ struct ReliableMessage : Message
     PeerTime roundTripTimeout_;
     PeerTime roundTripTimeoutLimit_;
 
-    ReliableMessage() :
-        roundTripTimeout_(0),
-        roundTripTimeoutLimit_(0) {}
-
     explicit ReliableMessage(
-        SequenceNumber sequenceNumber,
+        SequenceNumber sequenceNumber = invalidSequenceNumber,
         ACE_Message_Block* mblock = 0,
         const ACE_INET_Addr& peerAddress = ACE_INET_Addr(),
         PeerTime sentTime = 0) :
@@ -164,11 +155,8 @@ struct UnknownReliableMessage : Message
 {
     PeerId peerId_;
 
-    UnknownReliableMessage() :
-        peerId_(invalidPeerId) {}
-
     explicit UnknownReliableMessage(
-        SequenceNumber sequenceNumber,
+        SequenceNumber sequenceNumber = invalidSequenceNumber,
         ACE_Message_Block* mblock = 0,
         const ACE_INET_Addr& peerAddress = ACE_INET_Addr(),
         PeerTime sentTime = 0, PeerId peerId = invalidPeerId) :
@@ -185,11 +173,8 @@ struct UnknownUnreliableMessage : Message
 {
     PeerId peerId_;
 
-    UnknownUnreliableMessage() :
-        peerId_(invalidPeerId) {}
-
     explicit UnknownUnreliableMessage(
-        SequenceNumber sequenceNumber,
+        SequenceNumber sequenceNumber = invalidSequenceNumber,
         ACE_Message_Block* mblock = 0,
         const ACE_INET_Addr& peerAddress = ACE_INET_Addr(),
         PeerTime sentTime = 0,
@@ -200,7 +185,7 @@ struct UnknownUnreliableMessage : Message
 
 
 /**
- * @class ReliableMessages
+ * @class MessageSet
  */
 template <class MessageType>
 class MessageSet : public srpc::HashSet<MessageType>

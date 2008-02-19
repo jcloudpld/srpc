@@ -18,6 +18,18 @@ namespace
 
 InitAce initAce;
 
+
+inline unsigned int rand32()
+{
+    return static_cast<unsigned int>((rand() << 16) + rand());
+}
+
+
+inline float randf()
+{
+    return rand32() / static_cast<float>(UINT_MAX);
+}
+
 } // namespace
 
 // = P2pSessionImpl
@@ -439,6 +451,17 @@ bool P2pSessionImpl::sendNow(const PeerIdPair& peerIdPair,
 //    addressPair.targetAddress_.get_port_number(),
 //    isReliable(packetType) ? "reliable" : "unreliable",
 //    getPeerTime());
+
+    if (p2pConfig_.packetLossRate_ > 0.0f) {
+        if (randf() < p2pConfig_.packetLossRate_) {
+            NSRPC_LOG_INFO7("Packet dropped(P%u, #%d, %d, %s:%d, %d)",
+                peerIdPair.to_, sequenceNumber, sentTime,
+                addressPair.targetAddress_.get_host_addr(),
+                addressPair.targetAddress_.get_port_number(),
+                packetType);
+            return true;
+        }
+    }
 
     if (isRelayServer(peerIdPair.to_) ||
         (! isRelayServerAddress(addressPair.targetAddress_))) {
