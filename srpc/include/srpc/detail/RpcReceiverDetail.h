@@ -56,6 +56,10 @@ public:
     const RpcEvents& getRpcEvents() const {
         return rpcEvents_;
     }
+
+    bool isEmpty() const {
+        return rpcEvents_.empty();
+    }
 private:
     bool isExists(RpcId rpcId) const {
         return rpcEvents_.find(rpcId) != rpcEvents_.end();
@@ -86,7 +90,7 @@ public:
 #define SRPC_RPC_EVENT(RpcClass, method) \
     RpcEvent_##RpcClass##_##method
 
-#ifdef USE_BOOST_POOL_ALLOCATOR_FOR_SRPC
+#ifdef USE_BOOST_FAST_POOL_ALLOCATOR_FOR_SRPC
 // boost::pool을 쓸 경우 singleton pool의 소멸자가 먼저 호출되어
 // 메모리를 2번 해제하는 문제가 발생하여 메모리를 해제하지 않게함
 // TODO: 메모리 릭 제거
@@ -97,9 +101,10 @@ public:
             return *RpcClass##_staticEventMap; \
         }
 #else
+// TODO: 메모리 릭 제거
 #   define DEFINE_GET_SRPC_EVENT_MAP(RpcClass) \
         srpc::RpcEventMap& RpcClass :: getStaticEventMap() { \
-            static srpc::RpcEventMap RpcClass##_staticEventMap(true); \
+            static srpc::RpcEventMap RpcClass##_staticEventMap(false); \
             return RpcClass##_staticEventMap; \
         }
 #endif
