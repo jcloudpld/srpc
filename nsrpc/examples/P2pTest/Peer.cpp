@@ -34,13 +34,18 @@ IMPLEMENT_SRPC_EVENT_DISPATCHER(Peer);
 
 Peer::Peer(const Config& config) :
     config_(config),
-    p2pSession_(nsrpc::P2pSessionFactory::create(config_.getPeerId(), *this)),
     isResolved_(false),
     connectFailedPeerId_(nsrpc::invalidPeerId),
     tickCount_(0),
     printedTime_(0),
     lastSentTime_(0)
 {
+    nsrpc::P2pConfig p2pConfig;
+    p2pConfig.packetLossRate_ = config.getPacketLossRate();
+
+    p2pSession_.reset(nsrpc::P2pSessionFactory::create(config_.getPeerId(),
+        *this, p2pConfig));
+
     srpc::RpcReceiver::setRpcNetwork(&p2pSession_->getRpcNetwork());
     srpc::RpcForwarder::setRpcNetwork(&p2pSession_->getRpcNetwork());
 }

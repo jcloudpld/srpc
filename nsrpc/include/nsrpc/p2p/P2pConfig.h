@@ -1,8 +1,6 @@
 #ifndef NSRPC_P2PCONFIG_H
 #define NSRPC_P2PCONFIG_H
 
-#include <srpc/Types.h>
-
 namespace nsrpc
 {
 
@@ -41,35 +39,40 @@ struct P2pConfig
     };
 
     /// default Round trip time value(msec)
-    const srpc::UInt32 defaultRtt_;
+    unsigned int defaultRtt_;
     /// connection timeout value(msec)
-    const srpc::UInt32 connectTimeout_;
+    unsigned int connectTimeout_;
     /// ping interval value(msec)
-    const srpc::UInt32 pingInterval_;
+    unsigned int pingInterval_;
     /// to calculate RTT timeout(mean RTT * roundTripTimeoutFactor_)
-    const srpc::UInt32 roundTipTimeoutFactor_;
+    unsigned int roundTipTimeoutFactor_;
     /// to calculate RTT timeout limit(RTT * roundTripTimeoutLimitFactor_)
-    const srpc::UInt32 roundTripTimeoutLimitFactor_;
+    unsigned int roundTripTimeoutLimitFactor_;
     /// max disconnect timeout value(msec)
-    const srpc::UInt32 maxDisconnectTimeout_;
+    unsigned int maxDisconnectTimeout_;
     /// min disconnect timeout value (msec)
-    const srpc::UInt32 minDisconnectTimeout_;
+    unsigned int minDisconnectTimeout_;
 
-    explicit P2pConfig(srpc::UInt32 defaultRtt = peerDefaultRtt,
-        srpc::UInt32 connectTimeout = peerDefaultConnectTimeout,
-        srpc::UInt32 pingInterval = peerPingInterval,
-        srpc::UInt32 roundTipTimeoutFactor = peerRoundTripTimeoutFactor,
-        srpc::UInt32 roundTripTimeoutLimitFactor =
+    /// send/recv packet loss rate (0.0~1.0, default: 0.0)
+    float packetLossRate_;
+
+    explicit P2pConfig(unsigned int defaultRtt = peerDefaultRtt,
+        unsigned int connectTimeout = peerDefaultConnectTimeout,
+        unsigned int pingInterval = peerPingInterval,
+        unsigned int roundTipTimeoutFactor = peerRoundTripTimeoutFactor,
+        unsigned int roundTripTimeoutLimitFactor =
             peerRoundTripTimeoutLimitFactor,
-        srpc::UInt32 maxDisconnectTimeout = peerMaxDisconnectTimeout,
-        srpc::UInt32 minDisconnectTimeout = peerMinDisconnectTimeout) :
+        unsigned int maxDisconnectTimeout = peerMaxDisconnectTimeout,
+        unsigned int minDisconnectTimeout = peerMinDisconnectTimeout,
+        float packetLossRate = 0.0f) :
         defaultRtt_(defaultRtt),
         connectTimeout_(connectTimeout),
         pingInterval_(pingInterval),
         roundTipTimeoutFactor_(roundTipTimeoutFactor),
         roundTripTimeoutLimitFactor_(roundTripTimeoutLimitFactor),
         maxDisconnectTimeout_(maxDisconnectTimeout),
-        minDisconnectTimeout_(minDisconnectTimeout) {}
+        minDisconnectTimeout_(minDisconnectTimeout),
+        packetLossRate_(packetLossRate) {}
 };
 
 /** @} */ // addtogroup p2p
