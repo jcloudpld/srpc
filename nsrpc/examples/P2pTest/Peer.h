@@ -28,7 +28,7 @@ class Peer : public RpcPeerService,
     };
 
     typedef std::map<nsrpc::PeerId, srpc::UInt32> TickMap;
-    typedef std::vector<nsrpc::PeerId> PeerIds;
+    typedef std::set<nsrpc::PeerId> PeerIdSet;
 
     DECLARE_SRPC_EVENT_DISPATCHER(Peer);
 public:
@@ -41,6 +41,10 @@ public:
 private:
     void printAllStats();
     void printStats(nsrpc::PeerId peerId);
+
+    bool isJoiner(nsrpc::PeerId peerId) const {
+        return joiners_.find(peerId) != joiners_.end();
+    }
 public:
     // = RpcPeerService overriding
     DECLARE_SRPC_P2P_METHOD_1(chat, srpc::RShortString, message);
@@ -63,7 +67,7 @@ private:
     nsrpc::PeerTime printedTime_;
     nsrpc::PeerTime lastSentTime_;
     TickMap tickMap_;
-    PeerIds joiners_;
+    PeerIdSet joiners_;
 };
 
 #endif // P2PTEST_PEER_H

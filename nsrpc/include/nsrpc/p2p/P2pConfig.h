@@ -19,8 +19,8 @@ struct P2pConfig
         peerDefaultRtt = 150,
         peerDefaultConnectTimeout = 2000,
         peerPingInterval = 500,
-        peerRoundTripTimeoutFactor = 4,
-        peerRoundTripTimeoutLimitFactor = 15,
+        peerRoundTripTimeoutFactor = 2,
+        peerRoundTripTimeoutLimitFactor = 10,
         peerMaxDisconnectTimeout = 8000,
         peerMinDisconnectTimeout = 5000,
 
@@ -53,8 +53,11 @@ struct P2pConfig
     /// min disconnect timeout value (msec)
     unsigned int minDisconnectTimeout_;
 
-    /// send/recv packet loss rate (0.0~1.0, default: 0.0)
-    float packetLossRate_;
+    /// send packet loss rate (0.0~1.0, default: 0.0)
+    float sendPacketLossRate_;
+
+    /// recv packet loss rate (0.0~1.0, default: 0.0)
+    float recvPacketLossRate_;
 
     explicit P2pConfig(unsigned int defaultRtt = peerDefaultRtt,
         unsigned int connectTimeout = peerDefaultConnectTimeout,
@@ -64,7 +67,8 @@ struct P2pConfig
             peerRoundTripTimeoutLimitFactor,
         unsigned int maxDisconnectTimeout = peerMaxDisconnectTimeout,
         unsigned int minDisconnectTimeout = peerMinDisconnectTimeout,
-        float packetLossRate = 0.0f) :
+        float sendPacketLossRate = 0.0f,
+        float recvPacketLossRate = 0.0f) :
         defaultRtt_(defaultRtt),
         connectTimeout_(connectTimeout),
         pingInterval_(pingInterval),
@@ -72,7 +76,20 @@ struct P2pConfig
         roundTripTimeoutLimitFactor_(roundTripTimeoutLimitFactor),
         maxDisconnectTimeout_(maxDisconnectTimeout),
         minDisconnectTimeout_(minDisconnectTimeout),
-        packetLossRate_(packetLossRate) {}
+        sendPacketLossRate_(sendPacketLossRate),
+        recvPacketLossRate_(recvPacketLossRate){}
+
+    bool shouldDropSendPacket() const {
+        return (sendPacketLossRate_ > 0.0f) && (randf() < sendPacketLossRate_);
+    }
+
+    bool shouldDropRecvPacket() const {
+        return (recvPacketLossRate_ > 0.0f) && (randf() < recvPacketLossRate_);
+    }
+
+    float randf() const {
+        return static_cast<float>(rand()) / RAND_MAX;
+    }
 };
 
 /** @} */ // addtogroup p2p

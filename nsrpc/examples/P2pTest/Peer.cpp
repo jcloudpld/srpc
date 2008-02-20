@@ -41,7 +41,8 @@ Peer::Peer(const Config& config) :
     lastSentTime_(0)
 {
     nsrpc::P2pConfig p2pConfig;
-    p2pConfig.packetLossRate_ = config.getPacketLossRate();
+    p2pConfig.sendPacketLossRate_ = config.getSendPacketLossRate();
+    p2pConfig.recvPacketLossRate_ = config.getRecvPacketLossRate();
 
     p2pSession_.reset(nsrpc::P2pSessionFactory::create(config_.getPeerId(),
         *this, p2pConfig));
@@ -124,7 +125,7 @@ bool Peer::tick()
         }
     }
 
-    //nsrpc::pause(1);
+    nsrpc::pause(1);
 
     return true;
 }
@@ -132,8 +133,8 @@ bool Peer::tick()
 
 void Peer::printAllStats()
 {
-    PeerIds::const_iterator pos = joiners_.begin();
-    const PeerIds::const_iterator end = joiners_.end();
+    PeerIdSet::const_iterator pos = joiners_.begin();
+    const PeerIdSet::const_iterator end = joiners_.end();
     for (; pos != end; ++pos) {
         if (*pos != p2pSession_->getPeerId()) {
             printStats(*pos);
@@ -175,10 +176,8 @@ void Peer::onPeerConnected(nsrpc::PeerId peerId)
     const nsrpc::PeerHint hint(peerId);
     chat(oss.str(), &hint); // unicast
 
-    if (std::find(joiners_.begin(), joiners_.end(), peerId) ==
-        joiners_.end()) {
-        joiners_.push_back(peerId);
-        std::sort(joiners_.begin(), joiners_.end());
+    if (! isJoiner(peerId)) {
+        joiners_.insert(peerId);
     }
 }
 
@@ -193,8 +192,7 @@ void Peer::onPeerDisconnected(nsrpc::PeerId peerId)
 
     printStats(peerId);
 
-    const PeerIds::iterator pos =
-        std::find(joiners_.begin(), joiners_.end(), peerId);
+    const PeerIdSet::iterator pos = joiners_.find(peerId);
     if (pos != joiners_.end()) {
         joiners_.erase(pos);
     }
@@ -242,18 +240,22 @@ IMPLEMENT_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
 {
     const nsrpc::PeerHint& hint = nsrpc::toPeerHint(rpcHint);
 
+    if (! isJoiner(hint.peerId_)) {
+        return;
+    }
+
     if (hint.peerId_ != p2pSession_->getPeerId()) {
         std::cout << "* Tick(P" << hint.peerId_ << "->P" <<
             p2pSession_->getPeerId() << "): [" << tick << "]\n";
     }
 
     if (tickMap_.find(hint.peerId_) != tickMap_.end()) {
-        srpc::UInt32 expectedTick = (tickMap_[hint.peerId_] + 1);
+        const srpc::UInt32 expectedTick = (tickMap_[hint.peerId_] + 1);
         if (tick != expectedTick) {
             std::cout << "* P" << hint.peerId_ << ": " << expectedTick <<
                 " expected, but " << tick << " arrived.\n";
             printAllStats();
-            exit(1);
+            return; //exit(1);
         }
     }
 
@@ -268,6 +270,10 @@ IMPLEMENT_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
 IMPLEMENT_SRPC_P2P_METHOD_0(Peer, dummy, srpc::ptUnreliable)
 {
     const nsrpc::PeerHint& hint = nsrpc::toPeerHint(rpcHint);
+
+    if (! isJoiner(hint.peerId_)) {
+        return;
+    }
 
     std::cout << "* dummy(from:P" << hint.peerId_ << ")\n";
 }

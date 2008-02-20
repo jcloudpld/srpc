@@ -27,6 +27,8 @@
 #   define NSRPC_LOG_DEBUG7(A,B,C,D,E,F,G) { A, B, C, D, E, F, G; }
 #   define NSRPC_LOG_DEBUG8(A,B,C,D,E,F,G,H) { A, B, C, D, E, F, G, H; }
 #   define NSRPC_LOG_DEBUG9(A,B,C,D,E,F,G,H,I) { A, B, C, D, E, F, G, H, I; }
+#   define NSRPC_LOG_DEBUG10(A,B,C,D,E,F,G,H,I,J) \
+    { A, B, C, D, E, F, G, H, I, J; }
     // = Info
 #   define NSRPC_LOG_INFO(A) { A; }
 #   define NSRPC_LOG_INFO2(A,B) { A, B; }
@@ -124,6 +126,14 @@
     ace___->conditional_set(__FILE__, __LINE__, 0, __ace_error); \
     ace___->log(LM_DEBUG, \
         ACE_TEXT("DEBUG|%D|%t|") A ACE_TEXT("\n"),B,C,D,E,F,G,H,I); \
+    }
+#   define NSRPC_LOG_DEBUG10(A,B,C,D,E,F,G,H,I,J) \
+    { \
+    const int __ace_error = ACE_Log_Msg::last_error_adapter(); \
+    ACE_Log_Msg* ace___ = ACE_Log_Msg::instance(); \
+    ace___->conditional_set(__FILE__, __LINE__, 0, __ace_error); \
+    ace___->log(LM_DEBUG, \
+        ACE_TEXT("DEBUG|%D|%t|") A ACE_TEXT("\n"),B,C,D,E,F,G,H,I,J); \
     }
     // = Info
 #   define NSRPC_LOG_INFO(A) \

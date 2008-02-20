@@ -105,7 +105,7 @@ private:
     void messageArrived(const P2pPacketHeader& header,
         const ACE_INET_Addr& peerAddress, ACE_Message_Block* mblock);
 
-    void acknowledged(PeerId peerId, const Message& message);
+    void acknowledge(PeerId peerId, const Message& message);
 
     void migrateHost();
 

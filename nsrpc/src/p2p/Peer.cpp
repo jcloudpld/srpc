@@ -13,7 +13,8 @@ namespace nsrpc
 namespace detail
 {
 
-const PeerTime initialEarliestTimeout = std::numeric_limits<PeerTime>::max();
+const PeerTime initialEarliestSentTimeout =
+    std::numeric_limits<PeerTime>::max();
 
 // = Peer
 
@@ -32,7 +33,7 @@ Peer::Peer(PeerId peerId, const Addresses& addresses,
     incomingUnreliableSequenceNumber_(invalidSequenceNumber),
     nextTimeoutCheckTime_(0),
     lastReceiveTime_(0),
-    earliestTimeout_(initialEarliestTimeout)
+    earliestSentTimeout_(initialEarliestSentTimeout)
 {
     assert(! addresses.empty());
 
@@ -123,18 +124,21 @@ bool Peer::putIncomingReliableMessage(const ReliableMessage& message)
     ++stats_.packetsReceivedReliable_;
 
     if (message.sequenceNumber_ <= incomingReliableSequenceNumber_) {
-        NSRPC_LOG_DEBUG4(
-            "Peer(P%u): Incoming Old Reliable Message(#%u <= #%u)",
-            peerId_, message.sequenceNumber_ ,
-            incomingReliableSequenceNumber_);
+        NSRPC_LOG_DEBUG5(
+            "Peer(P%u): Incoming Old Reliable Message(#%u <= #%u, %u)",
+            peerId_, message.sequenceNumber_ , incomingReliableSequenceNumber_,
+            incomingReliableMessages_.size());
+        // 상대방이 이전 패킷을 다시 전송하지 않도록 ack 전송
         messageHandler_.sendAcknowledgement(peerId_, message);
         return false;
     }
 
     if (incomingReliableMessages_.isExists(message.sequenceNumber_)) {
-        NSRPC_LOG_DEBUG3(
-            "Peer(P%u): Incoming existent Reliable Message(#%u)",
-            peerId_, message.sequenceNumber_);
+        NSRPC_LOG_DEBUG5(
+            "Peer(P%u): Incoming existent Reliable Message(#%u > #%u, %u)",
+            peerId_, message.sequenceNumber_, incomingReliableSequenceNumber_,
+            incomingReliableMessages_.size());
+        // 여기에서는 ack를 전송하면 안된다!!
         return false;
     }
 
@@ -196,17 +200,17 @@ void Peer::sendOutgoingMessages(PeerId fromPeerId, PeerTime currentTime)
         return;
     }
 
-    if ((! sentReliableMessages_.empty()) && shouldCheckTimeout(currentTime)) {
+    if (shouldCheckTimeout(currentTime)) {
         checkTimeout(currentTime);
     }
 
     sendOutgoingUnreliableMessages(fromPeerId);
 
-    if (! outgoingReliableMessages_.empty()) {
-        sendOutgoingReliableMessages(fromPeerId, currentTime);
-    }
-    else if (shouldSendPing(currentTime)) {
+    if (shouldSendPing(currentTime)) {
         sendPing(fromPeerId, currentTime);
+    }
+    else {
+        sendOutgoingReliableMessages(fromPeerId, currentTime);
     }
 }
 
@@ -221,9 +225,9 @@ bool Peer::handleIncomingMessages()
 void Peer::acknowledged(SequenceNumber sequenceNumber,
     PeerTime receivedSentTime)
 {
-    adjustRoundTripTime(receivedSentTime);
-
-    removeSentReliableMessage(sequenceNumber);
+    if (removeSentReliableMessage(sequenceNumber)) {
+        adjustRoundTripTime(receivedSentTime);
+    }
 }
 
 
@@ -300,6 +304,8 @@ void Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
 
 void Peer::checkTimeout(PeerTime currentTime)
 {
+    bool isFirstMessage = true;
+
     ReliableMessages::iterator pos = sentReliableMessages_.begin();
     const ReliableMessages::iterator end = sentReliableMessages_.end();
     for (; pos != end;) {
@@ -309,18 +315,20 @@ void Peer::checkTimeout(PeerTime currentTime)
             break; // 메세지가 시간(SeqNo) 순으로 정렬되어 있으므로
         }
 
-        if (checkDisconnect(currentTime, message)) {
-            disconnecting();
-            break;
+        if (isFirstMessage) {
+            if (checkDisconnect(currentTime, message)) {
+                disconnecting();
+                break;
+            }
         }
 
         retransmit(message);
 
-        if ((message.sequenceNumber_ ==
-                (*sentReliableMessages_.begin()).sequenceNumber_) &&
-            (sentReliableMessages_.size() >= 2)) {
+        if (isFirstMessage) {
             setNextTimeout(message.getNextTimeout());
         }
+
+        isFirstMessage = false;
 
         sentReliableMessages_.erase(pos++);
         assert(end == sentReliableMessages_.end());
@@ -328,14 +336,16 @@ void Peer::checkTimeout(PeerTime currentTime)
 }
 
 
+// TODO: 송신은 못 했지만 수신은 했을 경우도 고려해야 한다??
 bool Peer::checkDisconnect(PeerTime currentTime,
     const ReliableMessage& sentReliableMessage)
 {
-    if (sentReliableMessage.sentTime_ < earliestTimeout_) {
-        earliestTimeout_ = sentReliableMessage.sentTime_;
+    if (earliestSentTimeout_ > sentReliableMessage.sentTime_) {
+        earliestSentTimeout_ = sentReliableMessage.sentTime_;
     }
 
-    const PeerTime timeoutDiff = getElapsedTime(currentTime, earliestTimeout_);
+    const PeerTime timeoutDiff =
+        getElapsedTime(currentTime, earliestSentTimeout_);
 
     if (timeoutDiff < p2pConfig_.maxDisconnectTimeout_) {
         if (! sentReliableMessage.isTimeout()) {
@@ -347,13 +357,14 @@ bool Peer::checkDisconnect(PeerTime currentTime,
         }
     }
 
-    NSRPC_LOG_DEBUG9("checkDisconnect(P%u, %u, %u, <%u, %u, %u>, [%u,%u])",
-        peerId_, currentTime, earliestTimeout_,
+    NSRPC_LOG_DEBUG10(
+        "checkDisconnect(P%u, #%u, %u, %u, <%u, %u, %u>, [%u,%u])",
+        peerId_, sentReliableMessage.sequenceNumber_,
+        currentTime, earliestSentTimeout_,
         sentReliableMessage.sentTime_,
         sentReliableMessage.roundTripTimeout_,
         sentReliableMessage.roundTripTimeoutLimit_,
         p2pConfig_.minDisconnectTimeout_, p2pConfig_.maxDisconnectTimeout_);
-
     return true;
 }
 
@@ -368,10 +379,11 @@ void Peer::retransmit(ReliableMessage& message)
 
     ++stats_.packetsLost_;
 
-    NSRPC_LOG_DEBUG8("retransmit(P%u, #%u, %d, %d~%d, %d, %d)",
-        peerId_, message.sequenceNumber_, stats_.packetsLost_,
+    NSRPC_LOG_DEBUG9("retransmit(P%u, #%u, %u, %u~%u, %u/%u, %u)",
+        peerId_, message.sequenceNumber_, message.sentTime_,
         message.roundTripTimeout_, message.roundTripTimeoutLimit_,
-        rtt_.meanRoundTripTime_, rtt_.roundTripTimeVariance_);
+        rtt_.meanRoundTripTime_, rtt_.roundTripTimeVariance_,
+        sentReliableMessages_.size());
 }
 
 
@@ -385,11 +397,16 @@ bool Peer::shouldSendPing(PeerTime currentTime) const
         return false;
     }
 
+    if (! outgoingReliableMessages_.empty()) {
+        return false;
+    }
+
     if (! sentReliableMessages_.empty()) {
         return false;
     }
     
-    return (currentTime - lastReceiveTime_) >= p2pConfig_.pingInterval_;
+    return getElapsedTime(currentTime, lastReceiveTime_) >=
+        p2pConfig_.pingInterval_;
 }
 
 
@@ -435,16 +452,18 @@ void Peer::handleIncomingReliableMessages()
     }
 #else
     if (! incomingReliableMessages_.empty()) {
-        ReliableMessage& message = *(incomingReliableMessages_.begin());
+        const ReliableMessages::iterator firstPos =
+            incomingReliableMessages_.begin();
+        ReliableMessage& message = *firstPos;
         if (message.sequenceNumber_ ==
             (incomingReliableSequenceNumber_ + 1)) {
             if (messageHandler_.handleIncomingMessage(peerId_,
                 srpc::ptReliable, message)) {
                 ++incomingReliableSequenceNumber_;
             }
+
             message.release();
-            incomingReliableMessages_.erase(
-                incomingReliableMessages_.begin());
+            incomingReliableMessages_.erase(firstPos);
         }
     }
 
@@ -483,7 +502,9 @@ bool Peer::handleIncomingUnreliableMessages()
 #else
     const PeerState savedState = currentState_;
     if (! incomingUnreliableMessages_.empty()) {
-        Message& message = *(incomingUnreliableMessages_.begin());
+        const Messages::iterator firstPos =
+            incomingUnreliableMessages_.begin();
+        Message& message = *firstPos;
         if (message.sequenceNumber_ >=
             (incomingUnreliableSequenceNumber_ + 1)) {
             if (messageHandler_.handleIncomingMessage(peerId_,
@@ -492,8 +513,7 @@ bool Peer::handleIncomingUnreliableMessages()
             }
         }
         message.release();
-        incomingUnreliableMessages_.erase(
-            incomingUnreliableMessages_.begin());
+        incomingUnreliableMessages_.erase(firstPos);
     }
 
     return (currentState_ == savedState) || (! isDisconnected());
@@ -501,35 +521,16 @@ bool Peer::handleIncomingUnreliableMessages()
 }
 
 
-void Peer::adjustRoundTripTime(PeerTime receivedSentTime)
+bool Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
 {
-    const PeerTime currentTime = getPeerTime();
-    assert(receivedSentTime <= currentTime);
-    const PeerTime roundTripTime = (currentTime - receivedSentTime);
+    bool removed = false;
 
-    lastReceiveTime_ = currentTime;
-    earliestTimeout_ = initialEarliestTimeout;
-
-    // TODO: throattling
-
-    rtt_.update(roundTripTime);
-
-    NSRPC_LOG_DEBUG5("RTT(P%u) = %u/%u, %u",
-        peerId_, roundTripTime, rtt_.meanRoundTripTime_,
-        rtt_.roundTripTimeVariance_);
-
-    // TODO: throattling
-}
-
-
-void Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
-{
-    // GPG5 참고(수신자가 신뢰 패킷을 순서대로 처리하므로)
     ReliableMessages::iterator pos = sentReliableMessages_.begin();
     const ReliableMessages::iterator end = sentReliableMessages_.end();
     for (; pos != end;) {
         ReliableMessage& message = *pos;
         if (message.sequenceNumber_ > sequenceNumber) {
+            // GPG5 참고(수신자가 신뢰 패킷을 순서대로 처리하므로)
             break;
         }
 
@@ -538,6 +539,7 @@ void Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
         message.release();
         sentReliableMessages_.erase(pos++);
         assert(end == sentReliableMessages_.end());
+        removed = true;
 
         if (isAcknowledgingConnect()) {
             if (! messageHandler_.acknowledgedConnect(peerId_)) {
@@ -545,6 +547,30 @@ void Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
             }
         }
     }
+
+    return removed;
+}
+
+
+void Peer::adjustRoundTripTime(PeerTime receivedSentTime)
+{
+    const PeerTime currentTime = getPeerTime();
+    assert(receivedSentTime <= currentTime);
+    const PeerTime roundTripTime =
+        getElapsedTime(currentTime, receivedSentTime);
+
+    lastReceiveTime_ = currentTime;
+    earliestSentTimeout_ = initialEarliestSentTimeout;
+
+    // TODO: throattling
+
+    rtt_.update(roundTripTime);
+
+    //NSRPC_LOG_DEBUG5("RTT(P%u) = %u/%u, %u",
+    //    peerId_, roundTripTime, rtt_.meanRoundTripTime_,
+    //    rtt_.roundTripTimeVariance_);
+
+    // TODO: throattling
 }
 
 
