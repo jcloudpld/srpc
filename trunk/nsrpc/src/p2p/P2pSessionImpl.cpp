@@ -18,18 +18,6 @@ namespace
 
 InitAce initAce;
 
-
-inline unsigned int rand32()
-{
-    return static_cast<unsigned int>((rand() << 16) + rand());
-}
-
-
-inline float randf()
-{
-    return rand32() / static_cast<float>(UINT_MAX);
-}
-
 } // namespace
 
 // = P2pSessionImpl
@@ -328,8 +316,16 @@ void P2pSessionImpl::messageArrived(const P2pPacketHeader& header,
 }
 
 
-void P2pSessionImpl::acknowledged(PeerId peerId, const Message& message)
+void P2pSessionImpl::acknowledge(PeerId peerId, const Message& message)
 {
+    if (isSelf(peerId)) {
+        return;
+    }
+
+    if (! peerManager_.canSendAcknowledgement(peerId)) {
+        return;
+    }
+
     const P2pPeerHint hint(peerId);
     systemService_.rpcAcknowledgement(message.sequenceNumber_,
         message.sentTime_, &hint);
@@ -436,6 +432,15 @@ void P2pSessionImpl::onMessageArrived(const ACE_INET_Addr& peerAddress)
         return;
     }
 
+    if (p2pConfig_.shouldDropRecvPacket()) {
+        NSRPC_LOG_DEBUG7("Recv packet dropped(P%u, #%d, %d, %s:%d, %d)",
+            header.peerId_, header.sequenceNumber_, header.sentTime_,
+            peerAddress.get_host_addr(),
+            peerAddress.get_port_number(),
+            header.packetType_);
+        return;
+    }
+
     messageArrived(header, peerAddress, recvBlock_->clone());
 }
 
@@ -445,22 +450,20 @@ bool P2pSessionImpl::sendNow(const PeerIdPair& peerIdPair,
     srpc::RpcPacketType packetType, SequenceNumber sequenceNumber,
     PeerTime sentTime)
 {
-//NSRPC_LOG_DEBUG8("P2pSessionImpl::sendNow(P%u, #%d, %d, %s:%d, %s, %u)",
-//    peerIdPair.to_, sequenceNumber, sentTime,
-//    addressPair.targetAddress_.get_host_addr(),
-//    addressPair.targetAddress_.get_port_number(),
-//    isReliable(packetType) ? "reliable" : "unreliable",
-//    getPeerTime());
+    //NSRPC_LOG_DEBUG8("P2pSessionImpl::sendNow(P%u, #%d, %d, %s:%d, %s, %u)",
+    //    peerIdPair.to_, sequenceNumber, sentTime,
+    //    addressPair.targetAddress_.get_host_addr(),
+    //    addressPair.targetAddress_.get_port_number(),
+    //    isReliable(packetType) ? "reliable" : "unreliable",
+    //    getPeerTime());
 
-    if (p2pConfig_.packetLossRate_ > 0.0f) {
-        if (randf() < p2pConfig_.packetLossRate_) {
-            NSRPC_LOG_INFO7("Packet dropped(P%u, #%d, %d, %s:%d, %d)",
-                peerIdPair.to_, sequenceNumber, sentTime,
-                addressPair.targetAddress_.get_host_addr(),
-                addressPair.targetAddress_.get_port_number(),
-                packetType);
-            return true;
-        }
+    if (p2pConfig_.shouldDropSendPacket()) {
+        NSRPC_LOG_DEBUG7("Send packet dropped(P%u, #%d, %d, %s:%d, %d)",
+            peerIdPair.to_, sequenceNumber, sentTime,
+            addressPair.targetAddress_.get_host_addr(),
+            addressPair.targetAddress_.get_port_number(),
+            packetType);
+        return true;
     }
 
     if (isRelayServer(peerIdPair.to_) ||
@@ -536,8 +539,6 @@ size_t P2pSessionImpl::getHeaderSize() const
 bool P2pSessionImpl::handleIncomingMessage(PeerId peerId,
     srpc::RpcPacketType packetType, const Message& message)
 {
-//    const PeerTime currentTime = getPeerTime();
-
     recvBlock_->reset();
     recvBlock_->copy(message.mblock_->rd_ptr(), message.mblock_->length());
     if (! rpcNetwork_.handleMessage(peerId, message.peerAddress_)) {
@@ -547,16 +548,8 @@ bool P2pSessionImpl::handleIncomingMessage(PeerId peerId,
         return false;
     }
 
-    //const srpc::UInt32 handleIncomingTime = getPeerTime() - currentTime;
-    //if (handleIncomingTime > 10) {
-    //    NSRPC_LOG_DEBUG2("RPC handling time = %u", handleIncomingTime);
-    //}
-
-    if (isReliable(packetType) && (! isSelf(peerId))) {
-        const PeerPtr peer(peerManager_.getPeer(peerId));
-        if ((! peer.isNull()) && (! peer->isDisconnecting())) {
-            acknowledged(peerId, message);
-        }
+    if (isReliable(packetType)) {
+        acknowledge(peerId, message);
     }
 
     return true;
@@ -594,7 +587,7 @@ void P2pSessionImpl::sendPing(PeerId peerId)
 void P2pSessionImpl::sendAcknowledgement(PeerId peerId,
     const Message& message)
 {
-    acknowledged(peerId, message);
+    acknowledge(peerId, message);
 }
 
 

@@ -102,6 +102,11 @@ public:
     bool isHostExists() const {
         return ! host_.isNull();
     }
+
+    bool canSendAcknowledgement(PeerId peerId) const {
+        const PeerPtr peer(getPeer(peerId));
+        return (! peer.isNull()) && (! peer->isDisconnecting());
+    }
 private:
     PeerPtr makePeer(PeerId peerId, const Addresses& addresses);
     void removePeer(PeerId peerId);

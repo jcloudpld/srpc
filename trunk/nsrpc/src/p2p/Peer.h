@@ -161,8 +161,8 @@ private:
 
     void sendPing(PeerId fromPeerId, PeerTime currentTime);
 
+    bool removeSentReliableMessage(SequenceNumber sequenceNumber);
     void adjustRoundTripTime(PeerTime receivedSentTime);
-    void removeSentReliableMessage(SequenceNumber sequenceNumber);
 
     void setNextTimeout(PeerTime timeout) {
         if (timeout > nextTimeoutCheckTime_) {
@@ -207,7 +207,7 @@ private:
     RoundTripTime rtt_; ///< RoundTripTime 관련 정보
     PeerTime nextTimeoutCheckTime_; ///< 다음번 시간 초과 검사 시간
     PeerTime lastReceiveTime_; ///< 가장 최근 Ack 메세지 수신 시간
-    PeerTime earliestTimeout_; ///< 가장 오래된 신뢰성 패킷 전송 시간
+    PeerTime earliestSentTimeout_; ///< 가장 오래된 신뢰성 패킷 전송 시간
 
     PeerStats stats_;
 };

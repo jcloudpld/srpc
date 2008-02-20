@@ -26,28 +26,21 @@ namespace detail
 struct RoundTripTime
 {
     PeerTime lowestRoundTripTime_;
-    PeerTime highestRoundTripTimeVariance_;
     PeerTime meanRoundTripTime_; ///< RTT 평균값
-    PeerTime roundTripTimeVariance_; ///< RTT 변화량
+    srpc::Int32 roundTripTimeVariance_; ///< RTT 변화량
+    srpc::Int32 highestRoundTripTimeVariance_;
 
     RoundTripTime() :
         lowestRoundTripTime_(0),
-        highestRoundTripTimeVariance_(0),
         meanRoundTripTime_(0),
-        roundTripTimeVariance_(0) {}
+        roundTripTimeVariance_(0),
+        highestRoundTripTimeVariance_(0) {}
 
     void update(PeerTime roundTripTime) {
-        roundTripTimeVariance_ -= (roundTripTimeVariance_ / 4);
-        PeerTime rttDiff = 0;
-        if (roundTripTime >= meanRoundTripTime_) {
-            rttDiff = roundTripTime - meanRoundTripTime_;
-            meanRoundTripTime_ += (rttDiff / 8);
-        }
-        else {
-            rttDiff = meanRoundTripTime_ - roundTripTime;
-            meanRoundTripTime_ -= (rttDiff / 8);
-        }
-        roundTripTimeVariance_ += (rttDiff / 4);
+        const srpc::Int32 rttDiff = (roundTripTime - meanRoundTripTime_);
+        updateMeanRoundTripTime(rttDiff / 8);
+        updateRoundTripTimeVariance(
+            (rttDiff / 4) - (roundTripTimeVariance_ / 4));
 
         if (meanRoundTripTime_ < lowestRoundTripTime_) {
             lowestRoundTripTime_ = meanRoundTripTime_;
@@ -55,6 +48,21 @@ struct RoundTripTime
 
         if (roundTripTimeVariance_ > highestRoundTripTimeVariance_) {
             highestRoundTripTimeVariance_ = roundTripTimeVariance_;
+        }
+    }
+
+private:
+    void updateMeanRoundTripTime(srpc::Int32 rtt) {
+        meanRoundTripTime_ += rtt;
+        if (meanRoundTripTime_ < 0) {
+            meanRoundTripTime_ = 0;
+        }
+    }
+
+    void updateRoundTripTimeVariance(srpc::Int32 variance) {
+        roundTripTimeVariance_ += variance;
+        if (roundTripTimeVariance_ < 0) {
+            roundTripTimeVariance_ = 0;
         }
     }
 };
@@ -90,10 +98,6 @@ struct Message
     bool operator < (const Message& rhs) const {
         return sequenceNumber_ < rhs.sequenceNumber_;
     }
-
-    operator size_t() const {
-        return sequenceNumber_;
-    }
 };
 
 
@@ -117,10 +121,8 @@ struct ReliableMessage : Message
     void adjustRoundTripTimeout(const P2pConfig& p2pConfig,
         const RoundTripTime& rtt) {
         if (roundTripTimeout_ == 0) {
-            PeerTime roundTripTime = rtt.meanRoundTripTime_;
-            if (roundTripTime == 0) {
-                roundTripTime = p2pConfig.defaultRtt_;
-            }
+            const PeerTime roundTripTime = (rtt.meanRoundTripTime_ > 0) ?
+                rtt.meanRoundTripTime_ : p2pConfig.defaultRtt_;
             roundTripTimeout_ = roundTripTime +
                 (rtt.roundTripTimeVariance_ * p2pConfig.roundTipTimeoutFactor_);
             roundTripTimeoutLimit_ =
@@ -129,7 +131,7 @@ struct ReliableMessage : Message
     }
 
     void increaseRoundTripTimeout() {
-        roundTripTimeout_ += roundTripTimeout_; //+= (roundTripTimeout_ / 2);
+        roundTripTimeout_ += (roundTripTimeout_ / 2);
     }
 
     bool shouldCheckTimeout(PeerTime currentTime) const {
@@ -186,9 +188,10 @@ struct UnknownUnreliableMessage : Message
 
 /**
  * @class MessageSet
+ * - squenceNumber 순으로 오름차순 정렬되어야 한다
  */
 template <class MessageType>
-class MessageSet : public srpc::HashSet<MessageType>
+class MessageSet : public srpc::Set<MessageType>
 {
 public:
     ~MessageSet() {
@@ -200,11 +203,13 @@ public:
     }
 
     iterator getMessage(SequenceNumber sequenceNumber) {
-        return find(MessageType(sequenceNumber));
+        messageForFind_.sequenceNumber_ = sequenceNumber;
+        return find(messageForFind_);
     }
 
     const_iterator getMessage(SequenceNumber sequenceNumber) const {
-        return find(MessageType(sequenceNumber));
+        messageForFind_.sequenceNumber_ = sequenceNumber;
+        return find(messageForFind_);
     }
 
     void release(SequenceNumber sequenceNumber) {
@@ -220,6 +225,9 @@ public:
         std::for_each(begin(), end(), std::mem_fun_ref(&MessageType::release));
         clear();
     }
+private:
+    /// 불필요한 임시 변수 생성을 막기 위해 멤버 변수를 이용함
+    mutable MessageType messageForFind_;
 };
 
 /** @} */ // addtogroup p2p
