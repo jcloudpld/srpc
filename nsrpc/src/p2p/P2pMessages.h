@@ -26,14 +26,12 @@ namespace detail
 struct RoundTripTime
 {
     srpc::Int32 meanRoundTripTime_; ///< RTT 평균값
-    srpc::Int32 lowestRoundTripTime_;
     srpc::Int32 highestRoundTripTime_;
     srpc::Int32 roundTripTimeVariance_; ///< RTT 변화량
     srpc::Int32 highestRoundTripTimeVariance_;
 
     RoundTripTime() :
         meanRoundTripTime_(0),
-        lowestRoundTripTime_(0),
         highestRoundTripTime_(0),
         roundTripTimeVariance_(0),
         highestRoundTripTimeVariance_(0) {}
@@ -49,10 +47,6 @@ private:
         meanRoundTripTime_ += (rtt / 8);
         if (meanRoundTripTime_ < 0) {
             meanRoundTripTime_ = 0;
-        }
-
-        if (meanRoundTripTime_ < lowestRoundTripTime_) {
-            lowestRoundTripTime_ = meanRoundTripTime_;
         }
 
         if (meanRoundTripTime_ > highestRoundTripTime_) {
