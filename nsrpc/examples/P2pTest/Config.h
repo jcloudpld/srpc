@@ -16,8 +16,8 @@ public:
         listeningPort_(0),
         host_(false),
         verbose_(false),
-        sendPacketLossRate_(0.0f),
-        recvPacketLossRate_(0.0f) {}
+        outboundPacketDropRate_(0.0f),
+        inboundPacketDropRate_(0.0f) {}
 
     bool parseArgs(int argc, char* argv[]);
 
@@ -44,11 +44,11 @@ public:
     }
 
     float getSendPacketLossRate() const {
-        return sendPacketLossRate_;
+        return outboundPacketDropRate_;
     }
 
     float getRecvPacketLossRate() const {
-        return recvPacketLossRate_;
+        return inboundPacketDropRate_;
     }
 
     bool isVerbose() const {
@@ -62,8 +62,8 @@ private:
     nsrpc::PeerAddresses hostAddresses_;
     bool host_;
     bool verbose_;
-    float sendPacketLossRate_;
-    float recvPacketLossRate_;
+    float outboundPacketDropRate_;
+    float inboundPacketDropRate_;
 };
 
 #endif // P2PTEST_CONFIG_H
