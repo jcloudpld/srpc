@@ -157,7 +157,10 @@ void Peer::printStats(nsrpc::PeerId peerId)
         ",\n" <<
         "  PacketsLost=" << stats.packetsLost_ << ",\n" <<
         "  MeanRoundTripTime=" << stats.meanRoundTripTime_ << ",\n" <<
-        "  RoundTripTimeVariance=" << stats.roundTripTimeVariance_ << "\n";
+        "  HighestRoundTripTime=" << stats.highestRoundTripTime_ << ",\n" <<
+        "  RoundTripTimeVariance=" << stats.roundTripTimeVariance_ << ",\n" <<
+        "  HighestRoundTripTimeVariance=" <<
+        stats.highestRoundTripTimeVariance_ << "\n";
 }
 
 // = P2pEventHandler overring

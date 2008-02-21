@@ -588,7 +588,10 @@ PeerStats Peer::getStats() const
 {
     PeerStats currentStats = stats_;
     currentStats.meanRoundTripTime_ = rtt_.meanRoundTripTime_;
+    currentStats.highestRoundTripTime_ = rtt_.highestRoundTripTime_;
     currentStats.roundTripTimeVariance_ = rtt_.roundTripTimeVariance_;
+    currentStats.highestRoundTripTimeVariance_ =
+        rtt_.highestRoundTripTimeVariance_;
     return currentStats;
 }
 
