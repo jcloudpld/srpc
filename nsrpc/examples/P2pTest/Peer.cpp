@@ -41,8 +41,8 @@ Peer::Peer(const Config& config) :
     lastSentTime_(0)
 {
     nsrpc::P2pConfig p2pConfig;
-    p2pConfig.sendPacketLossRate_ = config.getSendPacketLossRate();
-    p2pConfig.recvPacketLossRate_ = config.getRecvPacketLossRate();
+    p2pConfig.outboundPacketDropRate_ = config.getSendPacketLossRate();
+    p2pConfig.inboundPacketDropRate_ = config.getRecvPacketLossRate();
 
     p2pSession_.reset(nsrpc::P2pSessionFactory::create(config_.getPeerId(),
         *this, p2pConfig));
