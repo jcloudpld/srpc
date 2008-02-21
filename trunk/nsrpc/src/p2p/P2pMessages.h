@@ -25,25 +25,46 @@ namespace detail
  */
 struct RoundTripTime
 {
-    PeerTime lowestRoundTripTime_;
-    PeerTime meanRoundTripTime_; ///< RTT Æò±Õ°ª
+    srpc::Int32 meanRoundTripTime_; ///< RTT Æò±Õ°ª
+    srpc::Int32 lowestRoundTripTime_;
+    srpc::Int32 highestRoundTripTime_;
     srpc::Int32 roundTripTimeVariance_; ///< RTT º¯È­·®
     srpc::Int32 highestRoundTripTimeVariance_;
 
     RoundTripTime() :
-        lowestRoundTripTime_(0),
         meanRoundTripTime_(0),
+        lowestRoundTripTime_(0),
+        highestRoundTripTime_(0),
         roundTripTimeVariance_(0),
         highestRoundTripTimeVariance_(0) {}
 
-    void update(PeerTime roundTripTime) {
-        const srpc::Int32 rttDiff = (roundTripTime - meanRoundTripTime_);
-        updateMeanRoundTripTime(rttDiff / 8);
-        updateRoundTripTimeVariance(
-            (rttDiff / 4) - (roundTripTimeVariance_ / 4));
+    void update(PeerTime rtt) {
+        const srpc::Int32 rttDiff = getRttDiff(rtt);
+        updateMeanRoundTripTime(isRttUp(rtt) ? rttDiff : -rttDiff);
+        updateRoundTripTimeVariance(rttDiff);
+    }
+
+private:
+    void updateMeanRoundTripTime(srpc::Int32 rtt) {
+        meanRoundTripTime_ += (rtt / 8);
+        if (meanRoundTripTime_ < 0) {
+            meanRoundTripTime_ = 0;
+        }
 
         if (meanRoundTripTime_ < lowestRoundTripTime_) {
             lowestRoundTripTime_ = meanRoundTripTime_;
+        }
+
+        if (meanRoundTripTime_ > highestRoundTripTime_) {
+            highestRoundTripTime_ = meanRoundTripTime_;
+        }
+    }
+
+    void updateRoundTripTimeVariance(srpc::Int32 variance) {
+        roundTripTimeVariance_ -= (roundTripTimeVariance_ / 4);
+        roundTripTimeVariance_ += (variance / 4);
+        if (roundTripTimeVariance_ < 0) {
+            roundTripTimeVariance_ = 0;
         }
 
         if (roundTripTimeVariance_ > highestRoundTripTimeVariance_) {
@@ -51,19 +72,13 @@ struct RoundTripTime
         }
     }
 
-private:
-    void updateMeanRoundTripTime(srpc::Int32 rtt) {
-        meanRoundTripTime_ += rtt;
-        if (meanRoundTripTime_ < 0) {
-            meanRoundTripTime_ = 0;
-        }
+    srpc::Int32 getRttDiff(srpc::Int32 rtt) const {
+        return isRttUp(rtt) ?
+            (rtt - meanRoundTripTime_) : (meanRoundTripTime_ - rtt);
     }
 
-    void updateRoundTripTimeVariance(srpc::Int32 variance) {
-        roundTripTimeVariance_ += variance;
-        if (roundTripTimeVariance_ < 0) {
-            roundTripTimeVariance_ = 0;
-        }
+    bool isRttUp(srpc::Int32 rtt) const {
+        return rtt > meanRoundTripTime_;
     }
 };
 
@@ -120,7 +135,7 @@ struct ReliableMessage : Message
 
     void adjustRoundTripTimeout(const P2pConfig& p2pConfig,
         const RoundTripTime& rtt) {
-        if (roundTripTimeout_ == 0) {
+        if (! isRoundTripTimeoutAdjusted()) {
             const PeerTime roundTripTime = (rtt.meanRoundTripTime_ > 0) ?
                 rtt.meanRoundTripTime_ : p2pConfig.defaultRtt_;
             roundTripTimeout_ = roundTripTime +
@@ -146,6 +161,11 @@ struct ReliableMessage : Message
         return ((currentTime > 0) ? currentTime : sentTime_) +
             roundTripTimeout_;
     }
+
+private:
+    bool isRoundTripTimeoutAdjusted() const {
+        return roundTripTimeout_ != 0;
+    } 
 };
 
 
