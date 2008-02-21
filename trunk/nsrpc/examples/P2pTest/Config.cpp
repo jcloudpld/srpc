@@ -59,11 +59,11 @@ bool Config::parseArgs(int argc, char* argv[])
             hostAddresses_.push_back(address);
         }
         else if (arg.compare(0, 5, "-spd=") == 0) {
-            sendPacketLossRate_ =
+            outboundPacketDropRate_ =
                 static_cast<float>(atof(arg.substr(5).c_str()));
         }
         else if (arg.compare(0, 5, "-rpd=") == 0) {
-            recvPacketLossRate_ =
+            inboundPacketDropRate_ =
                 static_cast<float>(atof(arg.substr(5).c_str()));
         }
         else {
