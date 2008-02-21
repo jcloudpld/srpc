@@ -432,7 +432,7 @@ void P2pSessionImpl::onMessageArrived(const ACE_INET_Addr& peerAddress)
         return;
     }
 
-    if (p2pConfig_.shouldDropRecvPacket()) {
+    if (p2pConfig_.shouldDropInboundPacket()) {
         NSRPC_LOG_DEBUG7(
             "P2P Sim: Recv packet dropped(P%u, #%d, %d, %s:%d, %d)",
             header.peerId_, header.sequenceNumber_, header.sentTime_,
@@ -458,7 +458,7 @@ bool P2pSessionImpl::sendNow(const PeerIdPair& peerIdPair,
     //    isReliable(packetType) ? "reliable" : "unreliable",
     //    getPeerTime());
 
-    if (p2pConfig_.shouldDropSendPacket()) {
+    if (p2pConfig_.shouldDropOutboundPacket()) {
         NSRPC_LOG_DEBUG7(
             "P2P Sim: Send packet dropped(P%u, #%d, %d, %s:%d, %d)",
             peerIdPair.to_, sequenceNumber, sentTime,

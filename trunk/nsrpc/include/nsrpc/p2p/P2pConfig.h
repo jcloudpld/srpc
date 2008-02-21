@@ -53,11 +53,15 @@ struct P2pConfig
     /// min disconnect timeout value (msec)
     unsigned int minDisconnectTimeout_;
 
-    /// send packet loss rate (0.0~1.0, default: 0.0)
-    float sendPacketLossRate_;
+    /// outbound packet drop rate (0.0~1.0, default: 0.0).
+    /// Each packet stands the same chance of being dropped,
+    /// regardless of other packets.
+    float outboundPacketDropRate_;
 
-    /// recv packet loss rate (0.0~1.0, default: 0.0)
-    float recvPacketLossRate_;
+    /// inbound packet drop rate (0.0~1.0, default: 0.0)
+    /// Each packet stands the same chance of being dropped,
+    /// regardless of other packets.
+    float inboundPacketDropRate_;
 
     explicit P2pConfig(unsigned int defaultRtt = peerDefaultRtt,
         unsigned int connectTimeout = peerDefaultConnectTimeout,
@@ -67,8 +71,8 @@ struct P2pConfig
             peerRoundTripTimeoutLimitFactor,
         unsigned int maxDisconnectTimeout = peerMaxDisconnectTimeout,
         unsigned int minDisconnectTimeout = peerMinDisconnectTimeout,
-        float sendPacketLossRate = 0.0f,
-        float recvPacketLossRate = 0.0f) :
+        float outboundPacketDropRate = 0.0f,
+        float inboundPacketDropRate = 0.0f) :
         defaultRtt_(defaultRtt),
         connectTimeout_(connectTimeout),
         pingInterval_(pingInterval),
@@ -76,17 +80,21 @@ struct P2pConfig
         roundTripTimeoutLimitFactor_(roundTripTimeoutLimitFactor),
         maxDisconnectTimeout_(maxDisconnectTimeout),
         minDisconnectTimeout_(minDisconnectTimeout),
-        sendPacketLossRate_(sendPacketLossRate),
-        recvPacketLossRate_(recvPacketLossRate){}
+        outboundPacketDropRate_(outboundPacketDropRate),
+        inboundPacketDropRate_(inboundPacketDropRate){}
 
-    bool shouldDropSendPacket() const {
-        return (sendPacketLossRate_ > 0.0f) && (randf() < sendPacketLossRate_);
+    bool shouldDropOutboundPacket() const {
+        return (outboundPacketDropRate_ > 0.0f) &&
+            (randf() < outboundPacketDropRate_);
     }
 
-    bool shouldDropRecvPacket() const {
-        return (recvPacketLossRate_ > 0.0f) && (randf() < recvPacketLossRate_);
+    bool shouldDropInboundPacket() const {
+        return (inboundPacketDropRate_ > 0.0f) &&
+            (randf() < inboundPacketDropRate_);
     }
 
+private:
+    // get random number from 0.0 to 1.0
     float randf() const {
         return static_cast<float>(rand()) / RAND_MAX;
     }
