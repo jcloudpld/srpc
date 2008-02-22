@@ -65,10 +65,15 @@ void AnonymousMessageManager::handleIncomingUnreliableMessages()
 
 
 void AnonymousMessageManager::handleIncomingMessage(PeerId peerId,
-    Message& msg, srpc::RpcPacketType packetType)
+    Message& message, srpc::RpcPacketType packetType)
 {
-    (void)messageHandler_.handleIncomingMessage(peerId, packetType, msg);
-    msg.release();
+    if (messageHandler_.handleIncomingMessage(peerId, message)) {
+        if (isReliable(packetType)) {
+            messageHandler_.sendAcknowledgement(peerId, message);
+        }
+    }
+
+    message.release();
 }
 
 } // namespace detail

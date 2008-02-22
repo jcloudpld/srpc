@@ -35,7 +35,7 @@ public:
      * @return 정상적으로 처리가 되었는가?
      */
     virtual bool handleIncomingMessage(PeerId peerId,
-        srpc::RpcPacketType packetType, const Message& message) = 0;
+        const Message& message) = 0;
 
     /**
      * 해당 Peer의 접속을 확인 했음을 알린다.

@@ -38,7 +38,7 @@ public:
 private:
     void handleIncomingReliableMessages();
     void handleIncomingUnreliableMessages();
-    void handleIncomingMessage(PeerId peerId, Message& msg,
+    void handleIncomingMessage(PeerId peerId, Message& message,
         srpc::RpcPacketType packetType);
 private:
     PeerMessageHandler& messageHandler_;

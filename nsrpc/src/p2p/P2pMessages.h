@@ -100,7 +100,6 @@ struct Message
 
     void release() {
         if (mblock_ != 0) {
-            mblock_->reset();
             mblock_->release();
             mblock_ = 0;
         }
@@ -108,6 +107,10 @@ struct Message
 
     bool operator < (const Message& rhs) const {
         return sequenceNumber_ < rhs.sequenceNumber_;
+    }
+
+    bool isValid() const {
+        return mblock_ != 0;
     }
 };
 
@@ -302,6 +305,9 @@ struct DelayedOutboundMessage : Message
     bool shouldFire(PeerTime currentTime) const {
         return fireTime_ <= currentTime;
     }
+
+private:
+    void operator=(const DelayedOutboundMessage& disabled);
 };
 
 
@@ -328,6 +334,49 @@ struct DelayedInboundMessage : Message
     bool shouldFire(PeerTime currentTime) const {
         return fireTime_ <= currentTime;
     }
+};
+
+
+/**
+* @struct AcknowledgementMessage
+* 신뢰 보장 패킷에 대한 응답(Ack) 메세지
+*/
+struct AcknowledgementMessage : Message
+{
+    PeerTime fireTime_;
+
+    AcknowledgementMessage() :
+        fireTime_(0) {}
+
+    void operator=(const Message& message) {
+        ACE_Message_Block* prevMblock = mblock_;
+        static_cast<Message&>(*this) = message;
+        if (prevMblock != 0) {
+            prevMblock->reset();
+            const size_t neededSize = message.mblock_->length();
+            if (prevMblock->capacity() < neededSize) {
+                prevMblock->size(neededSize);
+            }
+            assert(prevMblock->capacity() >= neededSize);
+            prevMblock->copy(message.mblock_->rd_ptr(), neededSize);
+            mblock_ = prevMblock;
+        }
+        else {
+            mblock_ = message.mblock_->clone();
+        }
+    }
+
+    bool shouldFire(PeerTime currentTime) const {
+        return fireTime_ <= currentTime;
+    }
+
+    void release() {
+        Message::release();
+        sequenceNumber_ = invalidSequenceNumber;
+    }
+
+private:
+    AcknowledgementMessage(const AcknowledgementMessage& disabled);
 };
 
 
