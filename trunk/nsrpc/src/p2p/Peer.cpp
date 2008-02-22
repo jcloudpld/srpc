@@ -98,6 +98,8 @@ void Peer::putOutgoingMessage(srpc::RpcPacketType packetType,
 void Peer::putIncomingMessage(const P2pPacketHeader& header,
     ACE_Message_Block* mblock, const ACE_INET_Addr& peerAddress)
 {
+    AceMessageBlockGuard mblockGuard(mblock);
+
     if (p2pConfig_.shouldDropInboundPacket()) {
         ++stats_.droppedRecvPackets_;
         NSRPC_LOG_DEBUG7(
@@ -109,22 +111,40 @@ void Peer::putIncomingMessage(const P2pPacketHeader& header,
         return;
     }
 
+    const srpc::UInt32 latency = p2pConfig_.getInboundPacketLatency();
+    if (latency <= 0) {
+        if (putIncomingMessageDirectly(header, mblock, peerAddress)) {
+            mblockGuard.release();
+        }
+    }
+    else {
+        getDelayedInboundMessages(header.packetType_).insert(
+            DelayedInboundMessage(header, mblock, peerAddress,
+                (getPeerTime() + latency)));
+        mblockGuard.release();
+    }
+}
+
+
+bool Peer::putIncomingMessageDirectly(const P2pPacketHeader& header,
+    ACE_Message_Block* mblock, const ACE_INET_Addr& peerAddress)
+{
     if (srpc::isReliable(header.packetType_)) {
         const ReliableMessage message(header.sequenceNumber_, mblock,
             peerAddress, header.sentTime_);
         if (putIncomingReliableMessage(message)) {
-            return;
+            return true;
         }
     } else {
         assert(srpc::isUnreliable(header.packetType_));
         const Message message(header.sequenceNumber_, mblock, peerAddress,
             header.sentTime_);
         if (putIncomingUnreliableMessage(message)) {
-            return;
+            return true;
         }
     }
 
-    mblock->release();
+    return false;
 }
 
 
@@ -229,6 +249,9 @@ void Peer::sendOutgoingMessages(PeerId fromPeerId)
 
 bool Peer::handleIncomingMessages()
 {
+    handleIncomingDelayedMessages(delayedIncomingUnreliableMessages_);
+    handleIncomingDelayedMessages(delayedIncomingReliableMessages_);
+
     handleIncomingReliableMessage();
     return handleIncomingUnreliableMessage();
 }
@@ -526,6 +549,30 @@ bool Peer::handleIncomingUnreliableMessage()
 }
 
 
+void Peer::handleIncomingDelayedMessages(DelayedInboundMessages& messages)
+{
+    const PeerTime currentTime = getPeerTime();
+
+    DelayedInboundMessages::iterator pos = messages.begin();
+    const DelayedInboundMessages::iterator end = messages.end();
+    for (; pos != end;) {
+        DelayedInboundMessage& message = *pos;
+
+        if (! message.shouldFire(currentTime)) {
+            break; // 시간 순으로 정렬되어 있으므로
+        }
+
+        if (! putIncomingMessageDirectly(message.header_, message.mblock_,
+            message.peerAddress_)) {
+            message.release();
+        }
+
+        messages.erase(pos++);
+        assert(end == messages.end());
+    }
+}
+
+
 bool Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
 {
     bool removed = false;
@@ -621,10 +668,11 @@ bool Peer::send(PeerId fromPeerId, Message& message,
         return sendNow(peerIdPair, addressPair, message, packetType,
             shouldReleaseMessageBlock);
     }
-
-    getDelayedOutboundMessages(packetType).insert(
-        DelayedOutboundMessage(message, addressPair, peerIdPair, packetType,
-            (getPeerTime() + latency)));
+    else {
+        getDelayedOutboundMessages(packetType).insert(
+            DelayedOutboundMessage(message, addressPair, peerIdPair,
+                packetType, (getPeerTime() + latency)));
+    }
     return true;
 }
 
