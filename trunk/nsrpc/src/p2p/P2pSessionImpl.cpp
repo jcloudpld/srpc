@@ -332,14 +332,13 @@ void P2pSessionImpl::acknowledge(PeerId peerId, const Message& message)
 }
 
 
-bool P2pSessionImpl::loopBack(PeerId peerId, srpc::RpcPacketType packetType,
-    ACE_Message_Block* mblock)
+bool P2pSessionImpl::loopBack(PeerId peerId, ACE_Message_Block* mblock)
 {
     if (isSelf(peerId) || isBroadcast(peerId)) {
         const char* rdPtr = mblock->rd_ptr();
         mblock->rd_ptr(packetCoder_->getHeaderSize());
         const PeerPtr me(peerManager_.getMe());
-        (void)handleIncomingMessage(me->getPeerId(), packetType,
+        (void)handleIncomingMessage(me->getPeerId(),
             Message(invalidSequenceNumber, mblock, me->getTargetAddress(), 0));
         mblock->rd_ptr(const_cast<char*>(rdPtr));
         if (! isBroadcast(peerId)) {
@@ -493,7 +492,7 @@ void P2pSessionImpl::sendOutgoingMessage(srpc::RpcPacketType packetType,
     }
 
     if (peerManager_.isExists(peerId) || isBroadcast(peerId)) {
-        if (loopBack(peerId, packetType, mblock)) {
+        if (loopBack(peerId, mblock)) {
             return;
         }
         
@@ -519,7 +518,7 @@ size_t P2pSessionImpl::getHeaderSize() const
 
 // CAUTION: 에러 발생시 패킷 헤더가 잘못될 수 있으므로 접속 종료하지 않는다.
 bool P2pSessionImpl::handleIncomingMessage(PeerId peerId,
-    srpc::RpcPacketType packetType, const Message& message)
+    const Message& message)
 {
     recvBlock_->reset();
     recvBlock_->copy(message.mblock_->rd_ptr(), message.mblock_->length());
@@ -528,10 +527,6 @@ bool P2pSessionImpl::handleIncomingMessage(PeerId peerId,
             ACE_TEXT("P2pSessionImpl::handleIncomingMessage(P%u,#%u) FAILED."),
             peerId, message.sequenceNumber_);
         return false;
-    }
-
-    if (isReliable(packetType)) {
-        acknowledge(peerId, message);
     }
 
     return true;

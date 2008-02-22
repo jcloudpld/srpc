@@ -92,8 +92,7 @@ private:
     void resolve();
     void tryToConnect(PeerId peerId,
         const ACE_INET_Addr& targetAddress, const ACE_INET_Addr& peerAddress);
-    bool loopBack(PeerId peerId, srpc::RpcPacketType packetType,
-        ACE_Message_Block* mblock);
+    bool loopBack(PeerId peerId, ACE_Message_Block* mblock);
 
     bool encodeMessage(ACE_Message_Block& mblock,
         const PeerIdPair& peerIdPair, srpc::RpcPacketType packetType,
@@ -132,7 +131,7 @@ private:
 
     // = PeerMessageHandler overriding
     virtual bool handleIncomingMessage(PeerId peerId,
-        srpc::RpcPacketType packetType, const Message& message);
+        const Message& message);
     virtual bool acknowledgedConnect(PeerId peerId);
     virtual void peerDisconnecting(PeerId peerId);
     virtual void sendPing(PeerId peerId);

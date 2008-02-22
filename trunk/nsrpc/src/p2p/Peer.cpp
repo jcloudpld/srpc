@@ -158,7 +158,7 @@ bool Peer::putIncomingReliableMessage(const ReliableMessage& message)
             peerId_, message.sequenceNumber_ , incomingReliableSequenceNumber_,
             incomingReliableMessages_.size());
         // 상대방이 이전 패킷을 다시 전송하지 않도록 ack 전송
-        messageHandler_.sendAcknowledgement(peerId_, message);
+        sendAcknowledgement(message);
         return false;
     }
 
@@ -241,6 +241,8 @@ void Peer::sendOutgoingMessages(PeerId fromPeerId)
     else {
         sendOutgoingReliableMessages(fromPeerId);
     }
+
+    sendPendingAcknowledgement();
 
     sendOutgoingDelayedMessages(delayedOutgoingUnreliableMessages_);
     sendOutgoingDelayedMessages(delayedOutgoingReliableMessages_);
@@ -499,6 +501,39 @@ void Peer::sendPing(PeerId fromPeerId)
 }
 
 
+// TODO: memory leak 검사
+void Peer::sendAcknowledgement(const Message& message)
+{
+    if (lastAcknowledgementMessage_ < message) {
+        const SequenceNumber prevSeqNumber =
+            lastAcknowledgementMessage_.sequenceNumber_;
+        //NSRPC_LOG_DEBUG3("sendAcknowledgement(%d -> %d)",
+        //    prevSeqNumber, message.sequenceNumber_);
+        lastAcknowledgementMessage_ = message;
+        if (prevSeqNumber <= 0) {
+            lastAcknowledgementMessage_.fireTime_ =
+                getPeerTime() + (rtt_.meanRoundTripTime_ / 2);
+        }
+    }
+}
+
+
+void Peer::sendPendingAcknowledgement()
+{
+    if (! lastAcknowledgementMessage_.isValid()) {
+        return;
+    }
+
+    if (lastAcknowledgementMessage_.shouldFire(getPeerTime())) {
+        messageHandler_.sendAcknowledgement(peerId_,
+            lastAcknowledgementMessage_);
+        lastAcknowledgementMessage_.release();
+        assert(lastAcknowledgementMessage_.sequenceNumber_ ==
+            invalidSequenceNumber);
+    }
+}
+
+
 void Peer::handleIncomingReliableMessage()
 {
     if (! incomingReliableMessages_.empty()) {
@@ -507,9 +542,10 @@ void Peer::handleIncomingReliableMessage()
         ReliableMessage& message = *firstPos;
         if (message.sequenceNumber_ ==
             (incomingReliableSequenceNumber_ + 1)) {
-            if (messageHandler_.handleIncomingMessage(peerId_,
-                srpc::ptReliable, message)) {
+            if (messageHandler_.handleIncomingMessage(peerId_, message)) {
                 ++incomingReliableSequenceNumber_;
+
+                sendAcknowledgement(message);
             }
 
             message.release();
@@ -536,8 +572,7 @@ bool Peer::handleIncomingUnreliableMessage()
         Message& message = *firstPos;
         if (message.sequenceNumber_ >=
             (incomingUnreliableSequenceNumber_ + 1)) {
-            if (messageHandler_.handleIncomingMessage(peerId_,
-                srpc::ptUnreliable, message)) {
+            if (messageHandler_.handleIncomingMessage(peerId_, message)) {
                 incomingUnreliableSequenceNumber_ = message.sequenceNumber_;
             }
         }
@@ -669,9 +704,16 @@ bool Peer::send(PeerId fromPeerId, Message& message,
             shouldReleaseMessageBlock);
     }
     else {
-        getDelayedOutboundMessages(packetType).insert(
-            DelayedOutboundMessage(message, addressPair, peerIdPair,
-                packetType, (getPeerTime() + latency)));
+        DelayedOutboundMessages& delayedMessages =
+            getDelayedOutboundMessages(packetType);
+        if (! delayedMessages.isExists(message.sequenceNumber_)) {
+            delayedMessages.insert(
+                DelayedOutboundMessage(message, addressPair, peerIdPair,
+                    packetType, (getPeerTime() + latency)));
+        }
+        if (shouldReleaseMessageBlock) {
+            message.release();
+        }
     }
     return true;
 }
@@ -715,6 +757,7 @@ void Peer::releaseMessages()
     incomingUnreliableMessages_.release();
     delayedOutgoingReliableMessages_.release();
     delayedOutgoingUnreliableMessages_.release();
+    lastAcknowledgementMessage_.release();
 }
 
 

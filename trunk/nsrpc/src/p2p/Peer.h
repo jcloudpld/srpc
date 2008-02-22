@@ -166,6 +166,9 @@ private:
 
     void sendPing(PeerId fromPeerId);
 
+    void sendAcknowledgement(const Message& message);
+    void sendPendingAcknowledgement();
+
     bool removeSentReliableMessage(SequenceNumber sequenceNumber);
     void adjustRoundTripTime(PeerTime receivedSentTime);
 
@@ -230,6 +233,8 @@ private:
 
     DelayedInboundMessages delayedIncomingReliableMessages_;
     DelayedInboundMessages delayedIncomingUnreliableMessages_;
+
+    AcknowledgementMessage lastAcknowledgementMessage_;
 
     RoundTripTime rtt_; ///< RoundTripTime 관련 정보
     PeerTime nextTimeoutCheckTime_; ///< 다음번 시간 초과 검사 시간
