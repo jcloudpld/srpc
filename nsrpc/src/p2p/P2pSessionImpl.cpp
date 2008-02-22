@@ -151,11 +151,11 @@ void P2pSessionImpl::setRelayServer(const PeerAddress& address,
 
 void P2pSessionImpl::tick()
 {
-    const PeerTime currentTime = getPeerTime();
+    setPeerTime();
 
-    resolve(currentTime);
+    resolve();
 
-    detectConnectionTimeout(currentTime);
+    detectConnectionTimeout();
 
 #ifdef USE_P2P_POLLING
     endpoint_.read();
@@ -167,7 +167,7 @@ void P2pSessionImpl::tick()
     anonymousMessageManager_.handleIncomingMessages();
     peerManager_.handleIncomingMessages();
 
-    peerManager_.sendOutgoingMessages(currentTime);
+    peerManager_.sendOutgoingMessages();
     peerManager_.handleDisconnectedPeers();
 }
 
@@ -212,7 +212,7 @@ void P2pSessionImpl::addMyPeer()
 
 void P2pSessionImpl::flush()
 {
-    peerManager_.sendOutgoingMessages(getPeerTime());
+    peerManager_.sendOutgoingMessages();
 }
 
 
@@ -247,10 +247,10 @@ void P2pSessionImpl::makeHost(PeerId peerId)
 }
 
 
-void P2pSessionImpl::detectConnectionTimeout(PeerTime currentTime)
+void P2pSessionImpl::detectConnectionTimeout()
 {
     const PeerIds failedPeerIds =
-        peerCandidateManager_.detectConnectionTimeout(currentTime);
+        peerCandidateManager_.detectConnectionTimeout();
 
     PeerIds::const_iterator pos = failedPeerIds.begin();
     const PeerIds::const_iterator end = failedPeerIds.end();
@@ -263,13 +263,13 @@ void P2pSessionImpl::detectConnectionTimeout(PeerTime currentTime)
 }
 
 
-void P2pSessionImpl::resolve(PeerTime currentTime)
+void P2pSessionImpl::resolve()
 {
     if (! peerManager_.isExists(relayServerPeerId)) {
         return;
     }
 
-    stunService_.resolve(currentTime);
+    stunService_.resolve(getPeerTime());
 }
 
 

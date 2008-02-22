@@ -21,7 +21,7 @@ struct P2pConfig
         peerPingInterval = 500,
         peerRoundTripTimeoutFactor = 2,
         peerRoundTripTimeoutLimitFactor = 10,
-        peerMaxDisconnectTimeout = 20000,
+        peerMaxDisconnectTimeout = 15000,
         peerMinDisconnectTimeout = 5000,
 
         /// default Maximum Transmission Unit 
@@ -35,7 +35,7 @@ struct P2pConfig
         initialAddressResolvingCount = 3,
 
         // the interval to keep NAT port mapping (milli-seconds)
-        defaultNatPortHoldingInterval = (10 * 1000)
+        defaultNatPortHoldingInterval = (10 * 1000),
     };
 
     /// default Round trip time value(msec)
@@ -56,11 +56,13 @@ struct P2pConfig
     /// outbound packet drop rate (0.0~1.0, default: 0.0).
     /// Each packet stands the same chance of being dropped,
     /// regardless of other packets.
+    /// - high packet loss: 0.1
     float outboundPacketDropRate_;
 
     /// inbound packet drop rate (0.0~1.0, default: 0.0)
     /// Each packet stands the same chance of being dropped,
     /// regardless of other packets.
+    /// - high packet loss: 0.1
     float inboundPacketDropRate_;
 
     explicit P2pConfig(unsigned int defaultRtt = peerDefaultRtt,

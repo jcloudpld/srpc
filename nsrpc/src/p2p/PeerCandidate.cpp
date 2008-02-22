@@ -146,8 +146,10 @@ bool PeerCandidateManager::putOutgoingMessage(PeerId peerId,
 }
 
 
-PeerIds PeerCandidateManager::detectConnectionTimeout(PeerTime currentTime)
+PeerIds PeerCandidateManager::detectConnectionTimeout()
 {
+    const PeerTime currentTime = getPeerTime();
+
     PeerIds failedPeerIds;
     failedPeerIds.reserve(candidates_.size());
 

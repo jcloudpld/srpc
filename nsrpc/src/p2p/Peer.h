@@ -59,7 +59,7 @@ public:
     void putIncomingMessage(const P2pPacketHeader& header,
         ACE_Message_Block* mblock, const ACE_INET_Addr& peerAddress);
 
-    void sendOutgoingMessages(PeerId fromPeerId, PeerTime currentTime);
+    void sendOutgoingMessages(PeerId fromPeerId);
 
     bool handleIncomingMessages();
 
@@ -147,39 +147,34 @@ private:
     bool putIncomingReliableMessage(const ReliableMessage& message);
     bool putIncomingUnreliableMessage(const Message& message);
 
-    void sendOutgoingReliableMessages(PeerId fromPeerId,
-        PeerTime currentTime);
+    void sendOutgoingReliableMessages(PeerId fromPeerId);
+
     void sendOutgoingUnreliableMessages(PeerId fromPeerId);
 
-    void handleIncomingReliableMessages();
-    bool handleIncomingUnreliableMessages();
+    void handleIncomingReliableMessage();
+    bool handleIncomingUnreliableMessage();
 
-    void checkTimeout(PeerTime currentTime);
-    bool checkDisconnect(PeerTime currentTime,
-        const ReliableMessage& sentReliableMessage);
+    void checkTimeout();
+    bool checkDisconnect(const ReliableMessage& sentReliableMessage);
     void retransmit(ReliableMessage& message);
 
-    void sendPing(PeerId fromPeerId, PeerTime currentTime);
+    void sendPing(PeerId fromPeerId);
 
     bool removeSentReliableMessage(SequenceNumber sequenceNumber);
     void adjustRoundTripTime(PeerTime receivedSentTime);
 
-    void setNextTimeout(PeerTime timeout) {
-        if (timeout > nextTimeoutCheckTime_) {
-            nextTimeoutCheckTime_ = timeout;
-        }
-    }
+    void setNextTimeoutCheckTime(PeerTime timeout);
 
     void releaseMessages();
 
-    bool shouldSendPing(PeerTime currentTime) const;
+    bool shouldSendPing() const;
 
     AddressPair getAddressPair(const Message& message) const {
         return AddressPair(message.peerAddress_, addresses_.front());
     }
 
-    bool shouldCheckTimeout(PeerTime currentTime) const {
-        return currentTime >= nextTimeoutCheckTime_;
+    bool shouldCheckTimeout() const {
+        return getPeerTime() >= nextTimeoutCheckTime_;
     }
 private:
     PeerId peerId_;
@@ -206,6 +201,7 @@ private:
 
     RoundTripTime rtt_; ///< RoundTripTime 관련 정보
     PeerTime nextTimeoutCheckTime_; ///< 다음번 시간 초과 검사 시간
+    PeerTime nextTimeoutCheckTimeUpdatedTime_;
     PeerTime lastReceiveTime_; ///< 가장 최근 Ack 메세지 수신 시간
     PeerTime earliestSentTimeout_; ///< 가장 오래된 신뢰성 패킷 전송 시간
 
