@@ -66,6 +66,14 @@ bool Config::parseArgs(int argc, char* argv[])
             inboundPacketDropRate_ =
                 static_cast<float>(atof(arg.substr(5).c_str()));
         }
+        else if (arg.compare(0, 5, "-nsl=") == 0) {
+            minOutboundPacketLatency_ =
+                static_cast<srpc::UInt32>(atoi(arg.substr(5).c_str()));
+        }
+        else if (arg.compare(0, 5, "-xsl=") == 0) {
+            maxOutboundPacketLatency_ =
+                static_cast<srpc::UInt32>(atoi(arg.substr(5).c_str()));
+        }
         else {
             std::cerr << "Unknown option '" << arg << "', ignoring it.\n";
         }
@@ -95,8 +103,10 @@ void Config::printUsage()
         "  -ra=<address:port> : relay server address\n" <<
         "  -ha=<address:port> : P2P host address(connect to host)\n" <<
         "  -h P2P host\n" <<
-        "  -spd=<send packet drop rate> : 0.0 ~ 1.0\n"
-        "  -rpd=<recv packet drop rate> : 0.0 ~ 1.0\n"
+        "  -spd=<send packet drop rate> : 0.0 ~ 1.0 (default: 0.0)\n"
+        "  -rpd=<recv packet drop rate> : 0.0 ~ 1.0 (default: 0.0)\n"
+        "  -nsl=<min. send packet latency(ms)> : 0 ~ (default: 0)\n"
+        "  -xsl=<max. send packet latency(ms)> : 0 ~ (default: 0)\n"
         "  -v verbose (default: off)\n" <<
         " ex) P2P host:\n" <<
         "   P2pTest -p=1 -l=10000 -ra=111.111.111.111:111 -h\n" <<
