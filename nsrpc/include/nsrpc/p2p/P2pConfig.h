@@ -53,36 +53,61 @@ struct P2pConfig
     /// min disconnect timeout value (msec)
     unsigned int minDisconnectTimeout_;
 
-    /// outbound packet drop rate (0.0~1.0, default: 0.0).
+    /// outbound packet drop rate (0.0~1.0).
     /// Each packet stands the same chance of being dropped,
     /// regardless of other packets.
+    /// - default: 0.0
     /// - ex) high packet loss: 0.1
     float outboundPacketDropRate_;
 
-    /// inbound packet drop rate (0.0~1.0, default: 0.0)
+    /// inbound packet drop rate (0.0~1.0)
     /// Each packet stands the same chance of being dropped,
     /// regardless of other packets.
+    /// - default: 0.0
     /// - ex) high packet loss: 0.1
     float inboundPacketDropRate_;
 
-    /// The minimum delay in milliseconds for outbound (inbound) packets.
+    /// The minimum delay in milliseconds for outbound packets.
     /// The actual delay for an individual packet is chosen randomly between
     /// this minimum value and the maximum latency value.
     /// Use 0 if you do not want to have a lower bound for artificial latency
     /// beyond the real underlying network.
+    /// - default: 0
     /// - ex) high min. latency: 100
     unsigned int minOutboundPacketLatency_;
 
-    /// The maximum delay in milliseconds for outbound (inbound) packets.
+    /// The maximum delay in milliseconds for outbound packets.
     /// The actual delay for an individual packet is chosen randomly between
     /// the minimum latency value and this maximum value.
     /// If this value is lower than the minimum latency value, it is
     /// automatically set to equal the minimum value.
     /// Use 0 if you do not want to have an upper bound for artificial latency
     /// beyond the real underlying network. 
+    /// - default: 0
     /// - ex) high max. latency: 400
     unsigned int maxOutboundPacketLatency_;
 
+    /// The minimum delay in milliseconds for inbound packets.
+    /// The actual delay for an individual packet is chosen randomly between
+    /// this minimum value and the maximum latency value.
+    /// Use 0 if you do not want to have a lower bound for artificial latency
+    /// beyond the real underlying network.
+    /// - default: 0
+    /// - ex) high min. latency: 100
+    unsigned int minInboundPacketLatency_;
+
+    /// The maximum delay in milliseconds for inbound packets.
+    /// The actual delay for an individual packet is chosen randomly between
+    /// the minimum latency value and this maximum value.
+    /// If this value is lower than the minimum latency value, it is
+    /// automatically set to equal the minimum value.
+    /// Use 0 if you do not want to have an upper bound for artificial latency
+    /// beyond the real underlying network. 
+    /// - default: 0
+    /// - ex) high max. latency: 400
+    unsigned int maxInboundPacketLatency_;
+
+    /// ctor
     explicit P2pConfig(unsigned int defaultRtt = peerDefaultRtt,
         unsigned int connectTimeout = peerDefaultConnectTimeout,
         unsigned int pingInterval = peerPingInterval,
@@ -94,7 +119,9 @@ struct P2pConfig
         float outboundPacketDropRate = 0.0f,
         float inboundPacketDropRate = 0.0f,
         unsigned int minOutboundPacketLatency = 0,
-        unsigned int maxOutboundPacketLatency = 0) :
+        unsigned int maxOutboundPacketLatency = 0,
+        unsigned int minInboundPacketLatency = 0,
+        unsigned int maxInboundPacketLatency = 0) :
         defaultRtt_(defaultRtt),
         connectTimeout_(connectTimeout),
         pingInterval_(pingInterval),
@@ -105,6 +132,8 @@ struct P2pConfig
         setPacketDropRate(outboundPacketDropRate, inboundPacketDropRate);
         setOutboundPacketLatency(minOutboundPacketLatency,
             maxOutboundPacketLatency);
+        setInboundPacketLatency(minInboundPacketLatency,
+            maxInboundPacketLatency);
     }
 
     void setPacketDropRate(float outboundPacketDropRate,
@@ -136,6 +165,16 @@ struct P2pConfig
         }
     }
 
+    void setInboundPacketLatency(unsigned int minInboundPacketLatency,
+        unsigned int maxInboundPacketLatency) {
+        minInboundPacketLatency_ = minInboundPacketLatency;
+        maxInboundPacketLatency_ = maxInboundPacketLatency;
+
+        if (maxInboundPacketLatency_ < minInboundPacketLatency_) {
+            maxInboundPacketLatency_ = minInboundPacketLatency_;
+        }
+    }
+
     bool shouldDropOutboundPacket() const {
         return (outboundPacketDropRate_ > 0.0f) &&
             (getDropRate() < outboundPacketDropRate_);
@@ -155,6 +194,14 @@ struct P2pConfig
             maxOutboundPacketLatency_);
     }
 
+    unsigned int getInboundPacketLatency() const {
+        if (maxInboundPacketLatency_ <= 0) {
+            return 0;
+        }
+
+        return getLatency(minInboundPacketLatency_,
+            maxInboundPacketLatency_);
+    }
 private:
     // get random number from 0.0 to 1.0
     float getDropRate() const {

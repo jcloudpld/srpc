@@ -45,6 +45,8 @@ Peer::Peer(const Config& config) :
         config.getRecvPacketLossRate());
     p2pConfig.setOutboundPacketLatency(config.getMinOutboundPacketLatency(),
         config.getMaxOutboundPacketLatency());
+    p2pConfig.setInboundPacketLatency(config.getMinInboundPacketLatency(),
+        config.getMaxInboundPacketLatency());
 
     p2pSession_.reset(nsrpc::P2pSessionFactory::create(config_.getPeerId(),
         *this, p2pConfig));

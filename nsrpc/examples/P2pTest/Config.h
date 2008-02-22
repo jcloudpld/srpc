@@ -19,7 +19,9 @@ public:
         outboundPacketDropRate_(0.0f),
         inboundPacketDropRate_(0.0f),
         minOutboundPacketLatency_(0),
-        maxOutboundPacketLatency_(0) {}
+        maxOutboundPacketLatency_(0),
+        minInboundPacketLatency_(0),
+        maxInboundPacketLatency_(0) {}
 
     bool parseArgs(int argc, char* argv[]);
 
@@ -61,6 +63,14 @@ public:
         return maxOutboundPacketLatency_;
     }
 
+    srpc::UInt32 getMinInboundPacketLatency() const {
+        return minInboundPacketLatency_;
+    }
+
+    srpc::UInt32 getMaxInboundPacketLatency() const {
+        return maxInboundPacketLatency_;
+    }
+
     bool isVerbose() const {
         return verbose_;
     }
@@ -77,6 +87,8 @@ private:
     float inboundPacketDropRate_;
     srpc::UInt32 minOutboundPacketLatency_;
     srpc::UInt32 maxOutboundPacketLatency_;
+    srpc::UInt32 minInboundPacketLatency_;
+    srpc::UInt32 maxInboundPacketLatency_;
 };
 
 #endif // P2PTEST_CONFIG_H

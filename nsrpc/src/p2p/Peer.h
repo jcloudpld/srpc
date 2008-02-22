@@ -39,6 +39,7 @@ class Peer : public SharedObject
     typedef MessageSet<Message> Messages;
     typedef MessageSet<ReliableMessage> ReliableMessages;
     typedef MessageSet<DelayedOutboundMessage> DelayedOutboundMessages;
+    typedef MessageSet<DelayedInboundMessage> DelayedInboundMessages;
 public:
 
     Peer(PeerId peerId, const Addresses& addresses,
@@ -145,16 +146,19 @@ private:
     void putOutgoingUnreliableMessage(const Message& message);
     void putSentReliableMessage(const ReliableMessage& message);
 
+    bool putIncomingMessageDirectly(const P2pPacketHeader& header,
+        ACE_Message_Block* mblock, const ACE_INET_Addr& peerAddress);
     bool putIncomingReliableMessage(const ReliableMessage& message);
     bool putIncomingUnreliableMessage(const Message& message);
 
     void sendOutgoingReliableMessages(PeerId fromPeerId);
     void sendOutgoingUnreliableMessages(PeerId fromPeerId);
 
-    void sendOutgoingDelayedMessages(DelayedOutboundMessages& messages);
-
     void handleIncomingReliableMessage();
     bool handleIncomingUnreliableMessage();
+
+    void sendOutgoingDelayedMessages(DelayedOutboundMessages& messages);
+    void handleIncomingDelayedMessages(DelayedInboundMessages& messages);
 
     void checkTimeout();
     bool checkDisconnect(const ReliableMessage& sentReliableMessage);
@@ -192,6 +196,12 @@ private:
             delayedOutgoingUnreliableMessages_;
     }
 
+    DelayedInboundMessages& getDelayedInboundMessages(
+        srpc::RpcPacketType packetType) {
+        return (packetType == srpc::ptReliable) ?
+            delayedIncomingReliableMessages_ :
+            delayedIncomingUnreliableMessages_;
+    }
 private:
     PeerId peerId_;
     ACE_INET_Addr targetAddress_;
@@ -217,6 +227,9 @@ private:
 
     DelayedOutboundMessages delayedOutgoingReliableMessages_;
     DelayedOutboundMessages delayedOutgoingUnreliableMessages_;
+
+    DelayedInboundMessages delayedIncomingReliableMessages_;
+    DelayedInboundMessages delayedIncomingUnreliableMessages_;
 
     RoundTripTime rtt_; ///< RoundTripTime 관련 정보
     PeerTime nextTimeoutCheckTime_; ///< 다음번 시간 초과 검사 시간

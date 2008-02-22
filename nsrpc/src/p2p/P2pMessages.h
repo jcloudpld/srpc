@@ -305,6 +305,32 @@ struct DelayedOutboundMessage : Message
 };
 
 
+/**
+* @struct DelayedInboundMessage
+* 수신이 지연된 메세지
+*/
+struct DelayedInboundMessage : Message
+{
+    P2pPacketHeader header_;
+    PeerTime fireTime_;
+
+    DelayedInboundMessage() :
+        fireTime_(0) {}
+
+    DelayedInboundMessage(const P2pPacketHeader& header,
+        ACE_Message_Block* mblock, const ACE_INET_Addr& peerAddress,
+        PeerTime fireTime) :
+        Message(header.sequenceNumber_, mblock, peerAddress,
+            header.sentTime_),
+        header_(header),
+        fireTime_(fireTime) {}
+
+    bool shouldFire(PeerTime currentTime) const {
+        return fireTime_ <= currentTime;
+    }
+};
+
+
 /** @} */ // addtogroup p2p
 
 } // namespace detail
