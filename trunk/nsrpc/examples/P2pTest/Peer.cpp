@@ -258,7 +258,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
             std::cout << "* P" << hint.peerId_ << ": " << expectedTick <<
                 " expected, but " << tick << " arrived.\n";
             printAllStats();
-            return; //exit(1);
+            exit(1);
         }
     }
 

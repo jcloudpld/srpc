@@ -147,7 +147,7 @@ void PeerManager::putIncomingMessage(const P2pPacketHeader& header,
 }
 
 
-void PeerManager::sendOutgoingMessages(PeerTime currentTime)
+void PeerManager::sendOutgoingMessages()
 {
     if (me_.isNull()) {
         return;
@@ -156,7 +156,7 @@ void PeerManager::sendOutgoingMessages(PeerTime currentTime)
     const PeerId myPeerId = me_->getPeerId();
 
     if (! relayServer_.isNull()) {
-        relayServer_->sendOutgoingMessages(myPeerId, currentTime);
+        relayServer_->sendOutgoingMessages(myPeerId);
     }
 
     Peers::iterator pos = peers_.begin();
@@ -167,7 +167,7 @@ void PeerManager::sendOutgoingMessages(PeerTime currentTime)
             continue;
         }
 
-        peer->sendOutgoingMessages(myPeerId, currentTime);
+        peer->sendOutgoingMessages(myPeerId);
 
         if (peer->isDisconnecting()) {
             removePeerNextTime(peer->getPeerId());

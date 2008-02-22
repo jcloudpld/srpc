@@ -117,6 +117,7 @@ struct ReliableMessage : Message
 {
     PeerTime roundTripTimeout_;
     PeerTime roundTripTimeoutLimit_;
+    srpc::UInt16 sendAttempts_; ///< 전송 시도를 몇번이나 했는가?
 
     explicit ReliableMessage(
         SequenceNumber sequenceNumber = invalidSequenceNumber,
@@ -125,18 +126,14 @@ struct ReliableMessage : Message
         PeerTime sentTime = 0) :
         Message(sequenceNumber, mblock, peerAddress, sentTime),
         roundTripTimeout_(0),
-        roundTripTimeoutLimit_(0) {}
+        roundTripTimeoutLimit_(0),
+        sendAttempts_(0) {}
 
-    void adjustRoundTripTimeout(const P2pConfig& p2pConfig,
-        const RoundTripTime& rtt) {
-        if (! isRoundTripTimeoutAdjusted()) {
-            const PeerTime roundTripTime = (rtt.meanRoundTripTime_ > 0) ?
-                rtt.meanRoundTripTime_ : p2pConfig.defaultRtt_;
-            roundTripTimeout_ = roundTripTime +
-                (rtt.roundTripTimeVariance_ * p2pConfig.roundTipTimeoutFactor_);
-            roundTripTimeoutLimit_ =
-                p2pConfig.roundTripTimeoutLimitFactor_ * roundTripTimeout_;
-        }
+    void attemptToSending(const P2pConfig& p2pConfig,
+        const RoundTripTime& rtt, PeerTime currentTime) {
+        ++sendAttempts_;
+        adjustRoundTripTimeout(p2pConfig, rtt);
+        sentTime_ = currentTime;
     }
 
     void increaseRoundTripTimeout() {
@@ -157,6 +154,18 @@ struct ReliableMessage : Message
     }
 
 private:
+    void adjustRoundTripTimeout(const P2pConfig& p2pConfig,
+        const RoundTripTime& rtt) {
+        if (! isRoundTripTimeoutAdjusted()) {
+            const PeerTime roundTripTime = (rtt.meanRoundTripTime_ > 0) ?
+                rtt.meanRoundTripTime_ : p2pConfig.defaultRtt_;
+            roundTripTimeout_ = roundTripTime +
+                (rtt.roundTripTimeVariance_ * p2pConfig.roundTipTimeoutFactor_);
+            roundTripTimeoutLimit_ =
+                p2pConfig.roundTripTimeoutLimitFactor_ * roundTripTimeout_;
+        }
+    }
+
     bool isRoundTripTimeoutAdjusted() const {
         return roundTripTimeout_ != 0;
     } 
@@ -232,6 +241,19 @@ public:
             MessageType& msg = *pos;
             msg.release();
             erase(pos);
+        }
+    }
+
+    void releaseTo(SequenceNumber sequenceNumber) {
+        iterator pos = begin();
+        const iterator endPos = end();
+        while (pos != endPos) {
+            MessageType& msg = *pos;
+            if (msg.sequenceNumber_ > sequenceNumber) {
+                break;
+            }
+            msg.release();
+            erase(pos++);
         }
     }
 

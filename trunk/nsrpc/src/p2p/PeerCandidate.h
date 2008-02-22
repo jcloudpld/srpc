@@ -41,7 +41,7 @@ public:
     bool putOutgoingMessage(PeerId peerId, const ACE_INET_Addr& targetAddress,
         ACE_Message_Block* mblock);
 
-    PeerIds detectConnectionTimeout(PeerTime currentTime);
+    PeerIds detectConnectionTimeout();
 
     size_t getCandidateCount() const {
         return candidates_.size();

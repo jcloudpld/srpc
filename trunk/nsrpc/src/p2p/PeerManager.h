@@ -50,7 +50,7 @@ public:
     void putIncomingMessage(const P2pPacketHeader& header,
         const ACE_INET_Addr& peerAddress, ACE_Message_Block* mblock);
 
-    void sendOutgoingMessages(PeerTime currentTime);
+    void sendOutgoingMessages();
 
     void handleIncomingMessages();
 

@@ -85,11 +85,11 @@ private:
     void connectToPeer(PeerId peerId, const Addresses& peerAddresses);
     void makeHost(PeerId peerId);
 
-    void detectConnectionTimeout(PeerTime currentTime);
+    void detectConnectionTimeout();
 
     void addMyPeer();
     void flush();
-    void resolve(PeerTime currentTime);
+    void resolve();
     void tryToConnect(PeerId peerId,
         const ACE_INET_Addr& targetAddress, const ACE_INET_Addr& peerAddress);
     bool loopBack(PeerId peerId, srpc::RpcPacketType packetType,
