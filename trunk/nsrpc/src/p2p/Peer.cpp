@@ -121,7 +121,7 @@ void Peer::putIncomingMessage(const P2pPacketHeader& header,
 
 bool Peer::putIncomingReliableMessage(const ReliableMessage& message)
 {
-    ++stats_.packetsReceivedReliable_;
+    ++stats_.receivedReliablePackets_;
 
     if (message.sequenceNumber_ <= incomingReliableSequenceNumber_) {
         NSRPC_LOG_DEBUG5(
@@ -152,7 +152,7 @@ bool Peer::putIncomingReliableMessage(const ReliableMessage& message)
 
 bool Peer::putIncomingUnreliableMessage(const Message& message)
 {
-    ++stats_.packetsReceivedUnreliable_;
+    ++stats_.receivedUnreliablePackets_;
 
     // TODO: 늦게 도착한 Unreliable 패킷을 어떻게 처리할까?
     //if (message.sequenceNumber_ <= incomingUnreliableSequenceNumber_) {
@@ -270,7 +270,7 @@ void Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
 
         putSentReliableMessage(message);
 
-        ++stats_.packetsSentReliable_;
+        ++stats_.sentReliablePackets_;
 
         if (! networkSender_.sendNow(PeerIdPair(fromPeerId, peerId_),
             getAddressPair(message), *message.mblock_, srpc::ptReliable,
@@ -296,7 +296,7 @@ void Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
             break;
         }
 
-        ++stats_.packetsSentUnreliable_;
+        ++stats_.sentUnreliablePackets_;
 
         message.release();
         outgoingUnreliableMessages_.erase(pos++);
@@ -390,7 +390,7 @@ void Peer::retransmit(ReliableMessage& message)
         return;
     }
 
-    ++stats_.packetsLost_;
+    ++stats_.lostSendPackets_;
 
     NSRPC_LOG_DEBUG10("retransmit(P%u, #%u, %u, %u, %u~%u, %u/%u, %u)",
         peerId_, message.sequenceNumber_, message.sendAttempts_,

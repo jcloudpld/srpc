@@ -102,7 +102,7 @@ public:
         if (messageSent) {
             assert(outgoingReliableSequenceNumber_ == 0);
             ++outgoingReliableSequenceNumber_;
-            ++stats_.packetsSentReliable_;
+            ++stats_.sentReliablePackets_;
             assert(incomingReliableSequenceNumber_ == 0);
             ++incomingReliableSequenceNumber_;
         }

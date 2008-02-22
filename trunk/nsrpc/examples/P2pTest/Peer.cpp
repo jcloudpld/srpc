@@ -149,13 +149,13 @@ void Peer::printStats(nsrpc::PeerId peerId)
     const nsrpc::PeerStats stats = p2pSession_->getStats(peerId);
     std::cout << "* Peer(P" << peerId << ") Stats:\n" <<
         "  TargetAddress=" << address.ip_ << ":" << address.port_ << ",\n" <<
-        "  PacketsSentReliable=" << stats.packetsSentReliable_ << ",\n" <<
-        "  PacketsSentUnreliable=" << stats.packetsSentUnreliable_ << ",\n" <<
-        "  PacketsReceivedReliable=" << stats.packetsReceivedReliable_ <<
+        "  PacketsSentReliable=" << stats.sentReliablePackets_ << ",\n" <<
+        "  PacketsSentUnreliable=" << stats.sentUnreliablePackets_ << ",\n" <<
+        "  PacketsReceivedReliable=" << stats.receivedReliablePackets_ <<
         ",\n" <<
-        "  PacketsReceivedUnreliable=" << stats.packetsReceivedUnreliable_ <<
+        "  PacketsReceivedUnreliable=" << stats.receivedUnreliablePackets_ <<
         ",\n" <<
-        "  PacketsLost=" << stats.packetsLost_ << ",\n" <<
+        "  PacketsLost=" << stats.lostSendPackets_ << ",\n" <<
         "  MeanRoundTripTime=" << stats.meanRoundTripTime_ << ",\n" <<
         "  HighestRoundTripTime=" << stats.highestRoundTripTime_ << ",\n" <<
         "  RoundTripTimeVariance=" << stats.roundTripTimeVariance_ << ",\n" <<

@@ -78,10 +78,10 @@ void P2pSessionTest::testOpen()
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("sent packets",
         0,
-        static_cast<int>(hostSession_->getStats(1).packetsSentReliable_));
+        static_cast<int>(hostSession_->getStats(1).sentReliablePackets_));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("recv packets",
         0,
-        static_cast<int>(hostSession_->getStats(1).packetsReceivedReliable_));
+        static_cast<int>(hostSession_->getStats(1).receivedReliablePackets_));
 }
 
 
@@ -130,13 +130,13 @@ void P2pSessionTest::testOnePeerConnect()
 
     //const PeerStats statsPeer = hostSession_->getStats(2);
     //CPPUNIT_ASSERT_EQUAL_MESSAGE("peer's sent reliable packets",
-    //    1, static_cast<int>(statsPeer.packetsSentReliable_));
+    //    1, static_cast<int>(statsPeer.sentReliablePackets_));
     //CPPUNIT_ASSERT_EQUAL_MESSAGE("peer's recv reliable packets",
-    //    1, static_cast<int>(statsPeer.packetsReceivedReliable_));
+    //    1, static_cast<int>(statsPeer.receivedReliablePackets_));
     //CPPUNIT_ASSERT_EQUAL_MESSAGE("peer's sent unreliable packets",
-    //    1, static_cast<int>(statsPeer.packetsSentUnreliable_));
+    //    1, static_cast<int>(statsPeer.sentUnreliablePackets_));
     //CPPUNIT_ASSERT_EQUAL_MESSAGE("peer's recv unreliable packets",
-    //    1, static_cast<int>(statsPeer.packetsReceivedUnreliable_));
+    //    1, static_cast<int>(statsPeer.receivedUnreliablePackets_));
     //CPPUNIT_ASSERT_MESSAGE(
     //    (boost::format("peer's RTT(%d)") %
     //        static_cast<int>(statsPeer.meanRoundTripTime_)).str(),
@@ -146,13 +146,13 @@ void P2pSessionTest::testOnePeerConnect()
 
     //const PeerStats statsHost = peer->getStats(1);
     //CPPUNIT_ASSERT_EQUAL_MESSAGE("host's reliable sent packets",
-    //    1, static_cast<int>(statsHost.packetsSentReliable_));
+    //    1, static_cast<int>(statsHost.sentReliablePackets_));
     //CPPUNIT_ASSERT_EQUAL_MESSAGE("host's reliable recv packets",
-    //    1, static_cast<int>(statsHost.packetsReceivedReliable_));
+    //    1, static_cast<int>(statsHost.receivedReliablePackets_));
     //CPPUNIT_ASSERT_EQUAL_MESSAGE("host's unreliable sent packets",
-    //    1, static_cast<int>(statsHost.packetsSentUnreliable_));
+    //    1, static_cast<int>(statsHost.sentUnreliablePackets_));
     //CPPUNIT_ASSERT_EQUAL_MESSAGE("host's unreliable recv packets",
-    //    1, static_cast<int>(statsHost.packetsReceivedUnreliable_));
+    //    1, static_cast<int>(statsHost.receivedUnreliablePackets_));
 }
 
 
@@ -205,10 +205,10 @@ void P2pSessionTest::testMultiplePeerConnect()
     //for (size_t i = 0; i < hostSession_->getPeerCount(); ++i) {
     //    PeerStats stats = hostSession_->getStats(static_cast<PeerId>(i + 1));
     //    printf("#%u - (%d,%d,%d,%d)\n", i + 1,
-    //        stats.packetsSentReliable_,
-    //        stats.packetsReceivedReliable_,
-    //        stats.packetsSentUnreliable_,
-    //        stats.packetsReceivedUnreliable_);
+    //        stats.sentReliablePackets_,
+    //        stats.receivedReliablePackets_,
+    //        stats.sentUnreliablePackets_,
+    //        stats.receivedUnreliablePackets_);
     //}
 }
 
