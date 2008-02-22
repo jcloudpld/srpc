@@ -8,6 +8,7 @@ namespace srpc {
 /// 패킷을 어떻게 전송할 것인가? (TCP/IP에선 의미가 없다)
 enum RpcPacketType
 {
+    ptUnknown = -1,
     ptReliable, ///< 순서 보장. 전송 보장
     ptUnreliable ///< 순서, 전송 보장하지 않음
 };
