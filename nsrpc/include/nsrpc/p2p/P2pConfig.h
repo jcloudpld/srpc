@@ -56,14 +56,32 @@ struct P2pConfig
     /// outbound packet drop rate (0.0~1.0, default: 0.0).
     /// Each packet stands the same chance of being dropped,
     /// regardless of other packets.
-    /// - high packet loss: 0.1
+    /// - ex) high packet loss: 0.1
     float outboundPacketDropRate_;
 
     /// inbound packet drop rate (0.0~1.0, default: 0.0)
     /// Each packet stands the same chance of being dropped,
     /// regardless of other packets.
-    /// - high packet loss: 0.1
+    /// - ex) high packet loss: 0.1
     float inboundPacketDropRate_;
+
+    /// The minimum delay in milliseconds for outbound (inbound) packets.
+    /// The actual delay for an individual packet is chosen randomly between
+    /// this minimum value and the maximum latency value.
+    /// Use 0 if you do not want to have a lower bound for artificial latency
+    /// beyond the real underlying network.
+    /// - ex) high min. latency: 100
+    unsigned int minOutboundPacketLatency_;
+
+    /// The maximum delay in milliseconds for outbound (inbound) packets.
+    /// The actual delay for an individual packet is chosen randomly between
+    /// the minimum latency value and this maximum value.
+    /// If this value is lower than the minimum latency value, it is
+    /// automatically set to equal the minimum value.
+    /// Use 0 if you do not want to have an upper bound for artificial latency
+    /// beyond the real underlying network. 
+    /// - ex) high max. latency: 400
+    unsigned int maxOutboundPacketLatency_;
 
     explicit P2pConfig(unsigned int defaultRtt = peerDefaultRtt,
         unsigned int connectTimeout = peerDefaultConnectTimeout,
@@ -74,31 +92,80 @@ struct P2pConfig
         unsigned int maxDisconnectTimeout = peerMaxDisconnectTimeout,
         unsigned int minDisconnectTimeout = peerMinDisconnectTimeout,
         float outboundPacketDropRate = 0.0f,
-        float inboundPacketDropRate = 0.0f) :
+        float inboundPacketDropRate = 0.0f,
+        unsigned int minOutboundPacketLatency = 0,
+        unsigned int maxOutboundPacketLatency = 0) :
         defaultRtt_(defaultRtt),
         connectTimeout_(connectTimeout),
         pingInterval_(pingInterval),
         roundTipTimeoutFactor_(roundTipTimeoutFactor),
         roundTripTimeoutLimitFactor_(roundTripTimeoutLimitFactor),
         maxDisconnectTimeout_(maxDisconnectTimeout),
-        minDisconnectTimeout_(minDisconnectTimeout),
-        outboundPacketDropRate_(outboundPacketDropRate),
-        inboundPacketDropRate_(inboundPacketDropRate){}
+        minDisconnectTimeout_(minDisconnectTimeout) {
+        setPacketDropRate(outboundPacketDropRate, inboundPacketDropRate);
+        setOutboundPacketLatency(minOutboundPacketLatency,
+            maxOutboundPacketLatency);
+    }
+
+    void setPacketDropRate(float outboundPacketDropRate,
+        float inboundPacketDropRate) {
+        outboundPacketDropRate_ = outboundPacketDropRate;
+        if (outboundPacketDropRate_ < 0.0f) {
+            outboundPacketDropRate_ = 0.0f;
+        }
+        if (outboundPacketDropRate_ > 1.0f) {
+            outboundPacketDropRate_ = 1.0f;
+        }
+
+        inboundPacketDropRate_ = inboundPacketDropRate;
+        if (inboundPacketDropRate_ < 0.0f) {
+            inboundPacketDropRate_ = 0.0f;
+        }
+        if (inboundPacketDropRate_ > 1.0f) {
+            inboundPacketDropRate_ = 1.0f;
+        }
+    }
+
+    void setOutboundPacketLatency(unsigned int minOutboundPacketLatency,
+        unsigned int maxOutboundPacketLatency) {
+        minOutboundPacketLatency_ = minOutboundPacketLatency;
+        maxOutboundPacketLatency_ = maxOutboundPacketLatency;
+
+        if (maxOutboundPacketLatency_ < minOutboundPacketLatency_) {
+            maxOutboundPacketLatency_ = minOutboundPacketLatency_;
+        }
+    }
 
     bool shouldDropOutboundPacket() const {
         return (outboundPacketDropRate_ > 0.0f) &&
-            (randf() < outboundPacketDropRate_);
+            (getDropRate() < outboundPacketDropRate_);
     }
 
     bool shouldDropInboundPacket() const {
         return (inboundPacketDropRate_ > 0.0f) &&
-            (randf() < inboundPacketDropRate_);
+            (getDropRate() < inboundPacketDropRate_);
+    }
+
+    unsigned int getOutboundPacketLatency() const {
+        if (maxOutboundPacketLatency_ <= 0) {
+            return 0;
+        }
+
+        return getLatency(minOutboundPacketLatency_,
+            maxOutboundPacketLatency_);
     }
 
 private:
     // get random number from 0.0 to 1.0
-    float randf() const {
+    float getDropRate() const {
         return static_cast<float>(rand()) / RAND_MAX;
+    }
+
+    template <typename T>
+    T getLatency(T from, T to) const {
+        return from +
+            static_cast<T>((((to - from) + 1) *
+                (static_cast<float>(rand()) / (RAND_MAX + from))));
     }
 };
 

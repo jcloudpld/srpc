@@ -22,6 +22,9 @@ struct PeerStats
     srpc::UInt32 receivedUnreliablePackets_; ///< 비신뢰 보장 패킷 수신 횟수
     srpc::UInt32 lostSendPackets_; ///< 송신 신뢰 보장 패킷 손실 횟수
 
+    srpc::UInt32 droppedSendPackets_; ///< dropped packets by simulator
+    srpc::UInt32 droppedRecvPackets_; ///< dropped packets by simulator
+
     srpc::UInt32 meanRoundTripTime_; ///< mean RTT
     srpc::UInt32 highestRoundTripTime_;
 
@@ -34,6 +37,8 @@ struct PeerStats
         receivedReliablePackets_(0), 
         receivedUnreliablePackets_(0),
         lostSendPackets_(0),
+        droppedSendPackets_(0),
+        droppedRecvPackets_(0),
         meanRoundTripTime_(0),
         highestRoundTripTime_(0),
         roundTripTimeVariance_(0),

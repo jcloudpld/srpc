@@ -41,8 +41,10 @@ Peer::Peer(const Config& config) :
     lastSentTime_(0)
 {
     nsrpc::P2pConfig p2pConfig;
-    p2pConfig.outboundPacketDropRate_ = config.getSendPacketLossRate();
-    p2pConfig.inboundPacketDropRate_ = config.getRecvPacketLossRate();
+    p2pConfig.setPacketDropRate(config.getSendPacketLossRate(),
+        config.getRecvPacketLossRate());
+    p2pConfig.setOutboundPacketLatency(config.getMinOutboundPacketLatency(),
+        config.getMaxOutboundPacketLatency());
 
     p2pSession_.reset(nsrpc::P2pSessionFactory::create(config_.getPeerId(),
         *this, p2pConfig));
@@ -149,13 +151,15 @@ void Peer::printStats(nsrpc::PeerId peerId)
     const nsrpc::PeerStats stats = p2pSession_->getStats(peerId);
     std::cout << "* Peer(P" << peerId << ") Stats:\n" <<
         "  TargetAddress=" << address.ip_ << ":" << address.port_ << ",\n" <<
-        "  PacketsSentReliable=" << stats.sentReliablePackets_ << ",\n" <<
-        "  PacketsSentUnreliable=" << stats.sentUnreliablePackets_ << ",\n" <<
-        "  PacketsReceivedReliable=" << stats.receivedReliablePackets_ <<
+        "  SentReliablePackets=" << stats.sentReliablePackets_ << ",\n" <<
+        "  SentUnreliablePackets=" << stats.sentUnreliablePackets_ << ",\n" <<
+        "  ReceivedReliablePackets=" << stats.receivedReliablePackets_ <<
         ",\n" <<
-        "  PacketsReceivedUnreliable=" << stats.receivedUnreliablePackets_ <<
+        "  ReceivedUnreliablePackets=" << stats.receivedUnreliablePackets_ <<
         ",\n" <<
-        "  PacketsLost=" << stats.lostSendPackets_ << ",\n" <<
+        "  LostPackets=" << stats.lostSendPackets_ << ",\n" <<
+        "  DroppedSendPackets=" << stats.droppedSendPackets_ << ",\n" <<
+        "  DroppedRecvPackets=" << stats.droppedRecvPackets_ << ",\n" <<
         "  MeanRoundTripTime=" << stats.meanRoundTripTime_ << ",\n" <<
         "  HighestRoundTripTime=" << stats.highestRoundTripTime_ << ",\n" <<
         "  RoundTripTimeVariance=" << stats.roundTripTimeVariance_ << ",\n" <<

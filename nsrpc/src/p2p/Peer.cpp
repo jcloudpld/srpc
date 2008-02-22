@@ -7,8 +7,6 @@
 #include <algorithm>
 #include <functional>
 
-//#define HANDLE_ENTIRELY
-
 namespace nsrpc
 {
 
@@ -100,6 +98,17 @@ void Peer::putOutgoingMessage(srpc::RpcPacketType packetType,
 void Peer::putIncomingMessage(const P2pPacketHeader& header,
     ACE_Message_Block* mblock, const ACE_INET_Addr& peerAddress)
 {
+    if (p2pConfig_.shouldDropInboundPacket()) {
+        ++stats_.droppedRecvPackets_;
+        NSRPC_LOG_DEBUG7(
+            "P2P Sim: Recv packet dropped(P%u, #%d, %d, %s:%d, %d)",
+            peerId_, header.sequenceNumber_, header.sentTime_,
+            peerAddress.get_host_addr(),
+            peerAddress.get_port_number(),
+            header.packetType_);
+        return;
+    }
+
     if (srpc::isReliable(header.packetType_)) {
         const ReliableMessage message(header.sequenceNumber_, mblock,
             peerAddress, header.sentTime_);
@@ -212,6 +221,9 @@ void Peer::sendOutgoingMessages(PeerId fromPeerId)
     else {
         sendOutgoingReliableMessages(fromPeerId);
     }
+
+    sendOutgoingDelayedMessages(delayedOutgoingUnreliableMessages_);
+    sendOutgoingDelayedMessages(delayedOutgoingReliableMessages_);
 }
 
 
@@ -255,6 +267,8 @@ void Peer::putSentReliableMessage(const ReliableMessage& message)
 
 void Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
 {
+    const bool shouldReleaseMessageBlock = false;
+
     const PeerTime currentTime = getPeerTime();
 
     ReliableMessages::iterator pos = outgoingReliableMessages_.begin();
@@ -272,10 +286,9 @@ void Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
 
         ++stats_.sentReliablePackets_;
 
-        if (! networkSender_.sendNow(PeerIdPair(fromPeerId, peerId_),
-            getAddressPair(message), *message.mblock_, srpc::ptReliable,
-            message.sequenceNumber_, message.sentTime_)) {
-                break;
+        if (! send(fromPeerId, message, srpc::ptReliable,
+            shouldReleaseMessageBlock)) {
+            break;
         }
 
         outgoingReliableMessages_.erase(pos++);
@@ -286,19 +299,19 @@ void Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
 
 void Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
 {
+    const bool shouldReleaseMessageBlock = true;
+
     Messages::iterator pos = outgoingUnreliableMessages_.begin();
     const Messages::iterator end = outgoingUnreliableMessages_.end();
     for (; pos != end;) {
         Message& message = *pos;
-        if (! networkSender_.sendNow(PeerIdPair(fromPeerId, peerId_),
-            getAddressPair(message), *message.mblock_, srpc::ptUnreliable,
-            message.sequenceNumber_)) {
+        if (! send(fromPeerId,  message, srpc::ptUnreliable,
+            shouldReleaseMessageBlock)) {
             break;
         }
 
         ++stats_.sentUnreliablePackets_;
 
-        message.release();
         outgoingUnreliableMessages_.erase(pos++);
         assert(end == outgoingUnreliableMessages_.end());
     }
@@ -400,6 +413,32 @@ void Peer::retransmit(ReliableMessage& message)
         sentReliableMessages_.size());
 
     return;
+}
+
+
+void Peer::sendOutgoingDelayedMessages(DelayedOutboundMessages& messages)
+{
+    const bool shouldReleaseMessageBlock = true;
+
+    const PeerTime currentTime = getPeerTime();
+
+    DelayedOutboundMessages::iterator pos = messages.begin();
+    const DelayedOutboundMessages::iterator end = messages.end();
+    for (; pos != end;) {
+        DelayedOutboundMessage& message = *pos;
+
+        if (! message.shouldFire(currentTime)) {
+            break; // 시간 순으로 정렬되어 있으므로
+        }
+
+        if (! sendNow(message.peerIdPair_, message.getAddressPair(), message,
+            message.packetType_, shouldReleaseMessageBlock)) {
+            break;
+        }
+
+        messages.erase(pos++);
+        assert(end == messages.end());
+    }
 }
 
 
@@ -569,6 +608,56 @@ void Peer::setNextTimeoutCheckTime(PeerTime timeout)
 }
 
 
+bool Peer::send(PeerId fromPeerId, Message& message,
+    srpc::RpcPacketType packetType, bool shouldReleaseMessageBlock)
+{
+    assert(packetType != srpc::ptUnknown);
+
+    const PeerIdPair peerIdPair(fromPeerId, peerId_);
+    const AddressPair addressPair(getAddressPair(message));
+
+    const srpc::UInt32 latency = p2pConfig_.getOutboundPacketLatency();
+    if (latency <= 0) {
+        return sendNow(peerIdPair, addressPair, message, packetType,
+            shouldReleaseMessageBlock);
+    }
+
+    getDelayedOutboundMessages(packetType).insert(
+        DelayedOutboundMessage(message, addressPair, peerIdPair, packetType,
+            (getPeerTime() + latency)));
+    return true;
+}
+
+
+bool Peer::sendNow(const PeerIdPair& peerIdPair,
+    const AddressPair& addressPair, Message& message,
+    srpc::RpcPacketType packetType, bool shouldReleaseMessageBlock)
+{
+    if (p2pConfig_.shouldDropOutboundPacket()) {
+        ++stats_.droppedSendPackets_;
+        NSRPC_LOG_DEBUG7(
+            "P2P Sim: Send packet dropped(P%u, #%d, %d, %s:%d, %d)",
+            peerIdPair.to_, message.sequenceNumber_, message.sentTime_,
+            addressPair.targetAddress_.get_host_addr(),
+            addressPair.targetAddress_.get_port_number(),
+            packetType);
+    }
+    else {
+        if (! networkSender_.sendNow(peerIdPair, addressPair,
+            *message.mblock_, packetType, message.sequenceNumber_,
+            message.sentTime_)) {
+            return false;
+        }
+    }
+
+    if (shouldReleaseMessageBlock) {
+        message.release();
+    }
+
+    return true;
+}
+
+
 void Peer::releaseMessages()
 {
     outgoingReliableMessages_.release();
@@ -576,6 +665,8 @@ void Peer::releaseMessages()
     sentReliableMessages_.release();
     incomingReliableMessages_.release();
     incomingUnreliableMessages_.release();
+    delayedOutgoingReliableMessages_.release();
+    delayedOutgoingUnreliableMessages_.release();
 }
 
 

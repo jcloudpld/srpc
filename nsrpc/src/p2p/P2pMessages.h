@@ -3,8 +3,10 @@
 
 #include <nsrpc/p2p/detail/PeerTime.h>
 #include <nsrpc/p2p/detail/P2pProtocol.h>
+#include <nsrpc/p2p/detail/P2pAddress.h>
 #include <nsrpc/p2p/P2pConfig.h>
 #include <srpc/ContainerTypes.h>
+#include <srpc/RpcPacketType.h>
 
 class ACE_Message_Block;
 
@@ -265,6 +267,43 @@ private:
     /// 불필요한 임시 변수 생성을 막기 위해 멤버 변수를 이용함
     mutable MessageType messageForFind_;
 };
+
+
+/**
+* @struct DelayedOutboundMessage
+* 전송이 지연된 메세지
+*/
+struct DelayedOutboundMessage : Message
+{
+    PeerIdPair peerIdPair_;
+    ACE_INET_Addr targetAddress_;
+    srpc::RpcPacketType packetType_;
+    PeerTime fireTime_;
+
+    DelayedOutboundMessage() :
+        packetType_(srpc::ptUnknown),
+        fireTime_(0) {}
+
+    DelayedOutboundMessage(Message& message,
+        const AddressPair& addressPair, const PeerIdPair& peerIdPair,
+        srpc::RpcPacketType packetType, PeerTime fireTime) :
+        Message(message),
+        peerIdPair_(peerIdPair),
+        targetAddress_(addressPair.targetAddress_),
+        packetType_(packetType),
+        fireTime_(fireTime) {
+        mblock_ = mblock_->clone(); // 주의!!!
+    }
+
+    AddressPair getAddressPair() const {
+        return AddressPair(targetAddress_, peerAddress_);
+    }
+
+    bool shouldFire(PeerTime currentTime) const {
+        return fireTime_ <= currentTime;
+    }
+};
+
 
 /** @} */ // addtogroup p2p
 

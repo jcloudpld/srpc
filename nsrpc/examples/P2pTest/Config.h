@@ -17,7 +17,9 @@ public:
         host_(false),
         verbose_(false),
         outboundPacketDropRate_(0.0f),
-        inboundPacketDropRate_(0.0f) {}
+        inboundPacketDropRate_(0.0f),
+        minOutboundPacketLatency_(0),
+        maxOutboundPacketLatency_(0) {}
 
     bool parseArgs(int argc, char* argv[]);
 
@@ -51,6 +53,14 @@ public:
         return inboundPacketDropRate_;
     }
 
+    srpc::UInt32 getMinOutboundPacketLatency() const {
+        return minOutboundPacketLatency_;
+    }
+
+    srpc::UInt32 getMaxOutboundPacketLatency() const {
+        return maxOutboundPacketLatency_;
+    }
+
     bool isVerbose() const {
         return verbose_;
     }
@@ -62,8 +72,11 @@ private:
     nsrpc::PeerAddresses hostAddresses_;
     bool host_;
     bool verbose_;
+
     float outboundPacketDropRate_;
     float inboundPacketDropRate_;
+    srpc::UInt32 minOutboundPacketLatency_;
+    srpc::UInt32 maxOutboundPacketLatency_;
 };
 
 #endif // P2PTEST_CONFIG_H

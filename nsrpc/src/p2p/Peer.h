@@ -38,6 +38,7 @@ class Peer : public SharedObject
 
     typedef MessageSet<Message> Messages;
     typedef MessageSet<ReliableMessage> ReliableMessages;
+    typedef MessageSet<DelayedOutboundMessage> DelayedOutboundMessages;
 public:
 
     Peer(PeerId peerId, const Addresses& addresses,
@@ -148,8 +149,9 @@ private:
     bool putIncomingUnreliableMessage(const Message& message);
 
     void sendOutgoingReliableMessages(PeerId fromPeerId);
-
     void sendOutgoingUnreliableMessages(PeerId fromPeerId);
+
+    void sendOutgoingDelayedMessages(DelayedOutboundMessages& messages);
 
     void handleIncomingReliableMessage();
     bool handleIncomingUnreliableMessage();
@@ -165,6 +167,12 @@ private:
 
     void setNextTimeoutCheckTime(PeerTime timeout);
 
+    bool send(PeerId fromPeerId, Message& message,
+        srpc::RpcPacketType packetType, bool shouldReleaseMessageBlock);
+    bool sendNow(const PeerIdPair& peerIdPair,
+        const AddressPair& addressPair, Message& message,
+        srpc::RpcPacketType packetType, bool shouldReleaseMessageBlock);
+
     void releaseMessages();
 
     bool shouldSendPing() const;
@@ -176,6 +184,14 @@ private:
     bool shouldCheckTimeout() const {
         return getPeerTime() >= nextTimeoutCheckTime_;
     }
+
+    DelayedOutboundMessages& getDelayedOutboundMessages(
+        srpc::RpcPacketType packetType) {
+        return (packetType == srpc::ptReliable) ?
+            delayedOutgoingReliableMessages_ :
+            delayedOutgoingUnreliableMessages_;
+    }
+
 private:
     PeerId peerId_;
     ACE_INET_Addr targetAddress_;
@@ -198,6 +214,9 @@ private:
     SequenceNumber outgoingUnreliableSequenceNumber_;
     SequenceNumber incomingReliableSequenceNumber_;
     SequenceNumber incomingUnreliableSequenceNumber_;
+
+    DelayedOutboundMessages delayedOutgoingReliableMessages_;
+    DelayedOutboundMessages delayedOutgoingUnreliableMessages_;
 
     RoundTripTime rtt_; ///< RoundTripTime 관련 정보
     PeerTime nextTimeoutCheckTime_; ///< 다음번 시간 초과 검사 시간
