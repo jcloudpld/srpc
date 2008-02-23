@@ -21,7 +21,7 @@ struct P2pConfig
         peerPingInterval = 500,
         peerRoundTripTimeoutFactor = 2,
         peerRoundTripTimeoutLimitFactor = 10,
-        peerMaxDisconnectTimeout = 15000,
+        peerMaxDisconnectTimeout = 10000,
         peerMinDisconnectTimeout = 5000,
 
         /// default Maximum Transmission Unit 
