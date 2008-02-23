@@ -77,6 +77,7 @@ private: // information hiding
     virtual PeerAddresses getAddresses(PeerId peerId) const;
 
     virtual PeerStats getStats(PeerId peerId) const;
+    virtual std::string getStatsString(PeerId peerId) const;
 
     virtual srpc::RpcNetwork& getRpcNetwork() {
         return rpcNetwork_;

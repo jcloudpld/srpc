@@ -202,6 +202,16 @@ PeerStats P2pSessionImpl::getStats(PeerId peerId) const
 }
 
 
+std::string P2pSessionImpl::getStatsString(PeerId peerId) const
+{
+    const PeerPtr peer(peerManager_.getPeer(peerId));
+    if (! peer.isNull()) {
+        return peer->getStatsString();
+    }
+    return "";
+}
+
+
 void P2pSessionImpl::addMyPeer()
 {
     assert(! endpoint_.getLocalAddresses().empty());
