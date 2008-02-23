@@ -90,6 +90,9 @@ public:
     /// Get the statistics of the peer.
     virtual PeerStats getStats(PeerId peerId) const = 0;
 
+    /// Get the statistics string of the peer.
+    virtual std::string getStatsString(PeerId peerId) const = 0;
+
     /// get the RpcNetwork instance for RPC bind.
     virtual srpc::RpcNetwork& getRpcNetwork() = 0;
 };

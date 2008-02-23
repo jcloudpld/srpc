@@ -774,6 +774,32 @@ PeerStats Peer::getStats() const
     return currentStats;
 }
 
+
+std::string Peer::getStatsString() const
+{
+    const nsrpc::PeerStats stats = getStats();
+    std::ostringstream oss;
+    oss << "* Peer(P" << peerId_ << ") Stats:\n" <<
+        "  TargetAddress=" << targetAddress_.get_host_addr() << ":" <<
+            targetAddress_.get_port_number() << ",\n" <<
+        "  ConnectionTime=" << stats.connectionTime_ << " ms,\n" <<
+        "  SentReliablePackets=" << stats.sentReliablePackets_ << ",\n" <<
+        "  SentUnreliablePackets=" << stats.sentUnreliablePackets_ << ",\n" <<
+        "  ReceivedReliablePackets=" << stats.receivedReliablePackets_ <<
+        ",\n" <<
+        "  ReceivedUnreliablePackets=" << stats.receivedUnreliablePackets_ <<
+        ",\n" <<
+        "  LostPackets=" << stats.lostSendPackets_ << ",\n" <<
+        "  DroppedSendPackets=" << stats.droppedSendPackets_ << ",\n" <<
+        "  DroppedRecvPackets=" << stats.droppedRecvPackets_ << ",\n" <<
+        "  MeanRoundTripTime=" << stats.meanRoundTripTime_ << ",\n" <<
+        "  HighestRoundTripTime=" << stats.highestRoundTripTime_ << ",\n" <<
+        "  RoundTripTimeVariance=" << stats.roundTripTimeVariance_ << ",\n" <<
+        "  HighestRoundTripTimeVariance=" <<
+        stats.highestRoundTripTimeVariance_ << "\n";
+    return oss.str();
+}
+
 } // namespace detail
 
 } // namespace nsrpc

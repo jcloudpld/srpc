@@ -85,6 +85,7 @@ public:
     }
 
     PeerStats getStats() const;
+    std::string getStatsString() const;
 public:
     // = 피어 상태 관련
     bool isDisconnected() const {
