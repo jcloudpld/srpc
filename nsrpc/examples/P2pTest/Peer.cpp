@@ -153,6 +153,7 @@ void Peer::printStats(nsrpc::PeerId peerId)
     const nsrpc::PeerStats stats = p2pSession_->getStats(peerId);
     std::cout << "* Peer(P" << peerId << ") Stats:\n" <<
         "  TargetAddress=" << address.ip_ << ":" << address.port_ << ",\n" <<
+        "  ConnectionTime=" << stats.connectionTime_ << " ms,\n" <<
         "  SentReliablePackets=" << stats.sentReliablePackets_ << ",\n" <<
         "  SentUnreliablePackets=" << stats.sentUnreliablePackets_ << ",\n" <<
         "  ReceivedReliablePackets=" << stats.receivedReliablePackets_ <<
@@ -166,7 +167,7 @@ void Peer::printStats(nsrpc::PeerId peerId)
         "  HighestRoundTripTime=" << stats.highestRoundTripTime_ << ",\n" <<
         "  RoundTripTimeVariance=" << stats.roundTripTimeVariance_ << ",\n" <<
         "  HighestRoundTripTimeVariance=" <<
-        stats.highestRoundTripTimeVariance_ << "\n";
+            stats.highestRoundTripTimeVariance_ << "\n";
 }
 
 // = P2pEventHandler overring

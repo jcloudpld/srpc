@@ -37,6 +37,16 @@ void PeerManager::addPeer(PeerId peerId, const Addresses& addresses)
 }
 
 
+void PeerManager::removePeerNextTime(PeerId peerId)
+{
+    const PeerIds::const_iterator pos = std::find(disconnectedPeers_.begin(),
+        disconnectedPeers_.end(), peerId);
+    if (pos == disconnectedPeers_.end()) {
+        disconnectedPeers_.push_back(peerId);
+    }
+}
+
+
 void PeerManager::removePeer(PeerId peerId)
 {
     if (isExists(peerId)) {

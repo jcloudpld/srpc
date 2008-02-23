@@ -31,7 +31,8 @@ Peer::Peer(PeerId peerId, const Addresses& addresses,
     nextTimeoutCheckTime_(0),
     nextTimeoutCheckTimeUpdatedTime_(0),
     lastReceiveTime_(0),
-    earliestSentTimeout_(0)
+    earliestSentTimeout_(0),
+    connectedTime_(getPeerTime())
 {
     assert(! addresses.empty());
 
@@ -769,6 +770,7 @@ PeerStats Peer::getStats() const
     currentStats.roundTripTimeVariance_ = rtt_.roundTripTimeVariance_;
     currentStats.highestRoundTripTimeVariance_ =
         rtt_.highestRoundTripTimeVariance_;
+    currentStats.connectionTime_ = getPeerTime() - connectedTime_;
     return currentStats;
 }
 
