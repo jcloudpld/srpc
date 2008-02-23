@@ -253,9 +253,9 @@ IMPLEMENT_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
 
     tickMap_[hint.peerId_] = tick;
 
-#if tickProcessingTime > 0
-    nsrpc::pause(tickProcessingTime);
-#endif
+    if (config_.getSleepTime() > 0) {
+        nsrpc::pause(config_.getSleepTime());
+    }
 }
 
 

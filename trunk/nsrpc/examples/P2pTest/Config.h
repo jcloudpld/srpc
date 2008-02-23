@@ -16,6 +16,7 @@ public:
         listeningPort_(0),
         host_(false),
         verbose_(false),
+        sleepTime_(0),
         outboundPacketDropRate_(0.0f),
         inboundPacketDropRate_(0.0f),
         minOutboundPacketLatency_(0),
@@ -45,6 +46,10 @@ public:
 
     const nsrpc::PeerAddresses& getHostAddresses() const {
         return hostAddresses_;
+    }
+
+    srpc::UInt32 getSleepTime() const {
+        return sleepTime_;
     }
 
     float getSendPacketLossRate() const {
@@ -82,6 +87,8 @@ private:
     nsrpc::PeerAddresses hostAddresses_;
     bool host_;
     bool verbose_;
+
+    srpc::UInt32 sleepTime_;
 
     float outboundPacketDropRate_;
     float inboundPacketDropRate_;
