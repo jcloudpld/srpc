@@ -242,6 +242,8 @@ private:
     PeerTime lastReceiveTime_; ///< 가장 최근 Ack 메세지 수신 시간
     PeerTime earliestSentTimeout_; ///< 가장 오래된 신뢰성 패킷 전송 시간
 
+    PeerTime connectedTime_; ///< 접속한 시간
+
     PeerStats stats_;
 };
 

@@ -31,6 +31,8 @@ struct PeerStats
     srpc::UInt32 roundTripTimeVariance_;
     srpc::UInt32 highestRoundTripTimeVariance_;
 
+    srpc::UInt32 connectionTime_; ///< mili-seconds
+
     PeerStats() :
         sentReliablePackets_(0),
         sentUnreliablePackets_(0),
@@ -42,7 +44,8 @@ struct PeerStats
         meanRoundTripTime_(0),
         highestRoundTripTime_(0),
         roundTripTimeVariance_(0),
-        highestRoundTripTimeVariance_(0) {}
+        highestRoundTripTimeVariance_(0),
+        connectionTime_(0) {}
 };
 
 /** @} */ // addtogroup p2p

@@ -32,12 +32,7 @@ public:
     ~PeerManager();
 
     void addPeer(PeerId peerId, const Addresses& addresses);
-    void removePeerNextTime(PeerId peerId) {
-        if (std::find(disconnectedPeers_.begin(), disconnectedPeers_.end(),
-            peerId) == disconnectedPeers_.end()) {
-            disconnectedPeers_.push_back(peerId);
-        }
-    }
+    void removePeerNextTime(PeerId peerId);
 
     void addRelayServer(const PeerAddress& address);
 
