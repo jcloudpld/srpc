@@ -1,0 +1,53 @@
+<cruisecontrol>
+  <project name="nsrpc" buildafterfailed="true">
+    <property name="cc.dir" value="c:\tools\CruiseControl"/>
+    <property name="anthome" value="${cc.dir}/apache-ant-1.7.0"/>
+    <property name="project.dir" value="D:\work\${project.name}"/>
+    <property name="svn.username" value="XXX"/>
+    <property name="svn.password" value="YYY"/>
+
+    <listeners>
+      <currentbuildstatuslistener file="${cc.dir}/logs/${project.name}/status.txt"/>
+    </listeners>
+
+    <!-- Bootstrappers are run every time the build runs, *before* the modification checks -->
+    <bootstrappers>
+      <svnbootstrapper localWorkingCopy="${project.dir}"
+        username="${svn.username}" password="${svn.password}" />
+    </bootstrappers>
+
+    <!-- Defines where cruise looks for changes, to decide whether to run the build -->
+    <modificationset quietperiod="20">
+      <svn localWorkingCopy="${project.dir}"
+        username="${svn.username}" password="${svn.password}" />
+    </modificationset>
+
+    <!-- Configures the actual build loop, how often and which build file/target -->
+    <schedule interval="60">
+      <ant anthome="${anthome}"
+        buildfile="${project.dir}/build/build_vc8.xml"
+        target="all"
+        uselogger="true"
+        usedebug="false"/>
+    </schedule>
+
+    <!-- directory to write build logs to -->
+    <log dir="${cc.dir}/logs/${project.name}">
+      <merge dir="${project.dir}/build_log/" />
+      <merge dir="${project.dir}/build_log/test_log/" />
+    </log>
+
+    <!-- Publishers are run *after* a build completes -->
+    <publishers>
+      <artifactspublisher
+        dir="${project.dir}/build_log"
+        dest="${cc.dir}/artifacts/${project.name}"/>
+      <email mailhost="mail.domain"
+        returnaddress="kcando@domain"
+        buildresultsurl="http://localhost:8080/cruisecontrol/buildresults/${project.name}"
+        skipusers="true" spamwhilebroken="true">
+        <always address="kcando@domain"/>
+      </email>
+    </publishers>
+  </project>
+</cruisecontrol>
