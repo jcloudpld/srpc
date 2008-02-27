@@ -112,6 +112,10 @@ void Peer::putIncomingMessage(const P2pPacketHeader& header,
         return;
     }
 
+    if (isAcknowledgingConnect()) { /// rpcConnected()에 대한 응답?
+        (void)messageHandler_.acknowledgedConnect(peerId_);
+    }
+
     const srpc::UInt32 latency = p2pConfig_.getInboundPacketLatency();
     if (latency <= 0) {
         if (putIncomingMessageDirectly(header, mblock, peerAddress)) {
@@ -502,9 +506,11 @@ void Peer::sendPing(PeerId fromPeerId)
 }
 
 
-// TODO: memory leak 검사
 void Peer::sendAcknowledgement(const Message& message)
 {
+#ifdef DO_NOT_USE_DELAYED_ACK
+    messageHandler_.sendAcknowledgement(peerId_, message);
+#else
     if (lastAcknowledgementMessage_ < message) {
         const SequenceNumber prevSeqNumber =
             lastAcknowledgementMessage_.sequenceNumber_;
@@ -516,11 +522,13 @@ void Peer::sendAcknowledgement(const Message& message)
                 getPeerTime() + (rtt_.meanRoundTripTime_ / 2);
         }
     }
+#endif
 }
 
 
 void Peer::sendPendingAcknowledgement()
 {
+#ifndef DO_NOT_USE_DELAYED_ACK
     if (! lastAcknowledgementMessage_.isValid()) {
         return;
     }
@@ -532,12 +540,14 @@ void Peer::sendPendingAcknowledgement()
         assert(lastAcknowledgementMessage_.sequenceNumber_ ==
             invalidSequenceNumber);
     }
+#endif
 }
 
 
 void Peer::handleIncomingReliableMessage()
 {
     if (! incomingReliableMessages_.empty()) {
+        //const PeerTime startTime = getPeerTime();
         const ReliableMessages::iterator firstPos =
             incomingReliableMessages_.begin();
         ReliableMessage& message = *firstPos;
@@ -545,12 +555,14 @@ void Peer::handleIncomingReliableMessage()
             (incomingReliableSequenceNumber_ + 1)) {
             if (messageHandler_.handleIncomingMessage(peerId_, message)) {
                 ++incomingReliableSequenceNumber_;
-
                 sendAcknowledgement(message);
             }
 
             message.release();
             incomingReliableMessages_.erase(firstPos);
+
+            //NSRPC_LOG_DEBUG2("Peer::handleIncomingReliableMessage(%u ms)",
+            //    getPeerTime() - startTime);
         }
     }
 
@@ -611,7 +623,7 @@ void Peer::handleIncomingDelayedMessages(DelayedInboundMessages& messages)
 
 bool Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
 {
-    bool removed = false;
+    const size_t prevSize = sentReliableMessages_.size();
 
     ReliableMessages::iterator pos = sentReliableMessages_.begin();
     const ReliableMessages::iterator end = sentReliableMessages_.end();
@@ -627,15 +639,9 @@ bool Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
         message.release();
         sentReliableMessages_.erase(pos++);
         assert(end == sentReliableMessages_.end());
-        removed = true;
-
-        if (isAcknowledgingConnect()) {
-            if (! messageHandler_.acknowledgedConnect(peerId_)) {
-                break;
-            }
-        }
     }
 
+    const bool removed = (prevSize > sentReliableMessages_.size());
     if (removed) {
         if (! sentReliableMessages_.empty()) {
             const ReliableMessage& firstMessage =
@@ -759,6 +765,29 @@ void Peer::releaseMessages()
     delayedOutgoingReliableMessages_.release();
     delayedOutgoingUnreliableMessages_.release();
     lastAcknowledgementMessage_.release();
+}
+
+
+void Peer::acknowledgingConnect()
+{
+    assert(isDisconnected());
+    currentState_ = psAcknowledgingConnect;
+    assert(incomingReliableSequenceNumber_ == 0);
+    ++incomingReliableSequenceNumber_;
+}
+
+
+void Peer::connected(bool messageSent)
+{
+    assert(isDisconnected());
+    currentState_ = psConnected;
+    if (messageSent) {
+        assert(outgoingReliableSequenceNumber_ == 0);
+        ++outgoingReliableSequenceNumber_;
+        ++stats_.sentReliablePackets_;
+        assert(incomingReliableSequenceNumber_ == 0);
+        ++incomingReliableSequenceNumber_;
+    }
 }
 
 
