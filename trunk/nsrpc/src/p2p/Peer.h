@@ -30,10 +30,10 @@ class Peer : public SharedObject
 {
     enum PeerState {
         psDisconnected, ///< 연결이 안된 상태
-        psAcknowledgingConnect, ///< 연결 요청에 대한 응답 중
+        psAcknowledgingConnect, ///< 연결 요청에 대한 응답 대기 중
         psConnected, ///< 연결되어 있는 상태
         psDisconnecting, ///< 연결 해제 중
-        psAcknowledgingDisconnect, ///< 연결 해제 요청에 대한 응답 중
+        psAcknowledgingDisconnect, ///< 연결 해제 요청에 대한 응답 대기 중
     };
 
     typedef MessageSet<Message> Messages;
@@ -88,45 +88,31 @@ public:
     std::string getStatsString() const;
 public:
     // = 피어 상태 관련
-    bool isDisconnected() const {
-        return currentState_ == psDisconnected;
-    }
 
-    void acknowledgingConnect() {
-        assert(isDisconnected());
-        currentState_ = psAcknowledgingConnect;
-        assert(incomingReliableSequenceNumber_ == 0);
-        ++incomingReliableSequenceNumber_;
-    }
+    void acknowledgingConnect();
 
-    void connected(bool messageSent = false) {
-        assert(isDisconnected());
-        currentState_ = psConnected;
-        if (messageSent) {
-            assert(outgoingReliableSequenceNumber_ == 0);
-            ++outgoingReliableSequenceNumber_;
-            ++stats_.sentReliablePackets_;
-            assert(incomingReliableSequenceNumber_ == 0);
-            ++incomingReliableSequenceNumber_;
-        }
-    }
-
-    bool isConnected() const {
-        return currentState_ != psDisconnected;
-    }
+    void connected(bool messageSent = false);
 
     void acknowledgeConnect() {
         assert(isAcknowledgingConnect());
         currentState_ = psConnected;
     }
 
-    bool isDisconnecting() const {
-        return currentState_ == psDisconnecting;
-    }
-
     void acknowledgingDisconnect() {
         assert(isConnected());
         currentState_ = psAcknowledgingDisconnect;
+    }
+
+    bool isDisconnected() const {
+        return currentState_ == psDisconnected;
+    }
+
+    bool isConnected() const {
+        return currentState_ != psDisconnected;
+    }
+
+    bool isDisconnecting() const {
+        return currentState_ == psDisconnecting;
     }
 
     bool isAcknowledgingDisconnect() const {

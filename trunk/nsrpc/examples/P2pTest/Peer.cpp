@@ -114,7 +114,7 @@ bool Peer::tick()
         }
     }
 
-    if (joiners_.size() >= 1) {
+    if (! joiners_.empty()) {
         if ((nsrpc::detail::getPeerTime() - lastSentTime_) >= tickInterval) {
             if ((++tickCount_) >= INT_MAX) {
                 return false;
@@ -201,7 +201,8 @@ void Peer::onConnectFailed(nsrpc::PeerId peerId)
 void Peer::onAddressResolved(const srpc::String& ipAddress, srpc::UInt16 port)
 {
     std::cout << "* Address resolved(" << ipAddress << ":" << port <<
-        ", [" << toString(p2pSession_->getAddresses(config_.getPeerId())) <<
+        ", [" <<
+        toString(p2pSession_->getAddresses(p2pSession_->getPeerId())) <<
         "])\n";
 
     isResolved_ = true;
@@ -232,11 +233,12 @@ IMPLEMENT_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
 {
     const nsrpc::PeerHint& hint = nsrpc::toPeerHint(rpcHint);
 
-    if (! isJoiner(hint.peerId_)) {
-        return;
-    }
-
     if (hint.peerId_ != p2pSession_->getPeerId()) {
+        if (! isJoiner(hint.peerId_)) {
+            assert(false && "unknown peer");
+            return;
+        }
+
         std::cout << "* Tick(P" << hint.peerId_ << "->P" <<
             p2pSession_->getPeerId() << "): [" << tick << "]\n";
     }
