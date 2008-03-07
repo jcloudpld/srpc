@@ -510,9 +510,7 @@ void Peer::sendPing(PeerId fromPeerId)
 
 void Peer::sendAcknowledgement(const Message& message)
 {
-#ifdef DO_NOT_USE_DELAYED_ACK
-    messageHandler_.sendAcknowledgement(peerId_, message);
-#else
+#ifdef USE_DELAYED_ACK
     if (lastAcknowledgementMessage_ < message) {
         const SequenceNumber prevSeqNumber =
             lastAcknowledgementMessage_.sequenceNumber_;
@@ -524,13 +522,15 @@ void Peer::sendAcknowledgement(const Message& message)
                 getPeerTime() + (rtt_.meanRoundTripTime_ / 2);
         }
     }
+#else
+    messageHandler_.sendAcknowledgement(peerId_, message);
 #endif
 }
 
 
 void Peer::sendPendingAcknowledgement()
 {
-#ifndef DO_NOT_USE_DELAYED_ACK
+#ifdef USE_DELAYED_ACK
     if (! lastAcknowledgementMessage_.isValid()) {
         return;
     }
