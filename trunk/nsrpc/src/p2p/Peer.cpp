@@ -48,9 +48,11 @@ Peer::~Peer()
 
 void Peer::setResolvedAddress(const ACE_INET_Addr& address)
 {
+#ifdef DO_NOT_ALLOW_LOCAL_RELAY
     if (! isPublicAddress(address)) {
         return;
     }
+#endif
 
     const Addresses::iterator pos =
         std::find(addresses_.begin(), addresses_.end(), address);
