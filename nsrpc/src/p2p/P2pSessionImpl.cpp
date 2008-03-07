@@ -303,8 +303,15 @@ void P2pSessionImpl::tryToConnect(PeerId peerId,
 
 bool P2pSessionImpl::canRelay(const ACE_INET_Addr& targetAddress) const
 {
-    return peerManager_.isExists(relayServerPeerId) &&
-        isPublicAddress(targetAddress);
+#ifdef DO_NOT_ALLOW_LOCAL_RELAY
+    if (! isPublicAddress(targetAddress)) {
+        return false;
+    }
+#else
+    targetAddress;
+#endif
+
+    return peerManager_.isExists(relayServerPeerId);
 }
 
 
