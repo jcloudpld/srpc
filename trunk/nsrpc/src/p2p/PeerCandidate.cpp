@@ -26,8 +26,9 @@ public:
     void setOutgoingMessage(PeerId peerId, const ACE_INET_Addr& peerAddress,
         ACE_Message_Block* mblock) {
         assert(! peerAddress.is_any());
-        assert(! outgoingMessage_.mblock_);
+        //assert(! outgoingMessage_.mblock_);
 
+        outgoingMessage_.release();
         outgoingMessage_ = UnknownReliableMessage(firstSequenceNumber,
             mblock->clone(), peerAddress, getPeerTime(), peerId);
     }
