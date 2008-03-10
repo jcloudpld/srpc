@@ -66,10 +66,12 @@ void P2pEndpoint::close()
         ACE_Event_Handler::DONT_CALL;
     reactor()->remove_handler(this, masks);
 
-    udp_->close();
     clearAddresses();
 
-    NSRPC_LOG_DEBUG(ACE_TEXT("UDP socket closed"));
+    if (isOpened()) {
+        udp_->close();
+        NSRPC_LOG_DEBUG(ACE_TEXT("UDP socket closed"));
+    }
 }
 
 
