@@ -83,6 +83,7 @@ bool P2pSessionImpl::open(srpc::UInt16 port,
     }
 
     resetBaseTime();
+    setPeerTime();
 
     addMyPeer();
 

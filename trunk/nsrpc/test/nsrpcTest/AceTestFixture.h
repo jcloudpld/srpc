@@ -11,6 +11,8 @@
 #  pragma warning (pop)
 #endif
 
+//#define PRINT_ACE_LOG
+
 /**
  * @class AceTestFixture
  *
@@ -24,10 +26,13 @@ public:
         ACE::init();
 #endif
 
-        //ACE::debug(1);
-        //nsrpc::LogManager::verbose();
-        nsrpc::LogManager::silent();
+#ifdef PRINT_ACE_LOG
+        ACE::debug(1);
+        nsrpc::LogManager::verbose();
         //logManager_.redirectToFile("nsrpcTest.log");
+#else
+        nsrpc::LogManager::silent();
+#endif
     }
 
     virtual void tearDown() {
