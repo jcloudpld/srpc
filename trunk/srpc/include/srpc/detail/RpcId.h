@@ -11,6 +11,7 @@ typedef UInt32 RpcId;
 
 /**
  * @class RRpcId
+ * RPC type for RPC ID
  */
 class RRpcId : public RpcUIntType<RpcId>
 {
@@ -20,13 +21,13 @@ public:
         set(rpcId);
     }
 
-    explicit RRpcId(const char* idStr, const char* methodName) :
+    RRpcId(const char* id, const char* methodName) :
         methodName_(methodName) {
-        set(hash(idStr, strlen(idStr)));
+        set(hash(id, strlen(id)));
     }
 
-    RRpcId(const String& idStr) {
-        set(hash(idStr.c_str(), idStr.size()));
+    RRpcId(const String& id) {
+        set(hash(id.c_str(), id.size()));
     }
 
     const char* getMethodName() const {

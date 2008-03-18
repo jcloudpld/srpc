@@ -101,7 +101,6 @@ public:
             return *RpcClass##_staticEventMap; \
         }
 #else
-// TODO: 메모리 릭 제거
 #   define DEFINE_GET_SRPC_EVENT_MAP(RpcClass) \
         srpc::RpcEventMap& RpcClass :: getStaticEventMap() { \
             static srpc::RpcEventMap RpcClass##_staticEventMap(false); \
@@ -149,10 +148,12 @@ public:
             srpc::ReceivingFunctorT<RpcClass, TypeList > \
                 unmarshalFunctor_; \
         }; \
+        static SRPC_RPC_EVENT(RpcClass, method) \
+            SRPC_RPC_EVENT(RpcClass, method)##_instance; \
         srpc::EventRegister<SRPC_RPC_EVENT(RpcClass, method), RpcClass> \
             RpcClass##_##method##_EventRegister( \
                 RpcClass::SRPC_GET_RPCID(method)(), \
-                new SRPC_RPC_EVENT(RpcClass, method)); \
+                &SRPC_RPC_EVENT(RpcClass, method)##_instance); \
     }
 
 // = IMPLEMENT_SRPC_METHOD_DETAIL_n
