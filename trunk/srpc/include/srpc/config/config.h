@@ -5,7 +5,7 @@
 //#define USE_BOOST_POOL_ALLOCATOR_FOR_SRPC
 
 /// boost::fast_pool_allocator를 사용할 경우 uncomment.
-#define USE_BOOST_FAST_POOL_ALLOCATOR_FOR_SRPC
+//#define USE_BOOST_FAST_POOL_ALLOCATOR_FOR_SRPC
 
 /// string에 boost::pool_allocator를 사용할 경우 uncomment.
 //#define USE_BOOST_POOL_ALLOCATOR_FOR_SRPC_STRING
