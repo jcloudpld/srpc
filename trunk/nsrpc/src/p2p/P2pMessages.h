@@ -295,7 +295,7 @@ struct DelayedOutboundMessage : Message
         targetAddress_(addressPair.targetAddress_),
         packetType_(packetType),
         fireTime_(fireTime) {
-        mblock_ = mblock_->clone(); // 주의!!!
+        mblock_ = message.mblock_->clone(); // 주의!!!
     }
 
     AddressPair getAddressPair() const {

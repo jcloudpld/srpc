@@ -45,7 +45,8 @@ public:
     virtual nsrpc::Session* create() const {
         const nsrpc::RpcSessionConfig config(sessionDestroyer_,
             messageBlockManager_.get(), nsrpc::PacketCoderFactory().create(),
-            proactor_, new nsrpc::SessionRpcNetwork(useBitPacking_),
+            proactor_, nsrpc::SessionCapacity::getNoLimitedCapacity(),
+            new nsrpc::SessionRpcNetwork(useBitPacking_),
             nsrpc::PacketSeedExchangerFactory::createForServer());
         return new TestRpcSession(config);
     }

@@ -21,9 +21,10 @@ struct RpcSessionConfig : public SessionConfig
     RpcSessionConfig(SessionDestroyer* sessionDestroyer,
         SynchMessageBlockManager* messageBlockManager,
         PacketCoder* packetCoder, NSRPC_Proactor* proactor,
+        const SessionCapacity& capacity,
         SessionRpcNetwork* rpcNetwork, PacketSeedExchanger* seedExchanger) :
         SessionConfig(sessionDestroyer, messageBlockManager, packetCoder,
-            proactor),
+            proactor, capacity),
         rpcNetwork_(rpcNetwork),
         seedExchanger_(seedExchanger) {}
 
