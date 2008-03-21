@@ -334,6 +334,12 @@
 				RelativePath=".\AceUtil.cpp">
 			</File>
 			<File
+				RelativePath=".\BandwidthLimit.cpp">
+			</File>
+			<File
+				RelativePath=".\BandwidthLimit.h">
+			</File>
+			<File
 				RelativePath=".\CachedSessionManager.cpp">
 			</File>
 			<File

@@ -30,6 +30,7 @@ class Asynch_RW_Stream;
 class SessionDestroyer;
 class SynchMessageBlockManager;
 class PacketCoder;
+class BandwidthLimit;
 struct SessionConfig;
 
 /** @addtogroup session
@@ -123,6 +124,7 @@ protected:
 private:
     /// 클라이언트로 부터 메세지가 도착하였다.
     virtual bool onMessageArrived(CsMessageType messageType) = 0;
+    virtual void onThrottling(size_t readBytes, size_t maxBytesPerSecond);
     /// 접속이 해제될 경우 호출된다.
     virtual void onDisconnected() = 0;
 public: // for Test
@@ -152,6 +154,9 @@ private:
     void startDisconnectTimer();
     void stopDisconnectTimer();
 
+    void startThrottleTimer();
+    void stopThrottleTimer();
+
     bool isSafeToDelete() const {
         return (pendingReadCount_ <= 0) && (pendingWriteCount_ <= 0);
     }
@@ -175,6 +180,9 @@ private:
 
     long disconnectTimer_;
     bool disconnectReserved_;
+
+    boost::scoped_ptr<BandwidthLimit> inboundBandwidthLimiter_;
+    long throttleTimer_;
 
     Stats stats_;
 

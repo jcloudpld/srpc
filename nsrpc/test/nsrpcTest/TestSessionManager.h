@@ -33,7 +33,8 @@ public:
     virtual nsrpc::Session* acquire() {
         ++sessionCount_;
         nsrpc::SessionConfig config(this, messageBlockManager_.get(),
-            nsrpc::PacketCoderFactory().create(), proactor_);
+            nsrpc::PacketCoderFactory().create(), proactor_,
+            nsrpc::SessionCapacity::getNoLimitedCapacity());
         lastSession_ = new TestSession(config);
         return lastSession_;
     }

@@ -79,12 +79,14 @@ public:
                 nsrpc::RpcSessionConfig(sessionDestroyer_,
                     &messageBlockManager,
                     nsrpc::PacketCoderFactory().create(), proactor_,
+                    nsrpc::SessionCapacity::getNoLimitedCapacity(),
                     new nsrpc::SessionRpcNetwork(useBitPacking_),
                     nsrpc::PacketSeedExchangerFactory::createForServer()));
         }
         return new EchoServerSession(
             nsrpc::SessionConfig(sessionDestroyer_, &messageBlockManager,
-                nsrpc::PacketCoderFactory().create(), proactor_));
+                nsrpc::PacketCoderFactory().create(), proactor_,
+                nsrpc::SessionCapacity::getNoLimitedCapacity()));
     }
 private:
     const Config& config_;

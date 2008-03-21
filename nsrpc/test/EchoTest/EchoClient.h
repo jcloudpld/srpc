@@ -121,13 +121,15 @@ public:
                 nsrpc::RpcSessionConfig(sessionDestroyer_,
                     &messageBlockManager,
                     nsrpc::PacketCoderFactory().create(), proactor_,
+                    nsrpc::SessionCapacity::getNoLimitedCapacity(),
                     new nsrpc::SessionRpcNetwork(useBitPacking_),
                     nsrpc::PacketSeedExchangerFactory::createForClient()));
         }
         return new EchoClientSession(config_.getEchoCount(),
             config_.getBlockSize(),
             nsrpc::SessionConfig(sessionDestroyer_, &messageBlockManager,
-                nsrpc::PacketCoderFactory().create(), proactor_));
+                nsrpc::PacketCoderFactory().create(), proactor_,
+                nsrpc::SessionCapacity::getNoLimitedCapacity()));
     }
 private:
     const Config& config_;

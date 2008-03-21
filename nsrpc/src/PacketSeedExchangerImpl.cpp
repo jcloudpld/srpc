@@ -32,8 +32,10 @@ void PacketSeedExchangerForServer::exchangeSeed()
         return;
     }
 
-    PacketCoder::Seed encryptSeed, decryptSeed;
+    PacketCoder::Seed encryptSeed;
+    PacketCoder::Seed decryptSeed;
     getPacketCoder().generateCipherSeed(encryptSeed, decryptSeed);
+
     const CsMessageType messageType = mtSystem;
     exchangeSeed(encryptSeed, decryptSeed, &messageType);
     getPacketCoder().setEncryptSeed(encryptSeed);

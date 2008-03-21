@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "BandwidthLimit.h"
 #include <nsrpc/Session.h>
 #include <nsrpc/SessionConfig.h>
 #include <nsrpc/detail/Asynch_RW.h>
@@ -19,7 +20,8 @@ Session::Session(const SessionConfig& config) :
     sessionDestroyer_(*config.sessionDestroyer_),
     messageBlockManager_(*config.messageBlockManager_),
     packetCoder_(config.packetCoder_),
-    proactor_(config.proactor_)
+    proactor_(config.proactor_),
+    inboundBandwidthLimiter_(new BandwidthLimit(config.capacity_))
 {
     recvBlock_ =
         messageBlockManager_.create(packetCoder_->getDefaultPacketSize());
@@ -96,6 +98,7 @@ void Session::disconnect()
         ACE_GUARD(ACE_Thread_Mutex, sendMonitor, sendLock_);
 
         stopDisconnectTimer();
+        stopThrottleTimer();
 
         connected = isConnected();
         stream_->cancel();
@@ -138,8 +141,12 @@ bool Session::readMessage(const NSRPC_Asynch_Read_Stream::Result& result)
 
     const size_t bytes_transferred = result.bytes_transferred();
     stats_.recvBytes_ += bytes_transferred;
-
     assert(result.bytes_to_read() >= bytes_transferred);
+
+    inboundBandwidthLimiter_->add(bytes_transferred);
+    const bool isKarmaRemained = inboundBandwidthLimiter_->check();
+    //NSRPC_LOG_DEBUG3("BandwidthLimit left bytes = %d(-%d)",
+    //    inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
 
     ACE_Message_Block& mblock = result.message_block();
     assert(&mblock == recvBlock_);
@@ -176,7 +183,16 @@ bool Session::readMessage(const NSRPC_Asynch_Read_Stream::Result& result)
         return false;
     }
 
-    return readMessageHeader();
+    if (isKarmaRemained) {
+        return readMessageHeader();
+    }
+    else {
+        startThrottleTimer();
+        onThrottling(inboundBandwidthLimiter_->getReadBytes(),
+            inboundBandwidthLimiter_->getMaxBytesPerSecond());
+    }
+
+    return true;
 }
 
 
@@ -233,7 +249,9 @@ void Session::reset()
     pendingReadCount_ = pendingWriteCount_ = 0;
     disconnectReserved_ = false;
     disconnectTimer_ = -1;
+    throttleTimer_ = -1;
     packetCoder_->reset();
+    inboundBandwidthLimiter_->reset();
 }
 
 
@@ -252,6 +270,27 @@ void Session::stopDisconnectTimer()
 {
     if (disconnectTimer_ != -1) {
         cancelTimer(*proactor(), disconnectTimer_);
+    }
+}
+
+
+void Session::startThrottleTimer()
+{
+    if (throttleTimer_ != -1) {
+        return;
+    }
+
+    const size_t throttleTimeout = inboundBandwidthLimiter_->getSecondsForThrottling() * 1000;
+
+    throttleTimer_ = setupTimer(*proactor(), *this,
+        throttleTimeout, &throttleTimer_);
+}
+
+
+void Session::stopThrottleTimer()
+{
+    if (throttleTimer_ != -1) {
+        cancelTimer(*proactor(), throttleTimer_);
     }
 }
 
@@ -338,6 +377,13 @@ void Session::handle_time_out(const ACE_Time_Value& /*tv*/, const void* act)
             disconnect();
         }
     }
+    else if (act == &throttleTimer_) {
+        throttleTimer_ = -1;
+        inboundBandwidthLimiter_->reset();
+        if (! readMessageHeader()) {
+            disconnect();
+        }
+    }
 }
 
 
@@ -348,6 +394,19 @@ void Session::addresses(const ACE_INET_Addr& remote_address,
     localAddress_ = local_address;
 }
 
+
+void Session::onThrottling(size_t readBytes, size_t maxBytesPerSecond)
+{
+    ACE_TCHAR address[MAXHOSTNAMELEN];
+    NSRPC_LOG_INFO6("Client(%s:%d) is THROTTLED(%d > %d), "
+        "delaying read(%d sec).",
+        remoteAddress_.get_host_addr(address, MAXHOSTNAMELEN),
+        remoteAddress_.get_port_number(),
+        readBytes, maxBytesPerSecond,
+        inboundBandwidthLimiter_->getSecondsForThrottling());
+}
+
+// = MessageBlockProvider overriding
 
 ACE_Message_Block& Session::acquireSendBlock()
 {
