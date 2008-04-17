@@ -18,7 +18,7 @@ using namespace nsrpc;
 class TestRpcCommand : public RpcCommand
 {
 public:
-    TestRpcCommand(const RRpcId& rpcId, UInt32 value) :
+    TestRpcCommand(const RRpcId& rpcId, const RUInt32& value) :
         RpcCommand(rpcId),
         marshaler_(value) {}
 private:
@@ -83,7 +83,7 @@ void RpcSessionTest::tearDown()
 
 void RpcSessionTest::testSendRpcCommands()
 {
-    const UInt32 valueExpected = 337;
+    const RUInt32 valueExpected = 337;
 
     pause(1);
 
@@ -105,7 +105,7 @@ void RpcSessionTest::testSendRpcCommands()
             static_cast<int>(rpcId.get()),
             static_cast<int>(toRpcByteOrder(received[0])));
         CPPUNIT_ASSERT_EQUAL_MESSAGE("parameter",
-            valueExpected,
+            valueExpected.get(),
             toRpcByteOrder(received[1]));
     }
 }
