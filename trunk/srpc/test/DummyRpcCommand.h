@@ -11,7 +11,7 @@
 class DummyRpcCommand : public srpc::RpcCommand
 {
 public:
-    DummyRpcCommand(srpc::RInt32 p1, srpc::RInt32 p2) :
+    DummyRpcCommand(const srpc::RInt32& p1, const srpc::RInt32& p2) :
       srpc::RpcCommand(srpc::RRpcId("DummyRpcCommand")),
         marshalFunctor_(p1, p2) {}
 private:

@@ -167,7 +167,8 @@ void ForwardingFunctorTest::testP7()
 void ForwardingFunctorTest::testComplex()
 {
     typedef RpcUIntType<UInt8, 4> RUInt4;
-    String s("0123456789");
+
+    RString s("0123456789");
     ForwardingFunctorT<SRPC_TYPELIST_4(RUInt4, RInt8, RInt16, RString)>
         functor(0xFF, -1, -1, s);
     functor.marshal(*ostream_);
@@ -192,5 +193,5 @@ void ForwardingFunctorTest::testComplex()
     String value4;
     istream_->read(value4, USHRT_MAX, Bits<UInt16>::size);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("value4",
-        s, value4);
+        s.ref(), value4);
 }

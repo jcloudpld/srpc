@@ -50,11 +50,11 @@ struct ForwardingFunctorT<SRPC_TYPELIST_1(P1)> : public ForwardingFunctor
         p1_(p1) {}
 
     virtual void marshal(OStream& ostream) {
-        p1_.write(ostream);
+        const_cast<P1&>(p1_).write(ostream);
     }
 
     // = member variable(s)
-    P1 p1_;
+    const P1& p1_;
 };
 
 
@@ -66,13 +66,13 @@ struct ForwardingFunctorT<SRPC_TYPELIST_2(P1, P2)> : public ForwardingFunctor
         p1_(p1), p2_(p2) {}
 
     virtual void marshal(OStream& ostream) {
-        p1_.write(ostream);
-        p2_.write(ostream);
+        const_cast<P1&>(p1_).write(ostream);
+        const_cast<P2&>(p2_).write(ostream);
     }
 
     // = member variable(s)
-    P1 p1_;
-    P2 p2_;
+    const P1& p1_;
+    const P2& p2_;
 };
 
 
@@ -85,15 +85,15 @@ struct ForwardingFunctorT<SRPC_TYPELIST_3(P1, P2, P3)> :
         p1_(p1), p2_(p2), p3_(p3) {}
 
     virtual void marshal(OStream& ostream) {
-        p1_.write(ostream);
-        p2_.write(ostream);
-        p3_.write(ostream);
+        const_cast<P1&>(p1_).write(ostream);
+        const_cast<P2&>(p2_).write(ostream);
+        const_cast<P3&>(p3_).write(ostream);
     }
 
     // = member variable(s)
-    P1 p1_;
-    P2 p2_;
-    P3 p3_;
+    const P1& p1_;
+    const P2& p2_;
+    const P3& p3_;
 };
 
 
@@ -107,17 +107,17 @@ struct ForwardingFunctorT<SRPC_TYPELIST_4(P1, P2, P3, P4)> :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4) {}
 
     virtual void marshal(OStream& ostream) {
-        p1_.write(ostream);
-        p2_.write(ostream);
-        p3_.write(ostream);
-        p4_.write(ostream);
+        const_cast<P1&>(p1_).write(ostream);
+        const_cast<P2&>(p2_).write(ostream);
+        const_cast<P3&>(p3_).write(ostream);
+        const_cast<P4&>(p4_).write(ostream);
     }
 
     // = member variable(s)
-    P1 p1_;
-    P2 p2_;
-    P3 p3_;
-    P4 p4_;
+    const P1& p1_;
+    const P2& p2_;
+    const P3& p3_;
+    const P4& p4_;
 };
 
 
@@ -131,19 +131,19 @@ struct ForwardingFunctorT<SRPC_TYPELIST_5(P1, P2, P3, P4, P5)> :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5) {}
 
     virtual void marshal(OStream& ostream) {
-        p1_.write(ostream);
-        p2_.write(ostream);
-        p3_.write(ostream);
-        p4_.write(ostream);
-        p5_.write(ostream);
+        const_cast<P1&>(p1_).write(ostream);
+        const_cast<P2&>(p2_).write(ostream);
+        const_cast<P3&>(p3_).write(ostream);
+        const_cast<P4&>(p4_).write(ostream);
+        const_cast<P5&>(p5_).write(ostream);
     }
 
     // = member variable(s)
-    P1 p1_;
-    P2 p2_;
-    P3 p3_;
-    P4 p4_;
-    P5 p5_;
+    const P1& p1_;
+    const P2& p2_;
+    const P3& p3_;
+    const P4& p4_;
+    const P5& p5_;
 };
 
 
@@ -158,21 +158,21 @@ struct ForwardingFunctorT<SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5), p6_(p6) {}
 
     virtual void marshal(OStream& ostream) {
-        p1_.write(ostream);
-        p2_.write(ostream);
-        p3_.write(ostream);
-        p4_.write(ostream);
-        p5_.write(ostream);
-        p6_.write(ostream);
+        const_cast<P1&>(p1_).write(ostream);
+        const_cast<P2&>(p2_).write(ostream);
+        const_cast<P3&>(p3_).write(ostream);
+        const_cast<P4&>(p4_).write(ostream);
+        const_cast<P5&>(p5_).write(ostream);
+        const_cast<P6&>(p6_).write(ostream);
     }
 
     // = member variable(s)
-    P1 p1_;
-    P2 p2_;
-    P3 p3_;
-    P4 p4_;
-    P5 p5_;
-    P6 p6_;
+    const P1& p1_;
+    const P2& p2_;
+    const P3& p3_;
+    const P4& p4_;
+    const P5& p5_;
+    const P6& p6_;
 };
 
 
@@ -187,23 +187,23 @@ struct ForwardingFunctorT<SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7)> :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5), p6_(p6), p7_(p7) {}
 
     virtual void marshal(OStream& ostream) {
-        p1_.write(ostream);
-        p2_.write(ostream);
-        p3_.write(ostream);
-        p4_.write(ostream);
-        p5_.write(ostream);
-        p6_.write(ostream);
-        p7_.write(ostream);
+        const_cast<P1&>(p1_).write(ostream);
+        const_cast<P2&>(p2_).write(ostream);
+        const_cast<P3&>(p3_).write(ostream);
+        const_cast<P4&>(p4_).write(ostream);
+        const_cast<P5&>(p5_).write(ostream);
+        const_cast<P6&>(p6_).write(ostream);
+        const_cast<P7&>(p7_).write(ostream);
     }
 
     // = member variable(s)
-    P1 p1_;
-    P2 p2_;
-    P3 p3_;
-    P4 p4_;
-    P5 p5_;
-    P6 p6_;
-    P7 p7_;
+    const P1& p1_;
+    const P2& p2_;
+    const P3& p3_;
+    const P4& p4_;
+    const P5& p5_;
+    const P6& p6_;
+    const P7& p7_;
 };
 
 /** @} */ // addtogroup RpcForwarding
