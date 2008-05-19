@@ -52,7 +52,13 @@ bool P2pEndpoint::open(srpc::UInt16 port)
         return false;
     }
 
-    if (! setAddresses(port)) {
+    ACE_INET_Addr realAddress;
+    if (0 != udp_->get_local_addr(realAddress)) {
+        assert(false && "what's the matter!");
+        return false;
+    }
+
+    if (! setAddresses(realAddress.get_port_number())) {
         return false;
     }
 
