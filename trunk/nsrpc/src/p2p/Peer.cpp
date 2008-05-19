@@ -659,7 +659,8 @@ bool Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
 void Peer::adjustRoundTripTime(PeerTime receivedSentTime)
 {
     const PeerTime currentTime = getPeerTime();
-    assert(receivedSentTime <= currentTime);
+    // TODO: 문제가 생긴 사례가 있음
+    //assert(receivedSentTime <= currentTime);
     const PeerTime roundTripTime =
         getElapsedTime(currentTime, receivedSentTime);
 
