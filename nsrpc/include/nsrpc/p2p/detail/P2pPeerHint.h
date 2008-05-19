@@ -25,10 +25,7 @@ struct P2pPeerHint : PeerHint
         PeerHint(peerId, address, candidate) {}
 
     bool isValid() const {
-        return (invalidPeerId != peerId_) &&
-            (address_ != 0) &&
-            (static_cast<const ACE_INET_Addr*>(address_)->
-                get_port_number() != 0);
+        return isValidPeerId(peerId_) && (address_ != 0);
     }
 
     ACE_INET_Addr getAddress() const {
