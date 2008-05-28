@@ -397,7 +397,7 @@ bool Peer::checkDisconnect(const ReliableMessage& sentReliableMessage)
         (earliestSentTimeout_ > sentReliableMessage.sentTime_)) {
         earliestSentTimeout_ = sentReliableMessage.sentTime_;
     }
-    assert(earliestSentTimeout_ > 0);
+    //assert(earliestSentTimeout_ > 0);
     if (earliestSentTimeout_ <= 0) {
         return false;
     }
