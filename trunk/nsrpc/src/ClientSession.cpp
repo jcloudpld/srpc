@@ -145,20 +145,24 @@ bool ClientSession::sendMessage(ACE_Message_Block& mblock,
     if (packetCoder_->isValidPacket(*block)) {
         CsPacketHeader header(messageType);
         if (packetCoder_->encode(*block, header)) {
-            ACE_Time_Value nowait(ACE_OS::gettimeofday());
-            const int result = msgQueue_.enqueue_tail(block.get(), &nowait);
+            //ACE_Time_Value nowait(ACE_OS::gettimeofday());
+            const int result = msgQueue_.enqueue_tail(block.get(), 0); //&nowait);
             if (result != -1) {
                 block.release();
                 return true; // success
             }
+            else {
+                NSRPC_LOG_ERROR(ACE_TEXT("ClientSession::sendMessage() - ")
+                    ACE_TEXT("enqueue_tail() FAILED."));
+            }
         }
         else {
-            NSRPC_LOG_DEBUG(ACE_TEXT("ClientSession::sendMessage() - ")
-                ACE_TEXT("Packet encoding FAILED(%d)."));
+            NSRPC_LOG_ERROR(ACE_TEXT("ClientSession::sendMessage() - ")
+                ACE_TEXT("Packet encoding FAILED."));
         }
     }
     else {
-        NSRPC_LOG_DEBUG2(ACE_TEXT("ClientSession::sendMessage() - ")
+        NSRPC_LOG_ERROR2(ACE_TEXT("ClientSession::sendMessage() - ")
             ACE_TEXT("Too short message(%d)."), block->length());
     }
 
@@ -268,8 +272,8 @@ bool ClientSession::write()
     ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
 
     ACE_Message_Block* mblock;
-    ACE_Time_Value nowait(ACE_OS::gettimeofday());
-    if (msgQueue_.dequeue_head(mblock, &nowait) == -1) {
+    ACE_Time_Value immediate(ACE_Time_Value::zero);
+    if (msgQueue_.dequeue_head(mblock, &immediate) == -1) {
         return true;
     }
 
@@ -290,16 +294,16 @@ bool ClientSession::write()
     }
     
     if (block->length() > 0) {
-        const int result = msgQueue_.enqueue_head(block.get(), &nowait);
+        const int result = msgQueue_.enqueue_head(block.get());
         if (result == -1) {
-            NSRPC_LOG_DEBUG2(
+            NSRPC_LOG_ERROR2(
                 ACE_TEXT("ClientSession::write() - ")
                 ACE_TEXT("enqueue_head(%d, %m) FAILED!!!"),
                 ACE_OS::last_error());
             return false;
         }
         else {
-            block->release(); // success
+            block.release(); // success
         }
     }
 
@@ -310,9 +314,9 @@ bool ClientSession::write()
 void ClientSession::releaseMessageBlocks()
 {
     ACE_Message_Block* mblock;
-    ACE_Time_Value nowait(ACE_OS::gettimeofday());
+    ACE_Time_Value immediate(ACE_Time_Value::zero);
     while (! msgQueue_.is_empty()) {
-        if (msgQueue_.dequeue_head(mblock, &nowait) != -1) {
+        if (msgQueue_.dequeue_head(mblock) != -1) {
             mblock->release();
         }
         else {
