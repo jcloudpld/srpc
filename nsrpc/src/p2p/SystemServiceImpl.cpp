@@ -23,9 +23,9 @@ RpcSystemServiceImpl::RpcSystemServiceImpl(PeerManager& peers,
     srpc::RpcForwarder(&rpcNetwork),
     peerManager_(peers),
     eventHandler_(eventHandler),
-    serviceHandler_(serviceHandler),
-    isHost_(false)
+    serviceHandler_(serviceHandler)
 {
+    reset();
 }
 
 
@@ -33,6 +33,13 @@ void RpcSystemServiceImpl::setHost(const RP2pProperty& p2pProperty)
 {
     isHost_ = true;
     p2pProperty_ = p2pProperty;
+}
+
+
+void RpcSystemServiceImpl::reset()
+{
+    isHost_ = false;
+    p2pProperty_.reset();
 }
 
 

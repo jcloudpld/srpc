@@ -112,6 +112,8 @@ void P2pSessionImpl::close()
     packetCoder_->reset();
 
     p2pProperty_.reset();
+
+    systemService_.reset();
 }
 
 
