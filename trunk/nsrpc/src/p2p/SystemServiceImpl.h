@@ -37,6 +37,7 @@ public:
         SystemServiceHandler& serviceHandler, srpc::RpcNetwork& rpcNetwork);
 
     void setHost(const RP2pProperty& p2pProperty);
+    void reset();
 public:
     DECLARE_SRPC_P2P_METHOD_3(rpcConnect, RAddresses, peerAddresses,
         srpc::RShortString, sessionPassword, srpc::RUInt32, sessionKey);
