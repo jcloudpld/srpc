@@ -134,6 +134,7 @@ void P2pSessionImpl::connect(const PeerAddresses& hostAddresses)
     assert(endpoint_.isOpened());
     assert(! isHost());
 
+    peerCandidateManager_.reset();
     connectToPeer(pseudoHostPeerId, toAddresses(hostAddresses));
 }
 
