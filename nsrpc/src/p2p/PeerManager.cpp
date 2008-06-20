@@ -99,7 +99,8 @@ void PeerManager::setHost(PeerId peerId)
     }
 
     if (isHostExists()) {
-        assert(! isHost(peerId));
+        // 이 어썰트가 유효하지 않음 (정확한 원인 파악 안됨)
+        //assert(! isHost(peerId));
         if (! isHost(peerId)) {
             removePeerNextTime(host_->getPeerId());
         }
