@@ -166,7 +166,7 @@ WString fromUtf8(const String& utf8)
         }
         const int contOctetCount = getContOctetCount(octet);
 
-        if (std::distance(current, end) >= contOctetCount) {
+        if (std::distance(current, end) > contOctetCount) {
             wchar_t wc = octet & octetModifierTable[contOctetCount];
             const cstringiterator contEnd =
                 boost::next(current, contOctetCount + 1);
