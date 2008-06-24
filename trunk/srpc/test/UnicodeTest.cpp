@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <srpc/utility/Unicode.h>
+#include <srpc/Types.h>
 
 using namespace srpc;
 
@@ -13,6 +14,7 @@ class UnicodeTest  : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(UnicodeTest );
     CPPUNIT_TEST(testEnglish);
     CPPUNIT_TEST(testKorean);
+    CPPUNIT_TEST(testInvalidUtf8);
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
@@ -20,6 +22,7 @@ public:
 private:
     void testEnglish();
     void testKorean();
+    void testInvalidUtf8();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UnicodeTest);
@@ -71,4 +74,21 @@ void UnicodeTest::testKorean()
             expected, toUtf8(fromUtf8(expected)));
     }
 #endif
+}
+
+
+void UnicodeTest::testInvalidUtf8()
+{
+    const WString str(L"가나 다라 마바사 아자 차카타파하. 거너 더러머버서");
+
+    const String utf8(toUtf8(str));
+    const UInt32 strLen = 60;
+    String invalidUtf8;
+    for (String::size_type i = 0; i < strLen; ++i) {
+        invalidUtf8.push_back(utf8[i]);
+    }
+
+    const WString converted(fromUtf8(invalidUtf8));
+    CPPUNIT_ASSERT_MESSAGE("converting",
+        WString(L"가나 다라 마바사 아자 차카타파하. 거너 더") == converted);
 }
