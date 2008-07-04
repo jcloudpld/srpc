@@ -117,13 +117,16 @@ void P2pSessionImpl::close()
 }
 
 
-void P2pSessionImpl::host(size_t maxPeers, bool hostMigration)
+void P2pSessionImpl::host(size_t maxPeers, bool hostMigration,
+    const PeerIds& hostPrecedence)
 {
     assert(endpoint_.isOpened());
     assert(! isHost());
 
     p2pProperty_.maxPeers_ = static_cast<srpc::UInt8>(maxPeers);
     p2pProperty_.hostMigration_ = hostMigration;
+    p2pProperty_.hostPrecedence_.assign(
+        hostPrecedence.begin(), hostPrecedence.end());
 
     makeHost(myPeerId_);
 }
@@ -386,7 +389,8 @@ void P2pSessionImpl::disconnected(PeerId peerId)
 
 void P2pSessionImpl::migrateHost()
 {
-    if (p2pProperty_.hostMigration_ && peerManager_.isHostCandidate()) {
+    if (p2pProperty_.hostMigration_ &&
+        peerManager_.isHostCandidate(p2pProperty_.hostPrecedence_)) {
         systemService_.rpcHostMigrated();
     }
 }

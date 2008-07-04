@@ -45,8 +45,10 @@ public:
      * @param maxPeers the maximum number of peers allowed in the session.
      *        Set this member to 0 to specify an unlimited number of players.
      * @param hostMigration enable host migration?
+     * @param hostPrecedence if not empty, host migration is occurred by this order
      */
-    virtual void host(size_t maxPeers = 0, bool hostMigration = true) = 0;
+    virtual void host(size_t maxPeers = 0, bool hostMigration = true,
+        const PeerIds& hostPrecedence = PeerIds()) = 0;
 
     /**
      * Establishes the connection to all the peers in a peer-to-peer session.

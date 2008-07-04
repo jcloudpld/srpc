@@ -54,7 +54,8 @@ private: // information hiding
     virtual bool open(srpc::UInt16 port, const srpc::String& password);
     virtual void close();
 
-    virtual void host(size_t maxPeers, bool hostMigration);
+    virtual void host(size_t maxPeers, bool hostMigration,
+        const PeerIds& hostPrecedence);
     virtual void connect(const PeerAddresses& hostAddresses);
 
     virtual void setRelayServer(const PeerAddress& address,

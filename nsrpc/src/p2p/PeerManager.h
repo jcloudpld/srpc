@@ -67,8 +67,7 @@ public:
         return ! host_.isNull();
     }
 
-    /// PeerId가 가장 작을 경우 호스트 후보자가 된다.
-    bool isHostCandidate() const;
+    bool isHostCandidate(const RPeerIds& hostPrecedence) const;
 
     size_t getPeerCount() const {
         return peers_.size();
