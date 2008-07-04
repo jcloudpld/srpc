@@ -2,7 +2,7 @@
 #define NSRPC_PEERID_H
 
 #include <srpc/RpcTypes.h>
-#include <srpc/ContainerTypes.h>
+#include <srpc/RpcContainers.h>
 
 namespace nsrpc
 {
@@ -46,6 +46,7 @@ typedef srpc::RpcIntType<PeerId> RPeerId;
 
 
 typedef srpc::Vector<PeerId> PeerIds;
+typedef srpc::RVector<RPeerId> RPeerIds;
 
 /**
  * @struct PeerIdPair

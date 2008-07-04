@@ -3,6 +3,7 @@
 
 #include "P2pAddress.h"
 #include "../P2pConfig.h"
+#include "../PeerId.h"
 #include <srpc/RpcContainers.h>
 #include <boost/scoped_array.hpp>
 
@@ -26,6 +27,7 @@ struct RP2pProperty
     srpc::RShortString sessionPassword_;
     srpc::RBool hostMigration_;
     srpc::RUInt32 sessionKey_;
+    RPeerIds hostPrecedence_;
 
     RP2pProperty() {
         reset();
@@ -36,6 +38,7 @@ struct RP2pProperty
         sessionPassword_.clear();
         hostMigration_ = false;
         sessionKey_ = 0;
+        hostPrecedence_.clear();
     }
 
     void write(srpc::OStream& ostream) {
@@ -43,6 +46,7 @@ struct RP2pProperty
         sessionPassword_.write(ostream);
         hostMigration_.write(ostream);
         sessionKey_.write(ostream);
+        hostPrecedence_.write(ostream);
     }
 
     void read(srpc::IStream& istream) {
@@ -50,6 +54,7 @@ struct RP2pProperty
         sessionPassword_.read(istream);
         hostMigration_.read(istream);
         sessionKey_.read(istream);
+        hostPrecedence_.read(istream);
     }
 };
 

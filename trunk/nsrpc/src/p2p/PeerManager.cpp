@@ -26,7 +26,7 @@ PeerManager::~PeerManager()
 void PeerManager::addPeer(PeerId peerId, const Addresses& addresses)
 {
     PeerPtr peer(getPeer(peerId));
-    if (! isExists(peerId)) {
+    if (peer.isNull()) {
         peer = makePeer(peerId, addresses);
         peers_.insert(Peers::value_type(peerId, peer));
     }
@@ -115,6 +115,7 @@ void PeerManager::reset()
     host_.reset();
     me_.reset();
     relayServer_.reset();
+    disconnectedPeers_.clear();
 }
 
 
@@ -245,7 +246,7 @@ const PeerPtr PeerManager::getPeer(PeerId peerId) const
         return relayServer_;
     }
 
-    Peers::const_iterator pos = peers_.find(peerId);
+    const Peers::const_iterator pos = peers_.find(peerId);
     if (pos != peers_.end()) {
         return (*pos).second;
     }
@@ -253,20 +254,37 @@ const PeerPtr PeerManager::getPeer(PeerId peerId) const
 }
 
 
-bool PeerManager::isHostCandidate() const
+bool PeerManager::isHostCandidate(const RPeerIds& hostPrecedence) const
 {
-    const PeerPtr me(getMe());
+    // 호스트가 아니고 hostPrecedence의 제일 앞부분에 있는 피어가 호스트 후보
+    if (! hostPrecedence.empty()) {
+        RPeerIds::const_iterator pos = hostPrecedence.begin();
+        const RPeerIds::const_iterator end = hostPrecedence.end();
+        for (; pos != end; ++pos) {
+            const PeerId peerId = *pos;
+            const PeerPtr peer(getPeer(peerId));
+            if (peer.isNull()) {
+                continue;
+            }
+            if (peer == host_) {
+                continue;
+            }
+            return (peer == me_);
+        }
+    }
 
-    Peers::const_iterator pos = peers_.begin();
-    const Peers::const_iterator end = peers_.end();
-    for (; pos != end; ++pos) {
-        const PeerPtr& peer = (*pos).second;
+    /// PeerId가 가장 작을 경우 호스트 후보가 된다.
+    Peers::const_iterator posPeers = peers_.begin();
+    const Peers::const_iterator endPeers = peers_.end();
+    for (; posPeers != endPeers; ++posPeers) {
+        const PeerPtr& peer = (*posPeers).second;
         if (peer != host_) {
-            if (peer->getPeerId() < me->getPeerId()) {
+            if (peer->getPeerId() < me_->getPeerId()) {
                 return false;
             }
         }
     }
+
     return true;
 }
 
