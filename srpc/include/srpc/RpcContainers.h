@@ -81,13 +81,14 @@ class RList :
 {};
 
 
-/// std::set에 대한 RpcType
-template <typename RpcType, size_t sizeBits = Bits<UInt8>::size>
-class RSet : public Set<RpcType>
+/// std::*set에 대한 RpcType
+template <typename BaseType, size_t sizeBits = Bits<UInt8>::size>
+class RBaseSet : public BaseType
 {
 public:
-    typedef Set<RpcType> Base;
+    typedef BaseType Base;
     typedef typename Base::iterator iterator;
+    typedef typename Base::key_type RpcType;
 public:
     void write(OStream& ostream) {
         ostream.write(static_cast<UInt32>(this->size()), sizeBits);
@@ -114,6 +115,18 @@ public:
             this->insert(rt);
         }
     }
+};
+
+/// std::set에 대한 RpcType
+template <typename RpcType>
+class RSet : public RBaseSet<Set<RpcType> >
+{
+};
+
+/// std::multiset에 대한 RpcType
+template <typename RpcType>
+class RMultiSet : public RBaseSet<MultiSet<RpcType> >
+{
 };
 
 
