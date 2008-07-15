@@ -219,6 +219,18 @@ std::string P2pSessionImpl::getStatsString(PeerId peerId) const
 }
 
 
+PeerId P2pSessionImpl::getHostPeerId() const
+{
+    return peerManager_.getHostPeerId();
+}
+
+
+bool P2pSessionImpl::isHostAlive() const
+{
+    return peerManager_.isHostAlive();
+}
+
+
 void P2pSessionImpl::addMyPeer()
 {
     assert(! endpoint_.getLocalAddresses().empty());

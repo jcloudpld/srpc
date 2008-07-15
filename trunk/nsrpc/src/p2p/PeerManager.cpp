@@ -288,6 +288,21 @@ bool PeerManager::isHostCandidate(const RPeerIds& hostPrecedence) const
     return true;
 }
 
+
+bool PeerManager::isHostAlive() const
+{
+    if (host_.isNull()) {
+        return false;
+    }
+
+    if (host_ == me_) {
+        return true;
+    }
+
+    return (getPeerTime() - host_->getLastReceiveTime()) <
+        p2pConfig_.hostAliveConditionTime_;
+}
+
 } // namespace detail
 
 } // namespace nsrpc

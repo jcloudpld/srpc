@@ -97,6 +97,12 @@ public:
 
     /// get the RpcNetwork instance for RPC bind.
     virtual srpc::RpcNetwork& getRpcNetwork() = 0;
+
+    /// Get host PeerId.
+    virtual PeerId getHostPeerId() const = 0;
+
+    /// is host alive?
+    virtual bool isHostAlive() const = 0;
 };
 
 /** @} */ // addtogroup p2p

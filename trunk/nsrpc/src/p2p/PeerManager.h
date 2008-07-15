@@ -69,6 +69,8 @@ public:
 
     bool isHostCandidate(const RPeerIds& hostPrecedence) const;
 
+    bool isHostAlive() const;
+
     size_t getPeerCount() const {
         return peers_.size();
     }
@@ -95,6 +97,10 @@ public:
 
     bool isHostExists() const {
         return ! host_.isNull();
+    }
+
+    PeerId getHostPeerId() const {
+        return host_.isNull() ? invalidPeerId : host_->getPeerId();
     }
 
     bool canSendAcknowledgement(PeerId peerId) const {

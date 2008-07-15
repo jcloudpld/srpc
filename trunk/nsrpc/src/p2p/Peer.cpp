@@ -30,9 +30,10 @@ Peer::Peer(PeerId peerId, const Addresses& addresses,
     incomingUnreliableSequenceNumber_(invalidSequenceNumber),
     nextTimeoutCheckTime_(0),
     nextTimeoutCheckTimeUpdatedTime_(0),
-    lastReceiveTime_(0),
+    lastReceiveAckTime_(0),
     earliestSentTimeout_(0),
-    connectedTime_(getPeerTime())
+    connectedTime_(getPeerTime()),
+    lastReceiveTime_(0)
 {
     assert(! addresses.empty());
 
@@ -114,6 +115,8 @@ void Peer::putIncomingMessage(const P2pPacketHeader& header,
         return;
     }
 
+    lastReceiveTime_ = getPeerTime();
+
     if (isAcknowledgingConnect()) { /// rpcConnected()에 대한 응답?
         (void)messageHandler_.acknowledgedConnect(peerId_);
     }
@@ -127,7 +130,7 @@ void Peer::putIncomingMessage(const P2pPacketHeader& header,
     else {
         getDelayedInboundMessages(header.packetType_).insert(
             DelayedInboundMessage(header, mblock, peerAddress,
-                (getPeerTime() + latency)));
+                (lastReceiveTime_ + latency)));
         mblockGuard.release();
     }
 }
@@ -492,7 +495,7 @@ bool Peer::shouldSendPing() const
         return false;
     }
     
-    return getElapsedTime(getPeerTime(), lastReceiveTime_) >=
+    return getElapsedTime(getPeerTime(), lastReceiveAckTime_) >=
         p2pConfig_.pingInterval_;
 }
 
@@ -664,7 +667,7 @@ void Peer::adjustRoundTripTime(PeerTime receivedSentTime)
     const PeerTime roundTripTime =
         getElapsedTime(currentTime, receivedSentTime);
 
-    lastReceiveTime_ = currentTime;
+    lastReceiveAckTime_ = currentTime;
     earliestSentTimeout_ = 0;
 
     // TODO: throattling

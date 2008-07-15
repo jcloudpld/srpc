@@ -11,9 +11,9 @@ namespace detail
 namespace
 {
 
-static ACE_Time_Value baseTime(ACE_High_Res_Timer::gettimeofday_hr());
+ACE_Time_Value baseTime(ACE_High_Res_Timer::gettimeofday_hr());
 
-static PeerTime currentPeerTime = 0;
+PeerTime currentPeerTime = 0;
 
 } // namespace
 

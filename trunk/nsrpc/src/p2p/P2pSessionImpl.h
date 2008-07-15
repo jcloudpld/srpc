@@ -83,6 +83,9 @@ private: // information hiding
     virtual srpc::RpcNetwork& getRpcNetwork() {
         return rpcNetwork_;
     }
+
+    virtual PeerId getHostPeerId() const;
+    virtual bool isHostAlive() const;
 private:
     void connectToPeer(PeerId peerId, const Addresses& peerAddresses);
     void makeHost(PeerId peerId);
