@@ -36,6 +36,8 @@ struct P2pConfig
 
         // the interval to keep NAT port mapping (milli-seconds)
         defaultNatPortHoldingInterval = (10 * 1000),
+
+        defaultHostAliveConditionTime = 2000
     };
 
     /// default Round trip time value(msec)
@@ -107,6 +109,8 @@ struct P2pConfig
     /// - ex) high max. latency: 400
     unsigned int maxInboundPacketLatency_;
 
+    unsigned int hostAliveConditionTime_;
+
     /// ctor
     explicit P2pConfig(unsigned int defaultRtt = peerDefaultRtt,
         unsigned int connectTimeout = peerDefaultConnectTimeout,
@@ -121,14 +125,16 @@ struct P2pConfig
         unsigned int minOutboundPacketLatency = 0,
         unsigned int maxOutboundPacketLatency = 0,
         unsigned int minInboundPacketLatency = 0,
-        unsigned int maxInboundPacketLatency = 0) :
+        unsigned int maxInboundPacketLatency = 0,
+        unsigned int hostAliveConditionTime = defaultHostAliveConditionTime) :
         defaultRtt_(defaultRtt),
         connectTimeout_(connectTimeout),
         pingInterval_(pingInterval),
         roundTipTimeoutFactor_(roundTipTimeoutFactor),
         roundTripTimeoutLimitFactor_(roundTripTimeoutLimitFactor),
         maxDisconnectTimeout_(maxDisconnectTimeout),
-        minDisconnectTimeout_(minDisconnectTimeout) {
+        minDisconnectTimeout_(minDisconnectTimeout),
+        hostAliveConditionTime_(hostAliveConditionTime) {
         setPacketDropRate(outboundPacketDropRate, inboundPacketDropRate);
         setOutboundPacketLatency(minOutboundPacketLatency,
             maxOutboundPacketLatency);
