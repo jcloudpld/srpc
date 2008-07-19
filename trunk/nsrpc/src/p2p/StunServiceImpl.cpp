@@ -24,37 +24,37 @@ RpcStunServiceImpl::RpcStunServiceImpl(StunServiceHandler& serviceHandler,
     srpc::RpcForwarder(&rpcNetwork),
     serviceHandler_(serviceHandler),
     lastResolvingTime_(0),
-    lastResolvedTime_(0),
-    addressResolvingCount_(0)
+    lastResolvedTime_(0)
 {
 }
 
 
 void RpcStunServiceImpl::relayServerSetUp()
 {
-    addressResolvingCount_ = 0;
+    lastResolvingTime_ = 0;
+    lastResolvedTime_ = 0;
 }
 
 
-void RpcStunServiceImpl::resolve(PeerTime currentTime)
+void RpcStunServiceImpl::resolve()
 {
-    if (addressResolvingCount_ >= P2pConfig::initialAddressResolvingCount) {
-        if ((currentTime - lastResolvedTime_) <
-            P2pConfig::defaultNatPortHoldingInterval) {
-            return;
-        }
+    const PeerTime currentTime = getPeerTime();
 
-        if ((currentTime - lastResolvingTime_) <
-            P2pConfig::minimalAddressResolvingInterval) {
-            return;
-        }
+    if ((lastResolvingTime_ != 0) &&
+        ((currentTime - lastResolvingTime_) <
+            P2pConfig::minimalAddressResolvingInterval)) {
+        return;
+    }
+
+    if ((lastResolvedTime_ != 0) &&
+        ((currentTime - lastResolvedTime_) <
+            P2pConfig::defaultNatPortHoldingInterval)) {
+        return;
     }
 
     const P2pPeerHint hint(relayServerPeerId);
     rpcResolve(&hint);
-    lastResolvingTime_ = getPeerTime();
-
-    ++addressResolvingCount_;
+    lastResolvingTime_ = currentTime;
 }
 
 // = RPC

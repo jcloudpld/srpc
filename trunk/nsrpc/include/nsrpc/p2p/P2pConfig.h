@@ -30,9 +30,7 @@ struct P2pConfig
         peerReconnectTryCount = 3,
 
         // the minimal interval to resolve the address (milli-seconds)
-        minimalAddressResolvingInterval = 500,
-
-        initialAddressResolvingCount = 3,
+        minimalAddressResolvingInterval = 100,
 
         // the interval to keep NAT port mapping (milli-seconds)
         defaultNatPortHoldingInterval = (10 * 1000),
