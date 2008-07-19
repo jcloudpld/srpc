@@ -68,7 +68,7 @@ bool P2pEndpoint::open(srpc::UInt16 port)
 
 void P2pEndpoint::close()
 {
-    ACE_Reactor_Mask masks = ACE_Event_Handler::ALL_EVENTS_MASK |
+    const ACE_Reactor_Mask masks = ACE_Event_Handler::ALL_EVENTS_MASK |
         ACE_Event_Handler::DONT_CALL;
     reactor()->remove_handler(this, masks);
 
@@ -84,6 +84,9 @@ void P2pEndpoint::close()
 bool P2pEndpoint::send(const ACE_INET_Addr& peerAddr,
     const ACE_Message_Block& mblock)
 {
+    //NSRPC_LOG_DEBUG4("P2pEndpoint::send(%s:%d) %d bytes.\n",
+    //    peerAddr.get_host_addr(), peerAddr.get_port_number(), mblock.length());
+
     const size_t blockSize = mblock.length();
     const ssize_t sentSize =
         udp_->send(mblock.rd_ptr(), blockSize, peerAddr);

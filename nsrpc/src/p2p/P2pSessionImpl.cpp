@@ -298,7 +298,7 @@ void P2pSessionImpl::resolve()
         return;
     }
 
-    stunService_.resolve(getPeerTime());
+    stunService_.resolve();
 }
 
 

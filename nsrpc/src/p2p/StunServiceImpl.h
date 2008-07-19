@@ -39,7 +39,7 @@ public:
      */
     void relayServerSetUp();
 
-    void resolve(PeerTime currentTime);
+    void resolve();
 public:
     DECLARE_SRPC_METHOD_0(rpcResolve);
     DECLARE_SRPC_P2P_METHOD_2(rpcResolved,
@@ -49,8 +49,6 @@ private:
 
     PeerTime lastResolvingTime_; ///< 최근 resolving 요청 시간
     PeerTime lastResolvedTime_; ///< 최근 resolving된 시간
-
-    srpc::UInt32 addressResolvingCount_;
 };
 
 /** @} */ // addtogroup p2p
