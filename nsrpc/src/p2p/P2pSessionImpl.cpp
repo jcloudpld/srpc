@@ -142,6 +142,12 @@ void P2pSessionImpl::connect(const PeerAddresses& hostAddresses)
 }
 
 
+void P2pSessionImpl::disconnect(PeerId peerId)
+{
+    peerManager_.removePeerNextTime(peerId);
+}
+
+
 void P2pSessionImpl::setRelayServer(const PeerAddress& address,
     const srpc::String& cipherKey)
 {
