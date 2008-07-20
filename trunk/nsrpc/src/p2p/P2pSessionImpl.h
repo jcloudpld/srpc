@@ -58,6 +58,8 @@ private: // information hiding
         const PeerIds& hostPrecedence);
     virtual void connect(const PeerAddresses& hostAddresses);
 
+    virtual void disconnect(PeerId peerId);
+
     virtual void setRelayServer(const PeerAddress& address,
         const srpc::String& cipherKey);
 
