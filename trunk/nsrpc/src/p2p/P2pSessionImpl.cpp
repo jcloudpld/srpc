@@ -69,17 +69,14 @@ P2pSessionImpl::~P2pSessionImpl()
 bool P2pSessionImpl::open(srpc::UInt16 port,
     const srpc::String& password)
 {
-    //if (endpoint_.isOpened()) {
-    //    return true;
-    //}
-    close();
-
     if (! isAllowedPeerId(myPeerId_)) {
         return false;
     }
 
-    if (! endpoint_.open(port)) {
-        return false;
+    if (! endpoint_.isOpened()) {
+        if (! endpoint_.open(port)) {
+            return false;
+        }
     }
 
     resetBaseTime();
@@ -97,23 +94,9 @@ bool P2pSessionImpl::open(srpc::UInt16 port,
 
 void P2pSessionImpl::close()
 {
-    const PeerPtr me(peerManager_.getMe());
-    if ((! me.isNull()) && me->disconnect()) {
-        systemService_.rpcDisconnect();
-        flush();
-    }
+    disconnect();
 
     endpoint_.close();
-
-    anonymousMessageManager_.reset();
-    peerCandidateManager_.reset();
-    peerManager_.reset();
-
-    packetCoder_->reset();
-
-    p2pProperty_.reset();
-
-    systemService_.reset();
 }
 
 
@@ -139,6 +122,26 @@ void P2pSessionImpl::connect(const PeerAddresses& hostAddresses)
 
     peerCandidateManager_.reset();
     connectToPeer(pseudoHostPeerId, toAddresses(hostAddresses));
+}
+
+
+void P2pSessionImpl::disconnect()
+{
+    const PeerPtr me(peerManager_.getMe());
+    if ((! me.isNull()) && me->disconnect()) {
+        systemService_.rpcDisconnect();
+        flush();
+    }
+
+    anonymousMessageManager_.reset();
+    peerCandidateManager_.reset();
+    peerManager_.reset();
+
+    packetCoder_->reset();
+
+    p2pProperty_.reset();
+
+    systemService_.reset();
 }
 
 

@@ -57,6 +57,7 @@ private: // information hiding
     virtual void host(size_t maxPeers, bool hostMigration,
         const PeerIds& hostPrecedence);
     virtual void connect(const PeerAddresses& hostAddresses);
+    virtual void disconnect();
 
     virtual void disconnect(PeerId peerId);
 

@@ -56,6 +56,9 @@ public:
      */
     virtual void connect(const PeerAddresses& hostAddresses) = 0;
 
+    /// disconnect all peers from the current session
+    virtual void disconnect() = 0;
+
     /// disconnect the peer from the current session
     virtual void disconnect(PeerId peerId) = 0;
 
