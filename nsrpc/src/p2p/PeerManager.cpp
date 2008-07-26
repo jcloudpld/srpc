@@ -215,10 +215,8 @@ void PeerManager::handleIncomingMessages()
 
 void PeerManager::handleDisconnectedPeers()
 {
-    PeerIds::const_iterator pos = disconnectedPeers_.begin();
-    const PeerIds::const_iterator end = disconnectedPeers_.end();
-    for (; pos != end; ++pos) {
-        const PeerId peerId = *pos;
+    for (size_t i = 0; i < disconnectedPeers_.size(); ++i) {
+        const PeerId peerId = disconnectedPeers_[i];
         messageHandler_.peerDisconnecting(peerId);
         removePeer(peerId);
     }
