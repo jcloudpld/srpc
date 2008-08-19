@@ -51,7 +51,7 @@
 // boost
 #ifdef _MSC_VER
 #  pragma warning (push)
-#  pragma warning (disable: 4511 4512 4819 4996)
+#  pragma warning (disable: 4511 4512 4541 4819 4996)
 #endif
 #include <boost/format.hpp>
 #ifdef _MSC_VER
@@ -60,7 +60,7 @@
 
 #ifdef _MSC_VER
 #  pragma warning (push)
-#  pragma warning (disable: 4819)
+#  pragma warning (disable: 4541 4819)
 #endif
 #include <boost/mpl/vector.hpp>
 #include <boost/type_traits.hpp>
