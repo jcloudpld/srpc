@@ -100,7 +100,6 @@ private:
     void resolve();
     void tryToConnect(PeerId peerId,
         const ACE_INET_Addr& targetAddress, const ACE_INET_Addr& peerAddress);
-    bool loopBack(PeerId peerId, ACE_Message_Block* mblock);
 
     bool encodeMessage(ACE_Message_Block& mblock,
         const PeerIdPair& peerIdPair, srpc::RpcPacketType packetType,

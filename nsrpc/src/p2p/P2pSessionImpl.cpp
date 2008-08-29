@@ -377,23 +377,6 @@ void P2pSessionImpl::acknowledge(PeerId peerId, const Message& message)
 }
 
 
-bool P2pSessionImpl::loopBack(PeerId peerId, ACE_Message_Block* mblock)
-{
-    if (isSelf(peerId) || isBroadcast(peerId)) {
-        const char* rdPtr = mblock->rd_ptr();
-        mblock->rd_ptr(packetCoder_->getHeaderSize());
-        const PeerPtr me(peerManager_.getMe());
-        (void)handleIncomingMessage(me->getPeerId(),
-            Message(invalidSequenceNumber, mblock, me->getTargetAddress(), 0));
-        mblock->rd_ptr(const_cast<char*>(rdPtr));
-        if (! isBroadcast(peerId)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
 void P2pSessionImpl::disconnected(PeerId peerId)
 {
     if (! peerManager_.isExists(peerId)) {
@@ -413,6 +396,8 @@ void P2pSessionImpl::migrateHost()
     if (p2pProperty_.hostMigration_ &&
         peerManager_.isHostCandidate(p2pProperty_.hostPrecedence_)) {
         systemService_.rpcHostMigrated();
+
+        hostMigrated(myPeerId_);
     }
 }
 
@@ -496,11 +481,13 @@ bool P2pSessionImpl::sendNow(const PeerIdPair& peerIdPair,
     if (isRelayServer(peerIdPair.to_) ||
         (! isRelayServerAddress(addressPair.targetAddress_))) {
         AceMessageBlockGuard mblockGuard(mblock.clone());
-        if (encodeMessage(*mblockGuard, peerIdPair, packetType, sequenceNumber,
-            sentTime)) {
-            if (! endpoint_.send(addressPair.targetAddress_, *mblockGuard)) {
-                return false;
-            }
+        if (! encodeMessage(*mblockGuard, peerIdPair, packetType,
+            sequenceNumber, sentTime)) {
+            return false;
+        }
+
+        if (! endpoint_.send(addressPair.targetAddress_, *mblockGuard)) {
+            return false;
         }
     }
     else {
@@ -537,22 +524,17 @@ void P2pSessionImpl::sendOutgoingMessage(srpc::RpcPacketType packetType,
         }
     }
 
-    if (peerManager_.isExists(peerId) || isBroadcast(peerId)) {
-        if (loopBack(peerId, mblock)) {
-            return;
-        }
-        
-        if (! isSelf(peerId)) {
-            peerManager_.putOutgoingMessage(peerId, targetAddress, packetType,
-                mblock);
-            return;
-        }
+    if ((! isSelf(peerId)) &&
+        (peerManager_.isExists(peerId) || isBroadcast(peerId))) {
+        peerManager_.putOutgoingMessage(peerId, targetAddress, packetType,
+            mblock);
     }
-
-    //NSRPC_LOG_DEBUG3(
-    //    ACE_TEXT("P2pSessionImpl::sendOutgoingMessage(P%u,%d)")
-    //    ACE_TEXT("- Target missed"),
-    //    peerId, packetType);
+    else {
+        //NSRPC_LOG_DEBUG3(
+        //    ACE_TEXT("P2pSessionImpl::sendOutgoingMessage(P%u,%d)")
+        //    ACE_TEXT("- Target missed"),
+        //    peerId, packetType);
+    }
 }
 
 
