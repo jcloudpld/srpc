@@ -147,7 +147,7 @@ void SimpleRelayService::sendOutgoingMessage(srpc::RpcPacketType packetType,
 }
 
 
-size_t SimpleRelayService::getHeaderSize() const
+size_t SimpleRelayService::getPacketHeaderSize() const
 {
     return packetCoder_->getHeaderSize();
 }

@@ -516,7 +516,7 @@ void P2pSessionImpl::sendOutgoingMessage(srpc::RpcPacketType packetType,
     if (peerHint != 0) {
         peerId = peerHint->peerId_;
         targetAddress = peerHint->getAddress();
-        if (peerHint->candidate_) {
+        if (peerHint->isCandidate_) {
             if (peerCandidateManager_.putOutgoingMessage(peerId, targetAddress,
                 mblock)) {
                 return;
@@ -538,7 +538,7 @@ void P2pSessionImpl::sendOutgoingMessage(srpc::RpcPacketType packetType,
 }
 
 
-size_t P2pSessionImpl::getHeaderSize() const
+size_t P2pSessionImpl::getPacketHeaderSize() const
 {
     return packetCoder_->getHeaderSize();
 }

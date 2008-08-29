@@ -53,7 +53,7 @@ public:
         ACE_Message_Block* mblock, const P2pPeerHint* peerHint) = 0;
 
     /// 패킷 헤더의 크기를 얻는다.
-    virtual size_t getHeaderSize() const = 0;
+    virtual size_t getPacketHeaderSize() const = 0;
 };
 
 /** @} */ // addtogroup p2p
