@@ -126,24 +126,39 @@ void PeerManager::putOutgoingMessage(PeerId peerId,
     assert(! isSelf(peerId));
 
     if (isValidPeerId(peerId)) {
-        const PeerPtr peer(getPeer(peerId));
-        if (! peer.isNull()) {
-            peer->putOutgoingMessage(packetType, mblock, toAddress);
-        }
-        else {
-            assert(false);
-        }
+        putUnicastOutgoingMessage(peerId, toAddress, packetType, mblock);
     }
     else {
-        Peers::iterator pos = peers_.begin();
-        const Peers::iterator end = peers_.end();
-        for (; pos != end; ++pos) {
-            const PeerPtr& peer = (*pos).second;
-            if (isSelf(peer->getPeerId())) {
-                continue;
-            }
-            peer->putOutgoingMessage(packetType, mblock, toAddress);
+        putBroadcastOutgoingMessage(toAddress, packetType, mblock);
+    }
+}
+
+
+void PeerManager::putUnicastOutgoingMessage(PeerId peerId,
+    const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
+    ACE_Message_Block* mblock)
+{
+    const PeerPtr peer(getPeer(peerId));
+    if (peer.isNull()) {
+        assert(false);
+        return;
+    }
+
+    peer->putOutgoingMessage(packetType, mblock, toAddress);
+}
+
+
+void PeerManager::putBroadcastOutgoingMessage(const ACE_INET_Addr& toAddress,
+    srpc::RpcPacketType packetType, ACE_Message_Block* mblock)
+{
+    Peers::iterator pos = peers_.begin();
+    const Peers::iterator end = peers_.end();
+    for (; pos != end; ++pos) {
+        const PeerPtr& peer = (*pos).second;
+        if (isSelf(peer->getPeerId())) {
+            continue;
         }
+        peer->putOutgoingMessage(packetType, mblock, toAddress);
     }
 }
 

@@ -108,6 +108,12 @@ public:
         return (! peer.isNull()) && (! peer->isDisconnecting());
     }
 private:
+    void putUnicastOutgoingMessage(PeerId peerId,
+        const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
+        ACE_Message_Block* mblock);
+    void putBroadcastOutgoingMessage(const ACE_INET_Addr& toAddress,
+        srpc::RpcPacketType packetType, ACE_Message_Block* mblock);
+
     PeerPtr makePeer(PeerId peerId, const Addresses& addresses);
     void removePeer(PeerId peerId);
 private:
