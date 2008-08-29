@@ -134,7 +134,7 @@ private:
     virtual void marshalingErrorOccurred();
     virtual void sendOutgoingMessage(srpc::RpcPacketType packetType,
         ACE_Message_Block* mblock, const P2pPeerHint* peerHint);
-    virtual size_t getHeaderSize() const;
+    virtual size_t getPacketHeaderSize() const;
 
     // = PeerMessageHandler overriding
     virtual bool handleIncomingMessage(PeerId peerId,

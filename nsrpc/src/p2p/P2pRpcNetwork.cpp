@@ -92,7 +92,7 @@ ACE_Message_Block& P2pRpcNetwork::initOutputStream()
 {
     ostream_->reset(true);
     ACE_Message_Block& wblock = *(wstreamBuffer_->getBlock());
-    wblock.wr_ptr(networkSender_.getHeaderSize());
+    wblock.wr_ptr(networkSender_.getPacketHeaderSize());
     return wblock;
 }
 

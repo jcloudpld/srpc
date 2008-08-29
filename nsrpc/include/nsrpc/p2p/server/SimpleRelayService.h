@@ -76,7 +76,7 @@ private:
     virtual void marshalingErrorOccurred();
     virtual void sendOutgoingMessage(srpc::RpcPacketType packetType,
         ACE_Message_Block* mblock, const P2pPeerHint* peerHint);
-    virtual size_t getHeaderSize() const;
+    virtual size_t getPacketHeaderSize() const;
 private:
     ACE_Reactor* reactor_;
     boost::scoped_ptr<PacketCoder> packetCoder_;
