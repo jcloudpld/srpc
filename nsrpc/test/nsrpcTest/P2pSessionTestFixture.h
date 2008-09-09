@@ -39,6 +39,10 @@ public:
     PeerId getNewHostPeerId() const {
         return newHostPeerId_;
     }
+
+    const RGroupInfo& getLastGroupInfo() const {
+        return lastGroupInfo_;
+    }
 private:
     virtual void onPeerConnected(PeerId peerId) {
         connectedPeerIds_.insert(peerId);
@@ -61,11 +65,17 @@ private:
     virtual void onHostMigrated(PeerId peerId) {
         newHostPeerId_ = peerId;
     }
+
+    virtual void onGroupCreated(const RGroupInfo& groupInfo) {
+        lastGroupInfo_ = groupInfo;
+    }
 private:
     PeerIdSet connectedPeerIds_;
     PeerId connectFailedPeerId_;
     bool addressChanged_;
     PeerId newHostPeerId_;
+
+    RGroupInfo lastGroupInfo_;
 };
 
 

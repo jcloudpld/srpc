@@ -3,6 +3,7 @@
 
 #include <nsrpc/p2p/detail/P2pProtocol.h>
 #include <nsrpc/p2p/detail/P2pRpcTypes.h>
+#include <nsrpc/p2p/Group.h>
 #include <srpc/RpcP2p.h>
 
 namespace nsrpc
@@ -94,6 +95,10 @@ public:
 
     /// 호스트 마이그레이션이 일어났다.
     DECLARE_SRPC_PURE_METHOD_0(RpcSystemService, rpcHostMigrated);
+
+    /// 그룹이 생성되었음을 알린다
+    DECLARE_SRPC_PURE_METHOD_1(RpcSystemService, rpcGroupCreated,
+        RGroupInfo, groupInfo);
 };
 
 /** @} */ // addtogroup p2p

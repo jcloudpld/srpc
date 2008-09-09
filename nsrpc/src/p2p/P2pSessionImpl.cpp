@@ -188,6 +188,27 @@ void P2pSessionImpl::tick()
 }
 
 
+GroupId P2pSessionImpl::createGroup(const RGroupName& groupName)
+{
+    if (! isHost()) {
+        return giUnknown;
+    }
+
+    const GroupId groupId = groupManager_.createGroup(groupName);
+    if (isValid(groupId)) {
+        systemService_.rpcGroupCreated(groupManager_.getGroup(groupId));
+    }
+
+    return groupId;
+}
+
+
+const RGroupMap& P2pSessionImpl::getGroups() const
+{
+    return groupManager_.getGroups();
+}
+
+
 PeerAddress P2pSessionImpl::getTargetAddress(PeerId peerId) const
 {
     const PeerPtr peer(peerManager_.getPeer(peerId));
@@ -677,6 +698,14 @@ void P2pSessionImpl::hostMigrated(PeerId peerId)
     makeHost(peerId);
 
     eventHandler_.onHostMigrated(peerId);
+}
+
+
+void P2pSessionImpl::groupCreated(const RGroupInfo& groupInfo)
+{
+    groupManager_.addGroup(groupInfo);
+
+    eventHandler_.onGroupCreated(groupInfo);
 }
 
 

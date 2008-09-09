@@ -15,11 +15,12 @@ namespace srpc {
 */
 
 /// Rpc 부호 없는 숫자 타입 base template class
-template <typename T, size_t bits = Bits<T>::size>
+template <typename T, size_t bits = Bits<T>::size, typename T2 = T>
 class RpcUIntType
 {
 public:
     typedef T NativeType;
+    typedef T2 StreamingType;
 public:
     RpcUIntType() {}
     RpcUIntType(const RpcUIntType& t) :
@@ -53,20 +54,24 @@ public:
 
     void read(IStream& istream) {
         typedef boost::integral_constant<bool,
-            ::boost::is_enum<NativeType>::value> truth_type;
-        istream.do_read(value_, bits, truth_type());
+            ::boost::is_enum<StreamingType>::value> truth_type;
+        StreamingType v;
+        istream.do_read(v, bits, truth_type());
+        value_ = static_cast<NativeType>(v);
     }
+
 private:
     NativeType value_;
 };
 
 
 /// Rpc 부호 있는 숫자 타입 base template class
-template <typename T, size_t bits = Bits<T>::size>
+template <typename T, size_t bits = Bits<T>::size, typename T2 = T>
 class RpcIntType
 {
 public:
     typedef T NativeType;
+    typedef T2 StreamingType;
 public:
     RpcIntType() {}
     RpcIntType(const RpcIntType& t) :
@@ -104,9 +109,12 @@ public:
 
     void read(IStream& istream) {
         typedef boost::integral_constant<bool,
-            ::boost::is_enum<NativeType>::value> truth_type;
-        istream.do_read(value_, bits, truth_type());
+            ::boost::is_enum<StreamingType>::value> truth_type;
+        StreamingType v;
+        istream.do_read(v, bits, truth_type());
+        value_ = static_cast<NativeType>(v);
     }
+
 private:
     NativeType value_;
 };
