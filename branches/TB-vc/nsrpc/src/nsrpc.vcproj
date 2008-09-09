@@ -454,6 +454,12 @@
 					RelativePath=".\p2p\AnonymousMessageManager.h">
 				</File>
 				<File
+					RelativePath=".\p2p\GroupManager.cpp">
+				</File>
+				<File
+					RelativePath=".\p2p\GroupManager.h">
+				</File>
+				<File
 					RelativePath=".\p2p\P2pEndpoint.cpp">
 				</File>
 				<File
@@ -699,6 +705,9 @@
 					Filter="">
 					<File
 						RelativePath="..\include\nsrpc\p2p\P2pConfig.h">
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\p2p\Group.h">
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\p2p\P2pEventHandler.h">

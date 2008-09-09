@@ -301,6 +301,19 @@ IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcHostMigrated,
     serviceHandler_.hostMigrated(hint.peerId_);
 }
 
+
+IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupCreated,
+    RGroupInfo, groupInfo,
+    srpc::ptReliable)
+{
+    assert(rpcHint != 0);
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
+    assert(hint.isValid());
+    logRpc("rpcGroupCreated", hint);
+
+    serviceHandler_.groupCreated(groupInfo);
+}
+
 } // namespace detail
 
 } // namespace nsrpc

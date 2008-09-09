@@ -53,6 +53,8 @@ public:
     DECLARE_SRPC_P2P_METHOD_2(rpcAcknowledgement,
         RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
     DECLARE_SRPC_P2P_METHOD_0(rpcHostMigrated);
+    DECLARE_SRPC_P2P_METHOD_1(rpcGroupCreated,
+        RGroupInfo, groupInfo);
 private:
     void connectToNewPeer(const RPeerInfo& pi);
     void reconnectToPeer(PeerId peerId, const RAddresses& peerAddresses);

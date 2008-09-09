@@ -53,6 +53,12 @@ public:
      * @param peerId New host's PeerId
      */
     virtual void onHostMigrated(PeerId peerId) = 0;
+
+
+    /**
+     * A group is created by other peer
+     */
+    virtual void onGroupCreated(const RGroupInfo& groupInfo) = 0;
 };
 
 /** @} */ // addtogroup p2p

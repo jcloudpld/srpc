@@ -49,6 +49,9 @@ public:
     /// peerId가 새로운 호스트가 되었다
     virtual void hostMigrated(PeerId peerId) = 0;
 
+    /// P2P 그룹이 생성되었다
+    virtual void groupCreated(const RGroupInfo& groupInfo) = 0;
+
     /// P2P 속성을 설정한다
     virtual void setP2pProperty(const RP2pProperty& p2pProperty) = 0;
 

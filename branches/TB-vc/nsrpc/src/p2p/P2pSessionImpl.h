@@ -6,6 +6,7 @@
 #include "RelayServiceImpl.h"
 #include "PeerCandidate.h"
 #include "PeerManager.h"
+#include "GroupManager.h"
 #include "PeerMessageHandler.h"
 #include "RelayServiceHandler.h"
 #include "StunServiceHandler.h"
@@ -65,6 +66,10 @@ private: // information hiding
         const srpc::String& cipherKey);
 
     virtual void tick();
+
+    virtual GroupId createGroup(const RGroupName& groupName);
+
+    virtual const RGroupMap& getGroups() const;
 
     virtual bool isHost() const {
         return peerManager_.isHost();
@@ -153,6 +158,7 @@ private:
     virtual void connectToNewPeer(PeerId peerId,
         const Addresses& peerAddresses);
     virtual void hostMigrated(PeerId peerId);
+    virtual void groupCreated(const RGroupInfo& groupInfo);
     virtual void setP2pProperty(const RP2pProperty& p2pProperty) {
         p2pProperty_ = p2pProperty;
     }
@@ -182,6 +188,7 @@ private:
 
     PeerCandidateManager peerCandidateManager_;
     PeerManager peerManager_;
+    GroupManager groupManager_;
 
     P2pRpcNetwork rpcNetwork_;
     P2pEndpoint endpoint_;

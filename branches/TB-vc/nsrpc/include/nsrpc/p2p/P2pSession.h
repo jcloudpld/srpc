@@ -4,6 +4,7 @@
 #include "PeerId.h"
 #include "PeerStats.h"
 #include "PeerAddress.h"
+#include "Group.h"
 #include <boost/noncopyable.hpp>
 
 class ACE_Reactor;
@@ -76,6 +77,17 @@ public:
      * - tick() should be called fairly regularly for adequate performance.
      */
     virtual void tick() = 0;
+
+    /**
+     * create a group (only host allowed)
+     * @param groupName group name (duplication allowed)
+     */
+    virtual GroupId createGroup(const RGroupName& groupName) = 0;
+
+    /**
+     * get P2P groups
+     */
+    virtual const RGroupMap& getGroups() const = 0;
 
     /// Is the host for a P2P session.
     virtual bool isHost() const = 0;
