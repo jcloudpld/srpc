@@ -10,6 +10,7 @@ set command=%1
 set configname=%2
 set VC_VER=%3
 set SLN_FILE=msvc\srpc_all.sln
+if "%VC_VER%"=="8" set SLN_FILE=msvc\srpc_all_vc8.sln
 
 if "%command%"=="" goto usage
 if "%configname%"=="" goto usage
