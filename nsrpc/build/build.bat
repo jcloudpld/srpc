@@ -3,15 +3,17 @@ REM
 REM NSPRC build script
 REM
 
+if "%VC_VER%"=="" set VC_VER=7.1
+
 set BUILD_ERROR=
 set command=%1
 set configname=%2
 set VC_VER=%3
 set SLN_FILE=msvc\nsrpc_all.sln
+if "%VC_VER%"=="8" set SLN_FILE=msvc\nsrpc_all_vc8.sln
 
 if "%command%"=="" goto usage
 if "%configname%"=="" goto usage
-if "%VC_VER%"=="" set VC_VER=7.1
 
 :set_vcvars
 setlocal
