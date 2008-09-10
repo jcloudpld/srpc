@@ -2,6 +2,7 @@
 #define NSRPC_PEERMANAGER_H
 
 #include "Peer.h"
+#include <nsrpc/p2p/Group.h>
 #include <srpc/ContainerTypes.h>
 #include <boost/noncopyable.hpp>
 
@@ -13,6 +14,7 @@ namespace detail
 
 class PeerNetworkSender;
 class PeerMessageHandler;
+class GroupManager;
 
 /** @addtogroup p2p
 * @{
@@ -28,7 +30,7 @@ class PeerManager : public boost::noncopyable
 public:
     PeerManager(PeerNetworkSender& networkSender,
         PeerMessageHandler& messageHandler,
-        const P2pConfig& p2pConfig);
+        const P2pConfig& p2pConfig, const GroupManager& groupManager);
     ~PeerManager();
 
     void addPeer(PeerId peerId, const Addresses& addresses);
@@ -38,6 +40,9 @@ public:
 
     void reset();
 
+    void putOutgoingMessage(GroupId groupId,
+        const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
+        ACE_Message_Block* mblock);
     void putOutgoingMessage(PeerId peerId,
         const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
         ACE_Message_Block* mblock);
@@ -120,6 +125,7 @@ private:
     PeerNetworkSender& networkSender_;
     PeerMessageHandler& messageHandler_;
     const P2pConfig& p2pConfig_;
+    const GroupManager& groupManager_;
 
     Peers peers_;
     PeerPtr me_;

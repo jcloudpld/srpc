@@ -1,7 +1,7 @@
 #ifndef NSRPC_P2PEVENTHANDLER_H
 #define NSRPC_P2PEVENTHANDLER_H
 
-#include "PeerId.h"
+#include "Group.h"
 #include <boost/noncopyable.hpp>
 
 namespace nsrpc
@@ -53,7 +53,6 @@ public:
      * @param peerId New host's PeerId
      */
     virtual void onHostMigrated(PeerId peerId) = 0;
-
 
     /**
      * A group is created by other peer

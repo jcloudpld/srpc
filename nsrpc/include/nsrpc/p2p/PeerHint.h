@@ -1,7 +1,7 @@
 #ifndef NSRPC_PEERHINT_H
 #define NSRPC_PEERHINT_H
 
-#include <nsrpc/p2p/PeerId.h>
+#include <nsrpc/p2p/Group.h>
 #include <cassert>
 
 namespace nsrpc
@@ -18,6 +18,7 @@ namespace nsrpc
 struct PeerHint
 {
     PeerId peerId_; ///< from/to PeerId
+    GroupId groupId_; ///< from/to GroupId
     const void* address_; ///< @internal
     bool isCandidate_; ///< @internal
 
@@ -27,6 +28,12 @@ struct PeerHint
         peerId_(peerId),
         address_(address),
         isCandidate_(isCandidate) {}
+
+    PeerHint(GroupId groupId) :
+        groupId_(groupId),
+        peerId_(invalidPeerId),
+        address_(0),
+        isCandidate_(false) {}
 };
 
 
