@@ -18,7 +18,9 @@ public:
     TestP2pEventHandler() :
         connectFailedPeerId_(invalidPeerId),
         addressChanged_(false),
-        newHostPeerId_(invalidPeerId) {}
+        newHostPeerId_(invalidPeerId),
+        lastJoinedGroupId_(giUnknown),
+        lastJoinedPeerId_(invalidPeerId) {}
 
     bool isConnected(PeerId peerId) const {
         return connectedPeerIds_.find(peerId) != connectedPeerIds_.end();
@@ -43,6 +45,15 @@ public:
     const RGroupInfo& getLastGroupInfo() const {
         return lastGroupInfo_;
     }
+
+    GroupId getLastJoinedGroupId() const {
+        return lastJoinedGroupId_;
+    }
+
+    PeerId getLastJoinedPeerId() const {
+        return lastJoinedPeerId_;
+    }
+
 private:
     virtual void onPeerConnected(PeerId peerId) {
         connectedPeerIds_.insert(peerId);
@@ -69,6 +80,11 @@ private:
     virtual void onGroupCreated(const RGroupInfo& groupInfo) {
         lastGroupInfo_ = groupInfo;
     }
+
+    virtual void onGroupJoined(GroupId groupId, PeerId peerId) {
+        lastJoinedGroupId_ = groupId;
+        lastJoinedPeerId_ = peerId;
+    }
 private:
     PeerIdSet connectedPeerIds_;
     PeerId connectFailedPeerId_;
@@ -76,6 +92,8 @@ private:
     PeerId newHostPeerId_;
 
     RGroupInfo lastGroupInfo_;
+    GroupId lastJoinedGroupId_;
+    PeerId lastJoinedPeerId_;
 };
 
 
