@@ -160,6 +160,7 @@ private:
     virtual void connectToNewPeer(PeerId peerId,
         const Addresses& peerAddresses);
     virtual void hostMigrated(PeerId peerId);
+    virtual void setGroups(const RGroupMap& groups);
     virtual void groupCreated(const RGroupInfo& groupInfo);
     virtual void groupJoined(GroupId groupId, PeerId peerId);
     virtual void groupLeft(GroupId groupId, PeerId peerId);
@@ -170,6 +171,7 @@ private:
         return isRelayServerAddress(address);
     }
     virtual bool isHostConnected() const;
+    virtual const RGroupMap& getCurrentGroups() const;
 
     // = StunServiceHandler overriding
     virtual void resolved(const srpc::String& ipAddress, srpc::UInt16 port);
@@ -190,10 +192,6 @@ private:
     ACE_Message_Block* recvBlock_;
     ACE_Message_Block* sendBlock_;
 
-    PeerCandidateManager peerCandidateManager_;
-    PeerManager peerManager_;
-    GroupManager groupManager_;
-
     P2pRpcNetwork rpcNetwork_;
     P2pEndpoint endpoint_;
 
@@ -211,6 +209,10 @@ private:
     PacketCoder::Seed decryptSeed_;
 
     PeerCipherKeyCache peerCipherKeys_;
+
+    PeerCandidateManager peerCandidateManager_;
+    PeerManager peerManager_;
+    GroupManager groupManager_;
 };
 
 /** @} */ // addtogroup p2p

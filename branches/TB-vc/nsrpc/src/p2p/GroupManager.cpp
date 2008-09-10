@@ -20,6 +20,12 @@ GroupManager::~GroupManager()
 }
 
 
+void GroupManager::set(const RGroupMap& groups)
+{
+    groupMap_ = groups;
+}
+
+
 GroupId GroupManager::createGroup(const RGroupName& groupName)
 {
     if (groupMap_.size() >= maxGroupCount) {
@@ -110,6 +116,16 @@ void GroupManager::groupLeft(GroupId groupId, PeerId peerId)
     if (! group.leave(peerId)) {
         assert(false && "not joined");
     }
+}
+
+
+const RPeerIds* GroupManager::getGroupPeerIds(GroupId groupId) const
+{
+    if (! isExists(groupId)) {
+        return 0;
+    }
+
+    return &(getGroup(groupId).peerIds_);
 }
 
 

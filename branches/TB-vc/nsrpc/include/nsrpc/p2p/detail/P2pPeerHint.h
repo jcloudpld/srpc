@@ -24,8 +24,12 @@ struct P2pPeerHint : PeerHint
         bool candidate = false) :
         PeerHint(peerId, address, candidate) {}
 
+    P2pPeerHint(GroupId groupId) :
+        PeerHint(groupId) {}
+
     bool isValid() const {
-        return isValidPeerId(peerId_) && (address_ != 0);
+        return (isValidPeerId(peerId_) || nsrpc::isValid(groupId_)) &&
+            (address_ != 0);
     }
 
     ACE_INET_Addr getAddress() const {

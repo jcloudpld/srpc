@@ -67,9 +67,9 @@ public:
         srpc::RUInt32, sessionKey);
 
     /// 연결 요청에 대한 응답을 한다
-    DECLARE_SRPC_PURE_METHOD_3(RpcSystemService, rpcConnected,
+    DECLARE_SRPC_PURE_METHOD_4(RpcSystemService, rpcConnected,
         RAddresses, peerAddresses, srpc::RBool, isHost,
-        RP2pProperty, p2pProperty);
+        RP2pProperty, p2pProperty, RGroupMap, groups);
 
     /// 호스트에게 직접 연결을 요청한다
     DECLARE_SRPC_PURE_METHOD_1(RpcSystemService, rpcRequestConnectReversal,

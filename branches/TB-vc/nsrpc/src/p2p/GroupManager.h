@@ -26,6 +26,12 @@ public:
     GroupManager(RpcSystemService& systemService);
     ~GroupManager();
 
+    void reset() {
+        groupMap_.clear();
+    }
+
+    void set(const RGroupMap& groups);
+
     GroupId createGroup(const RGroupName& groupName);
     bool joinGroup(GroupId groupId, PeerId peerId);
     bool leaveGroup(GroupId groupId, PeerId peerId);
@@ -33,6 +39,8 @@ public:
     void groupCreated(const RGroupInfo& groupInfo);
     void groupJoined(GroupId groupId, PeerId peerId);
     void groupLeft(GroupId groupId, PeerId peerId);
+
+    const RPeerIds* getGroupPeerIds(GroupId groupId) const;
 
     const RGroupMap& getGroups() const {
         return groupMap_;

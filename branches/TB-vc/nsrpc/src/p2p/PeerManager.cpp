@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PeerManager.h"
 #include "PeerMessageHandler.h"
+#include "GroupManager.h"
 
 namespace nsrpc
 {
@@ -9,13 +10,14 @@ namespace detail
 {
 
 PeerManager::PeerManager(PeerNetworkSender& networkSender,
-    PeerMessageHandler& messageHandler, const P2pConfig& p2pConfig) :
+    PeerMessageHandler& messageHandler, const P2pConfig& p2pConfig,
+    const GroupManager& groupManager) :
     networkSender_(networkSender),
     messageHandler_(messageHandler),
-    p2pConfig_(p2pConfig)
+    p2pConfig_(p2pConfig),
+    groupManager_(groupManager)
 {
 }
-
 
 
 PeerManager::~PeerManager()
@@ -116,6 +118,27 @@ void PeerManager::reset()
     me_.reset();
     relayServer_.reset();
     disconnectedPeers_.clear();
+}
+
+
+void PeerManager::putOutgoingMessage(GroupId groupId,
+    const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
+    ACE_Message_Block* mblock)
+{
+    assert(isValid(groupId));
+
+    const RPeerIds* peerIds = groupManager_.getGroupPeerIds(groupId);
+    if (! peerIds) {
+        assert(false && "why nobody exist?");
+        return;
+    }
+
+    RPeerIds::const_iterator pos = peerIds->begin();
+    const RPeerIds::const_iterator end = peerIds->end();
+    for (; pos != end; ++pos) {
+        const PeerId peerId = *pos;
+        putUnicastOutgoingMessage(peerId, toAddress, packetType, mblock);
+    }
 }
 
 

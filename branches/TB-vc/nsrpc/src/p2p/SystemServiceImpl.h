@@ -41,8 +41,8 @@ public:
 public:
     DECLARE_SRPC_P2P_METHOD_3(rpcConnect, RAddresses, peerAddresses,
         srpc::RShortString, sessionPassword, srpc::RUInt32, sessionKey);
-    DECLARE_SRPC_P2P_METHOD_3(rpcConnected, RAddresses, peerAddresses,
-        srpc::RBool, isHost, RP2pProperty, p2pProperty);
+    DECLARE_SRPC_P2P_METHOD_4(rpcConnected, RAddresses, peerAddresses,
+        srpc::RBool, isHost, RP2pProperty, p2pProperty, RGroupMap, groups);
     DECLARE_SRPC_P2P_METHOD_1(rpcRequestConnectReversal,
         RAddresses, peerAddresses);
     DECLARE_SRPC_P2P_METHOD_1(rpcConnectReversal,

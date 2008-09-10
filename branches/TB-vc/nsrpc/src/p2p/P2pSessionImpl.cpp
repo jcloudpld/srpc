@@ -41,16 +41,16 @@ P2pSessionImpl::P2pSessionImpl(PeerId peerId, P2pEventHandler& eventHandler,
         packetCoder_->getDefaultPacketSize())),
     sendBlock_(messageBlockManager_.create(
         packetCoder_->getDefaultPacketSize())),
-    peerCandidateManager_(*this, p2pConfig_, myPeerId_),
-    peerManager_(*this, *this, p2pConfig_),
-    groupManager_(systemService_),
     rpcNetwork_(*this, *recvBlock_, *sendBlock_, useBitPacking),
     endpoint_(*this, *recvBlock_, reactor_.get()),
     systemService_(peerManager_, eventHandler, *this, rpcNetwork_),
     stunService_(*this, rpcNetwork_),
     relayService_(*this, rpcNetwork_),
     anonymousMessageManager_(*this),
-    peerCipherKeys_(*packetCoder_)
+    peerCipherKeys_(*packetCoder_),
+    groupManager_(systemService_),
+    peerCandidateManager_(*this, p2pConfig_, myPeerId_),
+    peerManager_(*this, *this, p2pConfig_, groupManager_)
 {
     assert(isAllowedPeerId(peerId));
 }
@@ -137,6 +137,7 @@ void P2pSessionImpl::disconnect()
     anonymousMessageManager_.reset();
     peerCandidateManager_.reset();
     peerManager_.reset();
+    groupManager_.reset();
 
     packetCoder_->reset();
 
@@ -545,28 +546,37 @@ void P2pSessionImpl::sendOutgoingMessage(srpc::RpcPacketType packetType,
     ACE_Message_Block* mblock, const P2pPeerHint* peerHint)
 {
     PeerId peerId = invalidPeerId;
+    GroupId groupId = giUnknown;
     ACE_INET_Addr targetAddress;
     if (peerHint != 0) {
         peerId = peerHint->peerId_;
+        groupId = peerHint->groupId_;
         targetAddress = peerHint->getAddress();
         if (peerHint->isCandidate_) {
-            if (peerCandidateManager_.putOutgoingMessage(peerId, targetAddress,
-                mblock)) {
+            if (peerCandidateManager_.putOutgoingMessage(peerId,
+                targetAddress, mblock)) {
+                assert(! isValid(groupId));
                 return;
             }
         }
     }
 
-    if ((! isSelf(peerId)) &&
-        (peerManager_.isExists(peerId) || isBroadcast(peerId))) {
-        peerManager_.putOutgoingMessage(peerId, targetAddress, packetType,
+    if (isValid(groupId)) {
+        peerManager_.putOutgoingMessage(groupId, targetAddress, packetType,
             mblock);
     }
     else {
-        //NSRPC_LOG_DEBUG3(
-        //    ACE_TEXT("P2pSessionImpl::sendOutgoingMessage(P%u,%d)")
-        //    ACE_TEXT("- Target missed"),
-        //    peerId, packetType);
+        if ((! isSelf(peerId)) &&
+            (peerManager_.isExists(peerId) || isBroadcast(peerId))) {
+            peerManager_.putOutgoingMessage(peerId, targetAddress, packetType,
+                mblock);
+        }
+        else {
+            //NSRPC_LOG_DEBUG3(
+            //    ACE_TEXT("P2pSessionImpl::sendOutgoingMessage(P%u,%d)")
+            //    ACE_TEXT("- Target missed"),
+            //    peerId, packetType);
+        }
     }
 }
 
@@ -713,6 +723,12 @@ void P2pSessionImpl::hostMigrated(PeerId peerId)
 }
 
 
+void P2pSessionImpl::setGroups(const RGroupMap& groups)
+{
+    groupManager_.set(groups);
+}
+
+
 void P2pSessionImpl::groupCreated(const RGroupInfo& groupInfo)
 {
     groupManager_.groupCreated(groupInfo);
@@ -740,6 +756,12 @@ void P2pSessionImpl::groupLeft(GroupId groupId, PeerId peerId)
 bool P2pSessionImpl::isHostConnected() const
 {
     return (! isHost()) && peerManager_.isHostConnected();
+}
+
+
+const RGroupMap& P2pSessionImpl::getCurrentGroups() const
+{
+    return groupManager_.getGroups();
 }
 
 

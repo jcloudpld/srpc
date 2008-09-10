@@ -141,12 +141,14 @@ IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnect,
     peer->acknowledgingConnect();
 
     const PeerPtr me(peerManager_.getMe());
-    rpcConnected(me->getPeerAddresses(), isHost_, p2pProperty_, &hint);
+    rpcConnected(me->getPeerAddresses(), isHost_, p2pProperty_,
+        serviceHandler_.getCurrentGroups(), &hint);
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnected,
+IMPLEMENT_SRPC_P2P_METHOD_4(RpcSystemServiceImpl, rpcConnected,
     RAddresses, peerAddresses, srpc::RBool, isHost, RP2pProperty, p2pProperty,
+    RGroupMap, groups,
     srpc::ptReliable)
 {
     assert(rpcHint != 0);
@@ -168,6 +170,9 @@ IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnected,
         peerManager_.setHost(hint.peerId_);
         serviceHandler_.setP2pProperty(p2pProperty);
         p2pProperty_ = p2pProperty;
+    }
+    else {
+        serviceHandler_.setGroups(groups);
     }
 
     if (serviceHandler_.shouldConnectReversal(hint.getAddress())) {
@@ -215,7 +220,8 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcConnectReversal,
 
     const PeerPtr me(peerManager_.getMe());
     const PeerPtr peer(peerManager_.getPeer(hint.peerId_));
-    rpcConnected(me->getPeerAddresses(), isHost_, p2pProperty_, &hint);
+    rpcConnected(me->getPeerAddresses(), isHost_, p2pProperty_,
+        serviceHandler_.getCurrentGroups(), &hint);
 }
 
 
