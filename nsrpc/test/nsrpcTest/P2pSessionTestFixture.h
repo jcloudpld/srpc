@@ -19,6 +19,7 @@ public:
         connectFailedPeerId_(invalidPeerId),
         addressChanged_(false),
         newHostPeerId_(invalidPeerId),
+        lastDestroyedGroupId_(giUnknown),
         lastJoinedGroupId_(giUnknown),
         lastJoinedPeerId_(invalidPeerId),
         lastLeftGroupId_(giUnknown),
@@ -46,6 +47,10 @@ public:
 
     const RGroupInfo& getLastGroupInfo() const {
         return lastGroupInfo_;
+    }
+
+    GroupId getLastDestroyedGroupId() const {
+        return lastDestroyedGroupId_;
     }
 
     GroupId getLastJoinedGroupId() const {
@@ -91,6 +96,10 @@ private:
         lastGroupInfo_ = groupInfo;
     }
 
+    virtual void onGroupDestroyed(GroupId groupId) {
+        lastDestroyedGroupId_ = groupId;
+    }
+
     virtual void onGroupJoined(GroupId groupId, PeerId peerId) {
         lastJoinedGroupId_ = groupId;
         lastJoinedPeerId_ = peerId;
@@ -107,6 +116,7 @@ private:
     PeerId newHostPeerId_;
 
     RGroupInfo lastGroupInfo_;
+    GroupId lastDestroyedGroupId_;
     GroupId lastJoinedGroupId_;
     PeerId lastJoinedPeerId_;
     GroupId lastLeftGroupId_;

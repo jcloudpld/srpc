@@ -68,6 +68,7 @@ private: // information hiding
     virtual void tick();
 
     virtual GroupId createGroup(const RGroupName& groupName);
+    virtual bool destroyGroup(GroupId groupId);
     virtual bool joinGroup(GroupId groupId);
     virtual bool leaveGroup(GroupId groupId);
 
@@ -162,6 +163,7 @@ private:
     virtual void hostMigrated(PeerId peerId);
     virtual void setGroups(const RGroupMap& groups);
     virtual void groupCreated(const RGroupInfo& groupInfo);
+    virtual void groupDestroyed(GroupId groupId);
     virtual void groupJoined(GroupId groupId, PeerId peerId);
     virtual void groupLeft(GroupId groupId, PeerId peerId);
     virtual void setP2pProperty(const RP2pProperty& p2pProperty) {

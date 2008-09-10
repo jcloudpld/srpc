@@ -55,9 +55,14 @@ public:
     virtual void onHostMigrated(PeerId peerId) = 0;
 
     /**
-     * A group is created by other peer
+     * A group is created
      */
     virtual void onGroupCreated(const RGroupInfo& groupInfo) = 0;
+
+    /**
+     * A group is destroyed
+     */
+    virtual void onGroupDestroyed(GroupId groupId) = 0;
 
     /**
      * A peer joined a group

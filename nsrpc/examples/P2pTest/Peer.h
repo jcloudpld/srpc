@@ -59,6 +59,7 @@ private:
         srpc::UInt16 port);
     virtual void onHostMigrated(nsrpc::PeerId peerId);
     virtual void onGroupCreated(const nsrpc::RGroupInfo& groupInfo);
+    virtual void onGroupDestroyed(nsrpc::GroupId groupId);
     virtual void onGroupJoined(nsrpc::GroupId groupId, nsrpc::PeerId peerId);
     virtual void onGroupLeft(nsrpc::GroupId groupId, nsrpc::PeerId peerId);
 private:

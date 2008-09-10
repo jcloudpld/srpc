@@ -33,10 +33,12 @@ public:
     void set(const RGroupMap& groups);
 
     GroupId createGroup(const RGroupName& groupName);
+    bool destroyGroup(GroupId groupId);
     bool joinGroup(GroupId groupId, PeerId peerId);
     bool leaveGroup(GroupId groupId, PeerId peerId);
 
     void groupCreated(const RGroupInfo& groupInfo);
+    void groupDestroyed(GroupId groupId);
     void groupJoined(GroupId groupId, PeerId peerId);
     void groupLeft(GroupId groupId, PeerId peerId);
 

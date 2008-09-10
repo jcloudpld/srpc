@@ -221,6 +221,12 @@ void Peer::onGroupCreated(const nsrpc::RGroupInfo& groupInfo)
 }
 
 
+void Peer::onGroupDestroyed(nsrpc::GroupId groupId)
+{
+    std::cout << "* Group Destroyed(G" << groupId << ").\n";
+}
+
+
 void Peer::onGroupJoined(nsrpc::GroupId groupId, nsrpc::PeerId peerId)
 {
     std::cout << "* Group Joined(G" << groupId << "," << "P" << peerId <<

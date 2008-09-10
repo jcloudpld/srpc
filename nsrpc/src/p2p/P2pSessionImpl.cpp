@@ -200,6 +200,16 @@ GroupId P2pSessionImpl::createGroup(const RGroupName& groupName)
 }
 
 
+bool P2pSessionImpl::destroyGroup(GroupId groupId)
+{
+    if (! isHost()) {
+        return false;
+    }
+
+    return groupManager_.destroyGroup(groupId);
+}
+
+
 bool P2pSessionImpl::joinGroup(GroupId groupId)
 {
     assert(isValid(groupId));
@@ -734,6 +744,14 @@ void P2pSessionImpl::groupCreated(const RGroupInfo& groupInfo)
     groupManager_.groupCreated(groupInfo);
 
     eventHandler_.onGroupCreated(groupInfo);
+}
+
+
+void P2pSessionImpl::groupDestroyed(GroupId groupId)
+{
+    groupManager_.groupDestroyed(groupId);
+
+    eventHandler_.onGroupDestroyed(groupId);
 }
 
 

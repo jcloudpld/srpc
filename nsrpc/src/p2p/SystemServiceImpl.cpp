@@ -319,6 +319,19 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupCreated,
 }
 
 
+IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupDestroyed,
+    RGroupId, groupId,
+    srpc::ptReliable)
+{
+    assert(rpcHint != 0);
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
+    assert(hint.isValid());
+    logRpc("rpcGroupDestroyed", hint);
+
+    serviceHandler_.groupDestroyed(groupId);
+}
+
+
 IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
     RGroupId, groupId, RPeerId, peerId,
     srpc::ptReliable)
@@ -326,7 +339,7 @@ IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
     assert(rpcHint != 0);
     const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
     assert(hint.isValid());
-    logRpc("rpcGroupCreated", hint);
+    logRpc("rpcGroupJoined", hint);
 
     serviceHandler_.groupJoined(groupId, peerId);
 }

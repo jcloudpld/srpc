@@ -84,6 +84,9 @@ public:
      */
     virtual GroupId createGroup(const RGroupName& groupName) = 0;
 
+    /// destroy a group(only host allowed)
+    virtual bool destroyGroup(GroupId groupId) = 0;
+
     /// join a group
     virtual bool joinGroup(GroupId groupId) = 0;
 
