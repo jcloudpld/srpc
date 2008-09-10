@@ -327,6 +327,19 @@ IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
     serviceHandler_.groupJoined(groupId, peerId);
 }
 
+
+IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupLeft,
+    RGroupId, groupId, RPeerId, peerId,
+    srpc::ptReliable)
+{
+    assert(rpcHint != 0);
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
+    assert(hint.isValid());
+    logRpc("rpcGroupLeft", hint);
+
+    serviceHandler_.groupLeft(groupId, peerId);
+}
+
 } // namespace detail
 
 } // namespace nsrpc

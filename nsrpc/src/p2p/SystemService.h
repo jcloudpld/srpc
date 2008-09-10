@@ -103,6 +103,10 @@ public:
     /// 그룹에 참여했음을 알린다
     DECLARE_SRPC_PURE_METHOD_2(RpcSystemService, rpcGroupJoined,
         RGroupId, groupId, RPeerId, peerId);
+
+    /// 그룹에서 퇴장했음을 알린다
+    DECLARE_SRPC_PURE_METHOD_2(RpcSystemService, rpcGroupLeft,
+        RGroupId, groupId, RPeerId, peerId);
 };
 
 /** @} */ // addtogroup p2p

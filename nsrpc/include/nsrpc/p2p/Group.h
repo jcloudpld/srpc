@@ -55,9 +55,24 @@ struct RGroupInfo
         return true;
     }
 
+    bool leave(PeerId peerId) {
+        if (! isExists(peerId)) {
+            return false;
+        }
+        peerIds_.erase(getPeerPos(peerId));
+        return true;
+    }
+
     bool isExists(PeerId peerId) const {
-        return std::find(peerIds_.begin(), peerIds_.end(), peerId) !=
-            peerIds_.end();
+        return getPeerPos(peerId) != peerIds_.end();
+    }
+
+    RPeerIds::const_iterator getPeerPos(PeerId peerId) const {
+        return std::find(peerIds_.begin(), peerIds_.end(), peerId);
+    }
+
+    RPeerIds::iterator getPeerPos(PeerId peerId) {
+        return std::find(peerIds_.begin(), peerIds_.end(), peerId);
     }
 
     void write(srpc::OStream& os) {

@@ -57,6 +57,8 @@ public:
         RGroupInfo, groupInfo);
     DECLARE_SRPC_P2P_METHOD_2(rpcGroupJoined,
         RGroupId, groupId, RPeerId, peerId);
+    DECLARE_SRPC_P2P_METHOD_2(rpcGroupLeft,
+        RGroupId, groupId, RPeerId, peerId);
 private:
     void connectToNewPeer(const RPeerInfo& pi);
     void reconnectToPeer(PeerId peerId, const RAddresses& peerAddresses);

@@ -57,6 +57,23 @@ bool GroupManager::joinGroup(GroupId groupId, PeerId peerId)
 }
 
 
+bool GroupManager::leaveGroup(GroupId groupId, PeerId peerId)
+{
+    if (! isExists(groupId)) {
+        return false;
+    }
+
+    RGroupInfo& group = getGroup(groupId);
+    if (! group.leave(peerId)) {
+        return false;
+    }
+
+    systemService_.rpcGroupLeft(groupId, peerId);
+
+    return true;
+}
+
+
 void GroupManager::groupCreated(const RGroupInfo& groupInfo)
 {
     if (isExists(groupInfo.groupId_)) {
@@ -78,6 +95,20 @@ void GroupManager::groupJoined(GroupId groupId, PeerId peerId)
     RGroupInfo& group = getGroup(groupId);
     if (! group.join(peerId)) {
         assert(false && "already joined");
+    }
+}
+
+
+void GroupManager::groupLeft(GroupId groupId, PeerId peerId)
+{
+    if (! isExists(groupId)) {
+        assert(false && "group not found");
+        return;
+    }
+
+    RGroupInfo& group = getGroup(groupId);
+    if (! group.leave(peerId)) {
+        assert(false && "not joined");
     }
 }
 

@@ -15,6 +15,7 @@ class P2pGroupTest : public P2pSessionTestFixture
     CPPUNIT_TEST(testCreateGroup);
     CPPUNIT_TEST(testJoinAGroup);
     CPPUNIT_TEST(testJoinEachGroup);
+    CPPUNIT_TEST(testLeaveFromGroup);
     CPPUNIT_TEST_SUITE_END();
 public:
     P2pGroupTest();
@@ -25,6 +26,7 @@ private:
     void testCreateGroup();
     void testJoinAGroup();
     void testJoinEachGroup();
+    void testLeaveFromGroup();
 
 private:
     void doTick();
@@ -193,4 +195,39 @@ void P2pGroupTest::testJoinEachGroup()
         giFirst, peerEventHandler_.getLastJoinedGroupId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last joined peer id",
         hostSession_->getPeerId(), peerEventHandler_.getLastJoinedPeerId());
+}
+
+
+void P2pGroupTest::testLeaveFromGroup()
+{
+    const GroupId firstGroupId = hostSession_->createGroup("first");
+    CPPUNIT_ASSERT_MESSAGE("created?",
+        isValid(firstGroupId));
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("host join",
+        true, hostSession_->joinGroup(firstGroupId));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("peer join",
+        true, peer_->joinGroup(firstGroupId));
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("host leave",
+        true, hostSession_->leaveGroup(firstGroupId));
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("last left group id",
+        giUnknown, hostEventHandler_.getLastLeftGroupId());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("last left group id",
+        giFirst, peerEventHandler_.getLastLeftGroupId());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("last left peer id",
+        hostSession_->getPeerId(), peerEventHandler_.getLastLeftPeerId());
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("peer leave",
+        true, peer_->leaveGroup(firstGroupId));
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("last left group id",
+        giFirst, hostEventHandler_.getLastLeftGroupId());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("last left peer id",
+        peer_->getPeerId(), hostEventHandler_.getLastLeftPeerId());
 }

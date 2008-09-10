@@ -28,9 +28,11 @@ public:
 
     GroupId createGroup(const RGroupName& groupName);
     bool joinGroup(GroupId groupId, PeerId peerId);
+    bool leaveGroup(GroupId groupId, PeerId peerId);
 
     void groupCreated(const RGroupInfo& groupInfo);
     void groupJoined(GroupId groupId, PeerId peerId);
+    void groupLeft(GroupId groupId, PeerId peerId);
 
     const RGroupMap& getGroups() const {
         return groupMap_;
