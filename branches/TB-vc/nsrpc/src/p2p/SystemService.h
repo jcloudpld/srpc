@@ -100,6 +100,10 @@ public:
     DECLARE_SRPC_PURE_METHOD_1(RpcSystemService, rpcGroupCreated,
         RGroupInfo, groupInfo);
 
+    /// 그룹이 파괴되었음을 알린다
+    DECLARE_SRPC_PURE_METHOD_1(RpcSystemService, rpcGroupDestroyed,
+        RGroupId, groupId);
+
     /// 그룹에 참여했음을 알린다
     DECLARE_SRPC_PURE_METHOD_2(RpcSystemService, rpcGroupJoined,
         RGroupId, groupId, RPeerId, peerId);

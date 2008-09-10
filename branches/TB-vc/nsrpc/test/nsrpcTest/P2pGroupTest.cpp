@@ -16,6 +16,7 @@ class P2pGroupTest : public P2pSessionTestFixture
     CPPUNIT_TEST(testJoinAGroup);
     CPPUNIT_TEST(testJoinEachGroup);
     CPPUNIT_TEST(testLeaveFromGroup);
+    CPPUNIT_TEST(testDestroyGroup);
     CPPUNIT_TEST_SUITE_END();
 public:
     P2pGroupTest();
@@ -27,6 +28,7 @@ private:
     void testJoinAGroup();
     void testJoinEachGroup();
     void testLeaveFromGroup();
+    void testDestroyGroup();
 
 private:
     void doTick();
@@ -39,7 +41,7 @@ private:
     const P2pConfig p2pConfig_;
 
     TestP2pEventHandler peerEventHandler_;
-    boost::scoped_ptr<P2pSession> peer_;
+    boost::scoped_ptr<P2pSession> peerSession_;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(P2pGroupTest);
@@ -54,10 +56,10 @@ void P2pGroupTest::setUp()
 {
     P2pSessionTestFixture::setUp();
 
-    peer_.reset(P2pSessionFactory::create(2, peerEventHandler_));
+    peerSession_.reset(P2pSessionFactory::create(2, peerEventHandler_));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer open",
-        true, peer_->open(ACE_DEFAULT_SERVER_PORT + 2));
-    peer_->connect(getHostAddresses());
+        true, peerSession_->open(ACE_DEFAULT_SERVER_PORT + 2));
+    peerSession_->connect(getHostAddresses());
 
     doTick();
 }
@@ -65,7 +67,7 @@ void P2pGroupTest::setUp()
 
 void P2pGroupTest::tearDown()
 {
-    peer_.reset();
+    peerSession_.reset();
 
     P2pSessionTestFixture::tearDown();
 }
@@ -74,7 +76,7 @@ void P2pGroupTest::tearDown()
 void P2pGroupTest::doTick()
 {
     for (int t = 0; t < (2 * 3); ++t) {
-        peer_->tick();
+        peerSession_->tick();
         hostSession_->tick();
     }
 }
@@ -83,7 +85,7 @@ void P2pGroupTest::doTick()
 void P2pGroupTest::testCreateGroup()
 {
     CPPUNIT_ASSERT_MESSAGE("only host can create a group",
-        ! isValid(peer_->createGroup("peer")));
+        ! isValid(peerSession_->createGroup("peer")));
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("group count",
         0, static_cast<int>(hostSession_->getGroups().size()));
@@ -129,10 +131,10 @@ void P2pGroupTest::testJoinAGroup()
         hostSession_->getPeerId(), hostGroupInfo.peerIds_.front().get());
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer join",
-        true, peer_->joinGroup(firstGroupId));
+        true, peerSession_->joinGroup(firstGroupId));
     doTick();
 
-    const RGroupInfo& peerGroupInfo = (*peer_->getGroups().begin()).second;
+    const RGroupInfo& peerGroupInfo = (*peerSession_->getGroups().begin()).second;
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer count",
         2, int(peerGroupInfo.peerIds_.size()));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("joined peer id",
@@ -141,7 +143,7 @@ void P2pGroupTest::testJoinAGroup()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last joined group id",
         giFirst, hostEventHandler_.getLastJoinedGroupId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last joined peer id",
-        peer_->getPeerId(), hostEventHandler_.getLastJoinedPeerId());
+        peerSession_->getPeerId(), hostEventHandler_.getLastJoinedPeerId());
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last joined group id",
         giFirst, peerEventHandler_.getLastJoinedGroupId());
@@ -170,7 +172,7 @@ void P2pGroupTest::testJoinEachGroup()
     doTick();
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer join",
-        true, peer_->joinGroup(secondGroupId));
+        true, peerSession_->joinGroup(secondGroupId));
     doTick();
 
     const RGroupInfo& hostGroupInfo =
@@ -180,7 +182,7 @@ void P2pGroupTest::testJoinEachGroup()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("joined peer id",
         hostSession_->getPeerId(), hostGroupInfo.peerIds_.front().get());
 
-    const RGroupInfo& peerGroupInfo = (*peer_->getGroups().begin()).second;
+    const RGroupInfo& peerGroupInfo = (*peerSession_->getGroups().begin()).second;
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer count",
         1, int(peerGroupInfo.peerIds_.size()));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("joined peer id",
@@ -189,7 +191,7 @@ void P2pGroupTest::testJoinEachGroup()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last joined group id",
         giFirst + 1, int(hostEventHandler_.getLastJoinedGroupId()));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last joined peer id",
-        peer_->getPeerId(), hostEventHandler_.getLastJoinedPeerId());
+        peerSession_->getPeerId(), hostEventHandler_.getLastJoinedPeerId());
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last joined group id",
         giFirst, peerEventHandler_.getLastJoinedGroupId());
@@ -208,7 +210,7 @@ void P2pGroupTest::testLeaveFromGroup()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("host join",
         true, hostSession_->joinGroup(firstGroupId));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer join",
-        true, peer_->joinGroup(firstGroupId));
+        true, peerSession_->joinGroup(firstGroupId));
     doTick();
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("host leave",
@@ -223,11 +225,50 @@ void P2pGroupTest::testLeaveFromGroup()
         hostSession_->getPeerId(), peerEventHandler_.getLastLeftPeerId());
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer leave",
-        true, peer_->leaveGroup(firstGroupId));
+        true, peerSession_->leaveGroup(firstGroupId));
     doTick();
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last left group id",
         giFirst, hostEventHandler_.getLastLeftGroupId());
     CPPUNIT_ASSERT_EQUAL_MESSAGE("last left peer id",
-        peer_->getPeerId(), hostEventHandler_.getLastLeftPeerId());
+        peerSession_->getPeerId(), hostEventHandler_.getLastLeftPeerId());
+}
+
+
+void P2pGroupTest::testDestroyGroup()
+{
+    const GroupId firstGroupId = hostSession_->createGroup("first");
+    CPPUNIT_ASSERT_MESSAGE("created?",
+        isValid(firstGroupId));
+
+    const GroupId secondGroupId = hostSession_->createGroup("second");
+    CPPUNIT_ASSERT_MESSAGE("created?",
+        isValid(secondGroupId));
+
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("group count",
+        2, int(peerSession_->getGroups().size()));
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("only host can destroy a P2P group",
+        false, peerSession_->destroyGroup(firstGroupId));
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("destory first group",
+        true, hostSession_->destroyGroup(firstGroupId));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("destory first group",
+        true, hostSession_->destroyGroup(secondGroupId));
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("group count",
+        0, int(hostSession_->getGroups().size()));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("group count",
+        0, int(peerSession_->getGroups().size()));
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("last destroyed group id",
+        giUnknown, hostEventHandler_.getLastDestroyedGroupId());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("last destroyed group id",
+        giFirst + 1, int(peerEventHandler_.getLastDestroyedGroupId()));
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("no group",
+        false, hostSession_->destroyGroup(firstGroupId));
 }

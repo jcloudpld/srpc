@@ -54,6 +54,9 @@ public:
     /// P2P 그룹이 생성되었다
     virtual void groupCreated(const RGroupInfo& groupInfo) = 0;
 
+    /// P2P 그룹이 파괴되었다
+    virtual void groupDestroyed(GroupId groupId) = 0;
+
     /// P2P 그룹에 참여하였다
     virtual void groupJoined(GroupId groupId, PeerId peerId) = 0;
 

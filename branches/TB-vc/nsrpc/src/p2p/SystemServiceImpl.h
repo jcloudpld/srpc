@@ -55,6 +55,8 @@ public:
     DECLARE_SRPC_P2P_METHOD_0(rpcHostMigrated);
     DECLARE_SRPC_P2P_METHOD_1(rpcGroupCreated,
         RGroupInfo, groupInfo);
+    DECLARE_SRPC_P2P_METHOD_1(rpcGroupDestroyed,
+        RGroupId, groupId);
     DECLARE_SRPC_P2P_METHOD_2(rpcGroupJoined,
         RGroupId, groupId, RPeerId, peerId);
     DECLARE_SRPC_P2P_METHOD_2(rpcGroupLeft,

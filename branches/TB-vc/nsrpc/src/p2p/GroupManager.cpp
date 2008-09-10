@@ -46,6 +46,20 @@ GroupId GroupManager::createGroup(const RGroupName& groupName)
 }
 
 
+bool GroupManager::destroyGroup(GroupId groupId)
+{
+    if (! isExists(groupId)) {
+        return false;
+    }
+
+    groupMap_.erase(groupId);
+
+    systemService_.rpcGroupDestroyed(groupId);
+
+    return true;
+}
+
+
 bool GroupManager::joinGroup(GroupId groupId, PeerId peerId)
 {
     if (! isExists(groupId)) {
@@ -88,6 +102,17 @@ void GroupManager::groupCreated(const RGroupInfo& groupInfo)
     }
 
     groupMap_.insert(RGroupMap::value_type(groupInfo.groupId_, groupInfo));
+}
+
+
+void GroupManager::groupDestroyed(GroupId groupId)
+{
+    if (! isExists(groupId)) {
+        assert(false && "group not found");
+        return;
+    }
+
+    groupMap_.erase(groupId);
 }
 
 
