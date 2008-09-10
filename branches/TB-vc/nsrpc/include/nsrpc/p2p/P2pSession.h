@@ -87,6 +87,9 @@ public:
     /// join a group
     virtual bool joinGroup(GroupId groupId) = 0;
 
+    /// leave from a group
+    virtual bool leaveGroup(GroupId groupId) = 0;
+
     /**
      * get P2P groups
      */

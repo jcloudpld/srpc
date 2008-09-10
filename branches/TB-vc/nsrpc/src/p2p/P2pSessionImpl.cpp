@@ -207,6 +207,14 @@ bool P2pSessionImpl::joinGroup(GroupId groupId)
 }
 
 
+bool P2pSessionImpl::leaveGroup(GroupId groupId)
+{
+    assert(isValid(groupId));
+
+    return groupManager_.leaveGroup(groupId, myPeerId_);
+}
+
+
 const RGroupMap& P2pSessionImpl::getGroups() const
 {
     return groupManager_.getGroups();
@@ -718,6 +726,14 @@ void P2pSessionImpl::groupJoined(GroupId groupId, PeerId peerId)
     groupManager_.groupJoined(groupId, peerId);
 
     eventHandler_.onGroupJoined(groupId, peerId);
+}
+
+
+void P2pSessionImpl::groupLeft(GroupId groupId, PeerId peerId)
+{
+    groupManager_.groupLeft(groupId, peerId);
+
+    eventHandler_.onGroupLeft(groupId, peerId);
 }
 
 

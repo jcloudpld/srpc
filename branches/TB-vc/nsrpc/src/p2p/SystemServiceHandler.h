@@ -55,6 +55,9 @@ public:
     /// P2P 그룹에 참여하였다
     virtual void groupJoined(GroupId groupId, PeerId peerId) = 0;
 
+    /// P2P 그룹에서 퇴장하였다
+    virtual void groupLeft(GroupId groupId, PeerId peerId) = 0;
+
     /// P2P 속성을 설정한다
     virtual void setP2pProperty(const RP2pProperty& p2pProperty) = 0;
 

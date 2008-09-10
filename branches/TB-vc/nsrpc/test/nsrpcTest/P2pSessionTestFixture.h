@@ -20,7 +20,9 @@ public:
         addressChanged_(false),
         newHostPeerId_(invalidPeerId),
         lastJoinedGroupId_(giUnknown),
-        lastJoinedPeerId_(invalidPeerId) {}
+        lastJoinedPeerId_(invalidPeerId),
+        lastLeftGroupId_(giUnknown),
+        lastLeftPeerId_(invalidPeerId) {}
 
     bool isConnected(PeerId peerId) const {
         return connectedPeerIds_.find(peerId) != connectedPeerIds_.end();
@@ -54,6 +56,14 @@ public:
         return lastJoinedPeerId_;
     }
 
+    GroupId getLastLeftGroupId() const {
+        return lastLeftGroupId_;
+    }
+
+    PeerId getLastLeftPeerId() const {
+        return lastLeftPeerId_;
+    }
+
 private:
     virtual void onPeerConnected(PeerId peerId) {
         connectedPeerIds_.insert(peerId);
@@ -85,6 +95,11 @@ private:
         lastJoinedGroupId_ = groupId;
         lastJoinedPeerId_ = peerId;
     }
+
+    virtual void onGroupLeft(GroupId groupId, PeerId peerId) {
+        lastLeftGroupId_ = groupId;
+        lastLeftPeerId_ = peerId;
+    }
 private:
     PeerIdSet connectedPeerIds_;
     PeerId connectFailedPeerId_;
@@ -94,6 +109,8 @@ private:
     RGroupInfo lastGroupInfo_;
     GroupId lastJoinedGroupId_;
     PeerId lastJoinedPeerId_;
+    GroupId lastLeftGroupId_;
+    PeerId lastLeftPeerId_;
 };
 
 

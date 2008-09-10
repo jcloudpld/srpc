@@ -61,9 +61,14 @@ public:
     virtual void onGroupCreated(const RGroupInfo& groupInfo) = 0;
 
     /**
-     * A peer is joined a group
+     * A peer joined a group
      */
     virtual void onGroupJoined(GroupId groupId, PeerId peerId) = 0;
+
+    /**
+     * A peer left from a group
+     */
+    virtual void onGroupLeft(GroupId groupId, PeerId peerId) = 0;
 };
 
 /** @} */ // addtogroup p2p
