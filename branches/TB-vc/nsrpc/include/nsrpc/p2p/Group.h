@@ -1,8 +1,7 @@
 #ifndef NSRPC_GROUP_H
 #define NSRPC_GROUP_H
 
-#include <srpc/RpcTypes.h>
-#include <srpc/RpcContainers.h>
+#include "PeerId.h"
 
 namespace nsrpc
 {
@@ -42,21 +41,35 @@ struct RGroupInfo
 {
     RGroupId groupId_;
     RGroupName groupName_;
+    RPeerIds peerIds_; ///< participants
 
     RGroupInfo(GroupId groupId = giUnknown, const RGroupName& groupName = "") :
         groupId_(groupId),
         groupName_(groupName) {}
 
+    bool join(PeerId peerId) {
+        if (isExists(peerId)) {
+            return false;
+        }
+        peerIds_.push_back(peerId);
+        return true;
+    }
+
+    bool isExists(PeerId peerId) const {
+        return std::find(peerIds_.begin(), peerIds_.end(), peerId) !=
+            peerIds_.end();
+    }
+
     void write(srpc::OStream& os) {
         groupId_.write(os);
         groupName_.write(os);
-
+        peerIds_.write(os);
     }
 
     void read(srpc::IStream& is) {
         groupId_.read(is);
         groupName_.read(is);
-
+        peerIds_.read(is);
     }
 };
 

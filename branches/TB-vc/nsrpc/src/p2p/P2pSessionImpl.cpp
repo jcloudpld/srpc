@@ -43,6 +43,7 @@ P2pSessionImpl::P2pSessionImpl(PeerId peerId, P2pEventHandler& eventHandler,
         packetCoder_->getDefaultPacketSize())),
     peerCandidateManager_(*this, p2pConfig_, myPeerId_),
     peerManager_(*this, *this, p2pConfig_),
+    groupManager_(systemService_),
     rpcNetwork_(*this, *recvBlock_, *sendBlock_, useBitPacking),
     endpoint_(*this, *recvBlock_, reactor_.get()),
     systemService_(peerManager_, eventHandler, *this, rpcNetwork_),
@@ -194,12 +195,15 @@ GroupId P2pSessionImpl::createGroup(const RGroupName& groupName)
         return giUnknown;
     }
 
-    const GroupId groupId = groupManager_.createGroup(groupName);
-    if (isValid(groupId)) {
-        systemService_.rpcGroupCreated(groupManager_.getGroup(groupId));
-    }
+    return groupManager_.createGroup(groupName);
+}
 
-    return groupId;
+
+bool P2pSessionImpl::joinGroup(GroupId groupId)
+{
+    assert(isValid(groupId));
+
+    return groupManager_.joinGroup(groupId, myPeerId_);
 }
 
 
@@ -703,9 +707,17 @@ void P2pSessionImpl::hostMigrated(PeerId peerId)
 
 void P2pSessionImpl::groupCreated(const RGroupInfo& groupInfo)
 {
-    groupManager_.addGroup(groupInfo);
+    groupManager_.groupCreated(groupInfo);
 
     eventHandler_.onGroupCreated(groupInfo);
+}
+
+
+void P2pSessionImpl::groupJoined(GroupId groupId, PeerId peerId)
+{
+    groupManager_.groupJoined(groupId, peerId);
+
+    eventHandler_.onGroupJoined(groupId, peerId);
 }
 
 

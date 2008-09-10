@@ -84,6 +84,9 @@ public:
      */
     virtual GroupId createGroup(const RGroupName& groupName) = 0;
 
+    /// join a group
+    virtual bool joinGroup(GroupId groupId) = 0;
+
     /**
      * get P2P groups
      */

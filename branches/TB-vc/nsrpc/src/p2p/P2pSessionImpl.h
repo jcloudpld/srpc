@@ -68,6 +68,7 @@ private: // information hiding
     virtual void tick();
 
     virtual GroupId createGroup(const RGroupName& groupName);
+    virtual bool joinGroup(GroupId groupId);
 
     virtual const RGroupMap& getGroups() const;
 
@@ -159,6 +160,7 @@ private:
         const Addresses& peerAddresses);
     virtual void hostMigrated(PeerId peerId);
     virtual void groupCreated(const RGroupInfo& groupInfo);
+    virtual void groupJoined(GroupId groupId, PeerId peerId);
     virtual void setP2pProperty(const RP2pProperty& p2pProperty) {
         p2pProperty_ = p2pProperty;
     }

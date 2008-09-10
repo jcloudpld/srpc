@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GroupManager.h"
+#include "SystemService.h"
 
 namespace nsrpc
 {
@@ -7,7 +8,8 @@ namespace nsrpc
 namespace detail
 {
 
-GroupManager::GroupManager()
+GroupManager::GroupManager(RpcSystemService& systemService) :
+    systemService_(systemService)
 {
 }
 
@@ -32,11 +34,30 @@ GroupId GroupManager::createGroup(const RGroupName& groupName)
     const RGroupInfo groupInfo(groupId, groupName);
     groupMap_.insert(RGroupMap::value_type(groupId, groupInfo));
 
+    systemService_.rpcGroupCreated(groupInfo);
+
     return groupId;
 }
 
 
-void GroupManager::addGroup(const RGroupInfo& groupInfo)
+bool GroupManager::joinGroup(GroupId groupId, PeerId peerId)
+{
+    if (! isExists(groupId)) {
+        return false;
+    }
+
+    RGroupInfo& group = getGroup(groupId);
+    if (! group.join(peerId)) {
+        return false;
+    }
+
+    systemService_.rpcGroupJoined(groupId, peerId);
+
+    return true;
+}
+
+
+void GroupManager::groupCreated(const RGroupInfo& groupInfo)
 {
     if (isExists(groupInfo.groupId_)) {
         assert(false && "same group id");
@@ -44,6 +65,20 @@ void GroupManager::addGroup(const RGroupInfo& groupInfo)
     }
 
     groupMap_.insert(RGroupMap::value_type(groupInfo.groupId_, groupInfo));
+}
+
+
+void GroupManager::groupJoined(GroupId groupId, PeerId peerId)
+{
+    if (! isExists(groupId)) {
+        assert(false && "group not found");
+        return;
+    }
+
+    RGroupInfo& group = getGroup(groupId);
+    if (! group.join(peerId)) {
+        assert(false && "already joined");
+    }
 }
 
 

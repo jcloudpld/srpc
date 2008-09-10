@@ -10,6 +10,8 @@ namespace nsrpc
 namespace detail
 {
 
+class RpcSystemService;
+
 /** @addtogroup p2p
 * @{
 */
@@ -21,15 +23,24 @@ namespace detail
 class GroupManager : public boost::noncopyable
 {
 public:
-    GroupManager();
+    GroupManager(RpcSystemService& systemService);
     ~GroupManager();
 
     GroupId createGroup(const RGroupName& groupName);
+    bool joinGroup(GroupId groupId, PeerId peerId);
 
-    void addGroup(const RGroupInfo& groupInfo);
+    void groupCreated(const RGroupInfo& groupInfo);
+    void groupJoined(GroupId groupId, PeerId peerId);
 
     const RGroupMap& getGroups() const {
         return groupMap_;
+    }
+
+private:
+    GroupId getAvailableGroupId() const;
+
+    bool isExists(GroupId groupId) const {
+        return groupMap_.find(groupId) != groupMap_.end();
     }
 
     /// @pre isExists(groupId)
@@ -38,13 +49,14 @@ public:
         return (*groupMap_.find(groupId)).second;
     }
 
-private:
-    GroupId getAvailableGroupId() const;
-    bool isExists(GroupId groupId) const {
-        return groupMap_.find(groupId) != groupMap_.end();
+    /// @pre isExists(groupId)
+    RGroupInfo& getGroup(GroupId groupId) {
+        assert(isExists(groupId));
+        return (*groupMap_.find(groupId)).second;
     }
 
 private:
+    RpcSystemService& systemService_;
     RGroupMap groupMap_;
 };
 
