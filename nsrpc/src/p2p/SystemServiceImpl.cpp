@@ -170,8 +170,6 @@ IMPLEMENT_SRPC_P2P_METHOD_4(RpcSystemServiceImpl, rpcConnected,
         peerManager_.setHost(hint.peerId_);
         serviceHandler_.setP2pProperty(p2pProperty);
         p2pProperty_ = p2pProperty;
-    }
-    else {
         serviceHandler_.setGroups(groups);
     }
 
