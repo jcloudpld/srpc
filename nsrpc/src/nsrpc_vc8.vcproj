@@ -736,6 +736,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\p2p\PlugInManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\p2p\PluginManager.h"
+					>
+				</File>
+				<File
 					RelativePath=".\p2p\RelayServiceHandler.h"
 					>
 				</File>
@@ -745,6 +753,10 @@
 				</File>
 				<File
 					RelativePath=".\p2p\RelayServiceImpl.h"
+					>
+				</File>
+				<File
+					RelativePath=".\p2p\RpcPlugIn.cpp"
 					>
 				</File>
 				<File
@@ -1020,6 +1032,14 @@
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\p2p\PeerStats.h"
+						>
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\p2p\PlugIn.h"
+						>
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\p2p\RpcPlugIn.h"
 						>
 					</File>
 					<Filter

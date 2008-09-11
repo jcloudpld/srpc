@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "P2pSessionTestFixture.h"
 #include <nsrpc/p2p/P2pConfig.h>
+#include <nsrpc/p2p/PeerHint.h>
 #include <nsrpc/utility/AceUtil.h>
 #include <nsrpc/utility/SystemUtil.h>
 
@@ -17,6 +18,7 @@ class P2pGroupTest : public P2pSessionTestFixture
     CPPUNIT_TEST(testJoinEachGroup);
     CPPUNIT_TEST(testLeaveFromGroup);
     CPPUNIT_TEST(testDestroyGroup);
+    CPPUNIT_TEST(testMulticast);
     CPPUNIT_TEST_SUITE_END();
 public:
     P2pGroupTest();
@@ -29,6 +31,7 @@ private:
     void testJoinEachGroup();
     void testLeaveFromGroup();
     void testDestroyGroup();
+    void testMulticast();
 
 private:
     void doTick();
@@ -42,6 +45,7 @@ private:
 
     TestP2pEventHandler peerEventHandler_;
     boost::scoped_ptr<P2pSession> peerSession_;
+    TestRpcPlugIn* peerRpcPlugIn_;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(P2pGroupTest);
@@ -57,6 +61,10 @@ void P2pGroupTest::setUp()
     P2pSessionTestFixture::setUp();
 
     peerSession_.reset(P2pSessionFactory::create(2, peerEventHandler_));
+    peerRpcPlugIn_ = new TestRpcPlugIn;
+    PlugInPtr plugIn(peerRpcPlugIn_);
+    peerSession_->attach(plugIn);
+
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer open",
         true, peerSession_->open(ACE_DEFAULT_SERVER_PORT + 2));
     peerSession_->connect(getHostAddresses());
@@ -271,4 +279,41 @@ void P2pGroupTest::testDestroyGroup()
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("no group",
         false, hostSession_->destroyGroup(firstGroupId));
+}
+
+
+void P2pGroupTest::testMulticast()
+{
+    const GroupId firstGroupId = hostSession_->createGroup("first");
+    const GroupId secondGroupId = hostSession_->createGroup("second");
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("group count",
+        2, int(hostSession_->getGroups().size()));
+
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("host join",
+        true, hostSession_->joinGroup(firstGroupId));
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("peer join",
+        true, peerSession_->joinGroup(secondGroupId));
+    doTick();
+
+    const PeerHint hint(firstGroupId);
+    hostRpcPlugIn_->hello("hi", &hint);
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("hi",
+        std::string(""), peerRpcPlugIn_->getLastWorld());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("from host",
+        invalidPeerId, peerRpcPlugIn_->getLastPeerId());
+
+    const PeerHint hint2(secondGroupId);
+    hostRpcPlugIn_->hello("hi", &hint2);
+    doTick();
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("hi",
+        std::string("hi"), peerRpcPlugIn_->getLastWorld());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("from host",
+        PeerId(1), peerRpcPlugIn_->getLastPeerId());
 }

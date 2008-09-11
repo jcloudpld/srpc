@@ -413,6 +413,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\P2pSessionTestFixture.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\RpcSessionTest.cpp"
 				>
 			</File>

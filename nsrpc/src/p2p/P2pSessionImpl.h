@@ -7,6 +7,7 @@
 #include "PeerCandidate.h"
 #include "PeerManager.h"
 #include "GroupManager.h"
+#include "PluginManager.h"
 #include "PeerMessageHandler.h"
 #include "RelayServiceHandler.h"
 #include "StunServiceHandler.h"
@@ -52,6 +53,9 @@ public:
         PacketCoder* packetCoder);
     virtual ~P2pSessionImpl();
 private: // information hiding
+    virtual void attach(PlugInPtr& plugIn);
+    virtual void detach(PlugInPtr& plugIn);
+
     virtual bool open(srpc::UInt16 port, const srpc::String& password);
     virtual void close();
 
@@ -215,6 +219,8 @@ private:
     PeerCandidateManager peerCandidateManager_;
     PeerManager peerManager_;
     GroupManager groupManager_;
+
+    PluginManager plugInManager_;
 };
 
 /** @} */ // addtogroup p2p
