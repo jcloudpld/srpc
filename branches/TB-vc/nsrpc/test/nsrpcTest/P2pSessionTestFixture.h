@@ -4,9 +4,56 @@
 #include "AceTestFixture.h"
 #include <nsrpc/p2p/P2pSessionFactory.h>
 #include <nsrpc/p2p/P2pEventHandler.h>
+#include <nsrpc/p2p/RpcPlugIn.h>
+#include <srpc/RpcP2p.h>
 #include <set>
 
 using namespace nsrpc;
+
+/**
+ * @class RpcTestService
+ */
+class RpcTestService
+{
+public:
+    virtual ~RpcTestService() {}
+
+    DECLARE_SRPC_PURE_METHOD_1(RpcTestService, hello,
+        srpc::RShortString, world);
+};
+
+
+/**
+ * @class TestRpcPlugIn
+ */
+class TestRpcPlugIn : public RpcPlugIn,
+    public RpcTestService
+{
+public:
+    TestRpcPlugIn() :
+        lastPeerId_(invalidPeerId),
+        lastGroupId_(giUnknown) {}
+
+    PeerId getLastPeerId() const {
+        return lastPeerId_;
+    }
+
+    const std::string& getLastWorld() const {
+        return lastWorld_;
+    }
+
+public:
+    DECLARE_SRPC_P2P_METHOD_1(hello, srpc::RShortString, world);
+
+private:
+    virtual void update() {}
+
+private:
+    PeerId lastPeerId_;
+    GroupId lastGroupId_;
+    std::string lastWorld_;
+};
+
 
 /**
  * @class TestP2pEventHandler
@@ -132,36 +179,17 @@ private:
 class P2pSessionTestFixture : public AceTestFixture
 {
 public:
-    void setUp() {
-        AceTestFixture::setUp();
-
-        hostSession_ = P2pSessionFactory::create(1, hostEventHandler_);
-        openHost();
-    }
-
-    void tearDown() {
-        delete hostSession_;
-        AceTestFixture::tearDown();
-    }
+    void setUp();
+    void tearDown();
 protected:
-    virtual PeerAddresses getHostAddresses() const {
-        PeerAddresses addresses;
-        addresses.push_back(
-            PeerAddress(ACE_LOCALHOST, ACE_DEFAULT_SERVER_PORT));
-        return addresses;
-    }
+    virtual PeerAddresses getHostAddresses() const;
 protected:
     void openHost(const srpc::String& password = "", size_t maxPeers = 0,
-        bool hostMigration = false) {
-        CPPUNIT_ASSERT_MESSAGE("host open",
-            hostSession_->open(ACE_DEFAULT_SERVER_PORT, password));
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("no host",
-            false, hostSession_->isHost());
-        hostSession_->host(maxPeers, hostMigration);
-    }
+        bool hostMigration = false);
 protected:
     P2pSession* hostSession_;
     TestP2pEventHandler hostEventHandler_;
+    TestRpcPlugIn* hostRpcPlugIn_;
 };
 
 #endif // !defined(NSRPC_P2PSESSIONTESTFIXTURE_H)

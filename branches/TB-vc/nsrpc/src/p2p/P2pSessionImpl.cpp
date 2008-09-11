@@ -67,6 +67,20 @@ P2pSessionImpl::~P2pSessionImpl()
 }
 
 
+void P2pSessionImpl::attach(PlugInPtr& plugIn)
+{
+    plugInManager_.add(plugIn);
+    plugIn->attached(this);
+}
+
+
+void P2pSessionImpl::detach(PlugInPtr& plugIn)
+{
+    plugInManager_.remove(plugIn);
+    plugIn->detached();
+}
+
+
 bool P2pSessionImpl::open(srpc::UInt16 port,
     const srpc::String& password)
 {
@@ -187,6 +201,8 @@ void P2pSessionImpl::tick()
 
     peerManager_.sendOutgoingMessages();
     peerManager_.handleDisconnectedPeers();
+
+    plugInManager_.update();
 }
 
 

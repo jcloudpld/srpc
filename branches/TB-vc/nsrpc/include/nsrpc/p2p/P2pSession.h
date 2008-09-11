@@ -5,6 +5,7 @@
 #include "PeerStats.h"
 #include "PeerAddress.h"
 #include "Group.h"
+#include "PlugIn.h"
 #include <boost/noncopyable.hpp>
 
 class ACE_Reactor;
@@ -30,6 +31,12 @@ class P2pSession : public boost::noncopyable
 {
 public:
     virtual ~P2pSession() {}
+
+    /// attach a plug-in
+    virtual void attach(PlugInPtr& plugIn) = 0;
+
+    /// detach a plug-in
+    virtual void detach(PlugInPtr& plugIn) = 0;
 
     /**
      * Initialize this session.
