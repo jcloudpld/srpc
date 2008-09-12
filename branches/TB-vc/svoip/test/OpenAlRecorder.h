@@ -11,7 +11,7 @@
 class OpenAlRecorder : public svoip::Recorder
 {
 public:
-    OpenAlRecorder();
+    OpenAlRecorder(svoip::RecorderCallback& callback);
     virtual ~OpenAlRecorder();
 
     virtual bool open();
@@ -22,13 +22,12 @@ public:
 
     virtual bool run();
 
-    virtual svoip::Sample* getSample(size_t& samples);
-
 private:
-    size_t getAvailableCaptureSamples() const;
+    size_t getAvailableSamples() const;
 
 private:
     ALCdevice* captureDevice_;
+    bool isRecording_;
 };
 
 #endif // SVOIP_OPENAL_PLAYER_H

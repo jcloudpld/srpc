@@ -20,9 +20,13 @@ public:
 
     virtual void stop();
 
-    virtual void play(svoip::Sample* sample, size_t samples);
+    virtual void play(svoip::EncodedSample* sample, size_t samples,
+        size_t frames);
 
     virtual bool run();
+
+private:
+    void play(svoip::Sample* sample, size_t samples);
 
 private:
     ALuint source_;

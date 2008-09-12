@@ -19,6 +19,10 @@ OpenAlPlayer::~OpenAlPlayer()
 
 bool OpenAlPlayer::open()
 {
+    if (! Player::open()) {
+        return false;
+    }
+
     alGenSources(1, &source_);
     if (alGetError() != AL_NO_ERROR) {
         return false;
@@ -46,19 +50,16 @@ void OpenAlPlayer::stop()
 }
 
 
-void OpenAlPlayer::play(svoip::Sample* sample, size_t samples)
+void OpenAlPlayer::play(svoip::EncodedSample* sample, size_t samples,
+    size_t frames)
 {
     assert(source_ != 0);
 
-    ALuint alBuffer;
-    alGenBuffers(1, &alBuffer);
-    alBufferData(alBuffer, AL_FORMAT_MONO16,
-        reinterpret_cast<ALvoid *>(sample),
-        static_cast<ALsizei>(samples * sizeof(svoip::Sample)),
-        svoip::frequency);
+    size_t decodedSamples;
+    svoip::Sample* decodedSample = decode(sample, samples, frames,
+        decodedSamples);
 
-    // Shove the data onto the streamSource
-    alSourceQueueBuffers(source_, 1, &alBuffer);
+    play(decodedSample, decodedSamples);
 }
 
 
@@ -97,4 +98,20 @@ bool OpenAlPlayer::run()
     }
 
     return true;
+}
+
+
+void OpenAlPlayer::play(svoip::Sample* sample, size_t samples)
+{
+    assert(source_ != 0);
+
+    ALuint alBuffer;
+    alGenBuffers(1, &alBuffer);
+    alBufferData(alBuffer, AL_FORMAT_MONO16,
+        reinterpret_cast<ALvoid *>(sample),
+        static_cast<ALsizei>(samples * sizeof(svoip::Sample)),
+        svoip::frequency);
+
+    // Shove the data onto the streamSource
+    alSourceQueueBuffers(source_, 1, &alBuffer);
 }

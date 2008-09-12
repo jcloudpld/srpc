@@ -23,7 +23,16 @@ const int bufferSize = 4096;
 ///  2048 will cover 12 uncompressed frames in narrow-band mode.
 const int sampleBufferSize = 2048;
 
-typedef srpc::UInt16 Sample;
+
+/// Multiply recorded audio by this value after denoising.
+/// This is to make you more audible if denoising eats away too much data.
+/// Set this to 1.0 to get no change, less to be quieter. 
+const float audioMult = 2.0f;
+
+
+typedef srpc::Int16 Sample;
+
+typedef srpc::Int8 EncodedSample;
 
 } // namespace svoip
 
