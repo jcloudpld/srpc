@@ -2,8 +2,10 @@
 #include "OpenAlRecorder.h"
 #include "openal_framework/Framework.h"
 
-OpenAlRecorder::OpenAlRecorder() :
-    captureDevice_(0)
+OpenAlRecorder::OpenAlRecorder(svoip::RecorderCallback& callback) :
+    Recorder(callback),
+    captureDevice_(0),
+    isRecording_(false)
 {
 }
 
@@ -19,6 +21,10 @@ OpenAlRecorder::~OpenAlRecorder()
 
 bool OpenAlRecorder::open()
 {
+    if (! Recorder::open()) {
+        return false;
+    }
+
     // Check for Capture Extension support
     ALCcontext* pContext = alcGetCurrentContext();
     ALCdevice* pDevice = alcGetContextsDevice(pContext);
@@ -58,6 +64,8 @@ void OpenAlRecorder::start()
     assert(captureDevice_ != 0);
 
     alcCaptureStart(captureDevice_);
+
+    isRecording_ = true;
 }
 
 
@@ -66,34 +74,48 @@ void OpenAlRecorder::stop()
     assert(captureDevice_ != 0);
 
     alcCaptureStop(captureDevice_);
+
+    isRecording_ = false;
 }
 
 
 bool OpenAlRecorder::run()
 {
-    const size_t samples = getAvailableCaptureSamples();
+    size_t samples = getAvailableSamples();
     ALFWprintf("Samples available : %d\r", samples);
+
+    if (samples <= 0) {
+        return true;
+    }
+
+    const size_t frameSize = getFrameSize();
+    const int mult = (isRecording_) ? 12 : 1; // 12 == 240ms of audio.
+
+    // enough data buffered in audio hardware to process yet?
+    if (samples >= (frameSize * mult)) {
+        // audio capture is always MONO16 (and that's what speex wants!).
+        //  2048 will cover 12 uncompressed frames in narrow-band mode.
+        static svoip::Sample sampleBuffer[svoip::sampleBufferSize];
+
+        if (samples > (frameSize * 12)) {
+            samples = (frameSize * 12);
+        }
+        samples -= samples % frameSize;
+
+        alcCaptureSamples(captureDevice_, sampleBuffer,
+            static_cast<ALCsizei>(samples));
+        if (alGetError() != AL_NO_ERROR) {
+            return false;
+        }
+
+        encode(sampleBuffer, samples);
+    }
 
     return true;
 }
 
 
-svoip::Sample* OpenAlRecorder::getSample(size_t& samples)
-{
-    static svoip::Sample sampleBuffer[svoip::sampleBufferSize];
-
-    samples = getAvailableCaptureSamples();
-    if (samples > 0) {
-        alcCaptureSamples(captureDevice_, sampleBuffer,
-            static_cast<ALCsizei>(samples));
-        return sampleBuffer;
-    }
-
-    return 0;
-}
-
-
-size_t OpenAlRecorder::getAvailableCaptureSamples() const
+size_t OpenAlRecorder::getAvailableSamples() const
 {
     if (! captureDevice_) {
         return 0;

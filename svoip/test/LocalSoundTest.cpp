@@ -7,6 +7,20 @@
 namespace
 {
 
+/**
+ * @class LocalPlayer
+ */
+class LocalPlayer : public OpenAlPlayer,
+    public svoip::RecorderCallback
+{
+private:
+    virtual void sampled(svoip::EncodedSample* sample, size_t sampleLen,
+        size_t frames) {
+        play(sample, sampleLen, frames);
+    }
+};
+
+
 bool initializeOpenAl()
 {
     ALFWInit();
@@ -29,20 +43,21 @@ void shutdownOpenAl()
 
 bool run()
 {
-    boost::scoped_ptr<svoip::Recorder> recorder(new OpenAlRecorder);
-    if (! recorder->open()) {
+    boost::scoped_ptr<LocalPlayer> player(new LocalPlayer);
+    if (! player->open()) {
         return false;
     }
 
-    boost::scoped_ptr<svoip::Player> player(new OpenAlPlayer);
-    if (! player->open()) {
+    boost::scoped_ptr<svoip::Recorder> recorder(new OpenAlRecorder(*player));
+    if (! recorder->open()) {
         return false;
     }
 
     recorder->start();
     player->start();
 
-    for (;;) {
+    ALFWprintf("Press any key to finish.\n");
+    while (! ALFWKeyPress()) {
         ::Sleep(1);
 
         if (! recorder->run()) {
@@ -52,14 +67,6 @@ bool run()
         if (! player->run()) {
             break;
         }
-
-        size_t samples;
-        svoip::Sample* sample = recorder->getSample(samples);
-        if (! sample) {
-            continue;
-        }
-
-        player->play(sample, samples);
     }
 
     recorder->stop();
