@@ -1,13 +1,68 @@
 #include "stdafx.h"
 #include "svoip/Recorder.h"
 #include "Encoder.h"
+#include "nsrpc/utility/AceUtil.h"
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4127 4355 4800)
+#endif
+#include <ace/Task.h>
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
 
 namespace svoip
 {
 
+namespace detail
+{
+
+/**
+ * @class RecorderTask
+ */
+class RecorderTask : public ACE_Task_Base
+{
+public:
+    RecorderTask(Recorder& recorder) :
+        recorder_(recorder),
+        shouldStop_(false) {}
+
+    virtual ~RecorderTask() {
+        stop();
+    }
+
+    bool start() {
+        return activate() == 0;
+    }
+
+    void stop() {
+        shouldStop_ = true;
+        wait();
+    }
+
+private:
+    virtual int svc() {
+        const ACE_Time_Value sleeptm = nsrpc::makeTimeValue(1);
+
+        while (! shouldStop_) {
+            recorder_.run();
+            ACE_OS::sleep(sleeptm);
+        }
+
+        return 0;
+    }
+
+private:
+    Recorder& recorder_;
+    volatile bool shouldStop_;
+};
+
+} // namespace detail
+
+// = Recorder
+
 Recorder::Recorder(RecorderCallback& callback) :
-    callback_(callback),
-    encoder_(new Encoder)
+    callback_(callback)
 {
 }
 
@@ -19,7 +74,27 @@ Recorder::~Recorder()
 
 bool Recorder::open()
 {
-    return encoder_->initialize();
+    encoder_.reset(new Encoder);
+    if (! encoder_->initialize()) {
+        return false;
+    }
+
+    task_.reset(new detail::RecorderTask(*this));
+    if (! task_->start()) {
+        return false;
+    }
+
+    return true;
+}
+
+
+void Recorder::close()
+{
+    stop();
+
+    if (task_) {
+        task_->stop();
+    }
 }
 
 

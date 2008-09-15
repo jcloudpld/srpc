@@ -73,7 +73,6 @@ bool OpenAlPlayer::run()
     while (processedBuffers--) {
         ALuint buffer;
         alSourceUnqueueBuffers(source_, 1, &buffer);
-        // TODO: reuse buffer for performance
         alDeleteBuffers(1, &buffer);
     }
 

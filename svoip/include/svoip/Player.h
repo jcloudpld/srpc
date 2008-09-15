@@ -10,6 +10,12 @@ namespace svoip
 
 class Decoder;
 
+namespace detail
+{
+class PlayerTask;
+} // namespace detail
+
+
 /**
  * @class Player
  * Audio decode & play
@@ -21,6 +27,8 @@ public:
     virtual ~Player();
 
     virtual bool open();
+
+    virtual void close();
 
     virtual void start() = 0;
 
@@ -36,7 +44,8 @@ protected:
         size_t frames, size_t& decodedSamples);
 
 private:
-    boost::scoped_ptr<Decoder> decoder_;    
+    boost::scoped_ptr<Decoder> decoder_;
+    boost::scoped_ptr<detail::PlayerTask> task_;
 };
 
 } // namespace svoip

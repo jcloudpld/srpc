@@ -2,6 +2,7 @@
 #include "OpenAlRecorder.h"
 #include "OpenAlPlayer.h"
 #include "openal_framework/Framework.h"
+#include "nsrpc/utility/AceUtil.h"
 #include <boost/scoped_ptr.hpp>
 
 namespace
@@ -43,6 +44,8 @@ void shutdownOpenAl()
 
 bool run()
 {
+    nsrpc::InitAce ace;
+
     boost::scoped_ptr<LocalPlayer> player(new LocalPlayer);
     if (! player->open()) {
         return false;
@@ -59,18 +62,10 @@ bool run()
     ALFWprintf("Press any key to finish.\n");
     while (! ALFWKeyPress()) {
         ::Sleep(1);
-
-        if (! recorder->run()) {
-            break;
-        }
-
-        if (! player->run()) {
-            break;
-        }
     }
 
-    recorder->stop();
-    player->stop();
+    recorder->close();
+    player->close();
 
     return true;
 }
