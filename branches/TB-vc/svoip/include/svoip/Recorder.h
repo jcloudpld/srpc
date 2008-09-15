@@ -10,6 +10,11 @@ namespace svoip
 
 class Encoder;
 
+namespace detail
+{
+class RecorderTask;
+} // namespace detail
+
 
 /**
  * @class RecorderCallback
@@ -27,6 +32,7 @@ public:
 /**
  * @class Recorder
  * Audio record & encode
+ * 8kHz, 16bit, Mono
  */
 class SVOIP_API Recorder : public boost::noncopyable
 {
@@ -35,6 +41,8 @@ public:
     virtual ~Recorder();
 
     virtual bool open();
+
+    virtual void close();
 
     virtual void start() = 0;
 
@@ -50,6 +58,7 @@ protected:
 private:
     RecorderCallback& callback_;
     boost::scoped_ptr<Encoder> encoder_;
+    boost::scoped_ptr<detail::RecorderTask> task_;
 };
 
 } // namespace svoip

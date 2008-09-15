@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsrpc_d.lib OpenAL32.lib EFX-Util.lib"
+				AdditionalDependencies="nsrpc_d.lib aced.lib OpenAL32.lib EFX-Util.lib"
 				OutputFile="$(OutDir)/LocalSoundTest_d.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -144,7 +144,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsrpc.lib OpenAL32.lib EFX-Util.lib"
+				AdditionalDependencies="nsrpc.lib ace.lib OpenAL32.lib EFX-Util.lib"
 				OutputFile="$(OutDir)/LocalSoundTest.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"

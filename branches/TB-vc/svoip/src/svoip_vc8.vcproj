@@ -63,6 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="aced.lib"
 				OutputFile="$(OutDir)/svoip_d.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -145,6 +146,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="aced.lib"
 				OutputFile="$(OutDir)/svoip.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
