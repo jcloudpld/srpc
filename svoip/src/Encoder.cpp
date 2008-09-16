@@ -14,6 +14,10 @@ namespace detail
  */
 class EncoderImpl : public boost::noncopyable
 {
+    enum {
+        sampleSizeLen = sizeof(EncodedSample)
+    };
+
 public:
     EncoderImpl() :
         encoderState_(0),
@@ -79,27 +83,22 @@ public:
         static EncodedSample encodedSample[sampleBufferSize / 2];
 
         frames = 0;
-        int wpos = 0;
+        size_t writePos = 0;
         for (size_t pos = 0; pos < samples; pos += frameSize_) {
             Sample* currentSample = &sampleBuffer[pos];
 
             denoise(currentSample);
 
             // encode raw audio samples into Speex data
-            speex_bits_reset(&bits_);
-            speex_encode_int(encoderState_, currentSample, &bits_);
-            const int bytes = speex_bits_write(&bits_,
-                reinterpret_cast<char *>(&encodedSample[wpos+1]),
-                sizeof(encodedSample) - (wpos+1));
-            assert((bytes > 0) && (bytes < 256));
-            encodedSample[wpos] = static_cast<EncodedSample>(bytes);
-            wpos += (bytes + 1);
-
-            // look at the data for the next sample
+            const size_t encodedPos = writePos + sampleSizeLen;
+            const size_t bytes = encode(&encodedSample[encodedPos],
+                sizeof(encodedSample) - (encodedPos), currentSample);
+            encodedSample[writePos] = static_cast<EncodedSample>(bytes);
+            writePos += (bytes + sampleSizeLen);
             ++frames;
         }
 
-        encodedSamples = wpos;
+        encodedSamples = writePos;
         return encodedSample;
     }
 
@@ -109,13 +108,22 @@ public:
 
 private:
     void denoise(Sample* sample) {
-        // remove noise
         speex_preprocess_run(preprocessor_, sample);
 
-        // check the "power" of this sample
         for (int i = 0; i < frameSize_; i++) {
             sample[i] = static_cast<Sample>(sample[i] * audioMult);
         }
+    }
+
+    size_t encode(EncodedSample* encodedSample, size_t maxLen,
+        Sample* rawSample) {
+        speex_bits_reset(&bits_);
+        speex_encode_int(encoderState_, rawSample, &bits_);
+        const int bytes = speex_bits_write(&bits_,
+            reinterpret_cast<char *>(encodedSample),
+            static_cast<int>(maxLen));
+        assert((bytes > 0) && (bytes < 256));
+        return bytes;
     }
 
 private:
