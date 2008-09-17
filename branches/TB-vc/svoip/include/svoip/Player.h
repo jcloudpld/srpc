@@ -34,13 +34,13 @@ public:
 
     virtual void stop() = 0;
 
-    virtual void play(EncodedSample* sample, size_t samples,
+    virtual void play(const EncodedSample* sample, size_t samples,
         size_t frames) = 0;
 
     virtual bool run() = 0;
 
 protected:
-    svoip::Sample* decode(svoip::EncodedSample* sample, size_t samples,
+    svoip::Sample* decode(const svoip::EncodedSample* sample, size_t samples,
         size_t frames, size_t& decodedSamples);
 
 private:

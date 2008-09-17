@@ -25,8 +25,8 @@ public:
 
     bool initialize();
 
-    Sample* decode(EncodedSample* sampleBuffer, size_t samples, size_t frames,
-        size_t& decodedSamples);
+    Sample* decode(const EncodedSample* sampleBuffer, size_t samples,
+        size_t frames, size_t& decodedSamples);
 
 private:
     boost::scoped_ptr<detail::DecoderImpl> impl_;

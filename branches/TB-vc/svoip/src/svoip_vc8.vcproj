@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="aced.lib"
+				AdditionalDependencies="nsrpc_d.lib srpc_d.lib aced.lib"
 				OutputFile="$(OutDir)/svoip_d.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -146,7 +146,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="aced.lib"
+				AdditionalDependencies="nsrpc.lib srpc.lib ace.lib"
 				OutputFile="$(OutDir)/svoip.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
@@ -211,7 +211,7 @@
 				AdditionalOptions="/Ylsvoip"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir)..\include;$(ProjectDir)..\vendorsrc\speex-1.2rc1\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;ACE_AS_STATIC_LIBS"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -233,7 +233,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="libspeex_mt_d.lib libspeexdsp_mt_d.lib"
+				AdditionalDependencies="libnsrpc_d.lib libsrpc_d.lib libspeex_mt_d.lib libspeexdsp_mt_d.lib"
 				OutputFile="$(OutDir)\libsvoip_d.lib"
 				AdditionalLibraryDirectories="$(ProjectDir)..\vendorsrc\speex-1.2rc1\lib"
 			/>
@@ -281,7 +281,7 @@
 				AdditionalOptions="/Ylsvoip"
 				Optimization="2"
 				AdditionalIncludeDirectories="$(ProjectDir)..\include;$(ProjectDir)..\vendorsrc\speex-1.2rc1\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;ACE_AS_STATIC_LIBS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
@@ -302,7 +302,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="libspeex_mt.lib libspeexdsp_mt.lib"
+				AdditionalDependencies="libnsrpc.lib libsrpc.lib libspeex_mt.lib libspeexdsp_mt.lib"
 				OutputFile="..\lib\libsvoip.lib"
 				AdditionalLibraryDirectories="$(ProjectDir)..\vendorsrc\speex-1.2rc1\lib"
 			/>
@@ -395,6 +395,10 @@
 				RelativePath=".\stdafx.h"
 				>
 			</File>
+			<File
+				RelativePath=".\VoP2pPlugIn.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="include"
@@ -408,6 +412,14 @@
 				</File>
 				<File
 					RelativePath="..\include\svoip\Recorder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\svoip\RecorderCallback.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\svoip\VoP2pPlugIn.h"
 					>
 				</File>
 				<Filter

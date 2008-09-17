@@ -78,6 +78,7 @@ public:
         return true;
     }
 
+    // encode raw audio samples into Speex data
     EncodedSample* encode(Sample* sampleBuffer, size_t samples,
         size_t& encodedSamples, size_t& frames) {
         static EncodedSample encodedSample[sampleBufferSize / 2];
@@ -89,11 +90,11 @@ public:
 
             denoise(currentSample);
 
-            // encode raw audio samples into Speex data
             const size_t encodedPos = writePos + sampleSizeLen;
             const size_t bytes = encode(&encodedSample[encodedPos],
-                sizeof(encodedSample) - (encodedPos), currentSample);
+                sizeof(encodedSample) - encodedPos, currentSample);
             encodedSample[writePos] = static_cast<EncodedSample>(bytes);
+
             writePos += (bytes + sampleSizeLen);
             ++frames;
         }

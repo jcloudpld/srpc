@@ -1,10 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LocalSoundTest", "..\..\test\LocalSoundTest_vc8.vcproj", "{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{102698BA-62C2-4F20-AF42-D019DD304CD1} = {102698BA-62C2-4F20-AF42-D019DD304CD1}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "svoip", "..\..\src\svoip_vc8.vcproj", "{102698BA-62C2-4F20-AF42-D019DD304CD1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E972C52F-9E85-4D65-B19C-031E511E9DB4} = {E972C52F-9E85-4D65-B19C-031E511E9DB4}
@@ -24,6 +19,20 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libspeex", "..\..\vendorsrc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libspeexdsp", "..\..\vendorsrc\speex-1.2rc1\win32\VS2005\libspeexdsp\libspeexdsp.vcproj", "{E42FDC95-7243-4219-9EA4-ACCE4AB97197}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoP2pTest", "..\..\examples\VoP2pTest\VoP2pTest_vc8.vcproj", "{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{102698BA-62C2-4F20-AF42-D019DD304CD1} = {102698BA-62C2-4F20-AF42-D019DD304CD1}
+		{E42FDC95-7243-4219-9EA4-ACCE4AB97197} = {E42FDC95-7243-4219-9EA4-ACCE4AB97197}
+		{E972C52F-9E85-4D65-B19C-031E511E9DB4} = {E972C52F-9E85-4D65-B19C-031E511E9DB4}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LocalSoundTest", "..\..\examples\LocalSoundTest\LocalSoundTest_vc8.vcproj", "{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E972C52F-9E85-4D65-B19C-031E511E9DB4} = {E972C52F-9E85-4D65-B19C-031E511E9DB4}
+		{E42FDC95-7243-4219-9EA4-ACCE4AB97197} = {E42FDC95-7243-4219-9EA4-ACCE4AB97197}
+		{102698BA-62C2-4F20-AF42-D019DD304CD1} = {102698BA-62C2-4F20-AF42-D019DD304CD1}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -32,12 +41,6 @@ Global
 		StaticRelease|Win32 = StaticRelease|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.Debug|Win32.ActiveCfg = Debug|Win32
-		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.Debug|Win32.Build.0 = Debug|Win32
-		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.Release|Win32.ActiveCfg = Release|Win32
-		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.Release|Win32.Build.0 = Release|Win32
-		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.StaticDebug|Win32.ActiveCfg = Debug|Win32
-		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.StaticRelease|Win32.ActiveCfg = Release|Win32
 		{102698BA-62C2-4F20-AF42-D019DD304CD1}.Debug|Win32.ActiveCfg = Debug|Win32
 		{102698BA-62C2-4F20-AF42-D019DD304CD1}.Debug|Win32.Build.0 = Debug|Win32
 		{102698BA-62C2-4F20-AF42-D019DD304CD1}.Release|Win32.ActiveCfg = Release|Win32
@@ -62,6 +65,20 @@ Global
 		{E42FDC95-7243-4219-9EA4-ACCE4AB97197}.StaticDebug|Win32.Build.0 = Debug|Win32
 		{E42FDC95-7243-4219-9EA4-ACCE4AB97197}.StaticRelease|Win32.ActiveCfg = Release|Win32
 		{E42FDC95-7243-4219-9EA4-ACCE4AB97197}.StaticRelease|Win32.Build.0 = Release|Win32
+		{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}.Debug|Win32.Build.0 = Debug|Win32
+		{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}.Release|Win32.ActiveCfg = Release|Win32
+		{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}.Release|Win32.Build.0 = Release|Win32
+		{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}.StaticDebug|Win32.ActiveCfg = StaticDebug|Win32
+		{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}.StaticDebug|Win32.Build.0 = StaticDebug|Win32
+		{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}.StaticRelease|Win32.ActiveCfg = StaticRelease|Win32
+		{DDA7A706-15FA-4568-8E59-C4EAC99E97C1}.StaticRelease|Win32.Build.0 = StaticRelease|Win32
+		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.Debug|Win32.Build.0 = Debug|Win32
+		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.Release|Win32.ActiveCfg = Release|Win32
+		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.Release|Win32.Build.0 = Release|Win32
+		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.StaticDebug|Win32.ActiveCfg = Debug|Win32
+		{7E1ABC23-A69B-4ED6-A632-0B0BF6890B8A}.StaticRelease|Win32.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

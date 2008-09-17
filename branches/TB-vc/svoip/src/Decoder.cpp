@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Decoder.h"
 #include "speex/speex.h"
-#include "speex/speex_preprocess.h"
 
 namespace svoip
 {
@@ -46,13 +45,13 @@ public:
         return true;
     }
 
-    Sample* decode(EncodedSample* sampleBuffer, size_t samples,
+    Sample* decode(const EncodedSample* sampleBuffer, size_t samples,
         size_t frames, size_t& decodedSamples) {
         assert(decoderState_ != 0);
 
         static Sample decodedSample[bufferSize];
 
-        EncodedSample* currentSample = sampleBuffer;
+        EncodedSample* currentSample = const_cast<EncodedSample*>(sampleBuffer);
         int written = 0;
         for (size_t i = 0; i < frames; ++i) {
             speex_bits_reset(&bits_);
@@ -100,7 +99,7 @@ bool Decoder::initialize()
 }
 
 
-Sample* Decoder::decode(EncodedSample* sampleBuffer, size_t samples,
+Sample* Decoder::decode(const EncodedSample* sampleBuffer, size_t samples,
     size_t frames, size_t& decodedSamples)
 {
     return impl_->decode(sampleBuffer, samples, frames, decodedSamples);

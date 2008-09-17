@@ -1,6 +1,11 @@
 #ifndef SVOIP_STDAFX_H
 #define SVOIP_STDAFX_H
 
+// Speex
+#include "speex/speex.h"
+#include "speex/speex_preprocess.h"
+
+
 // ACE
 #ifdef _MSC_VER
 #  pragma warning (push)

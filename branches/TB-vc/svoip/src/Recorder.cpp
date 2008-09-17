@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "svoip/Recorder.h"
+#include "svoip/RecorderCallback.h"
 #include "Encoder.h"
 #include "nsrpc/utility/AceUtil.h"
 #ifdef _MSC_VER
@@ -61,7 +62,7 @@ private:
 
 // = Recorder
 
-Recorder::Recorder(RecorderCallback& callback) :
+Recorder::Recorder(RecorderCallback* callback) :
     callback_(callback)
 {
 }
@@ -100,12 +101,14 @@ void Recorder::close()
 
 void Recorder::encode(Sample* sampleBuffer, size_t samples)
 {
+    assert(callback_ != 0);
+
     size_t encodedSamples;
     size_t frames;
     svoip::EncodedSample* encodedBuffer =
         encoder_->encode(sampleBuffer, samples, encodedSamples, frames);
 
-    callback_.sampled(encodedBuffer, encodedSamples, frames);
+    callback_->sampled(encodedBuffer, encodedSamples, frames);
 }
 
 
