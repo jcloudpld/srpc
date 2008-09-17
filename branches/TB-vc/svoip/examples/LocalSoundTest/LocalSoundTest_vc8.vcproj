@@ -251,7 +251,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
-						WarnAsError="false"
+						WarnAsError="true"
+						DisableSpecificWarnings="4189;4201;4244;4996"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -260,7 +261,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
-						WarnAsError="false"
+						WarnAsError="true"
+						DisableSpecificWarnings="4189;4201;4244;4996"
 					/>
 				</FileConfiguration>
 			</File>
@@ -277,7 +279,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
-						WarnAsError="false"
+						WarnAsError="true"
+						DisableSpecificWarnings="4189;4201;4244;4996"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -286,7 +289,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
-						WarnAsError="false"
+						WarnAsError="true"
+						DisableSpecificWarnings="4189;4201;4244;4996"
 					/>
 				</FileConfiguration>
 			</File>
@@ -303,7 +307,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
-						WarnAsError="false"
+						WarnAsError="true"
+						DisableSpecificWarnings="4189;4201;4244;4996"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -312,7 +317,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
-						WarnAsError="false"
+						WarnAsError="true"
+						DisableSpecificWarnings="4189;4201;4244;4996"
 					/>
 				</FileConfiguration>
 			</File>
@@ -329,7 +335,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
-						WarnAsError="false"
+						WarnAsError="true"
+						DisableSpecificWarnings="4189;4201;4244;4996"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -338,7 +345,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
-						WarnAsError="false"
+						WarnAsError="true"
+						DisableSpecificWarnings="4189;4201;4244;4996"
 					/>
 				</FileConfiguration>
 			</File>

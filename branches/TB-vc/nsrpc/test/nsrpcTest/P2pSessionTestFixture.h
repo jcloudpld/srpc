@@ -46,6 +46,9 @@ public:
     DECLARE_SRPC_P2P_METHOD_1(hello, srpc::RShortString, world);
 
 private:
+    virtual bool initialize() {
+        return true;
+    }
     virtual void update() {}
 
 private:

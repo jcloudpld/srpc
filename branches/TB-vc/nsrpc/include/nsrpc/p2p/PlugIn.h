@@ -21,12 +21,15 @@ class PlugIn : public SharedObject
 public:
     virtual ~PlugIn() {}
 
+    virtual bool initialize() = 0;
+
     /// attached in a P2P session instance
     virtual void attached(P2pSession* session) = 0;
 
     /// detached from the P2P session
     virtual void detached() = 0;
 
+    // called from P2pSession::tick()
     virtual void update() = 0;
 };
 
