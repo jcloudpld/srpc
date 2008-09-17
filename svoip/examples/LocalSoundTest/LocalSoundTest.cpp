@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "OpenAlRecorder.h"
 #include "OpenAlPlayer.h"
+#include "svoip/RecorderCallback.h"
 #include "openal_framework/Framework.h"
 #include "nsrpc/utility/AceUtil.h"
 #include <boost/scoped_ptr.hpp>
@@ -51,7 +52,8 @@ bool run()
         return false;
     }
 
-    boost::scoped_ptr<svoip::Recorder> recorder(new OpenAlRecorder(*player));
+    boost::scoped_ptr<svoip::Recorder> recorder(
+        new OpenAlRecorder(player.get()));
     if (! recorder->open()) {
         return false;
     }
