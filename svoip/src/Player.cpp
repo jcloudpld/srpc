@@ -97,8 +97,8 @@ void Player::close()
 }
 
 
-svoip::Sample* Player::decode(svoip::EncodedSample* sample, size_t samples,
-    size_t frames, size_t& decodedSamples)
+svoip::Sample* Player::decode(const svoip::EncodedSample* sample,
+    size_t samples, size_t frames, size_t& decodedSamples)
 {
     return decoder_->decode(sample, samples, frames, decodedSamples);
 }

@@ -9,24 +9,12 @@ namespace svoip
 {
 
 class Encoder;
+class RecorderCallback;
 
 namespace detail
 {
 class RecorderTask;
 } // namespace detail
-
-
-/**
- * @class RecorderCallback
- */
-class RecorderCallback
-{
-public:
-    virtual ~RecorderCallback() {}
-
-    virtual void sampled(EncodedSample* sample, size_t sampleLen,
-        size_t frames) = 0;
-};
 
 
 /**
@@ -37,7 +25,7 @@ public:
 class SVOIP_API Recorder : public boost::noncopyable
 {
 public:
-    Recorder(RecorderCallback& callback);
+    Recorder(RecorderCallback* callback = 0);
     virtual ~Recorder();
 
     virtual bool open();
@@ -50,13 +38,18 @@ public:
 
     virtual bool run() = 0;
 
+public:
+    void setCallback(RecorderCallback* callback) {
+        callback_ = callback;
+    }
+
 protected:
     void encode(Sample* sampleBuffer, size_t samples);
 
     size_t getFrameSize() const;
 
 private:
-    RecorderCallback& callback_;
+    RecorderCallback* callback_;
     boost::scoped_ptr<Encoder> encoder_;
     boost::scoped_ptr<detail::RecorderTask> task_;
 };
