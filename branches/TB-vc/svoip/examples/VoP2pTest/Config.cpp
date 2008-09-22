@@ -2,6 +2,9 @@
 #include "Config.h"
 #include <iostream>
 
+namespace
+{
+
 nsrpc::PeerAddress toPeerAddress(const srpc::String& address)
 {
     nsrpc::PeerAddress result;
@@ -12,6 +15,25 @@ nsrpc::PeerAddress toPeerAddress(const srpc::String& address)
             static_cast<srpc::UInt16>(atoi(address.substr(pos + 1).c_str()));
     }
     return result;
+}
+
+} // namespace
+
+
+Config::Config() :
+    shouldRecord_(false),
+    peerId_(nsrpc::invalidPeerId),
+    listeningPort_(0),
+    host_(false),
+    verbose_(false),
+    sleepTime_(0),
+    outboundPacketDropRate_(0.0f),
+    inboundPacketDropRate_(0.0f),
+    minOutboundPacketLatency_(0),
+    maxOutboundPacketLatency_(0),
+    minInboundPacketLatency_(0),
+    maxInboundPacketLatency_(0)
+{
 }
 
 
@@ -31,6 +53,9 @@ bool Config::parseArgs(int argc, char* argv[])
         
         if (arg == "-h") {
             host_ = true;
+        }
+        else if (arg == "-r") {
+            shouldRecord_ = true;
         }
         else if (arg == "-v") {
             verbose_ = true;
@@ -116,7 +141,8 @@ void Config::printUsage()
         "  -ra=<address:port> : relay server address\n" <<
         "  -ha=<address:port> : P2P host address(connect to host)\n" <<
         "  -h P2P host\n" <<
-        "  -st=<sleep time for each response>: 0~ (default:0)\n"
+        "  -r should record voice?(default: off)\n" <<
+        "  -st=<sleep time for each response>: 0~ (default: 0)\n"
         "  -spd=<send packet drop rate> : 0.0 ~ 1.0 (default: 0.0)\n"
         "  -rpd=<recv. packet drop rate> : 0.0 ~ 1.0 (default: 0.0)\n"
         "  -nsl=<min. send packet latency(ms)> : 0 ~ (default: 0)\n"

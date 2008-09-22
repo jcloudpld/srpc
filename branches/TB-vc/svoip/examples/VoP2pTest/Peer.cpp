@@ -109,6 +109,8 @@ bool Peer::ready()
 
 bool Peer::tick()
 {
+    const nsrpc::PeerTime printInterval = 4000;
+
     p2pSession_->tick();
 
     if (! config_.isHost()) {
@@ -162,8 +164,10 @@ void Peer::onPeerConnected(nsrpc::PeerId peerId)
         joiners_.insert(peerId);
     }
 
-    if (! joiners_.empty()) {
-        voP2pPlugIn_->record();
+    if (config_.shouldRecord()) {
+        if (! joiners_.empty()) {
+            voP2pPlugIn_->record();
+        }
     }
 }
 
@@ -179,8 +183,10 @@ void Peer::onPeerDisconnected(nsrpc::PeerId peerId)
         joiners_.erase(pos);
     }
 
-    if (joiners_.empty()) {
-        voP2pPlugIn_->stop();
+    if (config_.shouldRecord()) {
+        if (joiners_.empty()) {
+            voP2pPlugIn_->stop();
+        }
     }
 }
 

@@ -4,6 +4,7 @@
 #include "config/config.h"
 #include "RecorderCallback.h"
 #include <nsrpc/p2p/RpcPlugIn.h>
+#include <nsrpc/p2p/PeerHint.h>
 #include <nsrpc/p2p/detail/P2pRpcTypes.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -44,10 +45,13 @@ class SVOIP_API VoP2pPlugIn : public nsrpc::RpcPlugIn,
     public RpcVoP2pService
 {
     struct SampleChunk {
+        nsrpc::PeerHint hint_;
         nsrpc::detail::RMessageBuffer buffer_;
         size_t frames_;
 
-        SampleChunk(EncodedSample* sample, size_t sampleLen, size_t frames) :
+        SampleChunk(const nsrpc::PeerHint& hint,
+            EncodedSample* sample, size_t sampleLen, size_t frames) :
+            hint_(hint),
             buffer_(sample, sampleLen),
             frames_(frames) {}
     };
@@ -57,7 +61,15 @@ public:
     VoP2pPlugIn();
     virtual ~VoP2pPlugIn();
 
+    /// broadcast
     void record();
+
+    /// unicast
+    void record(nsrpc::PeerId to);
+
+    /// multicast
+    void record(nsrpc::GroupId to);
+
     void stop();
 
 private:
@@ -73,7 +85,8 @@ private:
 
 private:
     // = svoip::RecorderCallback overriding
-    virtual void sampled(EncodedSample* sample, size_t sampleLen,
+    virtual void sampled(nsrpc::PeerId targetPeerId,
+        nsrpc::GroupId targetGroupId, EncodedSample* sample, size_t sampleLen,
         size_t frames);
 
 public:

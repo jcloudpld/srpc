@@ -7,6 +7,7 @@ OpenAlRecorder::OpenAlRecorder(svoip::RecorderCallback* callback) :
     captureDevice_(0),
     isRecording_(false)
 {
+    resetTarget();
 }
 
 
@@ -61,11 +62,24 @@ bool OpenAlRecorder::open()
 
 void OpenAlRecorder::start()
 {
-    assert(captureDevice_ != 0);
+    resetTarget();
+    record();
+}
 
-    alcCaptureStart(captureDevice_);
 
-    isRecording_ = true;
+void OpenAlRecorder::start(nsrpc::PeerId to)
+{
+    resetTarget();
+    targetPeerId_ = to;
+    record();
+}
+
+
+void OpenAlRecorder::start(nsrpc::GroupId to)
+{
+    resetTarget();
+    targetGroupId_ = to;
+    record();
 }
 
 
@@ -108,10 +122,20 @@ bool OpenAlRecorder::run()
             return false;
         }
 
-        encode(sampleBuffer, adjustedSamples);
+        encode(targetPeerId_, targetGroupId_, sampleBuffer, adjustedSamples);
     }
 
     return true;
+}
+
+
+void OpenAlRecorder::record()
+{
+    assert(captureDevice_ != 0);
+
+    alcCaptureStart(captureDevice_);
+
+    isRecording_ = true;
 }
 
 

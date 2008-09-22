@@ -11,22 +11,15 @@
 class Config
 {
 public:
-    Config() :
-        peerId_(nsrpc::invalidPeerId),
-        listeningPort_(0),
-        host_(false),
-        verbose_(false),
-        sleepTime_(0),
-        outboundPacketDropRate_(0.0f),
-        inboundPacketDropRate_(0.0f),
-        minOutboundPacketLatency_(0),
-        maxOutboundPacketLatency_(0),
-        minInboundPacketLatency_(0),
-        maxInboundPacketLatency_(0) {}
+    Config();
 
     bool parseArgs(int argc, char* argv[]);
 
     void printUsage();
+
+    bool shouldRecord() const {
+        return shouldRecord_;
+    }
 
     nsrpc::PeerId getPeerId() const {
         return peerId_;
@@ -80,6 +73,7 @@ public:
         return verbose_;
     }
 private:
+    bool shouldRecord_;
     nsrpc::PeerId peerId_;
     srpc::UInt16 listeningPort_;
     nsrpc::PeerAddress relayServerAddress_;

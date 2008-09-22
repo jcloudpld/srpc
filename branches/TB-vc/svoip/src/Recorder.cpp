@@ -102,7 +102,8 @@ void Recorder::close()
 }
 
 
-void Recorder::encode(Sample* sampleBuffer, size_t samples)
+void Recorder::encode(nsrpc::PeerId targetPeerId, nsrpc::GroupId targetGroupId,
+    Sample* sampleBuffer, size_t samples)
 {
     assert(callback_ != 0);
 
@@ -111,7 +112,8 @@ void Recorder::encode(Sample* sampleBuffer, size_t samples)
     svoip::EncodedSample* encodedBuffer =
         encoder_->encode(sampleBuffer, samples, encodedSamples, frames);
 
-    callback_->sampled(encodedBuffer, encodedSamples, frames);
+    callback_->sampled(targetPeerId, targetGroupId,
+        encodedBuffer, encodedSamples, frames);
 }
 
 
