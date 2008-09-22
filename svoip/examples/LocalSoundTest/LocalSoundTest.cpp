@@ -15,10 +15,21 @@ namespace
 class LocalPlayer : public OpenAlPlayer,
     public svoip::RecorderCallback
 {
+    static const nsrpc::PeerId defaultPeerId = nsrpc::invalidPeerId + 1;
+public:
+    virtual bool open() {
+        if (! OpenAlPlayer::open()) {
+            return false;
+        }
+
+        addDecoder(defaultPeerId);
+        return true;
+    }
+
 private:
     virtual void sampled(svoip::EncodedSample* sample, size_t sampleLen,
         size_t frames) {
-        play(sample, sampleLen, frames);
+        play(defaultPeerId, sample, sampleLen, frames);
     }
 };
 

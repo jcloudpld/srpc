@@ -7,26 +7,6 @@
 namespace
 {
 
-class VoP2pLogEventHandler : public nsrpc::LogEventHandler
-{
-public:
-    virtual void onLog(const char* log) {
-        std::cout << log;
-    }
-};
-
-void printLogs(nsrpc::LogRepository& logRepository)
-{
-#ifdef USE_QUEUEING_LOG
-    while (logRepository.hasLog()) {
-        std::cout << logRepository.getLog();
-    }
-#else
-    logRepository;
-#endif
-}
-
-
 bool initializeOpenAl()
 {
     ALFWInit();
@@ -49,21 +29,19 @@ void shutdownOpenAl()
 } // namespace
 
 // Let's go!
-void run(const Config& config, nsrpc::LogRepository& logRepository)
+void run(const Config& config)
 {
     std::cout << "* Press Ctrl-C to exit.\n";
 
     Peer peer(config);
 
     const bool isReady = peer.ready();
-    printLogs(logRepository);
     if (! isReady) {
         return;
     }
 
     for (;;) {
         const bool isOk = peer.tick();
-        printLogs(logRepository);
         if (! isOk) {
             break;
         }
@@ -79,11 +57,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    VoP2pLogEventHandler logEventHandler;
-    boost::scoped_ptr<nsrpc::LogRepository> logRepository_(
-        nsrpc::LogRepositoryFactory::create(false, &logEventHandler));
-    nsrpc::LogManager::redirectToCallback(*logRepository_);
-    //nsrpc::LogManager::redirectToOStream(&std::cout);
+    nsrpc::LogManager::redirectToOStream(&std::cout);
 
     if (config.isVerbose()) {
         nsrpc::LogManager::verbose();
@@ -96,7 +70,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    run(config, *logRepository_);
+    run(config);
 
     shutdownOpenAl();
 

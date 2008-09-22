@@ -43,7 +43,7 @@ P2pSessionImpl::P2pSessionImpl(PeerId peerId, P2pEventHandler& eventHandler,
         packetCoder_->getDefaultPacketSize())),
     rpcNetwork_(*this, *recvBlock_, *sendBlock_, useBitPacking),
     endpoint_(*this, *recvBlock_, reactor_.get()),
-    systemService_(peerManager_, eventHandler, *this, rpcNetwork_),
+    systemService_(peerManager_, *this, *this, rpcNetwork_),
     stunService_(*this, rpcNetwork_),
     relayService_(*this, rpcNetwork_),
     anonymousMessageManager_(*this),
@@ -355,7 +355,7 @@ void P2pSessionImpl::detectConnectionTimeout()
     for (; pos != end; ++pos) {
         const PeerId peerId = *pos;
         if (! peerManager_.isExists(peerId)) {
-            eventHandler_.onConnectFailed(peerId);
+            onConnectFailed(peerId);
         }
     }
 }
@@ -443,7 +443,7 @@ void P2pSessionImpl::disconnected(PeerId peerId)
         return;
     }
 
-    eventHandler_.onPeerDisconnected(peerId);
+    onPeerDisconnected(peerId);
 
     if (peerManager_.isHost(peerId) || (! peerManager_.isHostExists())) {
         migrateHost();
@@ -639,7 +639,7 @@ bool P2pSessionImpl::acknowledgedConnect(PeerId peerId)
     
     peer->acknowledgeConnect();
 
-    eventHandler_.onPeerConnected(peerId);
+    onPeerConnected(peerId);
 
     return true;
 }
@@ -745,7 +745,7 @@ void P2pSessionImpl::hostMigrated(PeerId peerId)
 {
     makeHost(peerId);
 
-    eventHandler_.onHostMigrated(peerId);
+    onHostMigrated(peerId);
 }
 
 
@@ -759,7 +759,7 @@ void P2pSessionImpl::groupCreated(const RGroupInfo& groupInfo)
 {
     groupManager_.groupCreated(groupInfo);
 
-    eventHandler_.onGroupCreated(groupInfo);
+    onGroupCreated(groupInfo);
 }
 
 
@@ -767,7 +767,7 @@ void P2pSessionImpl::groupDestroyed(GroupId groupId)
 {
     groupManager_.groupDestroyed(groupId);
 
-    eventHandler_.onGroupDestroyed(groupId);
+    onGroupDestroyed(groupId);
 }
 
 
@@ -775,7 +775,7 @@ void P2pSessionImpl::groupJoined(GroupId groupId, PeerId peerId)
 {
     groupManager_.groupJoined(groupId, peerId);
 
-    eventHandler_.onGroupJoined(groupId, peerId);
+    onGroupJoined(groupId, peerId);
 }
 
 
@@ -783,7 +783,7 @@ void P2pSessionImpl::groupLeft(GroupId groupId, PeerId peerId)
 {
     groupManager_.groupLeft(groupId, peerId);
 
-    eventHandler_.onGroupLeft(groupId, peerId);
+    onGroupLeft(groupId, peerId);
 }
 
 
@@ -808,7 +808,7 @@ void P2pSessionImpl::resolved(const srpc::String& ipAddress, srpc::UInt16 port)
 
     const ACE_INET_Addr resolvedAddress(port, ipAddress.c_str());
     me->setResolvedAddress(resolvedAddress);
-    eventHandler_.onAddressResolved(ipAddress, port);
+    onAddressResolved(ipAddress, port);
 }
 
 
@@ -827,6 +827,66 @@ void P2pSessionImpl::relayed(PeerId peerId,
         sentTime);
 
     messageArrived(pseudoHeader, peerAddress, mblock);
+}
+
+// = P2pEventHandler overriding
+
+void P2pSessionImpl::onPeerConnected(PeerId peerId)
+{
+    plugInManager_.peerConnected(peerId);
+
+    eventHandler_.onPeerConnected(peerId);
+}
+
+
+void P2pSessionImpl::onPeerDisconnected(PeerId peerId)
+{
+    plugInManager_.peerDisconnected(peerId);
+
+    eventHandler_.onPeerDisconnected(peerId);
+}
+
+
+void P2pSessionImpl::onConnectFailed(PeerId peerId)
+{
+    eventHandler_.onConnectFailed(peerId);
+}
+
+
+void P2pSessionImpl::onAddressResolved(const srpc::String& ipAddress,
+    srpc::UInt16 port)
+{
+    eventHandler_.onAddressResolved(ipAddress, port);
+}
+
+
+void P2pSessionImpl::onHostMigrated(PeerId peerId)
+{
+    eventHandler_.onHostMigrated(peerId);
+}
+
+
+void P2pSessionImpl::onGroupCreated(const RGroupInfo& groupInfo)
+{
+    eventHandler_.onGroupCreated(groupInfo);
+}
+
+
+void P2pSessionImpl::onGroupDestroyed(GroupId groupId)
+{
+    eventHandler_.onGroupDestroyed(groupId);
+}
+
+
+void P2pSessionImpl::onGroupJoined(GroupId groupId, PeerId peerId)
+{
+    eventHandler_.onGroupJoined(groupId, peerId);
+}
+
+
+void P2pSessionImpl::onGroupLeft(GroupId groupId, PeerId peerId)
+{
+    eventHandler_.onGroupLeft(groupId, peerId);
 }
 
 } // namespace detail

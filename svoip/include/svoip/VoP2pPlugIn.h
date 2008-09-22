@@ -64,6 +64,9 @@ private:
     virtual bool initialize();
     virtual void update();
 
+    virtual void onPeerConnected(nsrpc::PeerId peerId);
+    virtual void onPeerDisconnected(nsrpc::PeerId peerId);
+
 private:
     virtual std::auto_ptr<Recorder> createRecorder() = 0;
     virtual std::auto_ptr<Player> createPlayer() = 0;

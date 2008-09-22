@@ -181,10 +181,11 @@ bool Peer::putIncomingReliableMessage(const ReliableMessage& message)
         return false;
     }
 
-    //NSRPC_LOG_DEBUG3("P2P|IncomingReliable(P%u,#%u)",
-    //    peerId_, message.sequenceNumber_);
-
     incomingReliableMessages_.insert(message);
+
+    //NSRPC_LOG_DEBUG4("P2P|IncomingUnreliable(P%u,#%u,%u)",
+    //    peerId_, message.sequenceNumber_, incomingReliableMessages_.size());
+
     return true;
 }
 
@@ -205,10 +206,11 @@ bool Peer::putIncomingUnreliableMessage(const Message& message)
         return false;
     }
 
-    //NSRPC_LOG_DEBUG3("P2P|IncomingUnreliable(P%u,#%u)",
-    //    peerId_, message.sequenceNumber_);
-
     incomingUnreliableMessages_.insert(message);
+
+    //NSRPC_LOG_DEBUG4("P2P|IncomingUnreliable(P%u,#%u,%u)",
+    //    peerId_, message.sequenceNumber_, incomingUnreliableMessages_.size());
+
     return true;
 }
 
@@ -221,6 +223,10 @@ bool Peer::putOutgoingReliableMessage(const ReliableMessage& message)
     }
 
     outgoingReliableMessages_.insert(message);
+
+    //NSRPC_LOG_DEBUG3("P2P|OutgoingReliable(#%u,%u)",
+    //    message.sequenceNumber_, outgoingReliableMessages_.size());
+
     return true;
 }
 
@@ -230,6 +236,9 @@ void Peer::putOutgoingUnreliableMessage(const Message& message)
     assert(! outgoingUnreliableMessages_.isExists(message.sequenceNumber_));
 
     outgoingUnreliableMessages_.insert(message);
+
+    //NSRPC_LOG_DEBUG3("P2P|OutgoingUnreliable(#%u,%u)",
+    //    message.sequenceNumber_, outgoingUnreliableMessages_.size());
 }
 
 
@@ -297,6 +306,9 @@ bool Peer::disconnect()
 void Peer::putSentReliableMessage(const ReliableMessage& message)
 {
     sentReliableMessages_.insert(message);
+
+    //NSRPC_LOG_DEBUG3("P2P|SentReliable(#%u,%u)",
+    //    message.sequenceNumber_, sentReliableMessages_.size());
 }
 
 

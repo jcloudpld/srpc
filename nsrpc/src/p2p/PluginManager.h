@@ -28,6 +28,9 @@ public:
 
     void update();
 
+    void peerConnected(PeerId peerId);
+    void peerDisconnected(PeerId peerId);
+
 private:
     PlugIns plugIns_;
 };

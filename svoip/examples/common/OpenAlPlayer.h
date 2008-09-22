@@ -20,8 +20,8 @@ public:
 
     virtual void stop();
 
-    virtual void play(const svoip::EncodedSample* sample, size_t samples,
-        size_t frames);
+    virtual void play(nsrpc::PeerId fromPeerId,
+        const svoip::EncodedSample* sample, size_t samples, size_t frames);
 
     virtual bool run();
 
