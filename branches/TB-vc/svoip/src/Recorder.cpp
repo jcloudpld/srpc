@@ -3,6 +3,7 @@
 #include "svoip/RecorderCallback.h"
 #include "Encoder.h"
 #include "nsrpc/utility/AceUtil.h"
+#include "nsrpc/utility/Logger.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4355 4800)
@@ -46,7 +47,9 @@ private:
         const ACE_Time_Value sleeptm = nsrpc::makeTimeValue(1);
 
         while (! shouldStop_) {
-            recorder_.run();
+            if (! recorder_.run()) {
+                NSRPC_LOG_ERROR("Recoder::run() FAILED!");
+            }
             ACE_OS::sleep(sleeptm);
         }
 

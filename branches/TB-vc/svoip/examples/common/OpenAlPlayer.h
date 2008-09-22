@@ -23,6 +23,7 @@ public:
     virtual void play(nsrpc::PeerId fromPeerId,
         const svoip::EncodedSample* sample, size_t samples, size_t frames);
 
+private:
     virtual bool run();
 
 private:
