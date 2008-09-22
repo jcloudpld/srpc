@@ -51,6 +51,9 @@ private:
     }
     virtual void update() {}
 
+    virtual void onPeerConnected(PeerId /*peerId*/) {}
+    virtual void onPeerDisconnected(PeerId /*peerId*/) {}
+
 private:
     PeerId lastPeerId_;
     GroupId lastGroupId_;

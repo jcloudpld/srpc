@@ -2,6 +2,8 @@
 #define SVOIP_PLAYER_H
 
 #include "config/config.h"
+#include <nsrpc/p2p/PeerId.h>
+#include <nsrpc/utility/SmartPtr.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
@@ -22,6 +24,8 @@ class PlayerTask;
  */
 class SVOIP_API Player : public boost::noncopyable
 {
+    typedef nsrpc::SmartPtr<Decoder> DecoderPtr;
+    typedef srpc::Map<nsrpc::PeerId, DecoderPtr> DecoderMap;
 public:
     Player();
     virtual ~Player();
@@ -34,17 +38,23 @@ public:
 
     virtual void stop() = 0;
 
-    virtual void play(const EncodedSample* sample, size_t samples,
-        size_t frames) = 0;
+    virtual void play(nsrpc::PeerId fromPeerId,
+        const EncodedSample* sample, size_t samples, size_t frames) = 0;
 
     virtual bool run() = 0;
 
-protected:
-    svoip::Sample* decode(const svoip::EncodedSample* sample, size_t samples,
-        size_t frames, size_t& decodedSamples);
+public:
+    void addDecoder(nsrpc::PeerId peerId);
+    void removeDecoder(nsrpc::PeerId peerId);
 
+protected:
+    svoip::Sample* decode(nsrpc::PeerId fromPeerId,
+        const svoip::EncodedSample* sample, size_t samples, size_t frames,
+        size_t& decodedSamples);
+
+    DecoderPtr getDecoder(nsrpc::PeerId peerId);
 private:
-    boost::scoped_ptr<Decoder> decoder_;
+    DecoderMap decoderMap_;
     boost::scoped_ptr<detail::PlayerTask> task_;
 };
 

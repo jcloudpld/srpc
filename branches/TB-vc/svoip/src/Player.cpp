@@ -2,6 +2,7 @@
 #include "svoip/Player.h"
 #include "Decoder.h"
 #include "nsrpc/utility/AceUtil.h"
+#include "nsrpc/utility/Logger.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4355 4800)
@@ -73,11 +74,6 @@ Player::~Player()
 
 bool Player::open()
 {
-    decoder_.reset(new Decoder);
-    if (! decoder_->initialize()) {
-        return false;
-    }
-
     task_.reset(new detail::PlayerTask(*this));
     if (! task_->start()) {
         return false;
@@ -97,10 +93,58 @@ void Player::close()
 }
 
 
-svoip::Sample* Player::decode(const svoip::EncodedSample* sample,
-    size_t samples, size_t frames, size_t& decodedSamples)
+void Player::addDecoder(nsrpc::PeerId peerId)
 {
-    return decoder_->decode(sample, samples, frames, decodedSamples);
+    const DecoderMap::const_iterator pos = decoderMap_.find(peerId);
+    if (pos != decoderMap_.end()) {
+        NSRPC_LOG_DEBUG2("Decoder(P#u) already exists.", peerId);
+        return;
+    }
+
+    DecoderPtr decoder(new Decoder);
+    if (! decoder->initialize()) {
+        NSRPC_LOG_ERROR2("Failed to initialize Decoder(P#u).", peerId);
+        return;
+    }
+
+    decoderMap_.insert(DecoderMap::value_type(peerId, decoder));
+}
+
+
+void Player::removeDecoder(nsrpc::PeerId peerId)
+{
+    const DecoderMap::iterator pos = decoderMap_.find(peerId);
+    if (pos == decoderMap_.end()) {
+        NSRPC_LOG_DEBUG2("Decoder(P#u) not found.", peerId);
+        return;
+    }
+
+    decoderMap_.erase(pos);
+}
+
+
+svoip::Sample* Player::decode(nsrpc::PeerId fromPeerId,
+    const svoip::EncodedSample* sample, size_t samples, size_t frames,
+    size_t& decodedSamples)
+{
+    DecoderPtr decoder = getDecoder(fromPeerId);
+    if (decoder.isNull()) {
+        decodedSamples = 0;
+        return 0;
+    }
+
+    return decoder->decode(sample, samples, frames, decodedSamples);
+}
+
+
+Player::DecoderPtr Player::getDecoder(nsrpc::PeerId peerId)
+{
+    const DecoderMap::iterator pos = decoderMap_.find(peerId);
+    if (pos == decoderMap_.end()) {
+        return DecoderPtr();
+    }
+
+    return (*pos).second;
 }
 
 } // namespace svoip

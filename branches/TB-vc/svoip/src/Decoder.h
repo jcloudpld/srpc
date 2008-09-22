@@ -2,6 +2,7 @@
 #define SVOIP_DECODER_H
 
 #include "svoip/config/config.h"
+#include <nsrpc/utility/SmartPtr.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
@@ -17,7 +18,7 @@ class DecoderImpl;
 /**
  * @class Decoder
  */
-class Decoder : public boost::noncopyable
+class Decoder : public nsrpc::SharedObject
 {
 public:
     Decoder();

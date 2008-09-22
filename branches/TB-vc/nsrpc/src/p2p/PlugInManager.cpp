@@ -35,6 +35,28 @@ void PluginManager::update()
     }
 }
 
+
+void PluginManager::peerConnected(PeerId peerId)
+{
+    PlugIns::iterator pos = plugIns_.begin();
+    const PlugIns::iterator end = plugIns_.end();
+    for (; pos != end; ++pos) {
+        PlugInPtr& plugIn = *pos;
+        plugIn->onPeerConnected(peerId);
+    }
+}
+
+
+void PluginManager::peerDisconnected(PeerId peerId)
+{
+    PlugIns::iterator pos = plugIns_.begin();
+    const PlugIns::iterator end = plugIns_.end();
+    for (; pos != end; ++pos) {
+        PlugInPtr& plugIn = *pos;
+        plugIn->onPeerDisconnected(peerId);
+    }
+}
+
 } // namespace detail
 
 } // namespace nsrpc

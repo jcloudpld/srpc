@@ -18,6 +18,7 @@
 #include <nsrpc/p2p/detail/P2pRpcNetwork.h>
 #include <nsrpc/p2p/detail/PeerNetworkSender.h>
 #include <nsrpc/p2p/detail/PeerNotifier.h>
+#include <nsrpc/p2p/P2pEventHandler.h>
 #include <nsrpc/p2p/P2pConfig.h>
 #include <nsrpc/p2p/P2pSession.h>
 #include <nsrpc/detail/PacketCoder.h>
@@ -25,8 +26,6 @@
 
 namespace nsrpc
 {
-
-class P2pEventHandler;
 
 namespace detail
 {
@@ -45,7 +44,8 @@ class P2pSessionImpl : public P2pSession,
     private PeerMessageHandler,
     private RelayServiceHandler,
     private StunServiceHandler,
-    private SystemServiceHandler
+    private SystemServiceHandler,
+    private P2pEventHandler
 {
 public:
     P2pSessionImpl(PeerId peerId, P2pEventHandler& eventHandler,
@@ -187,6 +187,19 @@ private:
     virtual void relayed(PeerId peerId, const ACE_INET_Addr& peerAddress,
         ACE_Message_Block* mblock, srpc::RpcPacketType packetType,
         SequenceNumber sequenceNumber, srpc::UInt32 sentTime);
+
+    // = P2pEventHandler overriding
+    virtual void onPeerConnected(PeerId peerId);
+    virtual void onPeerDisconnected(PeerId peerId);
+    virtual void onConnectFailed(PeerId peerId);
+    virtual void onAddressResolved(const srpc::String& ipAddress,
+        srpc::UInt16 port);
+    virtual void onHostMigrated(PeerId peerId);
+    virtual void onGroupCreated(const RGroupInfo& groupInfo);
+    virtual void onGroupDestroyed(GroupId groupId);
+    virtual void onGroupJoined(GroupId groupId, PeerId peerId);
+    virtual void onGroupLeft(GroupId groupId, PeerId peerId);
+
 private:
     const PeerId myPeerId_; ///< my peer id
     P2pEventHandler& eventHandler_;

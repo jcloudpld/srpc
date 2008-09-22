@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <nsrpc/p2p/server/SimpleRelayService.h>
 #include <nsrpc/p2p/detail/P2pPeerHint.h>
-#include <nsrpc/p2p/P2pEventHandler.h>
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/utility/AceUtil.h>
 #include <nsrpc/utility/Logger.h>

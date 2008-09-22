@@ -53,6 +53,18 @@ void VoP2pPlugIn::update()
 }
 
 
+void VoP2pPlugIn::onPeerConnected(nsrpc::PeerId peerId)
+{
+    player_->addDecoder(peerId);
+}
+
+
+void VoP2pPlugIn::onPeerDisconnected(nsrpc::PeerId peerId)
+{
+    player_->removeDecoder(peerId);
+}
+
+
 void VoP2pPlugIn::record()
 {
     assert(recorder_);
@@ -92,13 +104,10 @@ IMPLEMENT_SRPC_P2P_METHOD_2(VoP2pPlugIn, say,
     srpc::ptUnreliable)
 {
     assert(player_);
-
     const nsrpc::PeerHint& hint = nsrpc::toPeerHint(rpcHint);
 
-    hint;
-    // TODO: hint.peerId_를 이용하여 디코더 구분?
-
-    player_->play(static_cast<const svoip::EncodedSample*>(samples.getBuffer()),
+    player_->play(hint.peerId_,
+        static_cast<const svoip::EncodedSample*>(samples.getBuffer()),
         samples.getBufferLength(), frames);
 }
 

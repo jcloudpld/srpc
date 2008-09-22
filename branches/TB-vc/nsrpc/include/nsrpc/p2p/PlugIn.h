@@ -1,7 +1,8 @@
 #ifndef NSRPC_PLUGIN_H
 #define NSRPC_PLUGIN_H
 
-#include <nsrpc/utility/SmartPtr.h>
+#include "PeerId.h"
+#include "../utility/SmartPtr.h"
 
 namespace nsrpc
 {
@@ -31,6 +32,18 @@ public:
 
     // called from P2pSession::tick()
     virtual void update() = 0;
+
+    /**
+    * New peer connected.
+    * @param peerId peer ID
+    */
+    virtual void onPeerConnected(PeerId peerId) = 0;
+
+    /**
+    * A peer disconnected.
+    * @param peerId peer ID
+    */
+    virtual void onPeerDisconnected(PeerId peerId) = 0;
 };
 
 
