@@ -48,7 +48,7 @@ void VoP2pPlugIn::update()
     }
 
     SampleChunk& chunk = sampleQueue_.front();
-    say(chunk.buffer_, static_cast<srpc::UInt8>(chunk.frames_));
+    say(chunk.buffer_, static_cast<srpc::UInt8>(chunk.frames_), &chunk.hint_);
     sampleQueue_.pop();
 }
 
@@ -68,8 +68,21 @@ void VoP2pPlugIn::onPeerDisconnected(nsrpc::PeerId peerId)
 void VoP2pPlugIn::record()
 {
     assert(recorder_);
-
     recorder_->start();
+}
+
+
+void VoP2pPlugIn::record(nsrpc::PeerId to)
+{
+    assert(recorder_);
+    recorder_->start(to);
+}
+
+
+void VoP2pPlugIn::record(nsrpc::GroupId to)
+{
+    assert(recorder_);
+    recorder_->start(to);
 }
 
 
@@ -83,18 +96,25 @@ void VoP2pPlugIn::stop()
 
 // = svoip::RecorderCallback overriding
 
-void VoP2pPlugIn::sampled(EncodedSample* sample, size_t sampleLen,
+void VoP2pPlugIn::sampled(nsrpc::PeerId targetPeerId,
+    nsrpc::GroupId targetGroupId, EncodedSample* sample, size_t sampleLen,
     size_t frames)
 {
     ACE_GUARD(ACE_Thread_Mutex, monitor, lock_);
 
     assert(recorder_);
 
-    // TODO: nsrpc::PeerHint hint;
+    nsrpc::PeerHint hint(nsrpc::invalidPeerId);
+    if (nsrpc::isValid(targetGroupId)) {
+        hint.groupId_ = targetGroupId;
+    }
+    else if (nsrpc::isValidPeerId(targetPeerId)) {
+        hint.peerId_ = targetPeerId;
+    }
 
     assert(frames < 256);
 
-    sampleQueue_.push(SampleChunk(sample, sampleLen, frames));
+    sampleQueue_.push(SampleChunk(hint, sample, sampleLen, frames));
 }
 
 // = RpcVoP2pService overriding

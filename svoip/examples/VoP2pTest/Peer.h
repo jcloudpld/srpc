@@ -19,12 +19,6 @@ class P2pSession;
  */
 class Peer : public nsrpc::P2pEventHandler
 {
-    enum {
-        tickInterval = 100,
-        printInterval = 2000,
-        tickProcessingTime = 0
-    };
-
     typedef std::map<nsrpc::PeerId, srpc::UInt32> TickMap;
     typedef std::set<nsrpc::PeerId> PeerIdSet;
 

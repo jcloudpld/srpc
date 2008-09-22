@@ -2,6 +2,8 @@
 #define SVOIP_RECORDER_H
 
 #include "config/config.h"
+#include <nsrpc/p2p/PeerId.h>
+#include <nsrpc/p2p/Group.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
@@ -33,7 +35,14 @@ public:
 
     virtual void close();
 
+    /// broadcast
     virtual void start() = 0;
+
+    /// unicast
+    virtual void start(nsrpc::PeerId to) = 0;
+
+    /// multicast
+    virtual void start(nsrpc::GroupId to) = 0;
 
     virtual void stop() = 0;
 
@@ -46,7 +55,8 @@ public:
     }
 
 protected:
-    void encode(Sample* sampleBuffer, size_t samples);
+    void encode(nsrpc::PeerId targetPeerId, nsrpc::GroupId targetGroupId,
+        Sample* sampleBuffer, size_t samples);
 
     size_t getFrameSize() const;
 
