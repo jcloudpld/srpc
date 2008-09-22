@@ -24,6 +24,7 @@ class RecorderTask;
  */
 class SVOIP_API Recorder : public boost::noncopyable
 {
+    friend class detail::RecorderTask;
 public:
     Recorder(RecorderCallback* callback = 0);
     virtual ~Recorder();
@@ -36,6 +37,7 @@ public:
 
     virtual void stop() = 0;
 
+private:
     virtual bool run() = 0;
 
 public:

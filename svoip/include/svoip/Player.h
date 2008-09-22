@@ -26,6 +26,8 @@ class SVOIP_API Player : public boost::noncopyable
 {
     typedef nsrpc::SmartPtr<Decoder> DecoderPtr;
     typedef srpc::Map<nsrpc::PeerId, DecoderPtr> DecoderMap;
+
+    friend class detail::PlayerTask;
 public:
     Player();
     virtual ~Player();
@@ -41,6 +43,7 @@ public:
     virtual void play(nsrpc::PeerId fromPeerId,
         const EncodedSample* sample, size_t samples, size_t frames) = 0;
 
+private:
     virtual bool run() = 0;
 
 public:

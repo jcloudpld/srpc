@@ -46,7 +46,9 @@ private:
         const ACE_Time_Value sleeptm = nsrpc::makeTimeValue(1);
 
         while (! shouldStop_) {
-            player_.run();
+            if (! player_.run()) {
+                NSRPC_LOG_ERROR("Player::run() FAILED!");
+            }
             ACE_OS::sleep(sleeptm);
         }
 
