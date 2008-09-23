@@ -103,26 +103,23 @@ bool OpenAlRecorder::run()
     }
 
     const ALCsizei frameSize = static_cast<ALCsizei>(getFrameSize());
-    const int mult = isRecording_ ? 12 : 1; // 12 == 240ms of audio.
+    const size_t minimumSamples = isRecording_ ? 12 : 1; // 12 == 240ms of audio.
 
     // enough data buffered in audio hardware to process yet?
-    if (samples >= static_cast<size_t>(frameSize * mult)) {
-        // audio capture is always MONO16 (and that's what speex wants!).
-        //  2048 will cover 12 uncompressed frames in narrow-band mode.
-        static svoip::Sample sampleBuffer[svoip::sampleBufferSize];
-
+    if (samples >= (frameSize * minimumSamples)) {
         ALCsizei adjustedSamples = static_cast<ALCsizei>(samples);
         if (adjustedSamples > (frameSize * 12)) {
             adjustedSamples = (frameSize * 12);
         }
         adjustedSamples -= (adjustedSamples % frameSize);
 
-        alcCaptureSamples(captureDevice_, sampleBuffer, adjustedSamples);
+        alcCaptureSamples(captureDevice_, sampleBuffer_.data(), adjustedSamples);
         if (alGetError() != AL_NO_ERROR) {
             return false;
         }
 
-        encode(targetPeerId_, targetGroupId_, sampleBuffer, adjustedSamples);
+        encode(targetPeerId_, targetGroupId_,
+            sampleBuffer_.data(), adjustedSamples);
     }
 
     return true;
