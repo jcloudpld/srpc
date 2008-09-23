@@ -103,7 +103,7 @@ bool OpenAlRecorder::run()
     }
 
     const ALCsizei frameSize = static_cast<ALCsizei>(getFrameSize());
-    const int mult = (isRecording_) ? 12 : 1; // 12 == 240ms of audio.
+    const int mult = isRecording_ ? 12 : 1; // 12 == 240ms of audio.
 
     // enough data buffered in audio hardware to process yet?
     if (samples >= static_cast<size_t>(frameSize * mult)) {
@@ -136,6 +136,8 @@ void OpenAlRecorder::record()
     alcCaptureStart(captureDevice_);
 
     isRecording_ = true;
+
+    setNewSpeech();
 }
 
 

@@ -29,8 +29,9 @@ public:
 private:
     virtual void sampled(nsrpc::PeerId /*targetPeerId*/,
         nsrpc::GroupId /*targetGroupId*/,
-        svoip::EncodedSample* sample, size_t sampleLen, size_t frames) {
-        play(defaultPeerId, sample, sampleLen, frames);
+        svoip::EncodedSample* sample, size_t sampleLen, size_t frames,
+        svoip::Speech speech, svoip::Sequence sequence) {
+        play(defaultPeerId, sample, sampleLen, frames, speech, sequence);
     }
 };
 

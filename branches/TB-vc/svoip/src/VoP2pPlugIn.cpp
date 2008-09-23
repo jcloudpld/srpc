@@ -48,7 +48,8 @@ void VoP2pPlugIn::update()
     }
 
     SampleChunk& chunk = sampleQueue_.front();
-    say(chunk.buffer_, static_cast<srpc::UInt8>(chunk.frames_), &chunk.hint_);
+    say(chunk.buffer_, static_cast<srpc::UInt8>(chunk.frames_),
+        chunk.speech_, chunk.sequence_, &chunk.hint_);
     sampleQueue_.pop();
 }
 
@@ -98,7 +99,7 @@ void VoP2pPlugIn::stop()
 
 void VoP2pPlugIn::sampled(nsrpc::PeerId targetPeerId,
     nsrpc::GroupId targetGroupId, EncodedSample* sample, size_t sampleLen,
-    size_t frames)
+    size_t frames, Speech speech, Sequence sequence)
 {
     ACE_GUARD(ACE_Thread_Mutex, monitor, lock_);
 
@@ -114,13 +115,14 @@ void VoP2pPlugIn::sampled(nsrpc::PeerId targetPeerId,
 
     assert(frames < 256);
 
-    sampleQueue_.push(SampleChunk(hint, sample, sampleLen, frames));
+    sampleQueue_.push(SampleChunk(hint, sample, sampleLen, frames, speech, sequence));
 }
 
 // = RpcVoP2pService overriding
 
-IMPLEMENT_SRPC_P2P_METHOD_2(VoP2pPlugIn, say,
+IMPLEMENT_SRPC_P2P_METHOD_4(VoP2pPlugIn, say,
     nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
+    RSpeech, speech, RSequence, sequence,
     srpc::ptUnreliable)
 {
     assert(player_);
@@ -128,7 +130,7 @@ IMPLEMENT_SRPC_P2P_METHOD_2(VoP2pPlugIn, say,
 
     player_->play(hint.peerId_,
         static_cast<const svoip::EncodedSample*>(samples.getBuffer()),
-        samples.getBufferLength(), frames);
+        samples.getBufferLength(), frames, speech, sequence);
 }
 
 } // namespace svoip
