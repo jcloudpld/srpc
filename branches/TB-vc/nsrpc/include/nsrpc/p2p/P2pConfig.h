@@ -9,6 +9,20 @@ namespace nsrpc
 */
 
 /**
+ * @enum P2pOptions
+ * p2p options for each peer
+ */
+enum P2pOptions
+{
+    poNone = 0,
+
+    allowVoP2p = 0x01, /// @internal
+
+    poMax = 0xFF
+};
+
+
+/**
  * @struct P2pConfig
  * P2P configuration.
  */

@@ -56,8 +56,11 @@ private: // information hiding
     virtual void attach(PlugInPtr& plugIn);
     virtual void detach(PlugInPtr& plugIn);
 
-    virtual bool open(srpc::UInt16 port, const srpc::String& password);
+    virtual bool open(srpc::UInt16 port, const srpc::String& password,
+        P2pOptions p2pOptions);
     virtual void close();
+
+    virtual void addP2pOptions(P2pOptions p2pOptions);
 
     virtual void host(size_t maxPeers, bool hostMigration,
         const PeerIds& hostPrecedence);
@@ -92,6 +95,8 @@ private: // information hiding
 
     virtual PeerAddresses getAddresses(PeerId peerId) const;
 
+    virtual P2pOptions getP2pOptions(PeerId peerId) const;
+
     virtual PeerStats getStats(PeerId peerId) const;
     virtual std::string getStatsString(PeerId peerId) const;
 
@@ -107,7 +112,7 @@ private:
 
     void detectConnectionTimeout();
 
-    void addMyPeer();
+    void addMyPeer(P2pOptions p2pOptions);
     void flush();
     void resolve();
     void tryToConnect(PeerId peerId,
@@ -160,7 +165,8 @@ private:
     virtual bool authenticate(PeerId peerId,
         const srpc::String& sessionPassword, srpc::UInt32 sessionKey);
     virtual bool peerConnected(PeerId peerId,
-        const ACE_INET_Addr& targetAddress, const RAddresses& peerAddresses);
+        const ACE_INET_Addr& targetAddress, const RAddresses& peerAddresses,
+        P2pOptions p2pOptions);
     virtual void peerDisconnected(PeerId peerId);
     virtual void connectToNewPeer(PeerId peerId,
         const Addresses& peerAddresses);

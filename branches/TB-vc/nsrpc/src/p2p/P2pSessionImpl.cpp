@@ -82,7 +82,7 @@ void P2pSessionImpl::detach(PlugInPtr& plugIn)
 
 
 bool P2pSessionImpl::open(srpc::UInt16 port,
-    const srpc::String& password)
+    const srpc::String& password, P2pOptions p2pOptions)
 {
     if (! isAllowedPeerId(myPeerId_)) {
         return false;
@@ -97,7 +97,7 @@ bool P2pSessionImpl::open(srpc::UInt16 port,
     resetBaseTime();
     setPeerTime();
 
-    addMyPeer();
+    addMyPeer(p2pOptions);
 
     p2pProperty_.sessionPassword_ = password;
 
@@ -112,6 +112,18 @@ void P2pSessionImpl::close()
     disconnect();
 
     endpoint_.close();
+}
+
+
+void P2pSessionImpl::addP2pOptions(P2pOptions p2pOptions)
+{
+    const PeerPtr me(peerManager_.getMe());
+    if (me.isNull()) {
+        assert(false && "must call after open()");
+        return;
+    }
+
+    me->addP2pOptions(p2pOptions);
 }
 
 
@@ -268,6 +280,16 @@ PeerAddresses P2pSessionImpl::getAddresses(PeerId peerId) const
 }
 
 
+P2pOptions P2pSessionImpl::getP2pOptions(PeerId peerId) const
+{
+    const PeerPtr peer(peerManager_.getPeer(peerId));
+    if (! peer.isNull()) {
+        return peer->getP2pOptions();
+    }
+    return poNone;
+}
+
+
 PeerStats P2pSessionImpl::getStats(PeerId peerId) const
 {
     const PeerPtr peer(peerManager_.getPeer(peerId));
@@ -300,10 +322,11 @@ bool P2pSessionImpl::isHostAlive() const
 }
 
 
-void P2pSessionImpl::addMyPeer()
+void P2pSessionImpl::addMyPeer(P2pOptions p2pOptions)
 {
     assert(! endpoint_.getLocalAddresses().empty());
-    peerManager_.addPeer(myPeerId_, endpoint_.getLocalAddresses());
+    peerManager_.addPeer(myPeerId_, endpoint_.getLocalAddresses(),
+        p2pOptions);
     peerManager_.getMe()->connected();
 }
 
@@ -380,7 +403,7 @@ void P2pSessionImpl::tryToConnect(PeerId peerId,
         AddressPair(targetAddress, peerAddress));
     const P2pPeerHint hint(peerId, &targetAddress, true);
     const PeerPtr me(peerManager_.getMe());
-    systemService_.rpcConnect(me->getPeerAddresses(),
+    systemService_.rpcConnect(me->getPeerAddresses(), me->getP2pOptions(),
         p2pProperty_.sessionPassword_, p2pProperty_.sessionKey_, &hint);
 
     NSRPC_LOG_DEBUG4(ACE_TEXT("Try to connect(P%u) via (%s:%d)"),
@@ -574,10 +597,12 @@ void P2pSessionImpl::sendOutgoingMessage(srpc::RpcPacketType packetType,
     PeerId peerId = invalidPeerId;
     GroupId groupId = giUnknown;
     ACE_INET_Addr targetAddress;
+    P2pOptions p2pOptions = poNone;
     if (peerHint != 0) {
         peerId = peerHint->peerId_;
         groupId = peerHint->groupId_;
         targetAddress = peerHint->getAddress();
+        p2pOptions = peerHint->p2pOptions_;
         if (peerHint->isCandidate_) {
             if (peerCandidateManager_.putOutgoingMessage(peerId,
                 targetAddress, mblock)) {
@@ -589,13 +614,13 @@ void P2pSessionImpl::sendOutgoingMessage(srpc::RpcPacketType packetType,
 
     if (isValid(groupId)) {
         peerManager_.putOutgoingMessage(groupId, targetAddress, packetType,
-            mblock);
+            mblock, p2pOptions);
     }
     else {
         if ((! isSelf(peerId)) &&
             (peerManager_.isExists(peerId) || isBroadcast(peerId))) {
             peerManager_.putOutgoingMessage(peerId, targetAddress, packetType,
-                mblock);
+                mblock, p2pOptions);
         }
         else {
             //NSRPC_LOG_DEBUG3(
@@ -692,7 +717,8 @@ bool P2pSessionImpl::authenticate(PeerId peerId,
 
 
 bool P2pSessionImpl::peerConnected(PeerId peerId,
-    const ACE_INET_Addr& targetAddress, const RAddresses& peerAddresses)
+    const ACE_INET_Addr& targetAddress, const RAddresses& peerAddresses,
+    P2pOptions p2pOptions)
 {
     bool firstConnection = false;
     bool connected = false;
@@ -706,7 +732,7 @@ bool P2pSessionImpl::peerConnected(PeerId peerId,
 
         const Addresses addresses = toAddresses(peerAddresses);
         assert(! addresses.empty());
-        peerManager_.addPeer(peerId, addresses);
+        peerManager_.addPeer(peerId, addresses, p2pOptions);
         connected = true;
         firstConnection = true;
     }
@@ -717,8 +743,8 @@ bool P2pSessionImpl::peerConnected(PeerId peerId,
     if (connected) {
         const PeerPtr peer(peerManager_.getPeer(peerId));
         peer->setTargetAddress(targetAddress);
-        NSRPC_LOG_DEBUG5(ACE_TEXT("Peer(P%u) %sconnected via %s:%d."),
-            peerId, (firstConnection ? "" : "re"),
+        NSRPC_LOG_DEBUG6(ACE_TEXT("Peer(P%u,0x%X) %sconnected via %s:%d."),
+            peerId, p2pOptions, (firstConnection ? "" : "re"),
             targetAddress.get_host_addr(),
             targetAddress.get_port_number());
     }

@@ -1,6 +1,7 @@
 #ifndef NSRPC_P2PSESSION_H
 #define NSRPC_P2PSESSION_H
 
+#include "P2pConfig.h"
 #include "PeerId.h"
 #include "PeerStats.h"
 #include "PeerAddress.h"
@@ -32,21 +33,20 @@ class P2pSession : public boost::noncopyable
 public:
     virtual ~P2pSession() {}
 
-    /// attach a plug-in
-    virtual void attach(PlugInPtr& plugIn) = 0;
-
-    /// detach a plug-in
-    virtual void detach(PlugInPtr& plugIn) = 0;
-
     /**
      * Initialize this session.
      * @param port local listening port
      * @param password P2P session password
+     * @param p2pOptions P2P options for each peer
      */
-    virtual bool open(srpc::UInt16 port, const srpc::String& password = "") = 0;
+    virtual bool open(srpc::UInt16 port, const srpc::String& password = "",
+        P2pOptions p2pOptions = poNone) = 0;
 
     /// Disconnect & Deinitialize this session.
     virtual void close() = 0;
+
+    /// it must be called before host() or connect()
+    virtual void addP2pOptions(P2pOptions p2pOptions) = 0;
 
     /**
      * Creates a new P2P session, hosted by the local computer.
@@ -85,6 +85,12 @@ public:
      */
     virtual void tick() = 0;
 
+    /// attach a plug-in
+    virtual void attach(PlugInPtr& plugIn) = 0;
+
+    /// detach a plug-in
+    virtual void detach(PlugInPtr& plugIn) = 0;
+
     /**
      * create a group (only host allowed)
      * @param groupName group name (duplication allowed)
@@ -122,6 +128,9 @@ public:
      * - If the address resolved via RelayServer, first address is public.
      */
     virtual PeerAddresses getAddresses(PeerId peerId) const = 0;
+
+    /// get peer's P2P options
+    virtual P2pOptions getP2pOptions(PeerId peerId) const = 0;
 
     /// Get the statistics of the peer.
     virtual PeerStats getStats(PeerId peerId) const = 0;

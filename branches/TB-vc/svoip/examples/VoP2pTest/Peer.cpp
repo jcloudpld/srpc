@@ -38,8 +38,7 @@ Peer::Peer(const Config& config) :
     isResolved_(false),
     connectFailedPeerId_(nsrpc::invalidPeerId),
     tickCount_(0),
-    printedTime_(0),
-    voP2pPlugIn_(0)
+    printedTime_(0)
 {
     nsrpc::P2pConfig p2pConfig;
     p2pConfig.setPacketDropRate(config.getSendPacketLossRate(),
@@ -73,6 +72,10 @@ bool Peer::ready()
         return false;
     }
 
+    if (! initializeVoP2p()) {
+        return false;
+    }
+
     if (config_.getRelayServerAddress().isValid()) {
         std::cout << "* Resolving the address...\n";
         const nsrpc::PeerTime currentTime = nsrpc::detail::getPeerTime();
@@ -94,10 +97,6 @@ bool Peer::ready()
     }
     else {
         p2pSession_->connect(config_.getHostAddresses());
-    }
-
-    if (! initializeVoP2p()) {
-        return false;
     }
 
     printedTime_ = nsrpc::detail::getPeerTime();

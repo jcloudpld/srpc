@@ -33,7 +33,8 @@ public:
         const P2pConfig& p2pConfig, const GroupManager& groupManager);
     ~PeerManager();
 
-    void addPeer(PeerId peerId, const Addresses& addresses);
+    void addPeer(PeerId peerId, const Addresses& addresses,
+        P2pOptions p2pOptions);
     void removePeerNextTime(PeerId peerId);
 
     void addRelayServer(const PeerAddress& address);
@@ -42,10 +43,10 @@ public:
 
     void putOutgoingMessage(GroupId groupId,
         const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
-        ACE_Message_Block* mblock);
+        ACE_Message_Block* mblock, P2pOptions p2pOptions);
     void putOutgoingMessage(PeerId peerId,
         const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
-        ACE_Message_Block* mblock);
+        ACE_Message_Block* mblock, P2pOptions p2pOptions);
 
     void putIncomingMessage(const P2pPacketHeader& header,
         const ACE_INET_Addr& peerAddress, ACE_Message_Block* mblock);
@@ -115,11 +116,13 @@ public:
 private:
     void putUnicastOutgoingMessage(PeerId peerId,
         const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
-        ACE_Message_Block* mblock);
+        ACE_Message_Block* mblock, P2pOptions p2pOptions);
     void putBroadcastOutgoingMessage(const ACE_INET_Addr& toAddress,
-        srpc::RpcPacketType packetType, ACE_Message_Block* mblock);
+        srpc::RpcPacketType packetType, ACE_Message_Block* mblock,
+        P2pOptions p2pOptions);
 
-    PeerPtr makePeer(PeerId peerId, const Addresses& addresses);
+    PeerPtr makePeer(PeerId peerId, const Addresses& addresses,
+        P2pOptions p2pOptions);
     void removePeer(PeerId peerId);
 private:
     PeerNetworkSender& networkSender_;
