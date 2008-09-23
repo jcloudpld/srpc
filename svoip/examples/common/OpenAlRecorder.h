@@ -3,6 +3,7 @@
 
 #include "svoip/Recorder.h"
 #include "alc.h"
+#include <boost/array.hpp>
 
 /**
 * @class OpenAlRecorder
@@ -40,6 +41,10 @@ private:
 
     nsrpc::PeerId targetPeerId_;
     nsrpc::GroupId targetGroupId_;
+
+    /// audio capture is always MONO16 (and that's what speex wants!).
+    /// 2048 will cover 12 uncompressed frames in narrow-band mode.
+    boost::array<svoip::Sample, svoip::sampleBufferSize> sampleBuffer_;
 };
 
 #endif // SVOIP_OPENAL_PLAYER_H

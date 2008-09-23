@@ -2,6 +2,7 @@
 #include "Encoder.h"
 #include "speex/speex.h"
 #include "speex/speex_preprocess.h"
+#include <boost/array.hpp>
 
 namespace svoip
 {
@@ -77,7 +78,6 @@ public:
     // encode raw audio samples into Speex data
     EncodedSample* encode(Sample* sampleBuffer, size_t samples,
         size_t& encodedSamples, size_t& frames) {
-        static EncodedSample encodedSample[sampleBufferSize / 2];
 
         frames = 0;
         size_t writePos = 0;
@@ -87,16 +87,16 @@ public:
             denoise(currentSample);
 
             const size_t encodedPos = writePos + sampleSizeLen;
-            const size_t bytes = encode(&encodedSample[encodedPos],
-                sizeof(encodedSample) - encodedPos, currentSample);
-            encodedSample[writePos] = static_cast<EncodedSample>(bytes);
+            const size_t bytes = encode(&encodedSample_[encodedPos],
+                encodedSample_.max_size() - encodedPos, currentSample);
+            encodedSample_[writePos] = static_cast<EncodedSample>(bytes);
 
             writePos += (bytes + sampleSizeLen);
             ++frames;
         }
 
         encodedSamples = writePos;
-        return encodedSample;
+        return encodedSample_.data();
     }
 
     size_t getFrameSize() const {
@@ -130,6 +130,8 @@ private:
     int sampleRate_;
 
     SpeexPreprocessState* preprocessor_;
+
+    boost::array<EncodedSample, sampleBufferSize / 2> encodedSample_;
 };
 
 } // namespace detail
