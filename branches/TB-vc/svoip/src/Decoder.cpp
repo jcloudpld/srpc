@@ -58,8 +58,8 @@ public:
         size_t frames, Speech speech, Sequence sequence, size_t& decodedSamples) {
         assert(decoderState_ != 0);
 
-        NSRPC_LOG_DEBUG5("decode(%d samples, %d frames, %d speech, %d sequence)",
-            samples, frames, speech, sequence);
+        //NSRPC_LOG_DEBUG5("decode(%d samples, %d frames, %d speech, %d sequence)",
+        //    samples, frames, speech, sequence);
 
         int written = correctMissingFrames(speech, sequence, frames);
 

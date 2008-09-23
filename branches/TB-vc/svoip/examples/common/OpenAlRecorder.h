@@ -11,7 +11,7 @@
 class OpenAlRecorder : public svoip::Recorder
 {
 public:
-    OpenAlRecorder(svoip::RecorderCallback* callback);
+    OpenAlRecorder(svoip::RecorderCallback* callback = 0);
     virtual ~OpenAlRecorder();
 
     virtual bool open();

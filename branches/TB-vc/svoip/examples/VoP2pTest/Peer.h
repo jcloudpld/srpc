@@ -1,11 +1,11 @@
 #ifndef VOP2PTEST_PEER_H
 #define VOP2PTEST_PEER_H
 
+#include "svoip/VoP2pPlugIn.h"
 #include <nsrpc/p2p/P2pEventHandler.h>
 #include <nsrpc/p2p/detail/PeerTime.h>
 
 class Config;
-class OpenAlVoP2pPlugIn;
 
 namespace nsrpc
 {
@@ -33,6 +33,8 @@ private:
     void printAllStats();
     void printStats(nsrpc::PeerId peerId);
 
+    bool initializeVoP2p();
+
     bool isJoiner(nsrpc::PeerId peerId) const {
         return joiners_.find(peerId) != joiners_.end();
     }
@@ -58,7 +60,7 @@ private:
     TickMap tickMap_;
     PeerIdSet joiners_;
 
-    OpenAlVoP2pPlugIn* voP2pPlugIn_;
+    svoip::VoP2pPlugInPtr voP2pPlugIn_;
 };
 
 #endif // VOP2PTEST_PEER_H
