@@ -66,7 +66,9 @@ private:
 // = Recorder
 
 Recorder::Recorder(RecorderCallback* callback) :
-    callback_(callback)
+    callback_(callback),
+    speech_(0),
+    sequence_(0)
 {
 }
 
@@ -102,6 +104,16 @@ void Recorder::close()
 }
 
 
+void Recorder::setNewSpeech()
+{
+    ++speech_;
+    if (speech_ <= 0) {
+        speech_ = 1;
+    }
+    sequence_ = 0;
+}
+
+
 void Recorder::encode(nsrpc::PeerId targetPeerId, nsrpc::GroupId targetGroupId,
     Sample* sampleBuffer, size_t samples)
 {
@@ -112,8 +124,14 @@ void Recorder::encode(nsrpc::PeerId targetPeerId, nsrpc::GroupId targetGroupId,
     svoip::EncodedSample* encodedBuffer =
         encoder_->encode(sampleBuffer, samples, encodedSamples, frames);
 
+    if (frames <= 0) {
+        return;
+    }
+
     callback_->sampled(targetPeerId, targetGroupId,
-        encodedBuffer, encodedSamples, frames);
+        encodedBuffer, encodedSamples, frames, speech_, sequence_);
+
+    sequence_ += static_cast<Sequence>(frames);
 }
 
 

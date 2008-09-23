@@ -16,6 +16,7 @@ class EncoderImpl;
 
 /**
  * @class Encoder
+ * Using Speex narrow-band mode
  */
 class SVOIP_API Encoder : public boost::noncopyable
 {

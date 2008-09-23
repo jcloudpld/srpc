@@ -20,14 +20,10 @@ public:
 
     virtual void stop();
 
-    virtual void play(nsrpc::PeerId fromPeerId,
-        const svoip::EncodedSample* sample, size_t samples, size_t frames);
-
 private:
+    virtual void playNow(const svoip::Sample* sample, size_t samples);
+
     virtual bool run();
-
-private:
-    void play(const svoip::Sample* sample, size_t samples);
 
 private:
     ALuint source_;

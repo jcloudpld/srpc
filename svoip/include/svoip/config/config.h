@@ -34,6 +34,14 @@ typedef srpc::Int16 Sample;
 
 typedef srpc::Int8 EncodedSample;
 
+
+typedef srpc::UInt8 Speech;
+typedef srpc::UInt32 Sequence;
+
+
+/// @internal
+const size_t sampleSizeLen = sizeof(EncodedSample);
+
 } // namespace svoip
 
 #endif // SVOIP_CONFIG_H

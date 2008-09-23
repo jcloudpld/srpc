@@ -55,6 +55,8 @@ public:
     }
 
 protected:
+    void setNewSpeech();
+
     void encode(nsrpc::PeerId targetPeerId, nsrpc::GroupId targetGroupId,
         Sample* sampleBuffer, size_t samples);
 
@@ -64,6 +66,9 @@ private:
     RecorderCallback* callback_;
     boost::scoped_ptr<Encoder> encoder_;
     boost::scoped_ptr<detail::RecorderTask> task_;
+
+    Speech speech_;
+    Sequence sequence_;
 };
 
 } // namespace svoip

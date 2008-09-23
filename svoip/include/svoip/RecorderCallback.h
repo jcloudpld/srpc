@@ -18,7 +18,7 @@ public:
 
     virtual void sampled(nsrpc::PeerId targetPeerId,
         nsrpc::GroupId targetGroupId, EncodedSample* sample, size_t sampleLen,
-        size_t frames) = 0;
+        size_t frames, Speech speech, Sequence sequence) = 0;
 };
 
 } // namespace svoip

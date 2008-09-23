@@ -23,6 +23,9 @@ namespace svoip
 class Recorder;
 class Player;
 
+typedef srpc::RpcUIntType<Speech> RSpeech;
+typedef srpc::RpcUIntType<Sequence> RSequence;
+
 /**
  * @class RpcVoP2pService
  */
@@ -31,8 +34,9 @@ class RpcVoP2pService
 public:
     virtual ~RpcVoP2pService() {}
 
-    DECLARE_SRPC_PURE_METHOD_2(RpcVoP2pService, say,
-        nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames);
+    DECLARE_SRPC_PURE_METHOD_4(RpcVoP2pService, say,
+        nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
+        RSpeech, speech, RSequence, sequence);
 };
 
 
@@ -48,12 +52,17 @@ class SVOIP_API VoP2pPlugIn : public nsrpc::RpcPlugIn,
         nsrpc::PeerHint hint_;
         nsrpc::detail::RMessageBuffer buffer_;
         size_t frames_;
+        Speech speech_;
+        Sequence sequence_;
 
         SampleChunk(const nsrpc::PeerHint& hint,
-            EncodedSample* sample, size_t sampleLen, size_t frames) :
+            EncodedSample* sample, size_t sampleLen, size_t frames,
+            Speech speech, Sequence sequence) :
             hint_(hint),
             buffer_(sample, sampleLen),
-            frames_(frames) {}
+            frames_(frames),
+            speech_(speech),
+            sequence_(sequence) {}
     };
 
     typedef std::queue<SampleChunk> SampleQueue;
@@ -87,12 +96,13 @@ private:
     // = svoip::RecorderCallback overriding
     virtual void sampled(nsrpc::PeerId targetPeerId,
         nsrpc::GroupId targetGroupId, EncodedSample* sample, size_t sampleLen,
-        size_t frames);
+        size_t frames, Speech speech, Sequence sequence);
 
 public:
     // = RpcVoP2pService overriding
-    DECLARE_SRPC_P2P_METHOD_2(say,
-        nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames);
+    DECLARE_SRPC_P2P_METHOD_4(say,
+        nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
+        RSpeech, speech, RSequence, sequence);
 
 private:
     boost::scoped_ptr<Recorder> recorder_;

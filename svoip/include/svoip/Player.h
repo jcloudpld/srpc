@@ -40,22 +40,22 @@ public:
 
     virtual void stop() = 0;
 
-    virtual void play(nsrpc::PeerId fromPeerId,
-        const EncodedSample* sample, size_t samples, size_t frames) = 0;
-
 private:
+    virtual void playNow(const svoip::Sample* sample, size_t samples) = 0;
+
     virtual bool run() = 0;
 
 public:
+    void play(nsrpc::PeerId fromPeerId,
+        const EncodedSample* sample, size_t samples, size_t frames,
+        Speech speech, Sequence sequence);
+
     void addDecoder(nsrpc::PeerId peerId);
     void removeDecoder(nsrpc::PeerId peerId);
 
-protected:
-    svoip::Sample* decode(nsrpc::PeerId fromPeerId,
-        const svoip::EncodedSample* sample, size_t samples, size_t frames,
-        size_t& decodedSamples);
-
+private:
     DecoderPtr getDecoder(nsrpc::PeerId peerId);
+
 private:
     DecoderMap decoderMap_;
     boost::scoped_ptr<detail::PlayerTask> task_;

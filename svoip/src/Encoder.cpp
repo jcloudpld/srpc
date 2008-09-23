@@ -14,10 +14,6 @@ namespace detail
  */
 class EncoderImpl : public boost::noncopyable
 {
-    enum {
-        sampleSizeLen = sizeof(EncodedSample)
-    };
-
 public:
     EncoderImpl() :
         encoderState_(0),

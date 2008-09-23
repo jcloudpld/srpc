@@ -50,19 +50,6 @@ void OpenAlPlayer::stop()
 }
 
 
-void OpenAlPlayer::play(nsrpc::PeerId fromPeerId,
-    const svoip::EncodedSample* sample, size_t samples, size_t frames)
-{
-    assert(source_ != 0);
-
-    size_t decodedSamples;
-    svoip::Sample* decodedSample = decode(fromPeerId, sample, samples, frames,
-        decodedSamples);
-
-    play(decodedSample, decodedSamples);
-}
-
-
 bool OpenAlPlayer::run()
 {
     assert(source_ != 0);
@@ -100,7 +87,7 @@ bool OpenAlPlayer::run()
 }
 
 
-void OpenAlPlayer::play(const svoip::Sample* sample, size_t samples)
+void OpenAlPlayer::playNow(const svoip::Sample* sample, size_t samples)
 {
     assert(source_ != 0);
 

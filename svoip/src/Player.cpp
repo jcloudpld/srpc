@@ -95,6 +95,23 @@ void Player::close()
 }
 
 
+void Player::play(nsrpc::PeerId fromPeerId,
+    const svoip::EncodedSample* sample, size_t samples, size_t frames,
+    Speech speech, Sequence sequence)
+{
+    DecoderPtr decoder = getDecoder(fromPeerId);
+    if (decoder.isNull()) {
+        return;
+    }
+
+    size_t decodedSamples;
+    svoip::Sample* decodedSample =
+        decoder->decode(sample, samples, frames, speech, sequence, decodedSamples);
+
+    playNow(decodedSample, decodedSamples);
+}
+
+
 void Player::addDecoder(nsrpc::PeerId peerId)
 {
     const DecoderMap::const_iterator pos = decoderMap_.find(peerId);
@@ -122,20 +139,6 @@ void Player::removeDecoder(nsrpc::PeerId peerId)
     }
 
     decoderMap_.erase(pos);
-}
-
-
-svoip::Sample* Player::decode(nsrpc::PeerId fromPeerId,
-    const svoip::EncodedSample* sample, size_t samples, size_t frames,
-    size_t& decodedSamples)
-{
-    DecoderPtr decoder = getDecoder(fromPeerId);
-    if (decoder.isNull()) {
-        decodedSamples = 0;
-        return 0;
-    }
-
-    return decoder->decode(sample, samples, frames, decodedSamples);
 }
 
 
