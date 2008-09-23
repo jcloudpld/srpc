@@ -48,7 +48,7 @@ private:
 
         while (! shouldStop_) {
             if (! recorder_.run()) {
-                NSRPC_LOG_ERROR("Recoder::run() FAILED!");
+                NSRPC_LOG_ERROR("SVOIP: Recoder::run() FAILED!");
             }
             ACE_OS::sleep(sleeptm);
         }

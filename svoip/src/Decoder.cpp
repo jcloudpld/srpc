@@ -58,7 +58,8 @@ public:
         size_t frames, Speech speech, Sequence sequence, size_t& decodedSamples) {
         assert(decoderState_ != 0);
 
-        //NSRPC_LOG_DEBUG5("decode(%d samples, %d frames, %d speech, %d sequence)",
+        //NSRPC_LOG_DEBUG5(
+        //    "SVOIP: decode(%d samples, %d frames, %d speech, %d sequence)",
         //    samples, frames, speech, sequence);
 
         int written = correctMissingFrames(speech, sequence, frames);
@@ -113,7 +114,7 @@ private:
             const int spareFrames = static_cast<int>(maxFrames_ - frames);
             const int droppedFrames = (std::min)(seqDiff, spareFrames);
 
-            NSRPC_LOG_DEBUG3("VoIP: Dropped %d frames, but %d skip",
+            NSRPC_LOG_DEBUG3("SVOIP: Dropped %d frames, but %d skip",
                 seqDiff, droppedFrames);
             // tell speex that we're missing frames...
             int written = 0;

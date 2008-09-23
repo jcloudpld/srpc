@@ -35,7 +35,8 @@ public:
      */
     virtual bool peerConnected(PeerId peerId,
         const ACE_INET_Addr& targetAddress,
-        const RAddresses& peerAddresses) = 0;
+        const RAddresses& peerAddresses,
+        P2pOptions p2pOptions) = 0;
 
     /**
      * 피어가 접속을 해제하였다.

@@ -2,6 +2,7 @@
 #define SVOIP_VOP2PPLUGIN_H
 
 #include "config/config.h"
+#include <nsrpc/p2p/P2pConfig.h>
 #include <nsrpc/p2p/RpcPlugIn.h>
 #include <nsrpc/p2p/PeerId.h>
 #include <nsrpc/p2p/Group.h>

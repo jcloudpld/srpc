@@ -39,14 +39,16 @@ public:
     void setHost(const RP2pProperty& p2pProperty);
     void reset();
 public:
-    DECLARE_SRPC_P2P_METHOD_3(rpcConnect, RAddresses, peerAddresses,
-        srpc::RShortString, sessionPassword, srpc::RUInt32, sessionKey);
-    DECLARE_SRPC_P2P_METHOD_4(rpcConnected, RAddresses, peerAddresses,
-        srpc::RBool, isHost, RP2pProperty, p2pProperty, RGroupMap, groups);
+    DECLARE_SRPC_P2P_METHOD_4(rpcConnect, RAddresses, peerAddresses,
+        RP2pOptions, p2pOptions, srpc::RShortString, sessionPassword,
+        srpc::RUInt32, sessionKey);
+    DECLARE_SRPC_P2P_METHOD_5(rpcConnected, RAddresses, peerAddresses,
+        srpc::RBool, isHost, RP2pProperty, p2pProperty, RP2pOptions, p2pOptions,
+        RGroupMap, groups);
     DECLARE_SRPC_P2P_METHOD_1(rpcRequestConnectReversal,
         RAddresses, peerAddresses);
-    DECLARE_SRPC_P2P_METHOD_1(rpcConnectReversal,
-        RAddresses, peerAddresses);
+    DECLARE_SRPC_P2P_METHOD_2(rpcConnectReversal,
+        RAddresses, peerAddresses, RP2pOptions, p2pOptions);
     DECLARE_SRPC_P2P_METHOD_1(rpcNewPeerConnected, RPeerInfo, peerInfo);
     DECLARE_SRPC_P2P_METHOD_0(rpcDisconnect);
     DECLARE_SRPC_P2P_METHOD_0(rpcPing);

@@ -2,6 +2,7 @@
 #include "VoP2pPlugInImpl.h"
 #include "svoip/Recorder.h"
 #include "svoip/Player.h"
+#include <nsrpc/p2p/P2pSession.h>
 #include <nsrpc/p2p/detail/P2pPeerHint.h>
 #include <nsrpc/utility/Logger.h>
 #include <ace/Guard_T.h>
@@ -26,12 +27,12 @@ VoP2pPlugInImpl::~VoP2pPlugInImpl()
 bool VoP2pPlugInImpl::initialize()
 {
     if (! recorder_->open()) {
-        NSRPC_LOG_ERROR("VoP2pPlugInImpl::createRecorder() Failed");
+        NSRPC_LOG_ERROR("SVOIP: Recorder::create() Failed");
         return false;
     }
 
     if (! player_->open()) {
-        NSRPC_LOG_ERROR("VoP2pPlugInImpl::createPlayer() Failed");
+        NSRPC_LOG_ERROR("SVOIP: Player::create() Failed");
         return false;
     }
 
@@ -53,6 +54,14 @@ void VoP2pPlugInImpl::update()
     say(chunk.buffer_, static_cast<srpc::UInt8>(chunk.frames_),
         chunk.speech_, chunk.sequence_, &chunk.hint_);
     sampleQueue_.pop();
+}
+
+
+void VoP2pPlugInImpl::attached(nsrpc::P2pSession* session)
+{
+    VoP2pPlugIn::attached(session);
+
+    session->addP2pOptions(nsrpc::allowVoP2p);
 }
 
 
@@ -114,10 +123,12 @@ void VoP2pPlugInImpl::sampled(nsrpc::PeerId targetPeerId,
     else if (nsrpc::isValidPeerId(targetPeerId)) {
         hint.peerId_ = targetPeerId;
     }
+    hint.p2pOptions_ = nsrpc::allowVoP2p;
 
     assert(frames < 256);
 
-    sampleQueue_.push(SampleChunk(hint, sample, sampleLen, frames, speech, sequence));
+    sampleQueue_.push(
+        SampleChunk(hint, sample, sampleLen, frames, speech, sequence));
 }
 
 // = RpcVoP2pService overriding

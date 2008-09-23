@@ -47,7 +47,7 @@ private:
 
         while (! shouldStop_) {
             if (! player_.run()) {
-                NSRPC_LOG_ERROR("Player::run() FAILED!");
+                NSRPC_LOG_ERROR("SVOIP: Player::run() FAILED!");
             }
             ACE_OS::sleep(sleeptm);
         }
@@ -116,13 +116,13 @@ void Player::addDecoder(nsrpc::PeerId peerId)
 {
     const DecoderMap::const_iterator pos = decoderMap_.find(peerId);
     if (pos != decoderMap_.end()) {
-        NSRPC_LOG_DEBUG2("Decoder(P#u) already exists.", peerId);
+        NSRPC_LOG_DEBUG2("SVOIP: Decoder(P#u) already exists.", peerId);
         return;
     }
 
     DecoderPtr decoder(new Decoder);
     if (! decoder->initialize()) {
-        NSRPC_LOG_ERROR2("Failed to initialize Decoder(P#u).", peerId);
+        NSRPC_LOG_ERROR2("SVOIP: Failed to initialize Decoder(P#u).", peerId);
         return;
     }
 
@@ -134,7 +134,7 @@ void Player::removeDecoder(nsrpc::PeerId peerId)
 {
     const DecoderMap::iterator pos = decoderMap_.find(peerId);
     if (pos == decoderMap_.end()) {
-        NSRPC_LOG_DEBUG2("Decoder(P#u) not found.", peerId);
+        NSRPC_LOG_DEBUG2("SVOIP: Decoder(P#u) not found.", peerId);
         return;
     }
 

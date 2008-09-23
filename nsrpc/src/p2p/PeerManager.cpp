@@ -25,11 +25,12 @@ PeerManager::~PeerManager()
 }
 
 
-void PeerManager::addPeer(PeerId peerId, const Addresses& addresses)
+void PeerManager::addPeer(PeerId peerId, const Addresses& addresses,
+    P2pOptions p2pOptions)
 {
     PeerPtr peer(getPeer(peerId));
     if (peer.isNull()) {
-        peer = makePeer(peerId, addresses);
+        peer = makePeer(peerId, addresses, p2pOptions);
         peers_.insert(Peers::value_type(peerId, peer));
     }
 
@@ -80,15 +81,16 @@ void PeerManager::addRelayServer(const PeerAddress& address)
         removePeer(relayServer_->getPeerId());
     }
 
-    relayServer_ = makePeer(relayServerPeerId, addresses);
+    relayServer_ = makePeer(relayServerPeerId, addresses, poNone);
     relayServer_->connected();
 }
 
 
-PeerPtr PeerManager::makePeer(PeerId peerId, const Addresses& addresses)
+PeerPtr PeerManager::makePeer(PeerId peerId, const Addresses& addresses,
+    P2pOptions p2pOptions)
 {
     assert(! isExists(peerId));
-    return PeerPtr(new Peer(peerId, addresses, networkSender_,
+    return PeerPtr(new Peer(peerId, addresses, p2pOptions, networkSender_,
         messageHandler_, p2pConfig_));
 }
 
@@ -123,7 +125,7 @@ void PeerManager::reset()
 
 void PeerManager::putOutgoingMessage(GroupId groupId,
     const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
-    ACE_Message_Block* mblock)
+    ACE_Message_Block* mblock, P2pOptions p2pOptions)
 {
     assert(isValid(groupId));
 
@@ -137,29 +139,31 @@ void PeerManager::putOutgoingMessage(GroupId groupId,
     const RPeerIds::const_iterator end = peerIds->end();
     for (; pos != end; ++pos) {
         const PeerId peerId = *pos;
-        putUnicastOutgoingMessage(peerId, toAddress, packetType, mblock);
+        putUnicastOutgoingMessage(peerId, toAddress, packetType, mblock,
+            p2pOptions);
     }
 }
 
 
 void PeerManager::putOutgoingMessage(PeerId peerId,
     const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
-    ACE_Message_Block* mblock)
+    ACE_Message_Block* mblock, P2pOptions p2pOptions)
 {
     assert(! isSelf(peerId));
 
     if (isValidPeerId(peerId)) {
-        putUnicastOutgoingMessage(peerId, toAddress, packetType, mblock);
+        putUnicastOutgoingMessage(peerId, toAddress, packetType, mblock,
+            p2pOptions);
     }
     else {
-        putBroadcastOutgoingMessage(toAddress, packetType, mblock);
+        putBroadcastOutgoingMessage(toAddress, packetType, mblock, p2pOptions);
     }
 }
 
 
 void PeerManager::putUnicastOutgoingMessage(PeerId peerId,
     const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
-    ACE_Message_Block* mblock)
+    ACE_Message_Block* mblock, P2pOptions p2pOptions)
 {
     const PeerPtr peer(getPeer(peerId));
     if (peer.isNull()) {
@@ -167,12 +171,15 @@ void PeerManager::putUnicastOutgoingMessage(PeerId peerId,
         return;
     }
 
-    peer->putOutgoingMessage(packetType, mblock, toAddress);
+    if (peer->isAllowed(p2pOptions)) {
+        peer->putOutgoingMessage(packetType, mblock, toAddress);
+    }
 }
 
 
 void PeerManager::putBroadcastOutgoingMessage(const ACE_INET_Addr& toAddress,
-    srpc::RpcPacketType packetType, ACE_Message_Block* mblock)
+    srpc::RpcPacketType packetType, ACE_Message_Block* mblock,
+    P2pOptions p2pOptions)
 {
     Peers::iterator pos = peers_.begin();
     const Peers::iterator end = peers_.end();
@@ -181,7 +188,9 @@ void PeerManager::putBroadcastOutgoingMessage(const ACE_INET_Addr& toAddress,
         if (isSelf(peer->getPeerId())) {
             continue;
         }
-        peer->putOutgoingMessage(packetType, mblock, toAddress);
+        if (peer->isAllowed(p2pOptions)) {
+            peer->putOutgoingMessage(packetType, mblock, toAddress);
+        }
     }
 }
 

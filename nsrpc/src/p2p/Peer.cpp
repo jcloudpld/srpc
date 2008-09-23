@@ -15,11 +15,12 @@ namespace detail
 
 // = Peer
 
-Peer::Peer(PeerId peerId, const Addresses& addresses,
+Peer::Peer(PeerId peerId, const Addresses& addresses, P2pOptions p2pOptions,
     PeerNetworkSender& networkSender,
     PeerMessageHandler& messageHandler, const P2pConfig& p2pConfig) :
     peerId_(peerId),
     addresses_(addresses),
+    p2pOptions_(p2pOptions),
     networkSender_(networkSender),
     messageHandler_(messageHandler),
     p2pConfig_(p2pConfig),

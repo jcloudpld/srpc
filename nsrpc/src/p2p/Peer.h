@@ -42,7 +42,7 @@ class Peer : public SharedObject
     typedef MessageSet<DelayedInboundMessage> DelayedInboundMessages;
 public:
 
-    Peer(PeerId peerId, const Addresses& addresses,
+    Peer(PeerId peerId, const Addresses& addresses, P2pOptions p2pOptions,
         PeerNetworkSender& networkSender,
         PeerMessageHandler& messageHandler,
         const P2pConfig& p2pConfig);
@@ -68,12 +68,28 @@ public:
     void acknowledged(SequenceNumber sequenceNumber,
         PeerTime receivedSentTime);
 
+    void addP2pOptions(P2pOptions p2pOptions) {
+        p2pOptions_ = static_cast<P2pOptions>(p2pOptions_ | p2pOptions);
+    }
+
     PeerId getPeerId() const {
         return peerId_;
     }
 
+    P2pOptions getP2pOptions() const {
+        return p2pOptions_;
+    }
+
+    bool isAllowed(P2pOptions p2pOptions) const {
+        if (p2pOptions == poNone) {
+            return true;
+        }
+
+        return (p2pOptions & p2pOptions_) != 0;
+    }
+
     RPeerInfo getPeerInfo() const {
-        return RPeerInfo(peerId_, getPeerAddresses());
+        return RPeerInfo(peerId_, getPeerAddresses(), p2pOptions_);
     }
 
     RAddresses getPeerAddresses() const {
@@ -201,6 +217,7 @@ private:
     PeerId peerId_;
     ACE_INET_Addr targetAddress_;
     Addresses addresses_;
+    P2pOptions p2pOptions_;
 
     PeerNetworkSender& networkSender_;
     PeerMessageHandler& messageHandler_;
