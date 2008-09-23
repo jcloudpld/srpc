@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "svoip/VoP2pPlugIn.h"
+#include "VoP2pPlugInImpl.h"
 #include "svoip/Recorder.h"
 #include "svoip/Player.h"
 #include <nsrpc/p2p/detail/P2pPeerHint.h>
@@ -9,27 +9,29 @@
 namespace svoip
 {
 
-VoP2pPlugIn::VoP2pPlugIn()
+VoP2pPlugInImpl::VoP2pPlugInImpl(std::auto_ptr<Recorder> recorder,
+    std::auto_ptr<Player> player) :
+    recorder_(recorder.release()),
+    player_(player.release())
+{
+    recorder_->setCallback(this);
+}
+
+
+VoP2pPlugInImpl::~VoP2pPlugInImpl()
 {
 }
 
 
-VoP2pPlugIn::~VoP2pPlugIn()
+bool VoP2pPlugInImpl::initialize()
 {
-}
-
-
-bool VoP2pPlugIn::initialize()
-{
-    recorder_.reset(createRecorder().release());
     if (! recorder_->open()) {
-        NSRPC_LOG_ERROR("VoP2pPlugIn::createRecorder() Failed");
+        NSRPC_LOG_ERROR("VoP2pPlugInImpl::createRecorder() Failed");
         return false;
     }
 
-    player_.reset(createPlayer().release());
     if (! player_->open()) {
-        NSRPC_LOG_ERROR("VoP2pPlugIn::createPlayer() Failed");
+        NSRPC_LOG_ERROR("VoP2pPlugInImpl::createPlayer() Failed");
         return false;
     }
 
@@ -39,7 +41,7 @@ bool VoP2pPlugIn::initialize()
 }
 
 
-void VoP2pPlugIn::update()
+void VoP2pPlugInImpl::update()
 {
     ACE_GUARD(ACE_Thread_Mutex, monitor, lock_);
 
@@ -54,40 +56,40 @@ void VoP2pPlugIn::update()
 }
 
 
-void VoP2pPlugIn::onPeerConnected(nsrpc::PeerId peerId)
+void VoP2pPlugInImpl::onPeerConnected(nsrpc::PeerId peerId)
 {
     player_->addDecoder(peerId);
 }
 
 
-void VoP2pPlugIn::onPeerDisconnected(nsrpc::PeerId peerId)
+void VoP2pPlugInImpl::onPeerDisconnected(nsrpc::PeerId peerId)
 {
     player_->removeDecoder(peerId);
 }
 
 
-void VoP2pPlugIn::record()
+void VoP2pPlugInImpl::record()
 {
     assert(recorder_);
     recorder_->start();
 }
 
 
-void VoP2pPlugIn::record(nsrpc::PeerId to)
+void VoP2pPlugInImpl::record(nsrpc::PeerId to)
 {
     assert(recorder_);
     recorder_->start(to);
 }
 
 
-void VoP2pPlugIn::record(nsrpc::GroupId to)
+void VoP2pPlugInImpl::record(nsrpc::GroupId to)
 {
     assert(recorder_);
     recorder_->start(to);
 }
 
 
-void VoP2pPlugIn::stop()
+void VoP2pPlugInImpl::stop()
 {
     assert(recorder_);
 
@@ -97,7 +99,7 @@ void VoP2pPlugIn::stop()
 
 // = svoip::RecorderCallback overriding
 
-void VoP2pPlugIn::sampled(nsrpc::PeerId targetPeerId,
+void VoP2pPlugInImpl::sampled(nsrpc::PeerId targetPeerId,
     nsrpc::GroupId targetGroupId, EncodedSample* sample, size_t sampleLen,
     size_t frames, Speech speech, Sequence sequence)
 {
@@ -120,7 +122,7 @@ void VoP2pPlugIn::sampled(nsrpc::PeerId targetPeerId,
 
 // = RpcVoP2pService overriding
 
-IMPLEMENT_SRPC_P2P_METHOD_4(VoP2pPlugIn, say,
+IMPLEMENT_SRPC_P2P_METHOD_4(VoP2pPlugInImpl, say,
     nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
     RSpeech, speech, RSequence, sequence,
     srpc::ptUnreliable)

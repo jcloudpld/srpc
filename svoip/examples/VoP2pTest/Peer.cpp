@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Peer.h"
 #include "Config.h"
-#include "OpenAlVoP2pPlugIn.h"
+#include "svoip/VoP2pPlugInFactory.h"
+#include "OpenAlRecorder.h"
+#include "OpenAlPlayer.h"
 #include <nsrpc/p2p/P2pSessionFactory.h>
 #include <nsrpc/p2p/PeerHint.h>
 #include <nsrpc/utility/SystemUtil.h>
@@ -94,12 +96,9 @@ bool Peer::ready()
         p2pSession_->connect(config_.getHostAddresses());
     }
 
-    voP2pPlugIn_ = new OpenAlVoP2pPlugIn;
-    nsrpc::PlugInPtr vop2p(voP2pPlugIn_);
-    if (! vop2p->initialize()) {
+    if (! initializeVoP2p()) {
         return false;
     }
-    p2pSession_->attach(vop2p);
 
     printedTime_ = nsrpc::detail::getPeerTime();
 
@@ -147,6 +146,23 @@ void Peer::printAllStats()
 void Peer::printStats(nsrpc::PeerId peerId)
 {
     std::cout << p2pSession_->getStatsString(peerId);
+}
+
+
+bool Peer::initializeVoP2p()
+{
+    voP2pPlugIn_ = svoip::VoP2pPlugInFactory::create(
+        std::auto_ptr<svoip::Recorder>(new OpenAlRecorder),
+        std::auto_ptr<svoip::Player>(new OpenAlPlayer));
+
+    nsrpc::PlugInPtr vop2p(voP2pPlugIn_.get());
+    if (! vop2p->initialize()) {
+        return false;
+    }
+
+    p2pSession_->attach(vop2p);
+
+    return true;
 }
 
 // = P2pEventHandler overring

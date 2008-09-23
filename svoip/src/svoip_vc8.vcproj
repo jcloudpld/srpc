@@ -396,7 +396,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\VoP2pPlugIn.cpp"
+				RelativePath=".\VoP2pPlugInFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\VoP2pPlugInImpl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\VoP2pPlugInImpl.h"
 				>
 			</File>
 		</Filter>
@@ -420,6 +428,10 @@
 				</File>
 				<File
 					RelativePath="..\include\svoip\VoP2pPlugIn.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\svoip\VoP2pPlugInFactory.h"
 					>
 				</File>
 				<Filter

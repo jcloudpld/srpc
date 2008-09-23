@@ -422,10 +422,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\OpenAlVoP2pPlugIn.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Peer.h"
 				>
 			</File>

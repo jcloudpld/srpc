@@ -1,6 +1,7 @@
 #ifndef SVOIP_CONFIG_H
 #define SVOIP_CONFIG_H
 
+#include <nsrpc/utility/SmartPtr.h>
 #include <srpc/Types.h>
 
 #if defined (_MSC_VER)
