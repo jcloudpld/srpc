@@ -24,6 +24,9 @@ const int bufferSize = 4096;
 ///  2048 will cover 12 uncompressed frames in narrow-band mode.
 const int sampleBufferSize = 2048;
 
+/// 12 == 240ms of audio.
+const int maximumFrames = 12;
+
 
 /// Multiply recorded audio by this value after denoising.
 /// This is to make you more audible if denoising eats away too much data.
