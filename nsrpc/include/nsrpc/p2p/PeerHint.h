@@ -28,6 +28,7 @@ struct PeerHint
         const void* address = 0,
         bool isCandidate = false) :
         peerId_(peerId),
+        groupId_(giUnknown),
         address_(address),
         isCandidate_(isCandidate),
         p2pOptions_(poNone) {}
