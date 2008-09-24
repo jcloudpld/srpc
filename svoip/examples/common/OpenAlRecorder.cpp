@@ -103,13 +103,13 @@ bool OpenAlRecorder::run()
     }
 
     const ALCsizei frameSize = static_cast<ALCsizei>(getFrameSize());
-    const size_t minimumSamples = isRecording_ ? 12 : 1; // 12 == 240ms of audio.
+    const size_t minimumFrames = isRecording_ ? svoip::maximumFrames : 1;
 
     // enough data buffered in audio hardware to process yet?
-    if (samples >= (frameSize * minimumSamples)) {
+    if (samples >= (frameSize * minimumFrames)) {
         ALCsizei adjustedSamples = static_cast<ALCsizei>(samples);
-        if (adjustedSamples > (frameSize * 12)) {
-            adjustedSamples = (frameSize * 12);
+        if (adjustedSamples > (frameSize * svoip::maximumFrames)) {
+            adjustedSamples = (frameSize * svoip::maximumFrames);
         }
         adjustedSamples -= (adjustedSamples % frameSize);
 
