@@ -38,7 +38,8 @@ bool P2pEndpoint::open(srpc::UInt16 port)
     const int reuse_addr = 1;
 
     if (udp_->open(localAddr, ACE_PROTOCOL_FAMILY_INET, 0, reuse_addr) == -1) {
-        NSRPC_LOG_ERROR2(ACE_TEXT("Can't open a UDP socket(port:%d)"), port);
+        NSRPC_LOG_ERROR2(ACE_TEXT("Can't open a UDP socket(port:%d)(%m)"),
+            port);
         return false;
     }
     setMaximumSocketBufferSize(get_handle());

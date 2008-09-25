@@ -2,6 +2,7 @@
 #define NSRPC_PEERMANAGER_H
 
 #include "Peer.h"
+#include <nsrpc/p2p/Group.h>
 #include <srpc/ContainerTypes.h>
 #include <boost/noncopyable.hpp>
 
@@ -13,6 +14,7 @@ namespace detail
 
 class PeerNetworkSender;
 class PeerMessageHandler;
+class GroupManager;
 
 /** @addtogroup p2p
 * @{
@@ -28,19 +30,23 @@ class PeerManager : public boost::noncopyable
 public:
     PeerManager(PeerNetworkSender& networkSender,
         PeerMessageHandler& messageHandler,
-        const P2pConfig& p2pConfig);
+        const P2pConfig& p2pConfig, const GroupManager& groupManager);
     ~PeerManager();
 
-    void addPeer(PeerId peerId, const Addresses& addresses);
+    void addPeer(PeerId peerId, const Addresses& addresses,
+        P2pOptions p2pOptions);
     void removePeerNextTime(PeerId peerId);
 
     void addRelayServer(const PeerAddress& address);
 
     void reset();
 
+    void putOutgoingMessage(GroupId groupId,
+        const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
+        ACE_Message_Block* mblock, P2pOptions p2pOptions);
     void putOutgoingMessage(PeerId peerId,
         const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
-        ACE_Message_Block* mblock);
+        ACE_Message_Block* mblock, P2pOptions p2pOptions);
 
     void putIncomingMessage(const P2pPacketHeader& header,
         const ACE_INET_Addr& peerAddress, ACE_Message_Block* mblock);
@@ -110,16 +116,19 @@ public:
 private:
     void putUnicastOutgoingMessage(PeerId peerId,
         const ACE_INET_Addr& toAddress, srpc::RpcPacketType packetType,
-        ACE_Message_Block* mblock);
+        ACE_Message_Block* mblock, P2pOptions p2pOptions);
     void putBroadcastOutgoingMessage(const ACE_INET_Addr& toAddress,
-        srpc::RpcPacketType packetType, ACE_Message_Block* mblock);
+        srpc::RpcPacketType packetType, ACE_Message_Block* mblock,
+        P2pOptions p2pOptions);
 
-    PeerPtr makePeer(PeerId peerId, const Addresses& addresses);
+    PeerPtr makePeer(PeerId peerId, const Addresses& addresses,
+        P2pOptions p2pOptions);
     void removePeer(PeerId peerId);
 private:
     PeerNetworkSender& networkSender_;
     PeerMessageHandler& messageHandler_;
     const P2pConfig& p2pConfig_;
+    const GroupManager& groupManager_;
 
     Peers peers_;
     PeerPtr me_;

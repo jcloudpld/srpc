@@ -1,9 +1,12 @@
 #ifndef NSRPC_P2PSESSION_H
 #define NSRPC_P2PSESSION_H
 
+#include "P2pConfig.h"
 #include "PeerId.h"
 #include "PeerStats.h"
 #include "PeerAddress.h"
+#include "Group.h"
+#include "PlugIn.h"
 #include <boost/noncopyable.hpp>
 
 class ACE_Reactor;
@@ -34,11 +37,16 @@ public:
      * Initialize this session.
      * @param port local listening port
      * @param password P2P session password
+     * @param p2pOptions P2P options for each peer
      */
-    virtual bool open(srpc::UInt16 port, const srpc::String& password = "") = 0;
+    virtual bool open(srpc::UInt16 port, const srpc::String& password = "",
+        P2pOptions p2pOptions = poNone) = 0;
 
     /// Disconnect & Deinitialize this session.
     virtual void close() = 0;
+
+    /// it must be called before host() or connect()
+    virtual void addP2pOptions(P2pOptions p2pOptions) = 0;
 
     /**
      * Creates a new P2P session, hosted by the local computer.
@@ -77,6 +85,32 @@ public:
      */
     virtual void tick() = 0;
 
+    /// attach a plug-in
+    virtual void attach(PlugInPtr& plugIn) = 0;
+
+    /// detach a plug-in
+    virtual void detach(PlugInPtr& plugIn) = 0;
+
+    /**
+     * create a group (only host allowed)
+     * @param groupName group name (duplication allowed)
+     */
+    virtual GroupId createGroup(const RGroupName& groupName) = 0;
+
+    /// destroy a group(only host allowed)
+    virtual bool destroyGroup(GroupId groupId) = 0;
+
+    /// join a group
+    virtual bool joinGroup(GroupId groupId) = 0;
+
+    /// leave from a group
+    virtual bool leaveGroup(GroupId groupId) = 0;
+
+    /**
+     * get P2P groups
+     */
+    virtual const RGroupMap& getGroups() const = 0;
+
     /// Is the host for a P2P session.
     virtual bool isHost() const = 0;
 
@@ -94,6 +128,9 @@ public:
      * - If the address resolved via RelayServer, first address is public.
      */
     virtual PeerAddresses getAddresses(PeerId peerId) const = 0;
+
+    /// get peer's P2P options
+    virtual P2pOptions getP2pOptions(PeerId peerId) const = 0;
 
     /// Get the statistics of the peer.
     virtual PeerStats getStats(PeerId peerId) const = 0;

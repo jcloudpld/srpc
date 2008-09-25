@@ -1,7 +1,7 @@
 #ifndef NSRPC_SYSTEMSERVICEHANDLER_H
 #define NSRPC_SYSTEMSERVICEHANDLER_H
 
-#include <nsrpc/p2p/PeerId.h>
+#include <nsrpc/p2p/Group.h>
 #include <nsrpc/p2p/detail/P2pAddress.h>
 #include <boost/noncopyable.hpp>
 
@@ -35,7 +35,8 @@ public:
      */
     virtual bool peerConnected(PeerId peerId,
         const ACE_INET_Addr& targetAddress,
-        const RAddresses& peerAddresses) = 0;
+        const RAddresses& peerAddresses,
+        P2pOptions p2pOptions) = 0;
 
     /**
      * 피어가 접속을 해제하였다.
@@ -49,6 +50,20 @@ public:
     /// peerId가 새로운 호스트가 되었다
     virtual void hostMigrated(PeerId peerId) = 0;
 
+    virtual void setGroups(const RGroupMap& groups) = 0;
+
+    /// P2P 그룹이 생성되었다
+    virtual void groupCreated(const RGroupInfo& groupInfo) = 0;
+
+    /// P2P 그룹이 파괴되었다
+    virtual void groupDestroyed(GroupId groupId) = 0;
+
+    /// P2P 그룹에 참여하였다
+    virtual void groupJoined(GroupId groupId, PeerId peerId) = 0;
+
+    /// P2P 그룹에서 퇴장하였다
+    virtual void groupLeft(GroupId groupId, PeerId peerId) = 0;
+
     /// P2P 속성을 설정한다
     virtual void setP2pProperty(const RP2pProperty& p2pProperty) = 0;
 
@@ -57,6 +72,8 @@ public:
 
     /// 호스트에 접속했는가?
     virtual bool isHostConnected() const = 0;
+
+    virtual const RGroupMap& getCurrentGroups() const = 0;
 };
 
 /** @} */ // addtogroup p2p

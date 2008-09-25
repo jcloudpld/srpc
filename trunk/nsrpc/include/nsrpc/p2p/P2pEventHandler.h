@@ -1,7 +1,7 @@
 #ifndef NSRPC_P2PEVENTHANDLER_H
 #define NSRPC_P2PEVENTHANDLER_H
 
-#include "PeerId.h"
+#include "Group.h"
 #include <boost/noncopyable.hpp>
 
 namespace nsrpc
@@ -53,6 +53,26 @@ public:
      * @param peerId New host's PeerId
      */
     virtual void onHostMigrated(PeerId peerId) = 0;
+
+    /**
+     * A group is created
+     */
+    virtual void onGroupCreated(const RGroupInfo& groupInfo) = 0;
+
+    /**
+     * A group is destroyed
+     */
+    virtual void onGroupDestroyed(GroupId groupId) = 0;
+
+    /**
+     * A peer joined a group
+     */
+    virtual void onGroupJoined(GroupId groupId, PeerId peerId) = 0;
+
+    /**
+     * A peer left from a group
+     */
+    virtual void onGroupLeft(GroupId groupId, PeerId peerId) = 0;
 };
 
 /** @} */ // addtogroup p2p
