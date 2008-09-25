@@ -29,7 +29,7 @@ class SVOIP_API Player : public boost::noncopyable
 
     friend class detail::PlayerTask;
 public:
-    Player();
+    Player(bool useThread = true);
     virtual ~Player();
 
     virtual bool open();
@@ -59,6 +59,7 @@ private:
 private:
     DecoderMap decoderMap_;
     boost::scoped_ptr<detail::PlayerTask> task_;
+    bool useThread_;
 };
 
 } // namespace svoip
