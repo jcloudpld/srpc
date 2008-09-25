@@ -39,20 +39,30 @@ public:
     void setHost(const RP2pProperty& p2pProperty);
     void reset();
 public:
-    DECLARE_SRPC_P2P_METHOD_3(rpcConnect, RAddresses, peerAddresses,
-        srpc::RShortString, sessionPassword, srpc::RUInt32, sessionKey);
-    DECLARE_SRPC_P2P_METHOD_3(rpcConnected, RAddresses, peerAddresses,
-        srpc::RBool, isHost, RP2pProperty, p2pProperty);
+    DECLARE_SRPC_P2P_METHOD_4(rpcConnect, RAddresses, peerAddresses,
+        RP2pOptions, p2pOptions, srpc::RShortString, sessionPassword,
+        srpc::RUInt32, sessionKey);
+    DECLARE_SRPC_P2P_METHOD_5(rpcConnected, RAddresses, peerAddresses,
+        srpc::RBool, isHost, RP2pProperty, p2pProperty, RP2pOptions, p2pOptions,
+        RGroupMap, groups);
     DECLARE_SRPC_P2P_METHOD_1(rpcRequestConnectReversal,
         RAddresses, peerAddresses);
-    DECLARE_SRPC_P2P_METHOD_1(rpcConnectReversal,
-        RAddresses, peerAddresses);
+    DECLARE_SRPC_P2P_METHOD_2(rpcConnectReversal,
+        RAddresses, peerAddresses, RP2pOptions, p2pOptions);
     DECLARE_SRPC_P2P_METHOD_1(rpcNewPeerConnected, RPeerInfo, peerInfo);
     DECLARE_SRPC_P2P_METHOD_0(rpcDisconnect);
     DECLARE_SRPC_P2P_METHOD_0(rpcPing);
     DECLARE_SRPC_P2P_METHOD_2(rpcAcknowledgement,
         RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
     DECLARE_SRPC_P2P_METHOD_0(rpcHostMigrated);
+    DECLARE_SRPC_P2P_METHOD_1(rpcGroupCreated,
+        RGroupInfo, groupInfo);
+    DECLARE_SRPC_P2P_METHOD_1(rpcGroupDestroyed,
+        RGroupId, groupId);
+    DECLARE_SRPC_P2P_METHOD_2(rpcGroupJoined,
+        RGroupId, groupId, RPeerId, peerId);
+    DECLARE_SRPC_P2P_METHOD_2(rpcGroupLeft,
+        RGroupId, groupId, RPeerId, peerId);
 private:
     void connectToNewPeer(const RPeerInfo& pi);
     void reconnectToPeer(PeerId peerId, const RAddresses& peerAddresses);

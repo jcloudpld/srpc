@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "P2pSessionTestFixture.h"
 #include <nsrpc/p2p/P2pConfig.h>
+#include <nsrpc/p2p/PeerHint.h>
 #include <nsrpc/utility/AceUtil.h>
 #include <nsrpc/utility/SystemUtil.h>
 
@@ -23,6 +24,8 @@ class P2pSessionTest : public P2pSessionTestFixture
     CPPUNIT_TEST(testConnectWithValidPassword);
     //CPPUNIT_TEST(testLimitPeers);
     //CPPUNIT_TEST(testCannotConnectPeerBeforeHostConnected);
+    CPPUNIT_TEST(testBroadcast);
+    CPPUNIT_TEST(testUnicast);
     CPPUNIT_TEST_SUITE_END();
 public:
     P2pSessionTest();
@@ -41,6 +44,8 @@ private:
     void testConnectWithValidPassword();
     void testLimitPeers();
     void testCannotConnectPeerBeforeHostConnected();
+    void testBroadcast();
+    void testUnicast();
 private:
     size_t getConnectDelay() const {
         return p2pConfig_.connectTimeout_ + (p2pConfig_.connectTimeout_ / 2);
@@ -400,4 +405,123 @@ void P2pSessionTest::testCannotConnectPeerBeforeHostConnected()
         2, static_cast<int>(hostSession_->getPeerCount()));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("peer1: two peer",
         2, static_cast<int>(peer1->getPeerCount()));
+}
+
+
+void P2pSessionTest::testBroadcast()
+{
+    TestRpcPlugIn* peerRpcPlugIn1;
+    TestP2pEventHandler peerEventHandler1;
+    boost::scoped_ptr<P2pSession> peer1(
+        P2pSessionFactory::create(2, peerEventHandler1));
+    peerRpcPlugIn1 = new TestRpcPlugIn;
+    PlugInPtr plugIn1(peerRpcPlugIn1);
+    peer1->attach(plugIn1);
+    CPPUNIT_ASSERT_MESSAGE("open",
+        peer1->open(ACE_DEFAULT_SERVER_PORT + 1));
+    peer1->connect(getHostAddresses());
+
+    for (int i = 0; i < (2 * 3); ++i) {
+        peer1->tick();
+        hostSession_->tick();
+    }
+
+    TestRpcPlugIn* peerRpcPlugIn2;
+    TestP2pEventHandler peerEventHandler2;
+    boost::scoped_ptr<P2pSession> peer2(
+        P2pSessionFactory::create(3, peerEventHandler2));
+    peerRpcPlugIn2 = new TestRpcPlugIn;
+    PlugInPtr plugIn2(peerRpcPlugIn2);
+    peer2->attach(plugIn2);
+    CPPUNIT_ASSERT_MESSAGE("open",
+        peer2->open(ACE_DEFAULT_SERVER_PORT + 2));
+    peer2->connect(getHostAddresses());
+
+    for (int i = 0; i < (2 * 3); ++i) {
+        peer1->tick();
+        peer2->tick();
+        hostSession_->tick();
+    }
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("two player",
+        static_cast<int>(hostSession_->getPeerCount()),
+        static_cast<int>(peer1->getPeerCount()));
+
+    hostRpcPlugIn_->hello("hi");
+
+    for (int i = 0; i < (2 * 3); ++i) {
+        hostSession_->tick();
+        peer1->tick();
+        peer2->tick();
+    }
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("hi",
+        std::string("hi"), peerRpcPlugIn1->getLastWorld());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("from host",
+        PeerId(1), peerRpcPlugIn1->getLastPeerId());
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("hi",
+        std::string("hi"), peerRpcPlugIn2->getLastWorld());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("from host",
+        PeerId(1), peerRpcPlugIn2->getLastPeerId());
+}
+
+
+void P2pSessionTest::testUnicast()
+{
+    TestRpcPlugIn* peerRpcPlugIn1;
+    TestP2pEventHandler peerEventHandler1;
+    boost::scoped_ptr<P2pSession> peer1(
+        P2pSessionFactory::create(2, peerEventHandler1));
+    peerRpcPlugIn1 = new TestRpcPlugIn;
+    PlugInPtr plugIn1(peerRpcPlugIn1);
+    peer1->attach(plugIn1);
+    CPPUNIT_ASSERT_MESSAGE("open",
+        peer1->open(ACE_DEFAULT_SERVER_PORT + 1));
+    peer1->connect(getHostAddresses());
+
+    for (int i = 0; i < (2 * 3); ++i) {
+        peer1->tick();
+        hostSession_->tick();
+    }
+
+    TestRpcPlugIn* peerRpcPlugIn2;
+    TestP2pEventHandler peerEventHandler2;
+    boost::scoped_ptr<P2pSession> peer2(
+        P2pSessionFactory::create(3, peerEventHandler2));
+    peerRpcPlugIn2 = new TestRpcPlugIn;
+    PlugInPtr plugIn2(peerRpcPlugIn2);
+    peer2->attach(plugIn2);
+    CPPUNIT_ASSERT_MESSAGE("open",
+        peer2->open(ACE_DEFAULT_SERVER_PORT + 2));
+    peer2->connect(getHostAddresses());
+
+    for (int i = 0; i < (2 * 3); ++i) {
+        peer1->tick();
+        peer2->tick();
+        hostSession_->tick();
+    }
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("two player",
+        static_cast<int>(hostSession_->getPeerCount()),
+        static_cast<int>(peer1->getPeerCount()));
+
+    const PeerHint hint(2);
+    hostRpcPlugIn_->hello("hi", &hint);
+
+    for (int i = 0; i < (2 * 3); ++i) {
+        hostSession_->tick();
+        peer1->tick();
+        peer2->tick();
+    }
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("hi",
+        std::string("hi"), peerRpcPlugIn1->getLastWorld());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("from host",
+        PeerId(1), peerRpcPlugIn1->getLastPeerId());
+
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("hi",
+        std::string(""), peerRpcPlugIn2->getLastWorld());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("from host",
+        invalidPeerId, peerRpcPlugIn2->getLastPeerId());
 }

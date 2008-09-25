@@ -60,6 +60,8 @@ void RpcSystemServiceImpl::reconnectToPeer(PeerId peerId,
     assert(! peerManager_.isSelf(peerId));
     assert(peerManager_.isExists(peerId));
 
+    const PeerPtr peer(peerManager_.getPeer(peerId));
+
     const PeerPtr me(peerManager_.getMe());
     const RAddresses myAddresses = me->getPeerAddresses();
 
@@ -69,7 +71,7 @@ void RpcSystemServiceImpl::reconnectToPeer(PeerId peerId,
         const ACE_INET_Addr& address = *pos;
         const P2pPeerHint hint(peerId, &address);
         for (int i = 0; i < P2pConfig::peerReconnectTryCount; ++i) {
-            rpcConnectReversal(myAddresses, &hint);
+            rpcConnectReversal(myAddresses, peer->getP2pOptions(), &hint);
         }
 
         NSRPC_LOG_DEBUG4(ACE_TEXT("Try to reconnect(P%u) via (%s:%d)"),
@@ -95,9 +97,10 @@ void RpcSystemServiceImpl::logRpc(const char* rpc, const P2pPeerHint& hint,
 
 // = RpcSystemService overriding
 
-IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnect,
-    RAddresses, peerAddresses, srpc::RShortString, sessionPassword,
-    srpc::RUInt32, sessionKey, srpc::ptReliable)
+IMPLEMENT_SRPC_P2P_METHOD_4(RpcSystemServiceImpl, rpcConnect,
+    RAddresses, peerAddresses, RP2pOptions, p2pOptions,
+    srpc::RShortString, sessionPassword, srpc::RUInt32, sessionKey,
+    srpc::ptReliable)
 {
     assert(rpcHint != 0);
     const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
@@ -118,7 +121,8 @@ IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnect,
     if (isHost_) {
         if ((peerManager_.getPeerCount() >= 2) &&
             (! peerManager_.isExists(hint.peerId_))) {
-            rpcNewPeerConnected(RPeerInfo(hint.peerId_, peerAddresses));
+            rpcNewPeerConnected(RPeerInfo(hint.peerId_, peerAddresses,
+                p2pOptions));
         }
     }
     else {
@@ -132,7 +136,7 @@ IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnect,
     }
 
     if (! serviceHandler_.peerConnected(hint.peerId_, fromAddress,
-        peerAddresses)) {
+        peerAddresses, p2pOptions)) {
         return;
     }
 
@@ -141,12 +145,15 @@ IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnect,
     peer->acknowledgingConnect();
 
     const PeerPtr me(peerManager_.getMe());
-    rpcConnected(me->getPeerAddresses(), isHost_, p2pProperty_, &hint);
+    rpcConnected(me->getPeerAddresses(), isHost_, p2pProperty_, p2pOptions,
+        serviceHandler_.getCurrentGroups(), &hint);
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnected,
+IMPLEMENT_SRPC_P2P_METHOD_5(RpcSystemServiceImpl, rpcConnected,
     RAddresses, peerAddresses, srpc::RBool, isHost, RP2pProperty, p2pProperty,
+    RP2pOptions, p2pOptions,
+    RGroupMap, groups,
     srpc::ptReliable)
 {
     assert(rpcHint != 0);
@@ -155,7 +162,7 @@ IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnected,
     logRpc("rpcConnected", hint);
 
     (void)serviceHandler_.peerConnected(hint.peerId_, hint.getAddress(),
-        peerAddresses);
+        peerAddresses, p2pOptions);
 
     const PeerPtr peer(peerManager_.getPeer(hint.peerId_));
     assert(! peer.isNull());
@@ -168,6 +175,7 @@ IMPLEMENT_SRPC_P2P_METHOD_3(RpcSystemServiceImpl, rpcConnected,
         peerManager_.setHost(hint.peerId_);
         serviceHandler_.setP2pProperty(p2pProperty);
         p2pProperty_ = p2pProperty;
+        serviceHandler_.setGroups(groups);
     }
 
     if (serviceHandler_.shouldConnectReversal(hint.getAddress())) {
@@ -196,8 +204,8 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcRequestConnectReversal,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcConnectReversal,
-    RAddresses, peerAddresses, srpc::ptUnreliable)
+IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcConnectReversal,
+    RAddresses, peerAddresses, RP2pOptions, p2pOptions, srpc::ptUnreliable)
 {
     assert(rpcHint != 0);
     const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
@@ -211,11 +219,12 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcConnectReversal,
     }
 
     (void)serviceHandler_.peerConnected(hint.peerId_, hint.getAddress(),
-        peerAddresses);
+        peerAddresses, p2pOptions);
 
     const PeerPtr me(peerManager_.getMe());
     const PeerPtr peer(peerManager_.getPeer(hint.peerId_));
-    rpcConnected(me->getPeerAddresses(), isHost_, p2pProperty_, &hint);
+    rpcConnected(me->getPeerAddresses(), isHost_, p2pProperty_, p2pOptions,
+        serviceHandler_.getCurrentGroups(), &hint);
 }
 
 
@@ -299,6 +308,58 @@ IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcHostMigrated,
     logRpc("rpcHostMigrated", hint);
 
     serviceHandler_.hostMigrated(hint.peerId_);
+}
+
+
+IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupCreated,
+    RGroupInfo, groupInfo,
+    srpc::ptReliable)
+{
+    assert(rpcHint != 0);
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
+    assert(hint.isValid());
+    logRpc("rpcGroupCreated", hint);
+
+    serviceHandler_.groupCreated(groupInfo);
+}
+
+
+IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupDestroyed,
+    RGroupId, groupId,
+    srpc::ptReliable)
+{
+    assert(rpcHint != 0);
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
+    assert(hint.isValid());
+    logRpc("rpcGroupDestroyed", hint);
+
+    serviceHandler_.groupDestroyed(groupId);
+}
+
+
+IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
+    RGroupId, groupId, RPeerId, peerId,
+    srpc::ptReliable)
+{
+    assert(rpcHint != 0);
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
+    assert(hint.isValid());
+    logRpc("rpcGroupJoined", hint);
+
+    serviceHandler_.groupJoined(groupId, peerId);
+}
+
+
+IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupLeft,
+    RGroupId, groupId, RPeerId, peerId,
+    srpc::ptReliable)
+{
+    assert(rpcHint != 0);
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
+    assert(hint.isValid());
+    logRpc("rpcGroupLeft", hint);
+
+    serviceHandler_.groupLeft(groupId, peerId);
 }
 
 } // namespace detail

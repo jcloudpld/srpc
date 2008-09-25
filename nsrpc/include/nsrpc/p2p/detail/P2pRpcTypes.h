@@ -13,9 +13,7 @@ namespace nsrpc
 namespace detail
 {
 
-/** @addtogroup p2p
-* @{
-*/
+typedef srpc::RpcUIntType<P2pOptions, 8> RP2pOptions;
 
 /**
  * @struct RP2pProperty

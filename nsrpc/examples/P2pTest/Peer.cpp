@@ -214,6 +214,32 @@ void Peer::onHostMigrated(nsrpc::PeerId peerId)
     std::cout << "* Host Migrated(P" << peerId << ").\n";
 }
 
+
+void Peer::onGroupCreated(const nsrpc::RGroupInfo& groupInfo)
+{
+    std::cout << "* Group Created(G" << groupInfo.groupId_.get() << ").\n";
+}
+
+
+void Peer::onGroupDestroyed(nsrpc::GroupId groupId)
+{
+    std::cout << "* Group Destroyed(G" << groupId << ").\n";
+}
+
+
+void Peer::onGroupJoined(nsrpc::GroupId groupId, nsrpc::PeerId peerId)
+{
+    std::cout << "* Group Joined(G" << groupId << "," << "P" << peerId <<
+        ").\n";
+}
+
+
+void Peer::onGroupLeft(nsrpc::GroupId groupId, nsrpc::PeerId peerId)
+{
+    std::cout << "* Group Left(G" << groupId << "," << "P" << peerId <<
+        ").\n";
+}
+
 // = RpcPeerService overriding
 
 IMPLEMENT_SRPC_P2P_METHOD_1(Peer, chat, srpc::RShortString, message,

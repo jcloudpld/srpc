@@ -22,7 +22,7 @@ class Peer : public RpcPeerService,
     private srpc::RpcReceiver, private srpc::RpcForwarder
 {
     enum {
-        tickInterval = 100,
+        tickInterval = 1000,
         printInterval = 2000,
         tickProcessingTime = 0
     };
@@ -58,6 +58,10 @@ private:
     virtual void onAddressResolved(const srpc::String& ipAddress,
         srpc::UInt16 port);
     virtual void onHostMigrated(nsrpc::PeerId peerId);
+    virtual void onGroupCreated(const nsrpc::RGroupInfo& groupInfo);
+    virtual void onGroupDestroyed(nsrpc::GroupId groupId);
+    virtual void onGroupJoined(nsrpc::GroupId groupId, nsrpc::PeerId peerId);
+    virtual void onGroupLeft(nsrpc::GroupId groupId, nsrpc::PeerId peerId);
 private:
     const Config& config_;
     boost::scoped_ptr<nsrpc::P2pSession> p2pSession_;

@@ -259,6 +259,9 @@
 				RelativePath=".\ObjectPoolTest.cpp">
 			</File>
 			<File
+				RelativePath=".\P2pGroupTest.cpp">
+			</File>
+			<File
 				RelativePath=".\P2pHolePunchingTest.cpp">
 			</File>
 			<File

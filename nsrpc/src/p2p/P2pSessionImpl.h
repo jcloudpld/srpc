@@ -6,6 +6,8 @@
 #include "RelayServiceImpl.h"
 #include "PeerCandidate.h"
 #include "PeerManager.h"
+#include "GroupManager.h"
+#include "PluginManager.h"
 #include "PeerMessageHandler.h"
 #include "RelayServiceHandler.h"
 #include "StunServiceHandler.h"
@@ -16,6 +18,7 @@
 #include <nsrpc/p2p/detail/P2pRpcNetwork.h>
 #include <nsrpc/p2p/detail/PeerNetworkSender.h>
 #include <nsrpc/p2p/detail/PeerNotifier.h>
+#include <nsrpc/p2p/P2pEventHandler.h>
 #include <nsrpc/p2p/P2pConfig.h>
 #include <nsrpc/p2p/P2pSession.h>
 #include <nsrpc/detail/PacketCoder.h>
@@ -23,8 +26,6 @@
 
 namespace nsrpc
 {
-
-class P2pEventHandler;
 
 namespace detail
 {
@@ -43,7 +44,8 @@ class P2pSessionImpl : public P2pSession,
     private PeerMessageHandler,
     private RelayServiceHandler,
     private StunServiceHandler,
-    private SystemServiceHandler
+    private SystemServiceHandler,
+    private P2pEventHandler
 {
 public:
     P2pSessionImpl(PeerId peerId, P2pEventHandler& eventHandler,
@@ -51,8 +53,14 @@ public:
         PacketCoder* packetCoder);
     virtual ~P2pSessionImpl();
 private: // information hiding
-    virtual bool open(srpc::UInt16 port, const srpc::String& password);
+    virtual void attach(PlugInPtr& plugIn);
+    virtual void detach(PlugInPtr& plugIn);
+
+    virtual bool open(srpc::UInt16 port, const srpc::String& password,
+        P2pOptions p2pOptions);
     virtual void close();
+
+    virtual void addP2pOptions(P2pOptions p2pOptions);
 
     virtual void host(size_t maxPeers, bool hostMigration,
         const PeerIds& hostPrecedence);
@@ -65,6 +73,13 @@ private: // information hiding
         const srpc::String& cipherKey);
 
     virtual void tick();
+
+    virtual GroupId createGroup(const RGroupName& groupName);
+    virtual bool destroyGroup(GroupId groupId);
+    virtual bool joinGroup(GroupId groupId);
+    virtual bool leaveGroup(GroupId groupId);
+
+    virtual const RGroupMap& getGroups() const;
 
     virtual bool isHost() const {
         return peerManager_.isHost();
@@ -79,6 +94,8 @@ private: // information hiding
     virtual PeerAddress getTargetAddress(PeerId peerId) const;
 
     virtual PeerAddresses getAddresses(PeerId peerId) const;
+
+    virtual P2pOptions getP2pOptions(PeerId peerId) const;
 
     virtual PeerStats getStats(PeerId peerId) const;
     virtual std::string getStatsString(PeerId peerId) const;
@@ -95,7 +112,7 @@ private:
 
     void detectConnectionTimeout();
 
-    void addMyPeer();
+    void addMyPeer(P2pOptions p2pOptions);
     void flush();
     void resolve();
     void tryToConnect(PeerId peerId,
@@ -148,11 +165,17 @@ private:
     virtual bool authenticate(PeerId peerId,
         const srpc::String& sessionPassword, srpc::UInt32 sessionKey);
     virtual bool peerConnected(PeerId peerId,
-        const ACE_INET_Addr& targetAddress, const RAddresses& peerAddresses);
+        const ACE_INET_Addr& targetAddress, const RAddresses& peerAddresses,
+        P2pOptions p2pOptions);
     virtual void peerDisconnected(PeerId peerId);
     virtual void connectToNewPeer(PeerId peerId,
         const Addresses& peerAddresses);
     virtual void hostMigrated(PeerId peerId);
+    virtual void setGroups(const RGroupMap& groups);
+    virtual void groupCreated(const RGroupInfo& groupInfo);
+    virtual void groupDestroyed(GroupId groupId);
+    virtual void groupJoined(GroupId groupId, PeerId peerId);
+    virtual void groupLeft(GroupId groupId, PeerId peerId);
     virtual void setP2pProperty(const RP2pProperty& p2pProperty) {
         p2pProperty_ = p2pProperty;
     }
@@ -160,6 +183,7 @@ private:
         return isRelayServerAddress(address);
     }
     virtual bool isHostConnected() const;
+    virtual const RGroupMap& getCurrentGroups() const;
 
     // = StunServiceHandler overriding
     virtual void resolved(const srpc::String& ipAddress, srpc::UInt16 port);
@@ -169,6 +193,19 @@ private:
     virtual void relayed(PeerId peerId, const ACE_INET_Addr& peerAddress,
         ACE_Message_Block* mblock, srpc::RpcPacketType packetType,
         SequenceNumber sequenceNumber, srpc::UInt32 sentTime);
+
+    // = P2pEventHandler overriding
+    virtual void onPeerConnected(PeerId peerId);
+    virtual void onPeerDisconnected(PeerId peerId);
+    virtual void onConnectFailed(PeerId peerId);
+    virtual void onAddressResolved(const srpc::String& ipAddress,
+        srpc::UInt16 port);
+    virtual void onHostMigrated(PeerId peerId);
+    virtual void onGroupCreated(const RGroupInfo& groupInfo);
+    virtual void onGroupDestroyed(GroupId groupId);
+    virtual void onGroupJoined(GroupId groupId, PeerId peerId);
+    virtual void onGroupLeft(GroupId groupId, PeerId peerId);
+
 private:
     const PeerId myPeerId_; ///< my peer id
     P2pEventHandler& eventHandler_;
@@ -179,9 +216,6 @@ private:
     NoSynchMessageBlockManager messageBlockManager_;
     ACE_Message_Block* recvBlock_;
     ACE_Message_Block* sendBlock_;
-
-    PeerCandidateManager peerCandidateManager_;
-    PeerManager peerManager_;
 
     P2pRpcNetwork rpcNetwork_;
     P2pEndpoint endpoint_;
@@ -200,6 +234,12 @@ private:
     PacketCoder::Seed decryptSeed_;
 
     PeerCipherKeyCache peerCipherKeys_;
+
+    PeerCandidateManager peerCandidateManager_;
+    PeerManager peerManager_;
+    GroupManager groupManager_;
+
+    PluginManager plugInManager_;
 };
 
 /** @} */ // addtogroup p2p
