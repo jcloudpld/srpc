@@ -64,7 +64,8 @@ private:
 
 // = Player
 
-Player::Player()
+Player::Player(bool useThread) :
+    useThread_(useThread)
 {
 }
 
@@ -76,9 +77,11 @@ Player::~Player()
 
 bool Player::open()
 {
-    task_.reset(new detail::PlayerTask(*this));
-    if (! task_->start()) {
-        return false;
+    if (useThread_) {
+        task_.reset(new detail::PlayerTask(*this));
+        if (! task_->start()) {
+            return false;
+        }
     }
 
     return true;
