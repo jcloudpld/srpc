@@ -1,16 +1,9 @@
 #include "stdafx.h"
 #include "svoip/Player.h"
+#include "Task.h"
 #include "Decoder.h"
 #include "nsrpc/utility/AceUtil.h"
 #include "nsrpc/utility/Logger.h"
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127 4355 4800)
-#endif
-#include <ace/Task.h>
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
 
 namespace svoip
 {
@@ -21,31 +14,17 @@ namespace detail
 /**
  * @class PlayerTask
  */
-class PlayerTask : public ACE_Task_Base
+class PlayerTask : public Task
 {
 public:
     PlayerTask(Player& player) :
-        player_(player),
-        shouldStop_(false) {}
-
-    virtual ~PlayerTask() {
-        stop();
-    }
-
-    bool start() {
-        return activate() == 0;
-    }
-
-    void stop() {
-        shouldStop_ = true;
-        wait();
-    }
+        player_(player) {}
 
 private:
     virtual int svc() {
         const ACE_Time_Value sleeptm = nsrpc::makeTimeValue(1);
 
-        while (! shouldStop_) {
+        while (! shouldStop()) {
             if (! player_.run()) {
                 NSRPC_LOG_ERROR("SVOIP: Player::run() FAILED!");
             }
@@ -57,7 +36,6 @@ private:
 
 private:
     Player& player_;
-    volatile bool shouldStop_;
 };
 
 } // namespace detail

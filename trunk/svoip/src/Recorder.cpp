@@ -1,17 +1,10 @@
 #include "stdafx.h"
 #include "svoip/Recorder.h"
 #include "svoip/RecorderCallback.h"
+#include "Task.h"
 #include "Encoder.h"
 #include "nsrpc/utility/AceUtil.h"
 #include "nsrpc/utility/Logger.h"
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127 4355 4800)
-#endif
-#include <ace/Task.h>
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
 
 namespace svoip
 {
@@ -22,31 +15,17 @@ namespace detail
 /**
  * @class RecorderTask
  */
-class RecorderTask : public ACE_Task_Base
+class RecorderTask : public Task
 {
 public:
     RecorderTask(Recorder& recorder) :
-        recorder_(recorder),
-        shouldStop_(false) {}
-
-    virtual ~RecorderTask() {
-        stop();
-    }
-
-    bool start() {
-        return activate() == 0;
-    }
-
-    void stop() {
-        shouldStop_ = true;
-        wait();
-    }
+        recorder_(recorder) {}
 
 private:
     virtual int svc() {
         const ACE_Time_Value sleeptm = nsrpc::makeTimeValue(1);
 
-        while (! shouldStop_) {
+        while (! shouldStop()) {
             if (! recorder_.run()) {
                 NSRPC_LOG_ERROR("SVOIP: Recoder::run() FAILED!");
             }
