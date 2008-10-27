@@ -74,7 +74,7 @@ public:
     virtual void read(Float32& value, int bitCount) {
         UInt32 numeric;
         readNumeric(numeric, bitCount);
-        memcpy(&value, &numeric, sizeof(Float32));
+        value = *static_cast<const Float32*>(static_cast<const void*>(&numeric));
     }
 
     virtual void read(String& value, size_t maxLength, int sizeBitCount);
