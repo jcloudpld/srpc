@@ -21,7 +21,7 @@ private:
     virtual PeerAddresses getHostAddresses() const {
         PeerAddresses hostAddresses;
         hostAddresses.push_back(
-            PeerAddress("agileprogrammer.pe.kr", ACE_DEFAULT_SERVER_PORT - 1));
+            PeerAddress("localhost", ACE_DEFAULT_SERVER_PORT - 1));
         return hostAddresses;
     }
 };

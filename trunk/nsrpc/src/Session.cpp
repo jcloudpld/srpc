@@ -280,7 +280,8 @@ void Session::startThrottleTimer()
         return;
     }
 
-    const size_t throttleTimeout = inboundBandwidthLimiter_->getSecondsForThrottling() * 1000;
+    const size_t throttleTimeout =
+        inboundBandwidthLimiter_->getSecondsForThrottling() * 1000;
 
     throttleTimer_ = setupTimer(*proactor(), *this,
         throttleTimeout, &throttleTimer_);
@@ -291,6 +292,19 @@ void Session::stopThrottleTimer()
 {
     if (throttleTimer_ != -1) {
         cancelTimer(*proactor(), throttleTimer_);
+    }
+}
+
+
+void Session::logPendingCount()
+{
+    const long threshold = 3;
+
+    const long readCount = pendingReadCount_.value();
+    const long writeCount = pendingWriteCount_.value();
+    if ((readCount > threshold) || (writeCount > threshold)) {
+        NSRPC_LOG_INFO4("Session(0x%p): %d/%d(I/O) pending.",
+            this, readCount, writeCount);
     }
 }
 
@@ -326,6 +340,7 @@ void Session::handle_read_stream(
     if (result.success()) {
         if (result.bytes_transferred() > 0) {
             if (readMessage(result)) {
+                logPendingCount();
                 return; // success
             }
         }
@@ -353,6 +368,7 @@ void Session::handle_write_stream(
     if ((result.error() == 0) && (bytesTransferred > 0)) {
         assert(result.bytes_to_write() == bytesTransferred);
         stats_.sentBytes_ += bytesTransferred;
+        logPendingCount();
         return; // success
     }
 

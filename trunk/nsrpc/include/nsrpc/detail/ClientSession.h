@@ -131,6 +131,8 @@ private:
     bool isMoreDataNeeded() const {
         return neededSize_ > 0;
     }
+
+    int getWriteQueueSize();
 private:
     boost::scoped_ptr<SynchMessageBlockManager> messageBlockManager_;
     ACE_Message_Block* recvBlock_;
@@ -147,6 +149,9 @@ private:
     ACE_Recursive_Thread_Mutex lock_;
 
     size_t neededSize_;
+
+    time_t lastLogTime_;
+    size_t prevQueueSize_;
 };
 
 } // namespace nsrpc

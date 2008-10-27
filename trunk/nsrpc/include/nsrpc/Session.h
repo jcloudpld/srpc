@@ -157,6 +157,8 @@ private:
     void startThrottleTimer();
     void stopThrottleTimer();
 
+    void logPendingCount();
+
     bool isSafeToDelete() const {
         return (pendingReadCount_ <= 0) && (pendingWriteCount_ <= 0);
     }

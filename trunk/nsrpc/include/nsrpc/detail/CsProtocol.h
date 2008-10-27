@@ -21,15 +21,6 @@ inline bool isValidCsMessageType(CsMessageType mt)
     return (mtSystem <= mt) && (mt <= mtGeneral);
 }
 
-inline CsMessageType toMessageType(const void* rpcHint)
-{
-    if (! rpcHint) {
-        return mtGeneral;
-    }
-
-    return *static_cast<const CsMessageType*>(rpcHint);
-}
-
 
 /**
  * @struct CsPacketHeader

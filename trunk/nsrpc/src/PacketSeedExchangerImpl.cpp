@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PacketSeedExchangerImpl.h"
 #include <nsrpc/detail/PacketCoder.h>
-#include <nsrpc/detail/CsProtocol.h>
+#include <nsrpc/detail/SessionRpcHint.h>
 
 namespace nsrpc
 {
@@ -36,8 +36,8 @@ void PacketSeedExchangerForServer::exchangeSeed()
     PacketCoder::Seed decryptSeed;
     getPacketCoder().generateCipherSeed(encryptSeed, decryptSeed);
 
-    const CsMessageType messageType = mtSystem;
-    exchangeSeed(encryptSeed, decryptSeed, &messageType);
+    SessionRpcHint rpcHint(0, mtSystem);
+    exchangeSeed(encryptSeed, decryptSeed, &rpcHint);
     getPacketCoder().setEncryptSeed(encryptSeed);
 
     exchangingDecryptSeed_ = decryptSeed;
@@ -66,8 +66,8 @@ IMPLEMENT_SRPC_METHOD_2(PacketSeedExchangerForClient, exchangeSeed,
     srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed)
 {
     getPacketCoder().setDecryptSeed(encryptSeed);
-    const CsMessageType messageType = mtSystem;
-    onConfirmSeed(decryptSeed, &messageType);
+    SessionRpcHint rpcHint(0, mtSystem);
+    onConfirmSeed(decryptSeed, &rpcHint);
     getPacketCoder().setEncryptSeed(decryptSeed);
 }
 
