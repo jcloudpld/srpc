@@ -569,6 +569,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RpcNetworkForBroadcast.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\RpcSession.cpp"
 				>
 			</File>
@@ -891,6 +895,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\include\nsrpc\detail\RpcNetworkForBroadcast.h"
+						>
+					</File>
+					<File
 						RelativePath="..\include\nsrpc\detail\SessionCreator.h"
 						>
 					</File>
@@ -904,6 +912,10 @@
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\detail\SessionPool.h"
+						>
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\detail\SessionRpcHint.h"
 						>
 					</File>
 					<File

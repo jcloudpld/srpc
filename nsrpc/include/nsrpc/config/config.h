@@ -11,4 +11,6 @@
 #   error 현재는 MSVC와 GCC만 지원합니다
 #endif
 
+#define USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
+
 #endif // NSRPC_CONFIG_H

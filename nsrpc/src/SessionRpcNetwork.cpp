@@ -3,6 +3,7 @@
 #include <nsrpc/detail/MessageBlockStreamBuffer.h>
 #include <nsrpc/detail/SessionRpcNetworkCallback.h>
 #include <nsrpc/detail/MessageBlockProvider.h>
+#include <nsrpc/detail/SessionRpcHint.h>
 #include <nsrpc/utility/Logger.h>
 #include <srpc/detail/RpcCommand.h>
 #include <srpc/StreamFactory.h>
@@ -118,13 +119,31 @@ void SessionRpcNetwork::unregisterRpcReceiver(srpc::RpcReceiver* receiver)
 void SessionRpcNetwork::send(srpc::RpcCommand& command,
     srpc::RpcPacketType /*packetType*/, const void* rpcHint)
 {
-    const CsMessageType messageType = toMessageType(rpcHint);
-    assert(isValidCsMessageType(messageType));
+    const SessionRpcHint sessionRpcHint = toSessionRpcHint(rpcHint);
+    assert(isValidCsMessageType(sessionRpcHint.messageType_));
 
     ACE_GUARD(ACE_Thread_Mutex, monitor, sendLock_);
 
-    if (! enabled_) {
+    ACE_Message_Block* wblock = 0;
+    if (sessionRpcHint.isValidSendBlock()) {
+        wblock = static_cast<ACE_Message_Block*>(
+            sessionRpcHint.sendBlock_)->clone();
+    }
+    else {
+        wblock = marshal(command);
+    }
+    if (! wblock) {
         return;
+    }
+
+    callback_->sendNow(*wblock, sessionRpcHint.messageType_);
+}
+
+
+ACE_Message_Block* SessionRpcNetwork::marshal(srpc::RpcCommand& command)
+{
+    if (! enabled_) {
+        return 0;
     }
 
     ACE_Message_Block* wblock = initOutputStream();
@@ -133,22 +152,22 @@ void SessionRpcNetwork::send(srpc::RpcCommand& command,
         command.marshal(*ostream_);
     }
     catch (const srpc::Exception& e) {
-        NSRPC_LOG_DEBUG2(ACE_TEXT("SessionRpcNetwork::send() - ")
+        NSRPC_LOG_DEBUG2(ACE_TEXT("SessionRpcNetwork::marshal() - ")
             ACE_TEXT("RpcCommand::marshal() FAILED(%s)."),
             e.what());
 
         wblock->release();
         callback_->marshalingErrorOccurred();
-        return;
+        return 0;
     }
 
-    callback_->sendNow(*wblock, messageType);
+    return wblock;
 }
 
 
 void SessionRpcNetwork::initInputStream(ACE_Message_Block* mblock)
 {
-    if (! istream_.get()) {
+    if (! istream_.get()) { // lazy evaluation
         rstreamBuffer_.reset(new MessageBlockStreamBuffer(mblock));
         istream_.reset(
             srpc::StreamFactory::createIStream(
@@ -164,7 +183,7 @@ void SessionRpcNetwork::initInputStream(ACE_Message_Block* mblock)
 ACE_Message_Block* SessionRpcNetwork::initOutputStream()
 {
     ACE_Message_Block* wblock = &messageBlockProvider_->acquireSendBlock();
-    if (! ostream_.get()) {
+    if (! ostream_.get()) { // lazy evaluation
         wstreamBuffer_.reset(new MessageBlockStreamBuffer(wblock));
         ostream_.reset(
             srpc::StreamFactory::createOStream(

@@ -74,6 +74,7 @@ public: // for Test
     virtual void send(srpc::RpcCommand& command,
         srpc::RpcPacketType packetType, const void* rpcHint);
 private:
+    ACE_Message_Block* marshal(srpc::RpcCommand& command);
     void initInputStream(ACE_Message_Block* mblock);
     ACE_Message_Block* initOutputStream();
 private:

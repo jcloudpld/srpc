@@ -1,8 +1,11 @@
 #ifndef NSRPC_MESSAGEBLOCKMANAGER_H
 #define NSRPC_MESSAGEBLOCKMANAGER_H
 
+#include "../config/config.h"
 #include "ObjectAllocator.h"
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
 #include "VariousMemoryAllocator.h"
+#endif
 #include <ace/Message_Block.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -29,7 +32,9 @@ template <class Mutex>
 class MessageBlockManager : public boost::noncopyable
 {
 protected:
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     typedef VariousMemoryAllocator<Mutex> BufferAllocator;
+#endif
     typedef ObjectAllocator<ACE_Message_Block, Mutex> MessageBlockAllocator;
     typedef ObjectAllocator<ACE_Data_Block, Mutex> DataBlockAllocator;
 public:
@@ -40,8 +45,12 @@ public:
      */
     MessageBlockManager(size_t poolSize, size_t blockSize) :
         messageBlockAllocator_(poolSize),
-        dataBlockAllocator_(poolSize),
-        bufferAllocator_(poolSize, blockSize) {}
+        dataBlockAllocator_(poolSize)
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
+        ,
+        bufferAllocator_(poolSize, blockSize)
+#endif
+        { blockSize; }
 
     /// ACE_Message_Block을 요청한다.
     ACE_Message_Block* create(size_t size) {
@@ -49,12 +58,19 @@ public:
 #  pragma warning (push)
 #  pragma warning (disable: 4127)
 #endif
+
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
+        ACE_Allocator* allocator_strategy = &bufferAllocator_;
+#else
+        ACE_Allocator* allocator_strategy = 0;
+#endif
+
         ACE_Message_Block* nb = 0;
         ACE_NEW_MALLOC_RETURN(nb,
             static_cast<ACE_Message_Block*> (
                 messageBlockAllocator_.malloc(sizeof(ACE_Message_Block))),
             ACE_Message_Block(size, ACE_Message_Block::MB_DATA, 0, 0,
-                &bufferAllocator_,
+                allocator_strategy,
                 0, ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, ACE_Time_Value::zero,
                 ACE_Time_Value::max_time, &dataBlockAllocator_,
                 &messageBlockAllocator_),
@@ -67,7 +83,9 @@ public:
 protected: // for Test
     MessageBlockAllocator messageBlockAllocator_;
     DataBlockAllocator dataBlockAllocator_;
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     BufferAllocator bufferAllocator_;
+#endif
 };
 
 

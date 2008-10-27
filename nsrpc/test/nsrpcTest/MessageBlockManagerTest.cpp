@@ -20,9 +20,11 @@ public:
         return dataBlockAllocator_;
     }
 
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     const BufferAllocator& getBufferAllocator() const {
         return bufferAllocator_;
     }
+#endif
 };
 
 
@@ -82,10 +84,12 @@ void MessageBlockManagerTest::testInitialize()
         static_cast<int>(poolSize),
         static_cast<int>(
             manager_->getDataBlockAllocator().getCachedMemoryCount()));
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
         static_cast<int>(poolSize),
         static_cast<int>(
             manager_->getBufferAllocator().getCachedMemoryCount()));
+#endif
 }
 
 
@@ -103,10 +107,12 @@ void MessageBlockManagerTest::testAcquire()
         static_cast<int>(poolSize - 1),
         static_cast<int>(
             manager_->getDataBlockAllocator().getCachedMemoryCount()));
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
         static_cast<int>(poolSize - 1),
         static_cast<int>(
             manager_->getBufferAllocator().getCachedMemoryCount()));
+#endif
 }
 
 
@@ -122,10 +128,12 @@ void MessageBlockManagerTest::testRelease()
         static_cast<int>(poolSize),
         static_cast<int>(
             manager_->getDataBlockAllocator().getCachedMemoryCount()));
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
         static_cast<int>(poolSize),
         static_cast<int>(
             manager_->getBufferAllocator().getCachedMemoryCount()));
+#endif
 }
 
 
@@ -147,10 +155,12 @@ void MessageBlockManagerTest::testDuplicate()
         static_cast<int>(poolSize),
         static_cast<int>(
         manager_->getDataBlockAllocator().getCachedMemoryCount()));
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
         static_cast<int>(poolSize),
         static_cast<int>(
         manager_->getBufferAllocator().getCachedMemoryCount()));
+#endif
 }
 
 
@@ -169,10 +179,12 @@ void MessageBlockManagerTest::testClone()
         static_cast<int>(poolSize - 2),
         static_cast<int>(
         manager_->getDataBlockAllocator().getCachedMemoryCount()));
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
         static_cast<int>(poolSize - 2),
         static_cast<int>(
         manager_->getBufferAllocator().getCachedMemoryCount()));
+#endif
 
     mblock->release();
     cloned->release();
@@ -185,8 +197,10 @@ void MessageBlockManagerTest::testClone()
         static_cast<int>(poolSize),
         static_cast<int>(
         manager_->getDataBlockAllocator().getCachedMemoryCount()));
+#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
     CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
         static_cast<int>(poolSize),
         static_cast<int>(
         manager_->getBufferAllocator().getCachedMemoryCount()));
+#endif
 }

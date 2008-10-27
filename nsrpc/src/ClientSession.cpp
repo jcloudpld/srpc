@@ -42,7 +42,9 @@ ClientSession::ClientSession(ACE_Reactor* reactor,
     notifier_(reactor, this, ACE_Event_Handler::WRITE_MASK),
     neededSize_(0),
     disconnectReserved_(false),
-    fireEventAfterFlush_(false)
+    fireEventAfterFlush_(false),
+    lastLogTime_(time(0)),
+    prevQueueSize_(0)
 {
     if (packetCoderFactory != 0) {
         packetCoder_.reset(packetCoderFactory->create());
@@ -269,42 +271,53 @@ bool ClientSession::read()
 
 bool ClientSession::write()
 {
-    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+    int queueSize = -1;
 
-    ACE_Message_Block* mblock;
-    ACE_Time_Value immediate(ACE_Time_Value::zero);
-    if (msgQueue_.dequeue_head(mblock, &immediate) == -1) {
-        return true;
-    }
+    {
+        ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
 
-    AceMessageBlockGuard block(mblock);
-
-    const ssize_t sentSize =
-        peer().send(block->rd_ptr(), block->length());
-    if (sentSize == -1) {
-        if (ACE_OS::last_error() != EWOULDBLOCK) {
-            NSRPC_LOG_DEBUG2(
-                ACE_TEXT("ClientSession::write() ")
-                ACE_TEXT("FAILED!!!(%d,%m)"), ACE_OS::last_error());
-            return false;
+        ACE_Message_Block* mblock;
+        ACE_Time_Value immediate(ACE_Time_Value::zero);
+        if (msgQueue_.dequeue_head(mblock, &immediate) == -1) {
+            return true;
         }
-    }
-    else {
-        block->rd_ptr(sentSize);
-    }
-    
-    if (block->length() > 0) {
-        const int result = msgQueue_.enqueue_head(block.get());
-        if (result == -1) {
-            NSRPC_LOG_ERROR2(
-                ACE_TEXT("ClientSession::write() - ")
-                ACE_TEXT("enqueue_head(%d, %m) FAILED!!!"),
-                ACE_OS::last_error());
-            return false;
+
+        AceMessageBlockGuard block(mblock);
+
+        const ssize_t sentSize =
+            peer().send(block->rd_ptr(), block->length());
+        if (sentSize == -1) {
+            if (ACE_OS::last_error() != EWOULDBLOCK) {
+                NSRPC_LOG_DEBUG2(
+                    ACE_TEXT("ClientSession::write() ")
+                    ACE_TEXT("FAILED!!!(%d,%m)"), ACE_OS::last_error());
+                return false;
+            }
         }
         else {
-            block.release(); // success
+            block->rd_ptr(sentSize);
         }
+        
+        if (block->length() > 0) {
+            const int result = msgQueue_.enqueue_head(block.get());
+            if (result == -1) {
+                NSRPC_LOG_ERROR2(
+                    ACE_TEXT("ClientSession::write() - ")
+                    ACE_TEXT("enqueue_head(%d, %m) FAILED!!!"),
+                    ACE_OS::last_error());
+                return false;
+            }
+            else {
+                block.release(); // success
+            }
+        }
+
+        queueSize = getWriteQueueSize();
+    }
+
+    if (queueSize >= 0) {
+        NSRPC_LOG_INFO2("ClientSession: current write queue size = %u.",
+            queueSize);
     }
 
     return true;
@@ -356,6 +369,29 @@ bool ClientSession::parseMessage()
     }
 
     return false;
+}
+
+
+int ClientSession::getWriteQueueSize()
+{
+    const time_t logInterval = 3;
+    const size_t queueThreshold = 3;
+
+    const time_t currentTime = time(0);
+    if ((currentTime - lastLogTime_) >= logInterval) {
+        const size_t currentQueueSize = msgQueue_.message_count();
+        const size_t queueSizeDiff =
+            (currentQueueSize > prevQueueSize_) ?
+            currentQueueSize : prevQueueSize_;
+        if (queueSizeDiff > 0) {
+            lastLogTime_ = currentTime;
+            if (queueSizeDiff > queueThreshold) {
+                prevQueueSize_ = currentQueueSize;
+                return static_cast<int>(currentQueueSize);
+            }
+        }
+    }
+    return -1;
 }
 
 
