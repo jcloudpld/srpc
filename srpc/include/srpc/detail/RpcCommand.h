@@ -41,7 +41,7 @@ public:
 private:
     virtual ForwardingFunctor& getMarshaler() = 0;
 private:
-    RRpcId rpcId_;
+    const RRpcId& rpcId_;
 };
 
 /** @} */ // addtogroup RpcForwarding

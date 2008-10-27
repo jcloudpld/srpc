@@ -41,7 +41,7 @@ public:
 
     virtual ReceivingFunctor& getDispatcher() = 0;
 private:
-    RRpcId rpcId_;
+    const RRpcId& rpcId_;
 };
 
 /** @} */ // addtogroup RpcReceiving
