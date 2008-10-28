@@ -122,20 +122,19 @@ protected: // for Test
     virtual ACE_Message_Block& acquireSendBlock();
     virtual ACE_Message_Block& acquireRecvBlock();
 private:
-    void prepareRead();
     bool read();
     bool write();
     void releaseMessageBlocks();
-    bool parseHeader();
-    bool parseMessage();
-    bool isMoreDataNeeded() const {
-        return neededSize_ > 0;
-    }
+    BodySize parseHeader();
+    bool parseMessage(BodySize bodySize);
+    bool isPacketHeaderArrived() const;
+    bool isMessageArrived(BodySize bodySize) const;
 
     int getWriteQueueSize();
 private:
     boost::scoped_ptr<SynchMessageBlockManager> messageBlockManager_;
     ACE_Message_Block* recvBlock_;
+    ACE_Message_Block* msgBlock_;
     boost::scoped_ptr<PacketCoder> packetCoder_;
     CsPacketHeader headerForReceive_;
 
@@ -147,8 +146,6 @@ private:
     bool fireEventAfterFlush_; ///< 전송이 완료된 후 접속해제 이벤트를 호출?
 
     ACE_Recursive_Thread_Mutex lock_;
-
-    size_t neededSize_;
 
     time_t lastLogTime_;
     size_t prevQueueSize_;

@@ -76,6 +76,9 @@ public:
     ///< 패킷의 기본 메모리 크기
     virtual size_t getDefaultPacketSize() const = 0;
 
+    ///< 패킷의 최대 메모리 크기
+    virtual size_t getMaxPacketSize() const = 0;
+
     ///< 패킷 풀의 크기
     virtual size_t getDefaultPacketPoolSize() const = 0;
 

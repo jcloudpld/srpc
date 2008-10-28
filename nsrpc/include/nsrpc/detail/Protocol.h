@@ -63,6 +63,7 @@ struct NSRPC_API AbstractPacketHeader
     }
 
     virtual size_t write(void* buffer) const {
+        assert(bodySize_ > 0);
         return packet::put(bodySize_, buffer);
     }
 

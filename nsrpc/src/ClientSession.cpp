@@ -40,7 +40,6 @@ ClientSession::ClientSession(ACE_Reactor* reactor,
     PacketCoderFactory* packetCoderFactory) :
     ACE_Event_Handler(reactor),
     notifier_(reactor, this, ACE_Event_Handler::WRITE_MASK),
-    neededSize_(0),
     disconnectReserved_(false),
     fireEventAfterFlush_(false),
     lastLogTime_(time(0)),
@@ -57,7 +56,9 @@ ClientSession::ClientSession(ACE_Reactor* reactor,
         packetCoder_->getDefaultPacketPoolSize(),
         packetCoder_->getDefaultPacketSize()));
     recvBlock_ =
-        messageBlockManager_->create(packetCoder_->getDefaultPacketSize());
+        messageBlockManager_->create(packetCoder_->getMaxPacketSize());
+    msgBlock_ =
+        messageBlockManager_->create(packetCoder_->getMaxPacketSize());
 }
 
 #ifdef _MSC_VER
@@ -77,15 +78,15 @@ ClientSession::~ClientSession()
 bool ClientSession::connect(const srpc::String& ip, u_short port,
     size_t timeout)
 {
+    const ACE_INET_Addr address(port, ip.c_str());
+    const ACE_Time_Value connectionTimeout(makeTimeValue(timeout));
+
     ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
 
     if (isConnected()) {
         assert(false && "Already connected. Disconnect first.");
         return false;
     }
-
-    const ACE_INET_Addr address(port, ip.c_str());
-    const ACE_Time_Value connectionTimeout(makeTimeValue(timeout));
 
     ACE_SOCK_Connector connector;
     if (connector.connect(peer(), address, &connectionTimeout) == -1) {
@@ -183,8 +184,6 @@ bool ClientSession::initSession()
 {
     packetCoder_->reset();
 
-    prepareRead();
-
     long nagle = 1;
     stream_.set_option(IPPROTO_TCP, TCP_NODELAY, &nagle, sizeof(nagle));
     stream_.enable(ACE_NONBLOCK);
@@ -204,13 +203,6 @@ bool ClientSession::initSession()
     assert(false == fireEventAfterFlush_);
 
     return true;
-}
-
-
-void ClientSession::prepareRead()
-{
-    recvBlock_->reset();
-    neededSize_ = packetCoder_->getHeaderSize();
 }
 
 
@@ -242,12 +234,14 @@ void ClientSession::closeSocket()
 
 bool ClientSession::read()
 {
-    if (neededSize_ <= 0) {
-        //assert(false && "neededSize_ <= 0");
-        return false;
+    if (recvBlock_->space() <= 0) {
+        const size_t spare = recvBlock_->capacity() / 10;
+        assert(spare > 0);
+        recvBlock_->size(recvBlock_->size() + spare);
     }
 
-    const ssize_t recvSize = peer().recv(recvBlock_->wr_ptr(), neededSize_);
+    const ssize_t recvSize = peer().recv(recvBlock_->wr_ptr(),
+        recvBlock_->space());
     if (recvSize < 0) {
         if (ACE_OS::last_error() == EWOULDBLOCK) {
             return true;
@@ -262,9 +256,8 @@ bool ClientSession::read()
             ACE_OS::last_error());
         return false;
     }
+
     recvBlock_->wr_ptr(recvSize);
-    assert(neededSize_ >= static_cast<size_t>(recvSize));
-    neededSize_ -= recvSize;
     return true;
 }
 
@@ -339,36 +332,56 @@ void ClientSession::releaseMessageBlocks()
     }
 
     recvBlock_->release();
+    msgBlock_->release();
 }
 
 
-bool ClientSession::parseHeader()
+BodySize ClientSession::parseHeader()
 {
+    assert(recvBlock_->length() >= packetCoder_->getHeaderSize());
     if (! packetCoder_->readHeader(headerForReceive_, *recvBlock_)) {
+        return 0;
+    }
+
+    return headerForReceive_.bodySize_;
+}
+
+
+bool ClientSession::parseMessage(BodySize bodySize)
+{
+    if (! isConnected()) {
         return false;
     }
 
-    neededSize_ = headerForReceive_.bodySize_;
-    if (neededSize_ <= 0) {
-        assert(neededSize_ > 0);
+    const size_t messageSize = packetCoder_->getHeaderSize() + bodySize;
+
+    msgBlock_->reset();
+    if (msgBlock_->space() < messageSize) {
+        msgBlock_->size(messageSize);
+    }
+    msgBlock_->copy(recvBlock_->base(), messageSize);
+
+    if (! packetCoder_->decode(*msgBlock_)) {
         return false;
     }
+    packetCoder_->advanceToBody(*msgBlock_);
 
-    if (recvBlock_->space() < neededSize_) {
-        recvBlock_->size(recvBlock_->size() + neededSize_);
-    }
+    recvBlock_->rd_ptr(packetCoder_->getHeaderSize() + bodySize);
+    recvBlock_->crunch();
+
     return true;
 }
 
 
-bool ClientSession::parseMessage()
+bool ClientSession::isPacketHeaderArrived() const
 {
-    if (isConnected() && packetCoder_->decode(*recvBlock_)) {
-        packetCoder_->advanceToBody(*recvBlock_);
-        return true;
-    }
+    return recvBlock_->length() >= packetCoder_->getHeaderSize();
+}
 
-    return false;
+
+bool ClientSession::isMessageArrived(BodySize bodySize) const
+{
+    return recvBlock_->length() >= (packetCoder_->getHeaderSize() + bodySize);
 }
 
 
@@ -395,7 +408,6 @@ int ClientSession::getWriteQueueSize()
 }
 
 
-// 하나의 완전한 메세지 단위로 읽어들인 후 처리한다.
 int ClientSession::handle_input(ACE_HANDLE)
 {
     ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, -1);
@@ -404,25 +416,22 @@ int ClientSession::handle_input(ACE_HANDLE)
         return -1;
     }
 
-    if (isMoreDataNeeded()) {
-        return 0;
-    }
-
-    if (recvBlock_->length() == packetCoder_->getHeaderSize()) {
-        if (! parseHeader()) {
+    while (isPacketHeaderArrived()) {
+        const BodySize bodySize = parseHeader();
+        if (bodySize <= 0) {
             return -1;
         }
-    }
 
-    if (! isMoreDataNeeded()) {
-        if (! parseMessage()) {
+        if (! isMessageArrived(bodySize)) {
+            break;
+        }
+
+        if (! parseMessage(bodySize)) {
             return -1;
         }
 
         assert(isValidCsMessageType(headerForReceive_.messageType_));
         onMessageArrived(headerForReceive_.messageType_);
-
-        prepareRead();
     }
 
     return 0;
@@ -470,7 +479,7 @@ ACE_Message_Block& ClientSession::acquireSendBlock()
 
 ACE_Message_Block& ClientSession::acquireRecvBlock()
 {
-    return *recvBlock_;
+    return *msgBlock_;
 }
 
 } // namespace nsrpc

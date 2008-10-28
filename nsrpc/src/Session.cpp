@@ -303,7 +303,7 @@ void Session::logPendingCount()
     const long readCount = pendingReadCount_.value();
     const long writeCount = pendingWriteCount_.value();
     if ((readCount > threshold) || (writeCount > threshold)) {
-        NSRPC_LOG_INFO4("Session(0x%p): %d/%d(I/O) pending.",
+        NSRPC_LOG_INFO4("Session(0x%X): %d/%d(I/O) pending.",
             this, readCount, writeCount);
     }
 }

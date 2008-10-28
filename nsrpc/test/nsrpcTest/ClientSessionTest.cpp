@@ -124,7 +124,7 @@ void ClientSessionTest::testRecvPackets()
         static_cast<int>(
             packetCoder_->getHeaderSize() + bodySize) * sendCount,
         static_cast<int>(getLastServerSession().getStats().sentBytes_));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("recv bytes",
-        static_cast<int>(bodySize * sendCount),
-        static_cast<int>(clientSession_->getRecvSize()));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("message count",
+        sendCount,
+        static_cast<int>(clientSession_->getMessageCount()));
 }
