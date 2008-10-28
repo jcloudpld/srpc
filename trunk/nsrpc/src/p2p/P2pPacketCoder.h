@@ -47,6 +47,10 @@ public:
         return defaultPacketSize;
     }
 
+    virtual size_t getMaxPacketSize() const {
+        return defaultPacketSize;
+    }
+
     virtual size_t getDefaultPacketPoolSize() const {
         return defaultPacketPoolSize;
     }

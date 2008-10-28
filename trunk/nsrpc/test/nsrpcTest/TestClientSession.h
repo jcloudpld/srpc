@@ -13,14 +13,14 @@ public:
     TestClientSession(ACE_Reactor* reactor) :
         nsrpc::ClientSession(reactor),
         disconnected_(false),
-        recvSize_(0) {}
+        messageCount_(0) {}
 
     bool isDisconnected() const {
         return disconnected_;
     }
 
-    size_t getRecvSize() const {
-        return recvSize_;
+    size_t getMessageCount() const {
+        return messageCount_;
     }
 private:
     virtual void onConnected() {}
@@ -28,7 +28,7 @@ private:
         disconnected_ = true;
     }
     virtual void onMessageArrived(nsrpc::CsMessageType /*messageType*/) {
-        recvSize_ += acquireRecvBlock().length();
+        ++messageCount_;
     }
 public: // for Test
     virtual ACE_Message_Block& acquireSendBlock() {
@@ -38,7 +38,7 @@ public: // for Test
     //virtual void release(ACE_Message_Block& mblock);
 private:
     bool disconnected_;
-    size_t recvSize_;
+    size_t messageCount_;
 };
 
 #endif // !defined(NSRPC_TESTCLIENTSESSION_H)
