@@ -186,6 +186,8 @@ private:
 
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingReadCount_;
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingWriteCount_;
+    long prevPendingReadCount_;
+    long prevPendingWriteCount_;
 
     long disconnectTimer_;
     bool disconnectReserved_;
