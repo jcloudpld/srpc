@@ -43,6 +43,8 @@ public:
     RpcNetworkForBroadcast();
     virtual ~RpcNetworkForBroadcast();
 
+    void prepareBroadcast();
+
     /// @return send block.
     void* acquireBlock();
 

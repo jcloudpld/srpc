@@ -50,6 +50,12 @@ void RpcNetworkForBroadcast::initialize(bool useBitPacking,
 }
 
 
+void RpcNetworkForBroadcast::prepareBroadcast()
+{
+    releaseSendBlock();
+}
+
+
 void* RpcNetworkForBroadcast::acquireBlock()
 {
     return sendBlock_;
@@ -59,8 +65,6 @@ void* RpcNetworkForBroadcast::acquireBlock()
 void RpcNetworkForBroadcast::send(srpc::RpcCommand& command,
     srpc::RpcPacketType /*packetType*/, const void* /*rpcHint*/)
 {
-    releaseSendBlock();
-
     sendBlock_ = marshal(command);
 }
 
