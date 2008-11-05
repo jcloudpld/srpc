@@ -69,13 +69,10 @@ void SessionTest::testRecvPackets()
         static_cast<int>(
             packetCoder_->getHeaderSize() + bodySize) * sendCount,
         static_cast<int>(getLastSession().getStats().recvBytes_));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("received bytes",
-        static_cast<int>(bodySize) * sendCount,
-        static_cast<int>(getLastSession().getArrivedMessageSize()));
-
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("acquireRecvBlock call count",
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("received count",
         sendCount,
-        static_cast<int>(getLastSession().getAcquireRecvBlockCallCount()));
+        static_cast<int>(getLastSession().getArrivedMessageCount()));
+
     // 아래 테스트는 큰 의미가 없음
     CPPUNIT_ASSERT_EQUAL_MESSAGE("acquireSendBlock call count",
         0,
@@ -120,10 +117,6 @@ void SessionTest::testSendPackets()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("acquireSendBlock call count",
         sendCount,
         static_cast<int>(getLastSession().getAcquireSendBlockCallCount()));
-    // 아래 테스트는 큰 의미가 없음
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("acquireRecvBlock call count",
-        0,
-        static_cast<int>(getLastSession().getAcquireRecvBlockCallCount()));
 }
 
 
@@ -147,9 +140,9 @@ void SessionTest::testConnect()
 
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("received bytes",
-        static_cast<int>(bodySize),
-        static_cast<int>(session->getArrivedMessageSize()));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("received count",
+        1,
+        static_cast<int>(session->getArrivedMessageCount()));
 
     sessionManager_->release(session);
 }

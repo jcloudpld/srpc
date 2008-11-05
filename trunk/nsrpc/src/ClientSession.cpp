@@ -336,24 +336,17 @@ void ClientSession::releaseMessageBlocks()
 }
 
 
-BodySize ClientSession::parseHeader()
+bool ClientSession::parseHeader()
 {
     assert(recvBlock_->length() >= packetCoder_->getHeaderSize());
-    if (! packetCoder_->readHeader(headerForReceive_, *recvBlock_)) {
-        return 0;
-    }
-
-    return headerForReceive_.bodySize_;
+    return packetCoder_->readHeader(headerForReceive_, *recvBlock_);
 }
 
 
-bool ClientSession::parseMessage(BodySize bodySize)
+bool ClientSession::parseMessage()
 {
-    if (! isConnected()) {
-        return false;
-    }
-
-    const size_t messageSize = packetCoder_->getHeaderSize() + bodySize;
+    const size_t messageSize =
+        packetCoder_->getHeaderSize() + headerForReceive_.bodySize_;
 
     msgBlock_->reset();
     if (msgBlock_->space() < messageSize) {
@@ -361,13 +354,13 @@ bool ClientSession::parseMessage(BodySize bodySize)
     }
     msgBlock_->copy(recvBlock_->base(), messageSize);
 
+    recvBlock_->rd_ptr(messageSize);
+    recvBlock_->crunch();
+
     if (! packetCoder_->decode(*msgBlock_)) {
         return false;
     }
     packetCoder_->advanceToBody(*msgBlock_);
-
-    recvBlock_->rd_ptr(packetCoder_->getHeaderSize() + bodySize);
-    recvBlock_->crunch();
 
     return true;
 }
@@ -379,9 +372,10 @@ bool ClientSession::isPacketHeaderArrived() const
 }
 
 
-bool ClientSession::isMessageArrived(BodySize bodySize) const
+bool ClientSession::isMessageArrived() const
 {
-    return recvBlock_->length() >= (packetCoder_->getHeaderSize() + bodySize);
+    return recvBlock_->length() >=
+        (packetCoder_->getHeaderSize() + headerForReceive_.bodySize_);
 }
 
 
@@ -407,6 +401,7 @@ int ClientSession::getWriteQueueSize()
     return -1;
 }
 
+// = ACE_Event_Handler overriding
 
 int ClientSession::handle_input(ACE_HANDLE)
 {
@@ -417,20 +412,24 @@ int ClientSession::handle_input(ACE_HANDLE)
     }
 
     while (isPacketHeaderArrived()) {
-        const BodySize bodySize = parseHeader();
-        if (bodySize <= 0) {
+        if (! parseHeader()) {
             return -1;
         }
 
-        if (! isMessageArrived(bodySize)) {
+        if (! isMessageArrived()) {
             break;
         }
 
-        if (! parseMessage(bodySize)) {
+        if (! parseMessage()) {
             return -1;
         }
 
-        assert(isValidCsMessageType(headerForReceive_.messageType_));
+        if (! isValidCsMessageType(headerForReceive_.messageType_)) {
+            NSRPC_LOG_ERROR(ACE_TEXT("ClientSession::handle_input() - ")
+                ACE_TEXT("Invalid Message Type."));
+            return false;
+        }
+
         onMessageArrived(headerForReceive_.messageType_);
     }
 
@@ -467,6 +466,7 @@ int ClientSession::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
     return 0;
 }
 
+// = MessageBlockProvider overriding
 
 ACE_Message_Block& ClientSession::acquireSendBlock()
 {

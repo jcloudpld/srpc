@@ -99,9 +99,9 @@ void ClientSessionTest::testSendPackets()
         static_cast<int>(
             packetCoder_->getHeaderSize() + bodySize) * sendCount,
         static_cast<int>(getLastServerSession().getStats().recvBytes_));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("received bytes",
-        static_cast<int>(bodySize) * sendCount,
-        static_cast<int>(getLastServerSession().getArrivedMessageSize()));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("received count",
+        sendCount,
+        static_cast<int>(getLastServerSession().getArrivedMessageCount()));
 }
 
 

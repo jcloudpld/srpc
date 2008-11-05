@@ -142,9 +142,12 @@ protected:
     virtual void addresses(const ACE_INET_Addr& remote_address,
         const ACE_INET_Addr& local_address);
 private:
+    bool handleMessages();
+    bool parseHeader();
+    bool parseMessage();
+
     bool readMessage(const NSRPC_Asynch_Read_Stream::Result& result);
-    bool readMessageHeader();
-    bool readMessageBody(size_t neededBytes);
+    bool beginToRead();
     bool read(size_t neededBytes);
 
     bool write(ACE_Message_Block& mblock);
@@ -159,6 +162,9 @@ private:
 
     void logPendingCount();
 
+    bool isPacketHeaderArrived() const;
+    bool isMessageArrived() const;
+
     bool isSafeToDelete() const {
         return (pendingReadCount_ <= 0) && (pendingWriteCount_ <= 0);
     }
@@ -171,6 +177,7 @@ private:
     CsPacketHeader headerForReceive_;
 
     ACE_Message_Block* recvBlock_;
+    ACE_Message_Block* msgBlock_;
 
     boost::scoped_ptr<Asynch_RW_Stream> stream_;
 

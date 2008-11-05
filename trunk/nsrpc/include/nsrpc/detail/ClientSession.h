@@ -125,10 +125,10 @@ private:
     bool read();
     bool write();
     void releaseMessageBlocks();
-    BodySize parseHeader();
-    bool parseMessage(BodySize bodySize);
+    bool parseHeader();
+    bool parseMessage();
     bool isPacketHeaderArrived() const;
-    bool isMessageArrived(BodySize bodySize) const;
+    bool isMessageArrived() const;
 
     int getWriteQueueSize();
 private:
