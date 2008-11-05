@@ -277,6 +277,7 @@ void Session::reset()
     stream_.reset(new Asynch_RW_Stream);
     stats_.reset();
     pendingReadCount_ = pendingWriteCount_ = 0;
+    prevPendingReadCount_ = prevPendingWriteCount_ = 0;
     disconnectReserved_ = false;
     disconnectTimer_ = -1;
     throttleTimer_ = -1;
@@ -328,11 +329,14 @@ void Session::stopThrottleTimer()
 
 void Session::logPendingCount()
 {
-    const long threshold = 3;
+    const long threshold = 5;
 
     const long readCount = pendingReadCount_.value();
     const long writeCount = pendingWriteCount_.value();
-    if ((readCount > threshold) || (writeCount > threshold)) {
+
+    const long diffRead = std::abs(readCount - prevPendingReadCount_);
+    const long diffWrite = std::abs(writeCount - prevPendingWriteCount_);
+    if ((diffRead > threshold) || (diffWrite > threshold)) {
         NSRPC_LOG_INFO4("Session(0x%X): %d/%d(I/O) pending.",
             this, readCount, writeCount);
     }
