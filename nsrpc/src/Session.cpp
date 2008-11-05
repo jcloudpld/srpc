@@ -24,7 +24,9 @@ Session::Session(const SessionConfig& config) :
     inboundBandwidthLimiter_(new BandwidthLimit(config.capacity_))
 {
     recvBlock_ =
-        messageBlockManager_.create(packetCoder_->getDefaultPacketSize());
+        messageBlockManager_.create(packetCoder_->getMaxPacketSize());
+    msgBlock_ =
+        messageBlockManager_.create(packetCoder_->getMaxPacketSize());
 
     reset();
 }
@@ -33,6 +35,7 @@ Session::Session(const SessionConfig& config) :
 Session::~Session()
 {
     recvBlock_->release();
+    msgBlock_->release();
 }
 
 
@@ -134,57 +137,26 @@ bool Session::isConnected() const
 }
 
 
-
 bool Session::readMessage(const NSRPC_Asynch_Read_Stream::Result& result)
 {
     ACE_GUARD_RETURN(ACE_Thread_Mutex, monitor, recvLock_, false);
 
-    const size_t bytes_transferred = result.bytes_transferred();
-    stats_.recvBytes_ += bytes_transferred;
-    assert(result.bytes_to_read() >= bytes_transferred);
+    const size_t bytesTransferred = result.bytes_transferred();
+    stats_.recvBytes_ += bytesTransferred;
+    assert(result.bytes_to_read() >= bytesTransferred);
+    assert(&(result.message_block()) == recvBlock_);
 
-    inboundBandwidthLimiter_->add(bytes_transferred);
+    inboundBandwidthLimiter_->add(bytesTransferred);
+
+    if (! handleMessages()) {
+        return false;
+    }
+
     const bool isKarmaRemained = inboundBandwidthLimiter_->check();
-    //NSRPC_LOG_DEBUG3("BandwidthLimit left bytes = %d(-%d)",
-    //    inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
-
-    ACE_Message_Block& mblock = result.message_block();
-    assert(&mblock == recvBlock_);
-
-    const size_t neededBytes = result.bytes_to_read() - bytes_transferred;
-    if (neededBytes > 0) {
-        return readMessageBody(neededBytes);
-    }
-
-    if (mblock.length() == packetCoder_->getHeaderSize()) {
-        if (packetCoder_->readHeader(headerForReceive_, mblock)) {
-            return readMessageBody(headerForReceive_.bodySize_);
-        }
-        else {
-            NSRPC_LOG_DEBUG(ACE_TEXT("Session::readMessage() - ")
-                ACE_TEXT("Invalid Message Header(%m)."));
-            return false;
-        }
-    }
-
-    if (! packetCoder_->decode(mblock)) {
-        return false;
-    }
-
-    packetCoder_->advanceToBody(mblock);
-
-    if (! isValidCsMessageType(headerForReceive_.messageType_)) {
-        NSRPC_LOG_DEBUG(ACE_TEXT("Session::readMessage() - ")
-            ACE_TEXT("Invalid Message Type."));
-        return false;
-    }
-
-    if (! onMessageArrived(headerForReceive_.messageType_)) {
-        return false;
-    }
-
     if (isKarmaRemained) {
-        return readMessageHeader();
+        //NSRPC_LOG_DEBUG3("BandwidthLimit left bytes = %d(-%d)",
+        //    inboundBandwidthLimiter_->getLeftBytes(), bytesTransferred);
+        return beginToRead();
     }
     else {
         startThrottleTimer();
@@ -196,21 +168,79 @@ bool Session::readMessage(const NSRPC_Asynch_Read_Stream::Result& result)
 }
 
 
-bool Session::readMessageHeader()
+bool Session::handleMessages()
 {
-    assert(recvBlock_->size() > packetCoder_->getHeaderSize());
+    while (isPacketHeaderArrived()) {
+        if (! parseHeader()) {
+            return false;
+        }
 
-    recvBlock_->reset();
-    return read(packetCoder_->getHeaderSize());
+        if (! isMessageArrived()) {
+            break;
+        }
+
+        if (! parseMessage()) {
+            return false;
+        }
+
+        if (! isValidCsMessageType(headerForReceive_.messageType_)) {
+            NSRPC_LOG_ERROR(ACE_TEXT("Session::readMessage() - ")
+                ACE_TEXT("Invalid Message Type."));
+            return false;
+        }
+
+        if (! onMessageArrived(headerForReceive_.messageType_)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 
-bool Session::readMessageBody(size_t neededBytes)
+bool Session::parseHeader()
 {
-    if (recvBlock_->space() < neededBytes) {
-        recvBlock_->size(recvBlock_->size() + neededBytes);
+    assert(recvBlock_->length() >= packetCoder_->getHeaderSize());
+    if (! packetCoder_->readHeader(headerForReceive_, *recvBlock_)) {
+        return false;
     }
-    return read(neededBytes);
+
+    return true;
+}
+
+
+bool Session::parseMessage()
+{
+    const size_t messageSize =
+        packetCoder_->getHeaderSize() + headerForReceive_.bodySize_;
+
+    msgBlock_->reset();
+    if (msgBlock_->space() < messageSize) {
+        msgBlock_->size(messageSize);
+    }
+    msgBlock_->copy(recvBlock_->base(), messageSize);
+
+    recvBlock_->rd_ptr(messageSize);
+    recvBlock_->crunch();
+
+    if (! packetCoder_->decode(*msgBlock_)) {
+        return false;
+    }
+    packetCoder_->advanceToBody(*msgBlock_);
+
+    return true;
+}
+
+
+bool Session::beginToRead()
+{
+    if (recvBlock_->space() <= 0) {
+        const size_t spare = recvBlock_->capacity() / 10;
+        assert(spare > 0);
+        recvBlock_->size(recvBlock_->size() + spare);
+    }
+
+    return read(recvBlock_->space());
 }
 
 
@@ -309,6 +339,34 @@ void Session::logPendingCount()
 }
 
 
+bool Session::isPacketHeaderArrived() const
+{
+    return recvBlock_->length() >= packetCoder_->getHeaderSize();
+}
+
+
+bool Session::isMessageArrived() const
+{
+    assert(headerForReceive_.isValid());
+
+    return recvBlock_->length() >=
+        (packetCoder_->getHeaderSize() + headerForReceive_.bodySize_);
+}
+
+
+void Session::onThrottling(size_t readBytes, size_t maxBytesPerSecond)
+{
+    ACE_TCHAR address[MAXHOSTNAMELEN];
+    NSRPC_LOG_INFO6("Client(%s:%d) is THROTTLED(%d > %d), "
+        "delaying read(%d sec).",
+        remoteAddress_.get_host_addr(address, MAXHOSTNAMELEN),
+        remoteAddress_.get_port_number(),
+        readBytes, maxBytesPerSecond,
+        inboundBandwidthLimiter_->getSecondsForThrottling());
+}
+
+// = NSRPC_Service_Handler overriding
+
 void Session::open(ACE_HANDLE new_handle, ACE_Message_Block& /*message_block*/)
 {
     {
@@ -319,7 +377,7 @@ void Session::open(ACE_HANDLE new_handle, ACE_Message_Block& /*message_block*/)
         reset();
 
         if (stream_->open(*this, new_handle, 0, proactor_, true)) {
-            if (readMessageHeader()) {
+            if (beginToRead()) {
                 onConnected();
                 return; // success
             }
@@ -396,7 +454,7 @@ void Session::handle_time_out(const ACE_Time_Value& /*tv*/, const void* act)
     else if (act == &throttleTimer_) {
         throttleTimer_ = -1;
         inboundBandwidthLimiter_->reset();
-        if (! readMessageHeader()) {
+        if (! beginToRead()) {
             disconnect();
         }
     }
@@ -408,18 +466,6 @@ void Session::addresses(const ACE_INET_Addr& remote_address,
 {
     remoteAddress_ = remote_address;
     localAddress_ = local_address;
-}
-
-
-void Session::onThrottling(size_t readBytes, size_t maxBytesPerSecond)
-{
-    ACE_TCHAR address[MAXHOSTNAMELEN];
-    NSRPC_LOG_INFO6("Client(%s:%d) is THROTTLED(%d > %d), "
-        "delaying read(%d sec).",
-        remoteAddress_.get_host_addr(address, MAXHOSTNAMELEN),
-        remoteAddress_.get_port_number(),
-        readBytes, maxBytesPerSecond,
-        inboundBandwidthLimiter_->getSecondsForThrottling());
 }
 
 // = MessageBlockProvider overriding
@@ -435,7 +481,7 @@ ACE_Message_Block& Session::acquireSendBlock()
 
 ACE_Message_Block& Session::acquireRecvBlock()
 {
-    return *recvBlock_;
+    return *msgBlock_;
 }
 
 } // namespace nsrpc

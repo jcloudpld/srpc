@@ -437,7 +437,7 @@ void P2pSessionTest::testBroadcast()
         peer2->open(ACE_DEFAULT_SERVER_PORT + 2));
     peer2->connect(getHostAddresses());
 
-    for (int i = 0; i < (2 * 3); ++i) {
+    for (int i = 0; i < (2 * 4); ++i) {
         peer1->tick();
         peer2->tick();
         hostSession_->tick();
@@ -496,7 +496,7 @@ void P2pSessionTest::testUnicast()
         peer2->open(ACE_DEFAULT_SERVER_PORT + 2));
     peer2->connect(getHostAddresses());
 
-    for (int i = 0; i < (2 * 3); ++i) {
+    for (int i = 0; i < (2 * 4); ++i) {
         peer1->tick();
         peer2->tick();
         hostSession_->tick();

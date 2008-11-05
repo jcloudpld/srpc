@@ -14,39 +14,30 @@ class TestSession : public nsrpc::Session
 public:
     TestSession(const nsrpc::SessionConfig& config) :
         nsrpc::Session(config),
-        arrivedMessageSize_(0),
-        acquireSendBlockCallCount_(0),
-        acquireRecvBlockCallCount_(0) {}
+        arrivedMessageCount_(0),
+        acquireSendBlockCallCount_(0) {}
 
-    size_t getArrivedMessageSize() const {
-        return arrivedMessageSize_;
+    size_t getArrivedMessageCount() const {
+        return arrivedMessageCount_;
     }
 
     size_t getAcquireSendBlockCallCount() const {
         return acquireSendBlockCallCount_;
-    }
-    size_t getAcquireRecvBlockCallCount() const {
-        return acquireRecvBlockCallCount_;
     }
 public:
     virtual ACE_Message_Block& acquireSendBlock() {
         ++acquireSendBlockCallCount_;
         return nsrpc::Session::acquireSendBlock();
     }
-    virtual ACE_Message_Block& acquireRecvBlock() {
-        ++acquireRecvBlockCallCount_;
-        return nsrpc::Session::acquireRecvBlock();
-    }
 private:
     virtual bool onMessageArrived(nsrpc::CsMessageType /*messageType*/) {
-        arrivedMessageSize_ += acquireRecvBlock().length();
+        ++arrivedMessageCount_;
         return true;
     }
     virtual void onDisconnected() {}
 private:
-    size_t arrivedMessageSize_;
+    size_t arrivedMessageCount_;
     size_t acquireSendBlockCallCount_;
-    size_t acquireRecvBlockCallCount_;
 };
 
 #endif // !defined(NSRPC_TESTSESSION_H)
