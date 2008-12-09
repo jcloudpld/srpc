@@ -23,10 +23,10 @@ Session::Session(const SessionConfig& config) :
     proactor_(config.proactor_),
     inboundBandwidthLimiter_(new BandwidthLimit(config.capacity_))
 {
-    recvBlock_ =
-        messageBlockManager_.create(packetCoder_->getMaxPacketSize());
-    msgBlock_ =
-        messageBlockManager_.create(packetCoder_->getMaxPacketSize());
+    recvBlock_ = new ACE_Message_Block(packetCoder_->getMaxPacketSize());
+        //messageBlockManager_.create(packetCoder_->getMaxPacketSize());
+    msgBlock_ = new ACE_Message_Block(packetCoder_->getMaxPacketSize());
+        //messageBlockManager_.create(packetCoder_->getMaxPacketSize());
 
     reset();
 }
@@ -477,7 +477,8 @@ void Session::addresses(const ACE_INET_Addr& remote_address,
 ACE_Message_Block& Session::acquireSendBlock()
 {
     ACE_Message_Block* mblock =
-        messageBlockManager_.create(packetCoder_->getDefaultPacketSize());
+         new ACE_Message_Block(packetCoder_->getDefaultPacketSize());
+        //messageBlockManager_.create(packetCoder_->getDefaultPacketSize());
     packetCoder_->reserveHeader(*mblock);
     return *mblock;
 }

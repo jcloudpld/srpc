@@ -27,6 +27,14 @@ namespace
 
 InitAce initAce;
 
+enum {
+    /// high watermark (128 K).
+    hwmMessageQueue = 128 * 1024,
+
+    /// low watermark (same as high water mark).
+    lwmMessageQueue = 128 * 1024
+};
+
 } // namespace
 
 // = ClientSession
@@ -39,6 +47,7 @@ InitAce initAce;
 ClientSession::ClientSession(ACE_Reactor* reactor,
     PacketCoderFactory* packetCoderFactory) :
     ACE_Event_Handler(reactor),
+    msgQueue_(hwmMessageQueue, lwmMessageQueue),
     notifier_(reactor, this, ACE_Event_Handler::WRITE_MASK),
     disconnectReserved_(false),
     fireEventAfterFlush_(false),
@@ -148,16 +157,14 @@ bool ClientSession::sendMessage(ACE_Message_Block& mblock,
     if (packetCoder_->isValidPacket(*block)) {
         CsPacketHeader header(messageType);
         if (packetCoder_->encode(*block, header)) {
-            //ACE_Time_Value nowait(ACE_OS::gettimeofday());
-            const int result = msgQueue_.enqueue_tail(block.get(), 0); //&nowait);
+            const int result = msgQueue_.enqueue_tail(block.get());
             if (result != -1) {
                 block.release();
                 return true; // success
             }
-            else {
-                NSRPC_LOG_ERROR(ACE_TEXT("ClientSession::sendMessage() - ")
-                    ACE_TEXT("enqueue_tail() FAILED."));
-            }
+            NSRPC_LOG_ERROR3(ACE_TEXT("ClientSession::sendMessage() - ")
+                ACE_TEXT("enqueue_tail(%d,%m,%d queued) FAILED."),
+                ACE_OS::last_error(), msgQueue_.message_count());
         }
         else {
             NSRPC_LOG_ERROR(ACE_TEXT("ClientSession::sendMessage() - ")
