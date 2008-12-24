@@ -383,7 +383,7 @@
 				AdditionalIncludeDirectories="$(ProjectDir)..\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;ACE_AS_STATIC_LIBS"
 				StringPooling="true"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="true"
