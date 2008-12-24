@@ -339,6 +339,8 @@ void Session::logPendingCount()
     if ((diffRead > threshold) || (diffWrite > threshold)) {
         NSRPC_LOG_INFO4("Session(0x%X): %d/%d(I/O) pending.",
             this, readCount, writeCount);
+        prevPendingReadCount_ = readCount;
+        prevPendingWriteCount_ = writeCount;
     }
 }
 
