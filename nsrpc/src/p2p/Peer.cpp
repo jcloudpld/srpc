@@ -344,13 +344,15 @@ bool Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
 
         ++stats_.sentReliablePackets_;
 
-        if (! send(fromPeerId, message, srpc::ptReliable,
-            dontReleaseMessageBlock)) {
-            return false;
-        }
+        const bool succeeded = send(fromPeerId, message, srpc::ptReliable,
+            dontReleaseMessageBlock);
 
         outgoingReliableMessages_.erase(pos++);
         assert(end == outgoingReliableMessages_.end());
+
+        if (! succeeded) {
+            return false;
+        }
     }
     return true;
 }
