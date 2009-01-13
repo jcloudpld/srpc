@@ -261,7 +261,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
 
     if (hint.peerId_ != p2pSession_->getPeerId()) {
         if (! isJoiner(hint.peerId_)) {
-            assert(false && "unknown peer");
+            //assert(false && "unknown peer");
             return;
         }
 

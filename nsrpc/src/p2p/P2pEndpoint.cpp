@@ -89,20 +89,19 @@ bool P2pEndpoint::send(const ACE_INET_Addr& peerAddr,
     //    peerAddr.get_host_addr(), peerAddr.get_port_number(), mblock.length());
 
     const size_t blockSize = mblock.length();
-    const ssize_t sentSize =
-        udp_->send(mblock.rd_ptr(), blockSize, peerAddr);
-    if (sentSize != static_cast<ssize_t>(blockSize)) {
-        if (ACE_OS::last_error() == EWOULDBLOCK) {
-            return true;
-        }
-
-        NSRPC_LOG_ERROR4(
-            ACE_TEXT("P2pEndpoint::send(%s:%d) FAILED!!!(%d,%m)"),
-            peerAddr.get_host_addr(), peerAddr.get_port_number(),
-            ACE_OS::last_error());
-        return false;
+    const ssize_t sentSize = udp_->send(mblock.rd_ptr(), blockSize, peerAddr);
+    if (sentSize == static_cast<ssize_t>(blockSize)) {
+        return true;
     }
-    return true;
+
+    if (ACE_OS::last_error() == EWOULDBLOCK) {
+        return true;
+    }
+
+    NSRPC_LOG_ERROR5(ACE_TEXT("P2pEndpoint::send(%s:%d,%d) FAILED!!!(%d,%m)"),
+        peerAddr.get_host_addr(), peerAddr.get_port_number(),
+        blockSize, ACE_OS::last_error());
+    return false;
 }
 
 

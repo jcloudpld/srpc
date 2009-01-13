@@ -61,7 +61,7 @@ public:
     void putIncomingMessage(const P2pPacketHeader& header,
         ACE_Message_Block* mblock, const ACE_INET_Addr& peerAddress);
 
-    void sendOutgoingMessages(PeerId fromPeerId);
+    bool sendOutgoingMessages(PeerId fromPeerId);
 
     bool handleIncomingMessages();
 
@@ -159,20 +159,20 @@ private:
     bool putIncomingReliableMessage(const ReliableMessage& message);
     bool putIncomingUnreliableMessage(const Message& message);
 
-    void sendOutgoingReliableMessages(PeerId fromPeerId);
-    void sendOutgoingUnreliableMessages(PeerId fromPeerId);
+    bool sendOutgoingReliableMessages(PeerId fromPeerId);
+    bool sendOutgoingUnreliableMessages(PeerId fromPeerId);
 
     void handleIncomingReliableMessage();
     bool handleIncomingUnreliableMessage();
 
-    void sendOutgoingDelayedMessages(DelayedOutboundMessages& messages);
+    bool sendOutgoingDelayedMessages(DelayedOutboundMessages& messages);
     void handleIncomingDelayedMessages(DelayedInboundMessages& messages);
 
     void checkTimeout();
     bool checkDisconnect(const ReliableMessage& sentReliableMessage);
     void retransmit(ReliableMessage& message);
 
-    void sendPing(PeerId fromPeerId);
+    void sendPing();
 
     void sendAcknowledgement(const Message& message);
     void sendPendingAcknowledgement();
