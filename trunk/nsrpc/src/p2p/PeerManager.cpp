@@ -215,7 +215,9 @@ void PeerManager::sendOutgoingMessages()
     const PeerId myPeerId = me_->getPeerId();
 
     if (! relayServer_.isNull()) {
-        relayServer_->sendOutgoingMessages(myPeerId);
+        if (! relayServer_->sendOutgoingMessages(myPeerId)) {
+            relayServer_->disconnect();
+        }
     }
 
     Peers::iterator pos = peers_.begin();
@@ -226,7 +228,9 @@ void PeerManager::sendOutgoingMessages()
             continue;
         }
 
-        peer->sendOutgoingMessages(myPeerId);
+        if (peer->sendOutgoingMessages(myPeerId)) {
+            peer->disconnect();
+        }
 
         if (peer->isDisconnecting()) {
             removePeerNextTime(peer->getPeerId());

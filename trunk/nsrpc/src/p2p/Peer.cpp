@@ -243,29 +243,39 @@ void Peer::putOutgoingUnreliableMessage(const Message& message)
 }
 
 
-void Peer::sendOutgoingMessages(PeerId fromPeerId)
+bool Peer::sendOutgoingMessages(PeerId fromPeerId)
 {
     if (isDisconnected()) {
-        return;
+        return false;
     }
 
     if (shouldCheckTimeout()) {
         checkTimeout();
     }
 
-    sendOutgoingUnreliableMessages(fromPeerId);
+    if (! sendOutgoingUnreliableMessages(fromPeerId)) {
+        return false;
+    }
 
     if (shouldSendPing()) {
-        sendPing(fromPeerId);
+        sendPing();
     }
-    else {
-        sendOutgoingReliableMessages(fromPeerId);
+
+    if (! sendOutgoingReliableMessages(fromPeerId)) {
+        return false;
     }
 
     sendPendingAcknowledgement();
 
-    sendOutgoingDelayedMessages(delayedOutgoingUnreliableMessages_);
-    sendOutgoingDelayedMessages(delayedOutgoingReliableMessages_);
+    if (! sendOutgoingDelayedMessages(delayedOutgoingUnreliableMessages_)) {
+        return false;
+    }
+
+    if (! sendOutgoingDelayedMessages(delayedOutgoingReliableMessages_)) {
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -313,9 +323,9 @@ void Peer::putSentReliableMessage(const ReliableMessage& message)
 }
 
 
-void Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
+bool Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
 {
-    const bool shouldReleaseMessageBlock = false;
+    const bool dontReleaseMessageBlock = false;
 
     const PeerTime currentTime = getPeerTime();
 
@@ -335,17 +345,18 @@ void Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
         ++stats_.sentReliablePackets_;
 
         if (! send(fromPeerId, message, srpc::ptReliable,
-            shouldReleaseMessageBlock)) {
-            break;
+            dontReleaseMessageBlock)) {
+            return false;
         }
 
         outgoingReliableMessages_.erase(pos++);
         assert(end == outgoingReliableMessages_.end());
     }
+    return true;
 }
 
 
-void Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
+bool Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
 {
     const bool shouldReleaseMessageBlock = true;
 
@@ -355,7 +366,7 @@ void Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
         Message& message = *pos;
         if (! send(fromPeerId,  message, srpc::ptUnreliable,
             shouldReleaseMessageBlock)) {
-            break;
+            return false;
         }
 
         ++stats_.sentUnreliablePackets_;
@@ -363,6 +374,7 @@ void Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
         outgoingUnreliableMessages_.erase(pos++);
         assert(end == outgoingUnreliableMessages_.end());
     }
+    return true;
 }
 
 
@@ -464,7 +476,7 @@ void Peer::retransmit(ReliableMessage& message)
 }
 
 
-void Peer::sendOutgoingDelayedMessages(DelayedOutboundMessages& messages)
+bool Peer::sendOutgoingDelayedMessages(DelayedOutboundMessages& messages)
 {
     const bool shouldReleaseMessageBlock = true;
 
@@ -481,12 +493,13 @@ void Peer::sendOutgoingDelayedMessages(DelayedOutboundMessages& messages)
 
         if (! sendNow(message.peerIdPair_, message.getAddressPair(), message,
             message.packetType_, shouldReleaseMessageBlock)) {
-            break;
+            return false;
         }
 
         messages.erase(pos++);
         assert(end == messages.end());
     }
+    return true;
 }
 
 
@@ -513,13 +526,12 @@ bool Peer::shouldSendPing() const
 }
 
 
-void Peer::sendPing(PeerId fromPeerId)
+void Peer::sendPing()
 {
     assert(! isRelayServer(peerId_));
 
     if (outgoingReliableMessages_.empty()) {
         messageHandler_.sendPing(peerId_);
-        sendOutgoingReliableMessages(fromPeerId);
     }
 }
 

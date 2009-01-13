@@ -22,7 +22,7 @@ class Peer : public RpcPeerService,
     private srpc::RpcReceiver, private srpc::RpcForwarder
 {
     enum {
-        tickInterval = 1000,
+        tickInterval = 50,
         printInterval = 2000,
         tickProcessingTime = 0
     };
