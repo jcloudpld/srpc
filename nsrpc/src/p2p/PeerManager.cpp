@@ -228,7 +228,7 @@ void PeerManager::sendOutgoingMessages()
             continue;
         }
 
-        if (peer->sendOutgoingMessages(myPeerId)) {
+        if (! peer->sendOutgoingMessages(myPeerId)) {
             peer->disconnect();
         }
 
