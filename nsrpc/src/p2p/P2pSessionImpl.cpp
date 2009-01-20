@@ -193,6 +193,12 @@ void P2pSessionImpl::setRelayServer(const PeerAddress& address,
 }
 
 
+void P2pSessionImpl::setHost(PeerId newHostId)
+{
+    hostMigrated(newHostId);
+}
+
+
 void P2pSessionImpl::tick()
 {
     setPeerTime();
