@@ -72,6 +72,8 @@ private: // information hiding
     virtual void setRelayServer(const PeerAddress& address,
         const srpc::String& cipherKey);
 
+    virtual void setHost(PeerId newHostId);
+
     virtual void tick();
 
     virtual GroupId createGroup(const RGroupName& groupName);

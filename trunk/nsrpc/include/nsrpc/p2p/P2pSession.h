@@ -80,6 +80,11 @@ public:
         const srpc::String& cipherKey = "") = 0;
 
     /**
+     * Set host by manually.
+     */
+    virtual void setHost(PeerId newHostId) = 0;
+
+    /**
      * tick. (handle events, etc)
      * - tick() should be called fairly regularly for adequate performance.
      */
