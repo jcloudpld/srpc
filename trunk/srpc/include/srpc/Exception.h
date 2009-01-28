@@ -18,7 +18,7 @@ namespace srpc {
  */
 class SRPC_API_INLINE Exception : public std::runtime_error
 {
-    enum { MAX_BUFFER_SIZE = 128 };
+    enum { MAX_BUFFER_SIZE = 512 };
 public:
     Exception(const char* file, int fileno, const char* msg) :
         std::runtime_error("") {
@@ -26,7 +26,7 @@ public:
 #  pragma warning (push)
 #  pragma warning (disable: 4996)
 #endif
-        snprintf(what_, MAX_BUFFER_SIZE, "Exception: (%s:%d), %s",
+        snprintf(what_, MAX_BUFFER_SIZE - 1, "Exception: (%s:%d), %s",
             file, fileno, msg);
 #ifdef _MSC_VER
 #  pragma warning (pop)
