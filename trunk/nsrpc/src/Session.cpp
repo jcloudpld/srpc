@@ -65,13 +65,13 @@ bool Session::connect(const srpc::String& host, u_short port, size_t timeout)
 void Session::sendMessage(ACE_Message_Block& mblock,
     CsMessageType messageType)
 {
-    if (! isConnected()) {
-        return;
-    }
-
     AceMessageBlockGuard block(&mblock);
 
     ACE_GUARD(ACE_Thread_Mutex, monitor, sendLock_);
+
+    if (! isConnected()) {
+        return;
+    }
 
     if (! packetCoder_->isValidPacket(*block)) {
         NSRPC_LOG_DEBUG2(ACE_TEXT("Session::sendMessage() - ")
