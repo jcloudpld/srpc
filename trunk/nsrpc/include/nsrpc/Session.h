@@ -22,6 +22,7 @@
 #  pragma warning (pop)
 #endif
 #include <boost/scoped_ptr.hpp>
+#include <queue>
 
 namespace nsrpc
 {
@@ -46,6 +47,7 @@ struct SessionConfig;
 class NSRPC_API Session :
     public NSRPC_Service_Handler, protected MessageBlockProvider
 {
+    typedef std::queue<ACE_Message_Block*> SendingQueue;
 public:
     /**
      * @struct Stats
@@ -147,7 +149,8 @@ private:
     bool readMessageBody(size_t neededBytes);
     bool read(size_t neededBytes);
 
-    bool write(ACE_Message_Block& mblock);
+    void writeNextMessage();
+    bool write(ACE_Message_Block* mblock, bool force = false);
 
     void reset();
 
@@ -156,8 +159,6 @@ private:
 
     void startThrottleTimer();
     void stopThrottleTimer();
-
-    void logPendingCount();
 
     bool isSafeToDelete() const {
         return (pendingReadCount_ <= 0) && (pendingWriteCount_ <= 0);
@@ -170,8 +171,6 @@ private:
     boost::scoped_ptr<PacketCoder> packetCoder_;
     CsPacketHeader headerForReceive_;
 
-    ACE_Message_Block* recvBlock_;
-
     boost::scoped_ptr<Asynch_RW_Stream> stream_;
 
     ACE_INET_Addr remoteAddress_;
@@ -179,14 +178,15 @@ private:
 
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingReadCount_;
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingWriteCount_;
-    long prevPendingReadCount_;
-    long prevPendingWriteCount_;
 
     long disconnectTimer_;
     bool disconnectReserved_;
 
     boost::scoped_ptr<BandwidthLimit> inboundBandwidthLimiter_;
     long throttleTimer_;
+
+    ACE_Message_Block* recvBlock_;
+    SendingQueue sendingQueue_;
 
     Stats stats_;
 

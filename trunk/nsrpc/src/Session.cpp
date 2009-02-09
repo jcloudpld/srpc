@@ -32,6 +32,7 @@ Session::Session(const SessionConfig& config) :
 
 Session::~Session()
 {
+    reset();
     recvBlock_->release();
 }
 
@@ -82,7 +83,7 @@ void Session::sendMessage(ACE_Message_Block& mblock,
         return;
     }
 
-    if (! write(*block)) {
+    if (! write(block.get())) {
         return;
     }
 
@@ -227,16 +228,41 @@ bool Session::read(size_t neededBytes)
 }
 
 
-bool Session::write(ACE_Message_Block& mblock)
+void Session::writeNextMessage()
 {
-    if (stream_->write(mblock, mblock.length()) != 0) {
-        NSRPC_LOG_DEBUG4(ACE_TEXT("Session(0x%X)::write() - ")
-            ACE_TEXT("Asynch_RW_Stream::write(%d) FAILED(%m, %d)."),
-            this, mblock.length(), errno);
-        return false;
+    ACE_GUARD(ACE_Thread_Mutex, monitor, sendLock_);
+
+    if (pendingWriteCount_ > 0) {
+        return;
     }
 
-    ++pendingWriteCount_;
+    if (sendingQueue_.empty()) {
+        return;
+    }
+
+    ACE_Message_Block* mblock = sendingQueue_.front();
+    sendingQueue_.pop();
+
+    const bool force = true;
+    write(mblock, force);
+}
+
+
+bool Session::write(ACE_Message_Block* mblock, bool force)
+{
+    if ((pendingWriteCount_ <= 0) || force) {
+        if (stream_->write(*mblock, mblock->length()) != 0) {
+            NSRPC_LOG_DEBUG4(ACE_TEXT("Session(0x%X)::write() - ")
+                ACE_TEXT("Asynch_RW_Stream::write(%d) FAILED(%m, %d)."),
+                this, mblock->length(), errno);
+            return false;
+        }
+        ++pendingWriteCount_;
+    }
+    else {
+        sendingQueue_.push(mblock);        
+    }
+
     return true;
 }
 
@@ -246,12 +272,17 @@ void Session::reset()
     stream_.reset(new Asynch_RW_Stream);
     stats_.reset();
     pendingReadCount_ = pendingWriteCount_ = 0;
-    prevPendingReadCount_ = prevPendingWriteCount_ = 0;
     disconnectReserved_ = false;
     disconnectTimer_ = -1;
     throttleTimer_ = -1;
     packetCoder_->reset();
     inboundBandwidthLimiter_->reset();
+
+    while (! sendingQueue_.empty()) {
+        ACE_Message_Block* mblock = sendingQueue_.front();
+        mblock->release();
+        sendingQueue_.pop();
+    }
 }
 
 
@@ -292,24 +323,6 @@ void Session::stopThrottleTimer()
 {
     if (throttleTimer_ != -1) {
         cancelTimer(*proactor(), throttleTimer_);
-    }
-}
-
-
-void Session::logPendingCount()
-{
-    const long threshold = 5;
-
-    const long readCount = pendingReadCount_.value();
-    const long writeCount = pendingWriteCount_.value();
-
-    const long diffRead = std::abs(readCount - prevPendingReadCount_);
-    const long diffWrite = std::abs(writeCount - prevPendingWriteCount_);
-    if ((diffRead > threshold) || (diffWrite > threshold)) {
-        NSRPC_LOG_INFO4("Session(0x%X): %d/%d(I/O) pending.",
-            this, readCount, writeCount);
-        prevPendingReadCount_ = readCount;
-        prevPendingWriteCount_ = writeCount;
     }
 }
 
@@ -358,7 +371,6 @@ void Session::handle_read_stream(
     if (result.success()) {
         if (result.bytes_transferred() > 0) {
             if (readMessage(result)) {
-                logPendingCount();
                 return; // success
             }
         }
@@ -386,7 +398,8 @@ void Session::handle_write_stream(
     if ((result.error() == 0) && (bytesTransferred > 0)) {
         assert(result.bytes_to_write() == bytesTransferred);
         stats_.sentBytes_ += bytesTransferred;
-        logPendingCount();
+
+        writeNextMessage();
         return; // success
     }
 
