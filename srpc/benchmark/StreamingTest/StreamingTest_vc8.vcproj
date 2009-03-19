@@ -264,6 +264,7 @@
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -283,6 +284,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
+				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="$(ProjectDir)..\..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
