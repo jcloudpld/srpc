@@ -246,7 +246,7 @@ void Session::reset()
     stream_.reset(new Asynch_RW_Stream);
     stats_.reset();
     pendingReadCount_ = pendingWriteCount_ = 0;
-    prevPendingWriteCount_ = 0;
+    prevLoggedPendingWriteCount_ = 0;
     disconnectReserved_ = false;
     disconnectTimer_ = -1;
     throttleTimer_ = -1;
@@ -303,14 +303,23 @@ void Session::checkPendingCount()
 
     const long writeCount = pendingWriteCount_.value();
 
-    const long diffWrite = std::abs(writeCount - prevPendingWriteCount_);
-    if (diffWrite > logThreshold) {
-        NSRPC_LOG_INFO3("Session(0x%X): %d output pending.",
-            this, writeCount);
-        prevPendingWriteCount_ = writeCount;
+    {
+        ACE_GUARD(ACE_Thread_Mutex, sendMonitor, sendLock_);
+
+        const long diffWrite =
+            std::abs(writeCount - prevLoggedPendingWriteCount_);
+        if (diffWrite > logThreshold) {
+            NSRPC_LOG_INFO3("Session(0x%X): %d output pending.",
+                this, writeCount);
+            prevLoggedPendingWriteCount_ = writeCount;
+        }
     }
 
     if (writeCount >= maxThreshold) {
+        if (! isConnected()) {
+            return;
+        }
+
         NSRPC_LOG_ERROR3(
             "Session(0x%X): will disconnect - Too many output pending(%d).",
             this, writeCount);
