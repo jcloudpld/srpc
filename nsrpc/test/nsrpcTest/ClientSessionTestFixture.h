@@ -15,8 +15,8 @@
 class ClientSessionTestFixture : public SessionTestFixture
 {
 public:
-    virtual void setUp() {
-        SessionTestFixture::setUp();
+    virtual void SetUp() {
+        SessionTestFixture::SetUp();
 
         reactorTask_ = new nsrpc::ReactorTask(true);
         reactorTask_->start(1);
@@ -26,7 +26,7 @@ public:
         packetCoder_ = nsrpc::PacketCoderFactory().create();
     }
 
-    virtual void tearDown() {
+    virtual void TearDown() {
         delete clientSession_;
 
         reactorTask_->stop();
@@ -35,7 +35,7 @@ public:
 
         delete packetCoder_;
 
-        SessionTestFixture::tearDown();
+        SessionTestFixture::TearDown();
     }
 protected:
     nsrpc::ReactorTask* reactorTask_;

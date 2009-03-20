@@ -12,85 +12,61 @@ using namespace nsrpc;
 */
 class SessionConnectorTest : public SessionTestFixture
 {
-    CPPUNIT_TEST_SUITE(SessionConnectorTest);
-    CPPUNIT_TEST(testConnect);
-    CPPUNIT_TEST(testMultipleConnect);
-    CPPUNIT_TEST(testStopToConnect);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    virtual void setUp();
-    virtual void tearDown();
 private:
-    void testConnect();
-    void testMultipleConnect();
-    void testStopToConnect();
-private:
+    virtual void SetUp() {
+        SessionTestFixture::SetUp();
+
+        connector_ = new SessionConnector(*sessionManager_);
+        pause(10);
+    }
+
+    virtual void TearDown() {
+        connector_->stop();
+        connector_->wait();
+        delete connector_;
+
+        SessionTestFixture::TearDown();
+    }
+
+protected:
     TestSessionManager* getSessionManager() {
         return static_cast<TestSessionManager*>(sessionManager_);
     }
-private:
+
+protected:
     SessionConnector* connector_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(SessionConnectorTest);
 
-void SessionConnectorTest::setUp()
+TEST_F(SessionConnectorTest, testConnect)
 {
-    SessionTestFixture::setUp();
-
-    connector_ = new SessionConnector(*sessionManager_);
-    pause(10);
-}
-
-
-void SessionConnectorTest::tearDown()
-{
-    connector_->stop();
-    connector_->wait();
-    delete connector_;
-
-    SessionTestFixture::tearDown();
-}
-
-
-void SessionConnectorTest::testConnect()
-{
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("connection success",
-        1,
-        static_cast<int>(connector_->start(getTestAddress(),
-            proactorTask_->getProactor())));
+    EXPECT_EQ(1,
+        connector_->start(getTestAddress(), proactorTask_->getProactor()));
 
     pause(20);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("one session",
-        1 * 2, getSessionManager()->getSessionCount());
+
+    EXPECT_EQ(1 * 2, getSessionManager()->getSessionCount());
 }
 
 
-void SessionConnectorTest::testMultipleConnect()
+TEST_F(SessionConnectorTest, testMultipleConnect)
 {
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("connection success",
-        5,
-        static_cast<int>(connector_->start(getTestAddress(),
-            proactorTask_->getProactor(), 5)));
+    EXPECT_EQ(5,
+        connector_->start(getTestAddress(), proactorTask_->getProactor(), 5));
 
     pause(15);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("sessions",
-        5 * 2, getSessionManager()->getSessionCount());
+    EXPECT_EQ(5 * 2, getSessionManager()->getSessionCount());
 }
 
 
-void SessionConnectorTest::testStopToConnect()
+TEST_F(SessionConnectorTest, testStopToConnect)
 {
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("connection success",
-        0,
-        static_cast<int>(connector_->start(getTestAddress(),
-            proactorTask_->getProactor(), 0)));
+    EXPECT_EQ(0,
+        connector_->start(getTestAddress(), proactorTask_->getProactor(), 0));
 
     connector_->stop();
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("connection failed",
-        0,
-        static_cast<int>(connector_->start(getTestAddress(),
-            proactorTask_->getProactor())));
+    EXPECT_EQ(0,
+        connector_->start(getTestAddress(), proactorTask_->getProactor()));
 }

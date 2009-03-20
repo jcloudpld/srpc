@@ -10,184 +10,128 @@ using namespace nsrpc;
 *
 * ACE_Message_Block based stream buffer Test
 */
-class MessageBlockStreamBufferTest : public CppUnit::TestFixture
+class MessageBlockStreamBufferTest : public testing::Test
 {
-    CPPUNIT_TEST_SUITE(MessageBlockStreamBufferTest);
-    CPPUNIT_TEST(testEmpty);
-    CPPUNIT_TEST(testPush);
-    CPPUNIT_TEST(testRead);
-    CPPUNIT_TEST(testPop);
-    CPPUNIT_TEST(testReset);
-    CPPUNIT_TEST(testSpace);
-    CPPUNIT_TEST(testExtendedSpace);
-    CPPUNIT_TEST(testCopyFrom);
-    CPPUNIT_TEST(testCopyTo);
-    CPPUNIT_TEST(testResetWithNewBlock);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    void setUp();
-    void tearDown();
 private:
-    void testEmpty();
-    void testPush();
-    void testRead();
-    void testPop();
-    void testReset();
-    void testSpace();
-    void testExtendedSpace();
-    void testCopyFrom();
-    void testCopyTo();
-    void testResetWithNewBlock();
-private:
+    virtual void SetUp() {
+        mblock_ = new ACE_Message_Block(space_);
+        buffer_ = new MessageBlockStreamBuffer(mblock_);
+    }
+
+    virtual void TearDown() {
+        delete buffer_;
+        delete mblock_;
+    }
+
+protected:
     ACE_Message_Block* mblock_;
     MessageBlockStreamBuffer* buffer_;
     static const size_t space_ = 10;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(MessageBlockStreamBufferTest);
 
-void MessageBlockStreamBufferTest::setUp()
+TEST_F(MessageBlockStreamBufferTest, testEmpty)
 {
-    mblock_ = new ACE_Message_Block(space_);
-    buffer_ = new MessageBlockStreamBuffer(mblock_);
+    EXPECT_TRUE(buffer_->empty());
+    EXPECT_EQ(0, buffer_->size());
 }
 
 
-void MessageBlockStreamBufferTest::tearDown()
-{
-    delete buffer_;
-    delete mblock_;
-}
-
-
-void MessageBlockStreamBufferTest::testEmpty()
-{
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        true, buffer_->empty());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 size",
-        0, static_cast<int>(buffer_->size()));
-}
-
-
-void MessageBlockStreamBufferTest::testPush()
+TEST_F(MessageBlockStreamBufferTest, testPush)
 {
     buffer_->push(1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 size",
-        1, static_cast<int>(buffer_->size()));
+    EXPECT_EQ(1, buffer_->size());
     buffer_->push(2);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("2 size",
-        2, static_cast<int>(buffer_->size()));
+    EXPECT_EQ(2, buffer_->size());
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
 
 
-void MessageBlockStreamBufferTest::testRead()
+TEST_F(MessageBlockStreamBufferTest, testRead)
 {
     buffer_->push(1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("back",
-        1, static_cast<int>(buffer_->back()));
+    EXPECT_EQ(1, buffer_->back());
     buffer_->push(2);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("back",
-        2, static_cast<int>(buffer_->back()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("front",
-        1, static_cast<int>(buffer_->front()));
+    EXPECT_EQ(2, buffer_->back());
+    EXPECT_EQ(1, buffer_->front());
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
 
 
-void MessageBlockStreamBufferTest::testPop()
+TEST_F(MessageBlockStreamBufferTest, testPop)
 {
     buffer_->push(1);
     buffer_->push(2);
     buffer_->pop();
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("front",
-        2, static_cast<int>(buffer_->front()));
+    EXPECT_EQ(2, buffer_->front());
     buffer_->pop();
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        true, buffer_->empty());
+    EXPECT_EQ(true, buffer_->empty());
 
     buffer_->push(3);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 size",
-        1, static_cast<int>(buffer_->size()));
+    EXPECT_EQ(1, buffer_->size());
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
 
 
-void MessageBlockStreamBufferTest::testReset()
+TEST_F(MessageBlockStreamBufferTest, testReset)
 {
     buffer_->push(1);
     buffer_->push(2);
     buffer_->reset();
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        true, buffer_->empty());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 size",
-        0, static_cast<int>(buffer_->size()));
+    EXPECT_TRUE(buffer_->empty());
+    EXPECT_EQ(0, buffer_->size());
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
 
 
-void MessageBlockStreamBufferTest::testSpace()
+TEST_F(MessageBlockStreamBufferTest, testSpace)
 {
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("space",
-        static_cast<int>(space_), static_cast<int>(buffer_->space()));
+    EXPECT_EQ(space_, buffer_->space());
     buffer_->push(1);
     buffer_->push(2);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("space",
-        static_cast<int>(space_) - 2, static_cast<int>(buffer_->space()));
+    EXPECT_EQ(space_ - 2, buffer_->space());
 
     buffer_->pop();
     buffer_->pop();
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("space",
-        static_cast<int>(space_), static_cast<int>(buffer_->space()));
+    EXPECT_EQ(space_, buffer_->space());
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
 
 
-void MessageBlockStreamBufferTest::testExtendedSpace()
+TEST_F(MessageBlockStreamBufferTest, testExtendedSpace)
 {
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        static_cast<int>(space_), static_cast<int>(buffer_->space()));
+    EXPECT_EQ(space_, buffer_->space()) << "empty";
 
     for (size_t i = 0; i < (space_ * 2); ++i) {
         buffer_->push(1);
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("full",
-        0, static_cast<int>(buffer_->space()));
+    EXPECT_EQ(0, buffer_->space());
 
     buffer_->reset();
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("fully empty",
-        static_cast<int>(space_) * 2, static_cast<int>(buffer_->space()));
+    EXPECT_EQ(space_ * 2, buffer_->space()) << "fully empty";
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
 
 
-void MessageBlockStreamBufferTest::testCopyFrom()
+TEST_F(MessageBlockStreamBufferTest, testCopyFrom)
 {
     const Int32 value = -12345;
     const void* valuePtr = &value;
     buffer_->copyFrom(static_cast<const StreamBuffer::Item*>(valuePtr),
         sizeof(value));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("size",
-        static_cast<int>(sizeof(value)), static_cast<int>(buffer_->size()));
+    EXPECT_EQ(sizeof(value), buffer_->size());
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
 
 
-void MessageBlockStreamBufferTest::testCopyTo()
+TEST_F(MessageBlockStreamBufferTest, testCopyTo)
 {
     const Int32 value = -12345;
     const void* valuePtr = &value;
@@ -198,33 +142,25 @@ void MessageBlockStreamBufferTest::testCopyTo()
     void* toPtr = &to;
     buffer_->copyTo(static_cast<StreamBuffer::Item*>(toPtr),
         sizeof(to));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        true, buffer_->empty());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 size",
-        0, static_cast<int>(buffer_->size()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("value",
-        value, to);
+    EXPECT_TRUE(buffer_->empty());
+    EXPECT_EQ(0, buffer_->size());
+    EXPECT_EQ(value, to);
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
 
 
-void MessageBlockStreamBufferTest::testResetWithNewBlock()
+TEST_F(MessageBlockStreamBufferTest, testResetWithNewBlock)
 {
     buffer_->push(1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 size",
-        1, static_cast<int>(buffer_->size()));
+    EXPECT_EQ(1, buffer_->size());
 
     AceMessageBlockGuard second(new ACE_Message_Block(space_));
     buffer_->reset(second.get());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        0, static_cast<int>(buffer_->size()));
+    EXPECT_EQ(0, buffer_->size());
 
     buffer_->push(2);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 size",
-        1, static_cast<int>(buffer_->size()));
+    EXPECT_EQ(1, buffer_->size());
 
-    CPPUNIT_ASSERT_MESSAGE("isValid",
-        static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
+    EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }

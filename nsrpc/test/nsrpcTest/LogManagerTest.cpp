@@ -20,37 +20,26 @@ using namespace nsrpc;
 */
 class AceLogManagerTest : public AceTestFixture
 {
-    CPPUNIT_TEST_SUITE(AceLogManagerTest);
-    CPPUNIT_TEST(testCallback);
-    CPPUNIT_TEST(testCallbackWithEventHandler);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    virtual void setUp();
-    virtual void tearDown();
 private:
-    void testCallback();
-    void testCallbackWithEventHandler();
-private:
+    virtual void SetUp() {
+        AceTestFixture::SetUp();
+
+        repository_ = LogRepositoryFactory::create(false);
+    }
+
+    virtual void TearDown() {
+        nsrpc::LogManager::redirectToStderr();
+        delete repository_;
+
+        AceTestFixture::TearDown();
+    }
+
+protected:
     LogRepository* repository_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(AceLogManagerTest);
 
-void AceLogManagerTest::setUp()
-{
-    repository_ = LogRepositoryFactory::create(false);
-}
-
-
-void AceLogManagerTest::tearDown()
-{
-    nsrpc::LogManager::redirectToStderr();
-
-    delete repository_;
-}
-
-
-void AceLogManagerTest::testCallback()
+TEST_F(AceLogManagerTest, testCallback)
 {
     nsrpc::LogManager::unsilent();
     nsrpc::LogManager::redirectToCallback(*repository_);
@@ -61,15 +50,13 @@ void AceLogManagerTest::testCallback()
     ace->conditional_set(__FILE__, __LINE__, 0, aceError);
     ace->log(LM_DEBUG, logString.c_str());
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("has log",
-        true, repository_->hasLog());
+    EXPECT_TRUE(repository_->hasLog());
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("log",
-        logString, repository_->getLog());
+    EXPECT_EQ(logString, repository_->getLog());
 }
 
 
-void AceLogManagerTest::testCallbackWithEventHandler()
+TEST_F(AceLogManagerTest, testCallbackWithEventHandler)
 {
     class DummyLogEventHandler : public nsrpc::LogEventHandler
     {
@@ -98,6 +85,5 @@ void AceLogManagerTest::testCallbackWithEventHandler()
     ace->conditional_set(__FILE__, __LINE__, 0, aceError);
     ace->log(LM_DEBUG, logString.c_str());
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("log",
-        logString, logEventHandler.getLog());
+    EXPECT_EQ(logString, logEventHandler.getLog());
 }

@@ -12,97 +12,73 @@ using namespace nsrpc;
 */
 class SessionAcceptorTest : public SessionTestFixture
 {
-    CPPUNIT_TEST_SUITE(SessionAcceptorTest);
-    CPPUNIT_TEST(testAccept);
-    CPPUNIT_TEST(testMultipleAccept);
-    CPPUNIT_TEST(testStopToAccept);
-    CPPUNIT_TEST(testDisconnected);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    virtual void setUp();
-    virtual void tearDown();
 private:
-    void testAccept();
-    void testMultipleAccept();
-    void testStopToAccept();
-    void testDisconnected();
-private:
+    virtual void SetUp() {
+        SessionTestFixture::SetUp();
+
+        client_ = new TestClient;
+        (void)client_->connect(1, getTestAddress());
+    }
+
+    virtual void TearDown() {
+        client_->close();
+        delete client_;
+
+        SessionTestFixture::TearDown();
+    }
+
+protected:
     TestSessionManager* getSessionManager() {
         return static_cast<TestSessionManager*>(sessionManager_);
     }
-private:
+
+protected:
     TestClient* client_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(SessionAcceptorTest);
 
-void SessionAcceptorTest::setUp()
-{
-    SessionTestFixture::setUp();
-
-    client_ = new TestClient;
-    (void)client_->connect(1, getTestAddress());
-}
-
-
-void SessionAcceptorTest::tearDown()
-{
-    client_->close();
-    delete client_;
-
-    SessionTestFixture::tearDown();
-}
-
-
-void SessionAcceptorTest::testAccept()
+TEST_F(SessionAcceptorTest, testAccept)
 {
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("a session",
-        1, getSessionManager()->getSessionCount());
+    EXPECT_EQ(1, getSessionManager()->getSessionCount());
 }
 
 
-void SessionAcceptorTest::testMultipleAccept()
+TEST_F(SessionAcceptorTest, testMultipleAccept)
 {
     const int connectionCount = 5;
     TestClient client[connectionCount];
     for (int i = 0; i < connectionCount; ++i) {
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("connect",
-            true, client[i].connect(1, getTestAddress()));
+        EXPECT_TRUE(client[i].connect(1, getTestAddress()));
     }
 
     pause(5);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("sessions",
-        1 + connectionCount, getSessionManager()->getSessionCount());
+    EXPECT_EQ(1 + connectionCount, getSessionManager()->getSessionCount());
 }
 
 
-void SessionAcceptorTest::testStopToAccept()
+TEST_F(SessionAcceptorTest, testStopToAccept)
 {
     acceptor_->close();
 
     TestClient client;
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("can't connect",
-        false, client.connect(1, getTestAddress()));
+    EXPECT_FALSE(client.connect(1, getTestAddress())) << "can't connect";
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("can't restart",
-        false, acceptor_->open(getTestAddress()));
+    EXPECT_FALSE(acceptor_->open(getTestAddress())) << "can't restart";
 }
 
 
-void SessionAcceptorTest::testDisconnected()
+TEST_F(SessionAcceptorTest, testDisconnected)
 {
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("connected",
-        true, getSessionManager()->getSession().isConnected());
+    EXPECT_TRUE(getSessionManager()->getSession().isConnected());
 
     client_->close();
 
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("disconnected",
-        0, getSessionManager()->getSessionCount());
+    EXPECT_EQ(0, getSessionManager()->getSessionCount());
 }

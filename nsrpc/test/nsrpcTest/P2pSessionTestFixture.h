@@ -184,14 +184,17 @@ private:
 */
 class P2pSessionTestFixture : public AceTestFixture
 {
-public:
-    void setUp();
-    void tearDown();
+protected:
+    virtual void SetUp();
+    virtual void TearDown();
+
 protected:
     virtual PeerAddresses getHostAddresses() const;
+
 protected:
     void openHost(const srpc::String& password = "", size_t maxPeers = 0,
         bool hostMigration = false);
+
 protected:
     P2pSession* hostSession_;
     TestP2pEventHandler hostEventHandler_;

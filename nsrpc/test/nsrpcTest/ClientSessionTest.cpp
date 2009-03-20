@@ -13,21 +13,23 @@ using namespace nsrpc;
 */
 class ClientSessionTest : public ClientSessionTestFixture
 {
-    CPPUNIT_TEST_SUITE(ClientSessionTest);
-    CPPUNIT_TEST(testConnect);
-    CPPUNIT_TEST(testDisconnected);
-    CPPUNIT_TEST(testSendPackets);
-    CPPUNIT_TEST(testRecvPackets);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    virtual void setUp();
-    virtual void tearDown();
 private:
-    void testConnect();
-    void testDisconnected();
-    void testSendPackets();
-    void testRecvPackets();
-private:
+    virtual void SetUp() {
+        ClientSessionTestFixture::SetUp();
+
+        clientSession_->connect(getTestAddress().get_host_addr(),
+            getTestAddress().get_port_number(), 1);
+
+        pause(1);
+    }
+
+    virtual void TearDown() {
+        clientSession_->disconnect();
+
+        ClientSessionTestFixture::TearDown();
+    }
+
+protected:
     TestSessionManager* getSessionManager() {
         return static_cast<TestSessionManager*>(sessionManager_);
     }
@@ -37,50 +39,26 @@ private:
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ClientSessionTest);
 
-void ClientSessionTest::setUp()
+TEST_F(ClientSessionTest, testConnect)
 {
-    ClientSessionTestFixture::setUp();
-
-    clientSession_->connect(getTestAddress().get_host_addr(),
-        getTestAddress().get_port_number(), 1);
-
-    pause(1);
+    EXPECT_EQ(1, getSessionManager()->getSessionCount());
 }
 
 
-void ClientSessionTest::tearDown()
-{
-    clientSession_->disconnect();
-
-    ClientSessionTestFixture::tearDown();
-}
-
-
-void ClientSessionTest::testConnect()
-{
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("one session",
-        1, getSessionManager()->getSessionCount());
-}
-
-
-void ClientSessionTest::testDisconnected()
+TEST_F(ClientSessionTest, testDisconnected)
 {
     getLastServerSession().disconnect();
 
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("disconnected",
-        false, clientSession_->isConnected());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("disconnected",
-        true, clientSession_->isDisconnected());
-    //CPPUNIT_ASSERT_EQUAL_MESSAGE("no session",
-    //    0, getSessionManager()->getSessionCount());
+    EXPECT_FALSE(clientSession_->isConnected()) << "disconnected";
+    EXPECT_TRUE(clientSession_->isDisconnected()) << "disconnected";
+    //EXPECT_EQ(0, getSessionManager()->getSessionCount());
 }
 
 
-void ClientSessionTest::testSendPackets()
+TEST_F(ClientSessionTest, testSendPackets)
 {
     const int sendCount = 5;
     const UInt8 body[] = "1234567890";
@@ -95,17 +73,14 @@ void ClientSessionTest::testSendPackets()
 
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("received bytes",
-        static_cast<int>(
-            packetCoder_->getHeaderSize() + bodySize) * sendCount,
-        static_cast<int>(getLastServerSession().getStats().recvBytes_));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("received count",
-        sendCount,
-        static_cast<int>(getLastServerSession().getArrivedMessageCount()));
+    EXPECT_EQ((packetCoder_->getHeaderSize() + bodySize) * sendCount,
+        getLastServerSession().getStats().recvBytes_) << "received bytes";
+    EXPECT_EQ(sendCount, getLastServerSession().getArrivedMessageCount()) <<
+        "received count";
 }
 
 
-void ClientSessionTest::testRecvPackets()
+TEST_F(ClientSessionTest, testRecvPackets)
 {
     const int sendCount = 5;
     const UInt8 body[] = "1234567890";
@@ -120,11 +95,7 @@ void ClientSessionTest::testRecvPackets()
 
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("sent bytes",
-        static_cast<int>(
-            packetCoder_->getHeaderSize() + bodySize) * sendCount,
-        static_cast<int>(getLastServerSession().getStats().sentBytes_));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("message count",
-        sendCount,
-        static_cast<int>(clientSession_->getMessageCount()));
+    EXPECT_EQ((packetCoder_->getHeaderSize() + bodySize) * sendCount,
+        getLastServerSession().getStats().sentBytes_) << "sent bytes";
+    EXPECT_EQ(sendCount, clientSession_->getMessageCount()) << "message count";
 }

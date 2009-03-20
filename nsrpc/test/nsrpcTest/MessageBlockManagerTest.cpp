@@ -33,25 +33,18 @@ public:
 *
 * MessageBlockManager Test
 */
-class MessageBlockManagerTest : public CppUnit::TestFixture
+class MessageBlockManagerTest : public testing::Test
 {
-    CPPUNIT_TEST_SUITE(MessageBlockManagerTest);
-    CPPUNIT_TEST(testInitialize);
-    CPPUNIT_TEST(testAcquire);
-    CPPUNIT_TEST(testRelease);
-    CPPUNIT_TEST(testDuplicate);
-    CPPUNIT_TEST(testClone);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    void setUp();
-    void tearDown();
 private:
-    void testInitialize();
-    void testAcquire();
-    void testRelease();
-    void testDuplicate();
-    void testClone();
-private:
+    virtual void SetUp() {
+        manager_ = new TestMessageBlockManager(poolSize, blockSize);
+    }
+
+    virtual void TearDown() {
+        delete manager_;
+    }
+
+protected:
     enum {
         poolSize = 2,
         blockSize = 100
@@ -60,147 +53,95 @@ private:
     TestMessageBlockManager* manager_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(MessageBlockManagerTest);
 
-void MessageBlockManagerTest::setUp()
+TEST_F(MessageBlockManagerTest, testInitialize)
 {
-    manager_ = new TestMessageBlockManager(poolSize, blockSize);
-}
-
-
-void MessageBlockManagerTest::tearDown()
-{
-    delete manager_;
-}
-
-
-void MessageBlockManagerTest::testInitialize()
-{
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached message block count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-            manager_->getMessageBlockAllocator().getCachedMemoryCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached data block count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-            manager_->getDataBlockAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize,
+        manager_->getMessageBlockAllocator().getCachedMemoryCount());
+    EXPECT_EQ(poolSize,
+        manager_->getDataBlockAllocator().getCachedMemoryCount());
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-            manager_->getBufferAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize,
+        manager_->getBufferAllocator().getCachedMemoryCount());
 #endif
 }
 
 
-void MessageBlockManagerTest::testAcquire()
+TEST_F(MessageBlockManagerTest, testAcquire)
 {
     ACE_Message_Block* mblock = manager_->create(blockSize);
-    CPPUNIT_ASSERT_MESSAGE("mblock is not null",
-        0 != mblock);
+    EXPECT_TRUE(0 != mblock);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached message block count",
-        static_cast<int>(poolSize - 1),
-        static_cast<int>(
-            manager_->getMessageBlockAllocator().getCachedMemoryCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached data block count",
-        static_cast<int>(poolSize - 1),
-        static_cast<int>(
-            manager_->getDataBlockAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 1,
+        manager_->getMessageBlockAllocator().getCachedMemoryCount());
+    EXPECT_EQ(poolSize - 1,
+        manager_->getDataBlockAllocator().getCachedMemoryCount());
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
-        static_cast<int>(poolSize - 1),
-        static_cast<int>(
-            manager_->getBufferAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 1,
+        manager_->getBufferAllocator().getCachedMemoryCount());
 #endif
 }
 
 
-void MessageBlockManagerTest::testRelease()
+TEST_F(MessageBlockManagerTest, testRelease)
 {
     manager_->create(blockSize)->release();
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached message block count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-            manager_->getMessageBlockAllocator().getCachedMemoryCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached data block count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-            manager_->getDataBlockAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize,
+        manager_->getMessageBlockAllocator().getCachedMemoryCount());
+    EXPECT_EQ(poolSize,
+        manager_->getDataBlockAllocator().getCachedMemoryCount());
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-            manager_->getBufferAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize,
+        manager_->getBufferAllocator().getCachedMemoryCount());
 #endif
 }
 
 
-void MessageBlockManagerTest::testDuplicate()
+TEST_F(MessageBlockManagerTest, testDuplicate)
 {
     ACE_Message_Block* mblock = manager_->create(blockSize);
     ACE_Message_Block* duplicated = mblock->duplicate();
-    CPPUNIT_ASSERT_MESSAGE("duplicated is not null",
-        0 != duplicated);
+    EXPECT_TRUE(0 != duplicated);
 
     mblock->release();
     duplicated->release();
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached message block count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-        manager_->getMessageBlockAllocator().getCachedMemoryCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached data block count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-        manager_->getDataBlockAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize,
+        manager_->getMessageBlockAllocator().getCachedMemoryCount());
+    EXPECT_EQ(poolSize,
+        manager_->getDataBlockAllocator().getCachedMemoryCount());
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-        manager_->getBufferAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize,
+        manager_->getBufferAllocator().getCachedMemoryCount());
 #endif
 }
 
 
-void MessageBlockManagerTest::testClone()
+TEST_F(MessageBlockManagerTest, testClone)
 {
     ACE_Message_Block* mblock = manager_->create(blockSize);
     ACE_Message_Block* cloned = mblock->clone();
-    CPPUNIT_ASSERT_MESSAGE("cloned is not null",
-        0 != cloned);
+    EXPECT_TRUE(0 != cloned);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached message block count",
-        static_cast<int>(poolSize - 2),
-        static_cast<int>(
-        manager_->getMessageBlockAllocator().getCachedMemoryCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached data block count",
-        static_cast<int>(poolSize - 2),
-        static_cast<int>(
-        manager_->getDataBlockAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 2,
+        manager_->getMessageBlockAllocator().getCachedMemoryCount());
+    EXPECT_EQ(poolSize - 2,
+        manager_->getDataBlockAllocator().getCachedMemoryCount());
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
-        static_cast<int>(poolSize - 2),
-        static_cast<int>(
-        manager_->getBufferAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 2,
+        manager_->getBufferAllocator().getCachedMemoryCount());
 #endif
 
     mblock->release();
     cloned->release();
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached message block count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-        manager_->getMessageBlockAllocator().getCachedMemoryCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached data block count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-        manager_->getDataBlockAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize,
+        manager_->getMessageBlockAllocator().getCachedMemoryCount());
+    EXPECT_EQ(poolSize,
+        manager_->getDataBlockAllocator().getCachedMemoryCount());
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached buffer count",
-        static_cast<int>(poolSize),
-        static_cast<int>(
-        manager_->getBufferAllocator().getCachedMemoryCount()));
+    EXPECT_EQ(poolSize,
+        manager_->getBufferAllocator().getCachedMemoryCount());
 #endif
 }
