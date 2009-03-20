@@ -16,9 +16,9 @@ IMPLEMENT_SRPC_P2P_METHOD_1(TestRpcPlugIn, hello, srpc::RShortString, world,
 
 // = P2pSessionTestFixture
 
-void P2pSessionTestFixture::setUp()
+void P2pSessionTestFixture::SetUp()
 {
-    AceTestFixture::setUp();
+    AceTestFixture::SetUp();
 
     hostSession_ = P2pSessionFactory::create(1, hostEventHandler_);
     hostRpcPlugIn_ = new TestRpcPlugIn;
@@ -30,10 +30,10 @@ void P2pSessionTestFixture::setUp()
 }
 
 
-void P2pSessionTestFixture::tearDown()
+void P2pSessionTestFixture::TearDown()
 {
     delete hostSession_;
-    AceTestFixture::tearDown();
+    AceTestFixture::TearDown();
 }
 
 
@@ -49,9 +49,8 @@ PeerAddresses P2pSessionTestFixture::getHostAddresses() const
 void P2pSessionTestFixture::openHost(const srpc::String& password,
     size_t maxPeers, bool hostMigration)
 {
-    CPPUNIT_ASSERT_MESSAGE("host open",
-        hostSession_->open(ACE_DEFAULT_SERVER_PORT, password));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("no host",
-        false, hostSession_->isHost());
+    EXPECT_TRUE(hostSession_->open(ACE_DEFAULT_SERVER_PORT, password));
+    EXPECT_FALSE(hostSession_->isHost());
     hostSession_->host(maxPeers, hostMigration);
+    EXPECT_TRUE(hostSession_->isHost());
 }

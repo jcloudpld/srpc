@@ -17,9 +17,9 @@
 */
 class SessionTestFixture : public AceTestFixture
 {
-public:
-    virtual void setUp() {
-        AceTestFixture::setUp();
+protected:
+    virtual void SetUp() {
+        AceTestFixture::SetUp();
 
         nsrpc::disableSignals(ACE_SIGRTMIN, ACE_SIGRTMAX);
         nsrpc::disableSignals(SIGPIPE, SIGPIPE);
@@ -49,7 +49,7 @@ public:
         packetCoder_ = nsrpc::PacketCoderFactory().create();
     }
 
-    virtual void tearDown() {
+    virtual void TearDown() {
         if (acceptor_ != 0) {
             acceptor_->close();
             acceptor_->wait();
@@ -67,16 +67,19 @@ public:
 
         delete packetCoder_;
 
-        AceTestFixture::tearDown();
+        AceTestFixture::TearDown();
     }
+
 private:
     virtual nsrpc::SessionManager* createSessionManager() {
         return new TestSessionManager(proactorTask_->getProactor());
     }
+
 protected:
     ACE_INET_Addr getTestAddress() const {
         return ACE_INET_Addr(ACE_DEFAULT_SERVER_PORT, ACE_LOCALHOST);
     }
+
 protected:
     nsrpc::ProactorTask* proactorTask_;
     nsrpc::SessionManager* sessionManager_;

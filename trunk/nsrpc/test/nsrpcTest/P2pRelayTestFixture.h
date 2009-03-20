@@ -18,15 +18,16 @@ class P2pRelayTestFixture : public P2pSessionTestFixture
 {
 protected:
     enum { relayServerPort = 1004 };
-public:
-    void setUp() {
-        P2pSessionTestFixture::setUp();
+
+protected:
+    virtual void SetUp() {
+        P2pSessionTestFixture::SetUp();
 
         reactorTask_ = new ReactorTask(true);
         relayService_ = new detail::SimpleRelayService(
             reactorTask_->getReactor(), PacketCoderFactory().createForP2p());
-        CPPUNIT_ASSERT_MESSAGE("open relay server",
-            relayService_->open(relayServerPort));
+        EXPECT_TRUE(relayService_->open(relayServerPort)) <<
+            "open relay server";
 
         reactorTask_->start(1);
 
@@ -37,8 +38,8 @@ public:
         }
     }
 
-    void tearDown() {
-        P2pSessionTestFixture::tearDown();
+    virtual void TearDown() {
+        P2pSessionTestFixture::TearDown();
 
         relayService_->close();
 
@@ -48,6 +49,7 @@ public:
         delete relayService_;
         delete reactorTask_;
     }
+
 protected:
     virtual PeerAddresses getHostAddresses() const {
         PeerAddresses addresses;
@@ -55,6 +57,7 @@ protected:
             PeerAddress(ACE_LOCALHOST, ACE_DEFAULT_SERVER_PORT));
         return addresses;
     }
+
 protected:
     ReactorTask* reactorTask_;
     detail::SimpleRelayService* relayService_;

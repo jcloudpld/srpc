@@ -8,29 +8,18 @@ using namespace nsrpc;
 *
 * VariousMemoryAllocator Test
 */
-class VariousMemoryAllocatorTest : public CppUnit::TestFixture
+class VariousMemoryAllocatorTest : public testing::Test
 {
-    CPPUNIT_TEST_SUITE(VariousMemoryAllocatorTest);
-    CPPUNIT_TEST(testInitialize);
-    CPPUNIT_TEST(testMalloc);
-    CPPUNIT_TEST(testCalloc);
-    CPPUNIT_TEST(testMallocBigger);
-    CPPUNIT_TEST(testMallocSmaller);
-    CPPUNIT_TEST(testFree);
-    CPPUNIT_TEST(testMultipleVariousMemoryMallocFree);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    void setUp();
-    void tearDown();
 private:
-    void testInitialize();
-    void testMalloc();
-    void testCalloc();
-    void testMallocBigger();
-    void testMallocSmaller();
-    void testFree();
-    void testMultipleVariousMemoryMallocFree();
-private:
+    virtual void SetUp() {
+        allocator_ = new IntegerAllocator(poolSize, blockSize);
+    }
+
+    virtual void TearDown() {
+        delete allocator_;
+    }
+
+protected:
     enum {
         poolSize = 2,
         blockSize = sizeof(int)
@@ -40,101 +29,68 @@ private:
     IntegerAllocator* allocator_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(VariousMemoryAllocatorTest);
 
-void VariousMemoryAllocatorTest::setUp()
+TEST_F(VariousMemoryAllocatorTest, testInitialize)
 {
-    allocator_ = new IntegerAllocator(poolSize, blockSize);
+    EXPECT_EQ(poolSize, allocator_->getCachedMemoryCount());
 }
 
 
-void VariousMemoryAllocatorTest::tearDown()
-{
-    delete allocator_;
-}
-
-
-void VariousMemoryAllocatorTest::testInitialize()
-{
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached memory count",
-        static_cast<int>(poolSize),
-        static_cast<int>(allocator_->getCachedMemoryCount()));
-}
-
-
-void VariousMemoryAllocatorTest::testMalloc()
+TEST_F(VariousMemoryAllocatorTest, testMalloc)
 {
     void* memory = allocator_->malloc(blockSize);
-    CPPUNIT_ASSERT_MESSAGE("memory is not null",
-        0 != memory);
+    EXPECT_TRUE(0 != memory);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached memory count",
-        static_cast<int>(poolSize - 1),
-        static_cast<int>(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 1, allocator_->getCachedMemoryCount());
 }
 
 
-void VariousMemoryAllocatorTest::testCalloc()
+TEST_F(VariousMemoryAllocatorTest, testCalloc)
 {
     void* memory = allocator_->calloc(blockSize);
-    CPPUNIT_ASSERT_MESSAGE("memory is not null",
-        0 != memory);
+    EXPECT_TRUE(0 != memory);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached memory count",
-        static_cast<int>(poolSize - 1),
-        static_cast<int>(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 1, allocator_->getCachedMemoryCount());
 }
 
 
-void VariousMemoryAllocatorTest::testMallocBigger()
+TEST_F(VariousMemoryAllocatorTest, testMallocBigger)
 {
     void* memory = allocator_->malloc(blockSize * 2);
-    CPPUNIT_ASSERT_MESSAGE("memory is not null",
-        0 != memory);
+    EXPECT_TRUE(0 != memory);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached memory count",
-        static_cast<int>(poolSize),
-        static_cast<int>(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize, allocator_->getCachedMemoryCount());
 }
 
 
-void VariousMemoryAllocatorTest::testMallocSmaller()
+TEST_F(VariousMemoryAllocatorTest, testMallocSmaller)
 {
     void* memory = allocator_->malloc(blockSize / 2);
-    CPPUNIT_ASSERT_MESSAGE("memory is not null",
-        0 != memory);
+    EXPECT_TRUE(0 != memory);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached memory count",
-        static_cast<int>(poolSize - 1),
-        static_cast<int>(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 1, allocator_->getCachedMemoryCount());
 }
 
 
-void VariousMemoryAllocatorTest::testFree()
+TEST_F(VariousMemoryAllocatorTest, testFree)
 {
     allocator_->free(allocator_->malloc(blockSize));
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached memory count",
-        static_cast<int>(poolSize),
-        static_cast<int>(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize, allocator_->getCachedMemoryCount());
 }
 
 
-void VariousMemoryAllocatorTest::testMultipleVariousMemoryMallocFree()
+TEST_F(VariousMemoryAllocatorTest, testMultipleVariousMemoryMallocFree)
 {
     const int count = 1000;
     void* memories[count];
     for (int i = 0; i < count; ++i) {
         memories[i] = allocator_->malloc((count % blockSize) + 2);
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached memory count",
-        static_cast<int>(0),
-        static_cast<int>(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(0, allocator_->getCachedMemoryCount());
 
     for (int i = 0; i < count; ++i) {
         allocator_->free(memories[i]);
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("cached memory count",
-        static_cast<int>(poolSize + count - 2),
-        static_cast<int>(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize + count - 2, allocator_->getCachedMemoryCount());
 }

@@ -1,13 +1,15 @@
 #ifndef NSRPC_STDAFX_H
 #define NSRPC_STDAFX_H
 
-// CppUnit
+#ifdef _MSC_VER
+#   pragma once
+#endif
+
 #ifdef _MSC_VER
 #  pragma warning (push)
-#  pragma warning (disable: 4702 4312 4512)
+#  pragma warning (disable: 4127 4512)
 #endif
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include <gtest/gtest.h>
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif

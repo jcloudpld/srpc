@@ -13,47 +13,32 @@ using namespace nsrpc;
 */
 class SessionTest : public SessionTestFixture
 {
-    CPPUNIT_TEST_SUITE(SessionTest);
-    CPPUNIT_TEST(testRecvPackets);
-    CPPUNIT_TEST(testSendPackets);
-    CPPUNIT_TEST(testConnect);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    virtual void setUp();
-    virtual void tearDown();
 private:
-    void testRecvPackets();
-    void testSendPackets();
-    void testConnect();
-private:
+    virtual void SetUp() {
+        SessionTestFixture::SetUp();
+
+        client_ = new TestClient;
+        (void)client_->connect(1, getTestAddress());
+    }
+
+    virtual void TearDown() {
+        client_->close();
+        delete client_;
+
+        SessionTestFixture::TearDown();
+    }
+
+protected:
     TestSession& getLastSession() {
         return static_cast<TestSessionManager*>(sessionManager_)->getSession();
     }
-private:
+
+protected:
     TestClient* client_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(SessionTest);
 
-void SessionTest::setUp()
-{
-    SessionTestFixture::setUp();
-
-    client_ = new TestClient;
-    (void)client_->connect(1, getTestAddress());
-}
-
-
-void SessionTest::tearDown()
-{
-    client_->close();
-    delete client_;
-
-    SessionTestFixture::tearDown();
-}
-
-
-void SessionTest::testRecvPackets()
+TEST_F(SessionTest, testRecvPackets)
 {
     const int sendCount = 5;
     const UInt8 body[] = "1234567890";
@@ -65,22 +50,18 @@ void SessionTest::testRecvPackets()
 
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("received bytes",
-        static_cast<int>(
-            packetCoder_->getHeaderSize() + bodySize) * sendCount,
-        static_cast<int>(getLastSession().getStats().recvBytes_));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("received count",
-        sendCount,
-        static_cast<int>(getLastSession().getArrivedMessageCount()));
+    EXPECT_EQ((packetCoder_->getHeaderSize() + bodySize) * sendCount,
+        getLastSession().getStats().recvBytes_);
+    EXPECT_EQ(sendCount, getLastSession().getArrivedMessageCount());
 
     // 아래 테스트는 큰 의미가 없음
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("acquireSendBlock call count",
-        0,
-        static_cast<int>(getLastSession().getAcquireSendBlockCallCount()));
+    EXPECT_EQ(0,
+        static_cast<int>(getLastSession().getAcquireSendBlockCallCount())) <<
+        "acquireSendBlock call count";
 }
 
 
-void SessionTest::testSendPackets()
+TEST_F(SessionTest, testSendPackets)
 {
     pause(1);
 
@@ -101,32 +82,25 @@ void SessionTest::testSendPackets()
 
     for (int i = 0; i < sendCount; ++i) {
         UInt8 received[bodySize];
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("received size",
-            static_cast<int>(bodySize),
-            client_->recvMessage(received, bodySize));
-        CPPUNIT_ASSERT_MESSAGE("cmp",
-            memcmp(body, received, bodySize) == 0);
+        EXPECT_EQ(bodySize, client_->recvMessage(received, bodySize)) <<
+            "received size";
+        EXPECT_TRUE(memcmp(body, received, bodySize) == 0);
     }
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("sent bytes",
-        static_cast<int>(
-            packetCoder_->getHeaderSize() + bodySize) * sendCount,
-        static_cast<int>(
-            getLastSession().getStats().sentBytes_));
+    EXPECT_EQ((packetCoder_->getHeaderSize() + bodySize) * sendCount,
+        getLastSession().getStats().sentBytes_) << "sent bytes";
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("acquireSendBlock call count",
-        sendCount,
-        static_cast<int>(getLastSession().getAcquireSendBlockCallCount()));
+    EXPECT_EQ(sendCount, getLastSession().getAcquireSendBlockCallCount()) <<
+        "acquireSendBlock call count";
 }
 
 
-void SessionTest::testConnect()
+TEST_F(SessionTest, testConnect)
 {
     TestSession* session =
         static_cast<TestSession*>(sessionManager_->acquire());
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("connect",
-        true,
+    EXPECT_TRUE(
         session->connect(getTestAddress().get_host_name(),
             getTestAddress().get_port_number(), 10));
 
@@ -140,9 +114,8 @@ void SessionTest::testConnect()
 
     pause(1);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("received count",
-        1,
-        static_cast<int>(session->getArrivedMessageCount()));
+    EXPECT_EQ(1, session->getArrivedMessageCount()) <<
+        "received count";
 
     sessionManager_->release(session);
 }

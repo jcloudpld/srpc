@@ -18,10 +18,10 @@
  *
  * ACE 초기화를 위한 TestFixture
  */
-class AceTestFixture : public CppUnit::TestFixture
+class AceTestFixture : public testing::Test
 {
-public:
-    virtual void setUp() {
+protected:
+    virtual void SetUp() {
 #ifdef USE_CPPUNIT_PLUGIN_TESTER
         ACE::init();
 #endif
@@ -35,7 +35,7 @@ public:
 #endif
     }
 
-    virtual void tearDown() {
+    virtual void TearDown() {
 #ifdef USE_CPPUNIT_PLUGIN_TESTER
         ACE::fini();
 #endif

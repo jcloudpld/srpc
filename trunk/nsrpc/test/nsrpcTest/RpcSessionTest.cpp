@@ -36,52 +36,42 @@ private:
 */
 class RpcSessionTest : public SessionTestFixture
 {
-    CPPUNIT_TEST_SUITE(RpcSessionTest);
-    CPPUNIT_TEST(testSendRpcCommands);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    virtual void setUp();
-    virtual void tearDown();
+private:
+    virtual void SetUp() {
+        SessionTestFixture::SetUp();
 
+        client_ = new TestClient;
+        (void)client_->connect(1, getTestAddress());
+    }
+
+    virtual void TearDown() {
+        client_->close();
+        delete client_;
+
+        SessionTestFixture::TearDown();
+
+        delete sessionFactory_;
+    }
+
+private:
     virtual SessionManager* createSessionManager() {
         sessionFactory_ = new RpcSessionFactory(proactorTask_->getProactor());
         return new TestCachedSessionManager(*sessionFactory_);
     }
-private:
-    void testSendRpcCommands();
-private:
+
+protected:
     nsrpc::RpcSession& getLastSession() {
         return static_cast<TestCachedSessionManager*>(sessionManager_)->
             getLastSession();
     }
-private:
+
+protected:
     RpcSessionFactory* sessionFactory_;
     TestClient* client_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RpcSessionTest);
 
-void RpcSessionTest::setUp()
-{
-    SessionTestFixture::setUp();
-
-    client_ = new TestClient;
-    (void)client_->connect(1, getTestAddress());
-}
-
-
-void RpcSessionTest::tearDown()
-{
-    client_->close();
-    delete client_;
-
-    SessionTestFixture::tearDown();
-
-    delete sessionFactory_;
-}
-
-
-void RpcSessionTest::testSendRpcCommands()
+TEST_F(RpcSessionTest, testSendRpcCommands)
 {
     const RUInt32 valueExpected = 337;
 
@@ -98,14 +88,9 @@ void RpcSessionTest::testSendRpcCommands()
 
     for (int i = 0; i < sendCount; ++i) {
         UInt32 received[2] = { 0, };
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("received size",
-            static_cast<int>(sizeof(received)),
+        EXPECT_EQ(sizeof(received),
             client_->recvMessage(received, sizeof(received)));
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("RpcId",
-            static_cast<int>(rpcId.get()),
-            static_cast<int>(toRpcByteOrder(received[0])));
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("parameter",
-            valueExpected.get(),
-            toRpcByteOrder(received[1]));
+        EXPECT_EQ(rpcId.get(), toRpcByteOrder(received[0]));
+        EXPECT_EQ(valueExpected.get(), toRpcByteOrder(received[1]));
     }
 }

@@ -13,31 +13,35 @@ using namespace nsrpc;
 */
 class CachedSessionManagerTest : public SessionTestFixture
 {
-    CPPUNIT_TEST_SUITE(CachedSessionManagerTest);
-    CPPUNIT_TEST(testAcquireAndRelease);
-    CPPUNIT_TEST(testCancel);
-    CPPUNIT_TEST(testReuseSession);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    virtual void setUp();
-    virtual void tearDown();
+private:
+    virtual void SetUp() {
+        SessionTestFixture::SetUp();
+
+        connect();
+    }
+
+    virtual void TearDown() {
+        disconnect();
+
+        SessionTestFixture::TearDown();
+
+        delete sessionFactory_;
+    }
 
     virtual SessionManager* createSessionManager() {
         sessionFactory_ = new RpcSessionFactory(proactorTask_->getProactor());
         return new TestCachedSessionManager(*sessionFactory_);
     }
-private:
-    void testAcquireAndRelease();
-    void testCancel();
-    void testReuseSession();
-private:
+
+protected:
     void connect();
     void disconnect();
 
     TestCachedSessionManager* getSessionManager() {
         return static_cast<TestCachedSessionManager*>(sessionManager_);
     }
-private:
+
+protected:
     enum {
         clientCount = 8
     };
@@ -46,32 +50,13 @@ private:
     TestClient* client_[clientCount];
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CachedSessionManagerTest);
-
-void CachedSessionManagerTest::setUp()
-{
-    SessionTestFixture::setUp();
-
-    connect();
-}
-
-
-void CachedSessionManagerTest::tearDown()
-{
-    disconnect();
-
-    SessionTestFixture::tearDown();
-
-    delete sessionFactory_;
-}
-
 
 void CachedSessionManagerTest::connect()
 {
     for (int i = 0; i < clientCount; ++i) {
         client_[i] = new TestClient;
-        CPPUNIT_ASSERT_EQUAL_MESSAGE((boost::format("#%u connect") % i).str(),
-            true, client_[i]->connect(10, getTestAddress()));
+        EXPECT_TRUE(client_[i]->connect(10, getTestAddress())) <<
+            "#" << i << " connect";
     }
 
     pause(10);
@@ -90,51 +75,35 @@ void CachedSessionManagerTest::disconnect()
 }
 
 
-void CachedSessionManagerTest::testAcquireAndRelease()
+TEST_F(CachedSessionManagerTest, testAcquireAndRelease)
 {
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active session count",
-        static_cast<int>(clientCount),
-        static_cast<int>(getSessionManager()->getActiveSessionCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive session count",
-        0,
-        static_cast<int>(getSessionManager()->getInactiveSessionCount()));
+    EXPECT_EQ(clientCount, getSessionManager()->getActiveSessionCount());
+    EXPECT_EQ(0, getSessionManager()->getInactiveSessionCount());
 
     disconnect();
 
     pause(10);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active session count",
-        0,
-        static_cast<int>(getSessionManager()->getActiveSessionCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive session count",
-        static_cast<int>(clientCount),
-        static_cast<int>(getSessionManager()->getInactiveSessionCount()));
+    EXPECT_EQ(0, getSessionManager()->getActiveSessionCount());
+    EXPECT_EQ(clientCount, getSessionManager()->getInactiveSessionCount());
 }
 
 
-void CachedSessionManagerTest::testCancel()
+TEST_F(CachedSessionManagerTest, testCancel)
 {
     sessionManager_->cancel();
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active session count",
-        0,
-        static_cast<int>(getSessionManager()->getActiveSessionCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive session count",
-        static_cast<int>(clientCount),
-        static_cast<int>(getSessionManager()->getInactiveSessionCount()));
+    EXPECT_EQ(0, getSessionManager()->getActiveSessionCount());
+    EXPECT_EQ(clientCount, getSessionManager()->getInactiveSessionCount());
 }
 
 
-void CachedSessionManagerTest::testReuseSession()
+TEST_F(CachedSessionManagerTest, testReuseSession)
 {
     disconnect();
     connect();
     pause(10);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active session count",
-        static_cast<int>(clientCount),
-        static_cast<int>(getSessionManager()->getActiveSessionCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive session count",
-        0,
-        static_cast<int>(getSessionManager()->getInactiveSessionCount()));
+    EXPECT_EQ(clientCount, getSessionManager()->getActiveSessionCount());
+    EXPECT_EQ(0, getSessionManager()->getInactiveSessionCount());
 }

@@ -22,78 +22,55 @@ typedef SmartPtr<Widget> WidgetPtr;
 *
 * SmartPtr test
 */
-class SmartPtrTest  : public CppUnit::TestFixture
+class SmartPtrTest  : public testing::Test
 {
-    CPPUNIT_TEST_SUITE(SmartPtrTest );
-    CPPUNIT_TEST(testAddRef);
-    CPPUNIT_TEST(testRemoveRef);
-    CPPUNIT_TEST(testRelease);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    void setUp();
-    void tearDown();
 private:
-    void testAddRef();
-    void testRemoveRef();
-    void testRelease();
-private:
+    virtual void SetUp() {
+        widget_ = new Widget;
+    }
+
+    virtual void TearDown() {
+        // delete widget_;
+    }
+
+protected:
     WidgetPtr widget_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(SmartPtrTest );
 
-void SmartPtrTest::setUp()
+TEST_F(SmartPtrTest, testAddRef)
 {
-    widget_ = new Widget;
-}
-
-
-void SmartPtrTest::tearDown()
-{
-    // delete widget_;
-}
-
-
-void SmartPtrTest::testAddRef()
-{
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("ref count",
-        1, widget_->getReferenceCount());
-
+    EXPECT_EQ(1, widget_->getReferenceCount());
 
     WidgetPtr dummy = widget_;
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("ref count",
-        2, widget_->getReferenceCount());
+    EXPECT_EQ(2, widget_->getReferenceCount());
 
     WidgetPtr dummy2 = dummy;
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("ref count",
-        3, widget_->getReferenceCount());
+    EXPECT_EQ(3, widget_->getReferenceCount());
 }
 
 
-void SmartPtrTest::testRemoveRef()
+TEST_F(SmartPtrTest, testRemoveRef)
 {
     {
         WidgetPtr dummy = widget_;
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("ref count",
-        1, widget_->getReferenceCount());
+    EXPECT_EQ(1, widget_->getReferenceCount());
 
     {
         WidgetPtr dummy1 = widget_;
         WidgetPtr dummy2 = dummy1;
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("ref count",
-        1, widget_->getReferenceCount());
+    EXPECT_EQ(1, widget_->getReferenceCount());
 }
 
 
-void SmartPtrTest::testRelease()
+TEST_F(SmartPtrTest, testRelease)
 {
     {
         WidgetPtr dummy(new Widget);
         WidgetPtr dummy1 = dummy;
         WidgetPtr dummy2 = dummy1;
     }
-    CPPUNIT_ASSERT_MESSAGE("released",
-        Widget::dtorCalled_);
+    EXPECT_TRUE(Widget::dtorCalled_) << "released";
 }

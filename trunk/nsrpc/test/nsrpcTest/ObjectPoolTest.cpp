@@ -24,25 +24,19 @@ public:
 *
 * ObjectPool Test
 */
-class ObjectPoolTest : public CppUnit::TestFixture
+class ObjectPoolTest : public testing::Test
 {
-    CPPUNIT_TEST_SUITE(ObjectPoolTest);
-    CPPUNIT_TEST(testInitialize);
-    CPPUNIT_TEST(testAcquire);
-    CPPUNIT_TEST(testRelease);
-    CPPUNIT_TEST(testMassAcquireAndRelease);
-    CPPUNIT_TEST(testDestroy);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    void setUp();
-    void tearDown();
 private:
-    void testInitialize();
-    void testAcquire();
-    void testRelease();
-    void testMassAcquireAndRelease();
-    void testDestroy();
-private:
+    virtual void SetUp() {
+        pool_ = new IntegerPool(poolSize, allocator_);
+        pool_->initialize();
+    }
+
+    virtual void TearDown() {
+        delete pool_;
+    }
+
+protected:
     enum {
         poolSize = 2
     };
@@ -52,61 +46,35 @@ private:
     IntegerPool* pool_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ObjectPoolTest);
 
-void ObjectPoolTest::setUp()
+TEST_F(ObjectPoolTest, testInitialize)
 {
-    pool_ = new IntegerPool(poolSize, allocator_);
-    pool_->initialize();
+    EXPECT_EQ(0, pool_->getActiveResourceCount());
+    EXPECT_EQ(poolSize, pool_->getInactiveResourceCount());
 }
 
 
-void ObjectPoolTest::tearDown()
-{
-    delete pool_;
-}
-
-
-void ObjectPoolTest::testInitialize()
-{
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active resource count",
-        0,
-        static_cast<int>(pool_->getActiveResourceCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive resource count",
-        static_cast<int>(poolSize),
-        static_cast<int>(pool_->getInactiveResourceCount()));
-}
-
-
-void ObjectPoolTest::testAcquire()
+TEST_F(ObjectPoolTest, testAcquire)
 {
     int* resource = pool_->acquire();
-    CPPUNIT_ASSERT(0 != resource);
+    EXPECT_TRUE(0 != resource);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active resource count",
-        1,
-        static_cast<int>(pool_->getActiveResourceCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive resource count",
-        poolSize - 1,
-        static_cast<int>(pool_->getInactiveResourceCount()));
+    EXPECT_EQ(1, pool_->getActiveResourceCount());
+    EXPECT_EQ(poolSize - 1, pool_->getInactiveResourceCount());
 }
 
 
-void ObjectPoolTest::testRelease()
+TEST_F(ObjectPoolTest, testRelease)
 {
     int* resource = pool_->acquire();
 
     pool_->release(resource);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active resource count",
-        0,
-        static_cast<int>(pool_->getActiveResourceCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive resource count",
-        static_cast<int>(poolSize),
-        static_cast<int>(pool_->getInactiveResourceCount()));
+    EXPECT_EQ(0, pool_->getActiveResourceCount());
+    EXPECT_EQ(poolSize, pool_->getInactiveResourceCount());
 }
 
 
-void ObjectPoolTest::testMassAcquireAndRelease()
+TEST_F(ObjectPoolTest, testMassAcquireAndRelease)
 {
     const int acquireCount = 10;
     int* resources[acquireCount];
@@ -115,27 +83,19 @@ void ObjectPoolTest::testMassAcquireAndRelease()
         resources[i] = pool_->acquire();
     }
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active resource count",
-        acquireCount,
-        static_cast<int>(pool_->getActiveResourceCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive resource count",
-        0,
-        static_cast<int>(pool_->getInactiveResourceCount()));
+    EXPECT_EQ(acquireCount, pool_->getActiveResourceCount());
+    EXPECT_EQ(0, pool_->getInactiveResourceCount());
 
     for (int i = acquireCount - 1; i >= 0; --i) {
         pool_->release(resources[i]);
     }
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active resource count",
-        0,
-        static_cast<int>(pool_->getActiveResourceCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive resource count",
-        10,
-        static_cast<int>(pool_->getInactiveResourceCount()));
+    EXPECT_EQ(0, pool_->getActiveResourceCount());
+    EXPECT_EQ(10, pool_->getInactiveResourceCount());
 }
 
 
-void ObjectPoolTest::testDestroy()
+TEST_F(ObjectPoolTest, testDestroy)
 {
     for (int i = 0; i < 10; ++i) {
         (void)pool_->acquire();
@@ -143,10 +103,6 @@ void ObjectPoolTest::testDestroy()
 
     pool_->destroy();
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("active resource count",
-        0,
-        static_cast<int>(pool_->getActiveResourceCount()));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("inactive resource count",
-        0,
-        static_cast<int>(pool_->getInactiveResourceCount()));
+    EXPECT_EQ(0, pool_->getActiveResourceCount());
+    EXPECT_EQ(0, pool_->getInactiveResourceCount());
 }
