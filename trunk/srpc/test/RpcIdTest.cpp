@@ -7,22 +7,13 @@ using namespace srpc;
 * @class RpcIdTest 
 * RRpcId test
 */
-class RpcIdTest  : public CppUnit::TestFixture
+class RpcIdTest : public testing::Test
 {
-    CPPUNIT_TEST_SUITE(RpcIdTest );
-    CPPUNIT_TEST(testRpcId);
-    CPPUNIT_TEST_SUITE_END();
-private:
-    void testRpcId();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RpcIdTest );
 
-
-void RpcIdTest::testRpcId()
+TEST_F(RpcIdTest, testRpcId)
 {
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("same",
-        RRpcId("abc"), RRpcId("abc"));
-    CPPUNIT_ASSERT_MESSAGE("not same",
-        RRpcId("a") != RRpcId("b"));
+    EXPECT_EQ(RRpcId("abc"), RRpcId("abc"));
+    EXPECT_NE(RRpcId("a"), RRpcId("b"));
 }

@@ -17,8 +17,8 @@ OBJECTS := $(patsubst %.cpp,%.o,$(wildcard $(SOURCES)))
 DEPENDENCIES := $(patsubst %.cpp,%.d,$(wildcard $(SOURCES)))
 
 CXXFLAGS += -I./ -I../include/
-CXXFLAGS += $(CPPUNIT_INC)
-LIBS += $(CPPUNIT_LIB)
+CXXFLAGS += $(GTEST_INC)
+LIBS += $(GTEST_LIB)
 
 .PHONY: all srpc
 all: srpc $(TARGET)

@@ -2,11 +2,14 @@
 #define SRPC_STDAFX_H
 
 #ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4702 4312 4512)
+#   pragma once
 #endif
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4127 4512)
+#endif
+#include <gtest/gtest.h>
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
