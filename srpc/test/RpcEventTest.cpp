@@ -11,16 +11,10 @@ using namespace srpc;
 */
 class RpcEventTest : public BitStreamTexture
 {
-    CPPUNIT_TEST_SUITE(RpcEventTest );
-    CPPUNIT_TEST(testCalling);
-    CPPUNIT_TEST_SUITE_END();
-private:
-    void testCalling();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RpcEventTest );
 
-void RpcEventTest::testCalling()
+TEST_F(RpcEventTest, testCalling)
 {
     RInt32(100).write(*ostream_);
     RInt32(-100).write(*ostream_);
@@ -28,8 +22,6 @@ void RpcEventTest::testCalling()
     DummyRpcEvent event;
     event.dispatch(&event, *istream_);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("p1",
-        100, event.getP1());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("p2",
-        -100, event.getP2());
+    EXPECT_EQ(100, event.getP1());
+    EXPECT_EQ(-100, event.getP2());
 }

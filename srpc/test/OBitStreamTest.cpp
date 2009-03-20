@@ -10,356 +10,238 @@ using namespace srpc;
 *
 * output bit-stream Test
 */
-class OBitStreamTest : public CppUnit::TestFixture
+class OBitStreamTest : public testing::Test
 {
-    CPPUNIT_TEST_SUITE(OBitStreamTest);
-    CPPUNIT_TEST(testEmpty);
-    CPPUNIT_TEST(testWriteBit);
-    CPPUNIT_TEST(testWriteBits);
-    CPPUNIT_TEST(testWriteUnalignedBits);
-    CPPUNIT_TEST(testWriteInt8);
-    CPPUNIT_TEST(testWriteUInt8);
-    CPPUNIT_TEST(testWriteInt16);
-    CPPUNIT_TEST(testWriteUInt16);
-    CPPUNIT_TEST(testWriteInt32);
-    CPPUNIT_TEST(testWriteUInt32);
-    CPPUNIT_TEST(testWriteFloat32);
-    CPPUNIT_TEST(testWriteString);
-    CPPUNIT_TEST(testWriteShortString);
-    CPPUNIT_TEST(testAlign);
-    CPPUNIT_TEST(testReset);
-    CPPUNIT_TEST(testOutOfMemory);
-    CPPUNIT_TEST(testWriteZeroLengthString);
-    CPPUNIT_TEST(testWriteUInt64);
-    CPPUNIT_TEST(testWriteInt64);
-    CPPUNIT_TEST(testWriteBuffer);
-    CPPUNIT_TEST_SUITE_END();
-public:
-    void setUp();
-    void tearDown();
 private:
-    void testEmpty();
-    void testWriteBit();
-    void testWriteBits();
-    void testWriteUnalignedBits();
-    void testWriteInt8();
-    void testWriteUInt8();
-    void testWriteInt16();
-    void testWriteUInt16();
-    void testWriteInt32();
-    void testWriteUInt32();
-    void testWriteFloat32();
-    void testWriteSignedFloat32();
-    void testWriteString();
-    void testWriteShortString();
-    void testAlign();
-    void testReset();
-    void testOutOfMemory();
-    void testWriteZeroLengthString();
-    void testWriteUInt64();
-    void testWriteInt64();
-    void testWriteBuffer();
-private:
+    virtual void SetUp() {
+        ostream_ = StreamFactory::createOStream(StreamFactory::stBit, buffer_);
+    }
+
+    virtual void TearDown() {
+        delete ostream_;
+    }
+
+protected:
     DummyStreamBuffer buffer_;
     OStream* ostream_;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(OBitStreamTest);
 
-void OBitStreamTest::setUp()
+TEST_F(OBitStreamTest, testEmpty)
 {
-    ostream_ = StreamFactory::createOStream(StreamFactory::stBit, buffer_);
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(0, ostream_->getTotalBitCount());
+    EXPECT_EQ(0, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::tearDown()
-{
-    delete ostream_;
-}
-
-
-void OBitStreamTest::testEmpty()
-{
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        0, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        0, ostream_->getTotalSize());
-}
-
-
-void OBitStreamTest::testWriteBit()
+TEST_F(OBitStreamTest, testWriteBit)
 {
     ostream_->write(UInt8(1), 1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 bit",
-        1, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 bit",
-        1, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 byte",
-        1, ostream_->getTotalSize());
+    EXPECT_EQ(1, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(1, ostream_->getTotalBitCount());
+    EXPECT_EQ(1, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteBits()
+TEST_F(OBitStreamTest, testWriteBits)
 {
     ostream_->write(UInt8(1), 1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 bit",
-        1, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 byte",
-        1, ostream_->getTotalSize());
+    EXPECT_EQ(1, ostream_->getTotalBitCount()) << "1 bit";
+    EXPECT_EQ(1, ostream_->getTotalSize()) << "1 byte";
 
     ostream_->write(UInt8(0), 1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("2 bit",
-        2, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("2 bit",
-        2, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 byte",
-        1, ostream_->getTotalSize());
+    EXPECT_EQ(2, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(2, ostream_->getTotalBitCount());
+    EXPECT_EQ(1, ostream_->getTotalSize());
 
     ostream_->write(UInt8(0), 7 + (8 - 2));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("7 + 8 bit",
-        7, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("7 + 8 bit",
-        7 + 8, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("2 byte",
-        2, ostream_->getTotalSize());
+    EXPECT_EQ(7, static_cast<OBitStream*>(ostream_)->getHoldingBitCount()) <<
+        "7 + 8 bits";
+    EXPECT_EQ(7 + 8, ostream_->getTotalBitCount());
+    EXPECT_EQ(2, ostream_->getTotalSize());
 
     ostream_->write(UInt8(1), 1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        16, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 byte",
-        2, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(16, ostream_->getTotalBitCount());
+    EXPECT_EQ(2, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteUnalignedBits()
+TEST_F(OBitStreamTest, testWriteUnalignedBits)
 {
     ostream_->write(UInt8(1), 9);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 bit",
-        1, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 bit",
-        9, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 byte",
-        2, ostream_->getTotalSize());
+    EXPECT_EQ(1, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(9, ostream_->getTotalBitCount());
+    EXPECT_EQ(2, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteInt8()
+TEST_F(OBitStreamTest, testWriteInt8)
 {
     for (int i = 0; i < 10; ++i) {
         ostream_->write(Int8(127));
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("8 * 10 bit",
-        8 * 10, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 * 10 byte",
-        1 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(8 * 10, ostream_->getTotalBitCount()) << "8 * 10 bits";
+    EXPECT_EQ(1 * 10, ostream_->getTotalSize()) << "10 bytes";
 }
 
 
-void OBitStreamTest::testWriteUInt8()
+TEST_F(OBitStreamTest, testWriteUInt8)
 {
     for (int i = 0; i < 10; ++i) {
         ostream_->write(UInt8(255));
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("8 * 10 bit",
-        8 * 10, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 * 10 byte",
-        1 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(8 * 10, ostream_->getTotalBitCount());
+    EXPECT_EQ(1 * 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteInt16()
+TEST_F(OBitStreamTest, testWriteInt16)
 {
     for (int i = 0; i < 10; ++i) {
         ostream_->write(Int16(-1));
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("16 * 10 bit",
-        16 * 10, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("2 byte",
-        2 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(16 * 10, ostream_->getTotalBitCount());
+    EXPECT_EQ(2 * 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteUInt16()
+TEST_F(OBitStreamTest, testWriteUInt16)
 {
     for (int i = 0; i < 10; ++i) {
         ostream_->write(UInt16(-1));
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("16 * 10 bit",
-        16 * 10, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("2 byte",
-        2 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(16 * 10, ostream_->getTotalBitCount());
+    EXPECT_EQ(2 * 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteInt32()
+TEST_F(OBitStreamTest, testWriteInt32)
 {
     for (int i = 0; i < 10; ++i) {
         ostream_->write(Int32(-1));
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("32 * 10 bit",
-        32 * 10, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("4 * 10 byte",
-        4 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(32 * 10, ostream_->getTotalBitCount());
+    EXPECT_EQ(4 * 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteUInt32()
+TEST_F(OBitStreamTest, testWriteUInt32)
 {
     for (int i = 0; i < 10; ++i) {
         ostream_->write(UInt32(-1));
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("32 * 10 bit",
-        32 * 10 , ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("4 * 10 byte",
-        4 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(32 * 10 , ostream_->getTotalBitCount());
+    EXPECT_EQ(4 * 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteFloat32()
+TEST_F(OBitStreamTest, testWriteFloat32)
 {
     for (int i = 0; i < 10; ++i) {
         ostream_->write(423423.65F);
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("32 * 10 bit",
-        32 * 10, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("4 * 10 byte",
-        4 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(32 * 10, ostream_->getTotalBitCount());
+    EXPECT_EQ(4 * 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteString()
+TEST_F(OBitStreamTest, testWriteString)
 {
     const String s("0123456789");
     ostream_->write(s, USHRT_MAX, Bits<UInt16>::size);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("80 + 16 bit",
-        80 + 16, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("10 + 2 byte",
-        2 + 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(80 + 16, ostream_->getTotalBitCount());
+    EXPECT_EQ(2 + 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteShortString()
+TEST_F(OBitStreamTest, testWriteShortString)
 {
     const String s(256, 'X');
     ostream_->write(s, UCHAR_MAX, Bits<UInt8>::size);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("255 * 8 + 8 bit",
-        (255 * 8) + 8, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("255 + 1 byte",
-        1 + 255, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ((255 * 8) + 8, ostream_->getTotalBitCount());
+    EXPECT_EQ(1 + 255, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testAlign()
+TEST_F(OBitStreamTest, testAlign)
 {
     ostream_->write(UInt8(1), 1);
     ostream_->align();
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("8 bit",
-        8, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("1 byte",
-        1, ostream_->getTotalSize());
+    EXPECT_EQ(8, ostream_->getTotalBitCount());
+    EXPECT_EQ(1, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testReset()
+TEST_F(OBitStreamTest, testReset)
 {
     ostream_->write(UInt8(1), 1);
     ostream_->reset(false);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        0, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("one byte",
-        1, ostream_->getTotalSize());
+    EXPECT_EQ(0, ostream_->getTotalBitCount());
+    EXPECT_EQ(1, ostream_->getTotalSize());
 
     ostream_->reset(true);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("empty",
-        0, ostream_->getTotalSize());
+    EXPECT_EQ(0, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testOutOfMemory()
+TEST_F(OBitStreamTest, testOutOfMemory)
 {
     buffer_.setPushError();
 
-    try {
-        ostream_->write(UInt8(1), 1);
-        CPPUNIT_FAIL("exception is not thrown");
-    }
-    catch (const Exception&) {}
+    EXPECT_THROW(ostream_->write(UInt8(1), 1), Exception);
 }
 
 
-void OBitStreamTest::testWriteZeroLengthString()
+TEST_F(OBitStreamTest, testWriteZeroLengthString)
 {
     const String s("");
     ostream_->write(s, USHRT_MAX, Bits<UInt16>::size);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 + 16 bit",
-        0 + 16, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 + 2 byte",
-        2 + 0, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(0 + 16, ostream_->getTotalBitCount());
+    EXPECT_EQ(2 + 0, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteUInt64()
+TEST_F(OBitStreamTest, testWriteUInt64)
 {
     for (int i = 0; i < 10; ++i) {
         ostream_->write(UInt64(i + INT_MAX));
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("64 * 10 bit",
-        64 * 10 , ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("8 * 10 byte",
-        8 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(64 * 10 , ostream_->getTotalBitCount());
+    EXPECT_EQ(8 * 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteInt64()
+TEST_F(OBitStreamTest, testWriteInt64)
 {
     for (Int64 i = 0; i < 10; ++i) {
         ostream_->write(-i);
     }
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("64 * 10 bit",
-        64 * 10 , ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("8 * 10 byte",
-        8 * 10, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(64 * 10 , ostream_->getTotalBitCount());
+    EXPECT_EQ(8 * 10, ostream_->getTotalSize());
 }
 
 
-void OBitStreamTest::testWriteBuffer()
+TEST_F(OBitStreamTest, testWriteBuffer)
 {
-    char buffer[] = "무궁화꽃이 피었습니다.";
-    int length = static_cast<int>(strlen(buffer));
-    ostream_->write(buffer, static_cast<UInt16>(length));
+    char buffer[] = "독도는 우리땅이라고!";
+    const UInt16 length = static_cast<UInt16>(strlen(buffer));
+    ostream_->write(buffer, length);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("0 bit",
-        0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("total bit count",
-        length * CHAR_BIT, ostream_->getTotalBitCount());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("total bytes",
-        length, ostream_->getTotalSize());
+    EXPECT_EQ(0, static_cast<OBitStream*>(ostream_)->getHoldingBitCount());
+    EXPECT_EQ(length * CHAR_BIT, ostream_->getTotalBitCount());
+    EXPECT_EQ(length, ostream_->getTotalSize());
 }

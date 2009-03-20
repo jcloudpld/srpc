@@ -35,12 +35,12 @@ Global
 		StaticRelease|Win32 = StaticRelease|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.Debug|Win32.ActiveCfg = Debug|Win32
-		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.Debug|Win32.Build.0 = Debug|Win32
-		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.Release|Win32.ActiveCfg = Release|Win32
-		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.Release|Win32.Build.0 = Release|Win32
-		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.StaticDebug|Win32.ActiveCfg = Debug|Win32
-		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.StaticRelease|Win32.ActiveCfg = Release|Win32
+		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.Debug|Win32.ActiveCfg = StaticDebug|Win32
+		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.Release|Win32.ActiveCfg = StaticRelease|Win32
+		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.StaticDebug|Win32.ActiveCfg = StaticDebug|Win32
+		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.StaticDebug|Win32.Build.0 = StaticDebug|Win32
+		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.StaticRelease|Win32.ActiveCfg = StaticRelease|Win32
+		{F26E0284-D60D-4841-A39B-E7CDD6442AE9}.StaticRelease|Win32.Build.0 = StaticRelease|Win32
 		{55565472-F1D4-40F9-A639-7A446C5FA957}.Debug|Win32.ActiveCfg = Debug|Win32
 		{55565472-F1D4-40F9-A639-7A446C5FA957}.Debug|Win32.Build.0 = Debug|Win32
 		{55565472-F1D4-40F9-A639-7A446C5FA957}.Release|Win32.ActiveCfg = Release|Win32

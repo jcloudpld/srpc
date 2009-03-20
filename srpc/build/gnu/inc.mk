@@ -5,10 +5,10 @@
 # Boost library
 BOOST_INC=-I/usr/include/boost
 
-# CppUnit library
-CPPUNIT_INC=-I/usr/include/cppunit
-CPPUNIT_LIB_DIR=-L/usr/lib
-CPPUNIT_LIB = $(CPPUNIT_LIB_DIR) -lcppunit
+# GoogleTest library
+GTEST_INC=-I/usr/include/gtest
+GTEST_LIB_DIR=-L/usr/lib
+GTEST_LIB = $(GTEST_LIB_DIR) -lgtest
 
 # precompiled header
 PCH_FILE=stdafx.h

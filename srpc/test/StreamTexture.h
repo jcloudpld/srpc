@@ -9,17 +9,19 @@
 * @class StreamTexture 
 *
 */
-class StreamTexture : public CppUnit::TestFixture
+class StreamTexture : public testing::Test
 {
-public:
-    virtual void setUp() {
+protected:
+    virtual void SetUp() {
         ostream_.reset(
             srpc::StreamFactory::createOStream(getStreamType(), buffer_));
         istream_.reset(
             srpc::StreamFactory::createIStream(getStreamType(), buffer_));
     }
+
 private:
     virtual srpc::StreamFactory::StreamType getStreamType() const = 0;
+
 protected:
     DummyStreamBuffer buffer_;
     boost::scoped_ptr<srpc::OStream> ostream_;
