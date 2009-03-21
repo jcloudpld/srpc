@@ -9,7 +9,6 @@
   <property name="lib.dir" value="${root.dir}/lib"/>
   <property name="build.log.dir" value="${root.dir}/build_log"/>
   <property name="test.log.dir" value="${build.log.dir}/test_log"/>
-  <property name="test.result.dir" value="${root.dir}/test_result"/>
 
   <taskdef name="text2xml"
     classname="com.gb.bci.ant.taskdefs.TextToXml"
@@ -21,11 +20,7 @@
     <delete includeemptydirs="true" quiet="true">
       <fileset dir="${build.log.dir}" includes="**/*"/>
     </delete>
-    <delete includeemptydirs="true" quiet="true">
-      <fileset dir="${test.result.dir}" includes="**/*"/>
-    </delete>
     <mkdir dir="${build.log.dir}"/>
-    <mkdir dir="${test.result.dir}"/>
   </target>
 
   <target name="builder">
@@ -57,45 +52,38 @@
     </fail>
   </target>
 
-  <target name="unittest">
+  <target name="unittest" description="Unit Testing">
     <!-- Debug version -->
     <exec dir="${bin.dir}" executable="${bin.dir}/${unit.test.bin}_d.exe"
-      output="${test.result.dir}/${unit.test.bin}_d.xml"
       failonerror="false"
       failifexecutionfails="false">
-      <arg value="-xml"/>
+      <arg value="--gtest_output=xml:${test.log.dir}/${unit.test.bin}_d.xml"/>
     </exec>
 
     <!-- Release version -->
     <exec dir="${bin.dir}" executable="${bin.dir}/${unit.test.bin}.exe"
-      output="${test.result.dir}/${unit.test.bin}.xml"
 	    failonerror="false"
       failifexecutionfails="false">
-      <arg value="-xml"/>
+      <arg value="--gtest_output=xml:${test.log.dir}/${unit.test.bin}.xml"/>
     </exec>
 
     <condition property = "test.failed">
       <equals arg1="${test.ret}" arg2="1"/>
     </condition>
 
-    <!-- transform the cppunit xml file to junit xml file -->
-    <xslt basedir="${test.result.dir}" destdir="${test.log.dir}"
-      extension=".xml"
-      style="${cc.dir}/cppunit2junit.xsl"/>
-
     <fail if="test.failed">
-Unit tests failed. For error messages, check the log files in ${test.result.dir} or run "ant test-reports" to generate reports at ${test.result.dir}/reports.
+Unit tests failed. For error messages, check the log files in ${test.log.dir} or run "ant test-reports" to generate reports at ${test.log.dir}/reports.
     </fail>
   </target>
   
   <!-- task that use generated xml result, to produce html report: -->
   <target name="test-reports" description="Generate test reports from data collected after a running test">
-    <mkdir dir="${test.result.dir}/reports"/>
-    <junitreport todir="${test.result.dir}/reports">
+    <mkdir dir="${test.log.dir}/reports"/>
+    <junitreport todir="${test.log.dir}/reports">
       <fileset dir="${test.log.dir}">
         <include name="*.xml"/>
       </fileset>
-      <report format="frames" todir="${test.result.dir}/reports"/>
+      <report format="frames" todir="${test.log.dir}/reports"/>
     </junitreport>
   </target>
 
