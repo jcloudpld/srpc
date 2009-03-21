@@ -33,7 +33,7 @@ public:
 #endif
     }
 
-    virtual const char* what() const {
+    virtual const char* what() const throw() {
         return what_;
     }
 private:
