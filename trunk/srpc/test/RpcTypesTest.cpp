@@ -120,7 +120,7 @@ TEST_F(RpcTypesTest, testRFloat32)
 
 TEST_F(RpcTypesTest, testRString)
 {
-    RString expected = "독도는 우리땅!";
+    RString expected = "TANSTAAFL";
     expected.write(*ostream_);
 
     RString actual;
@@ -246,11 +246,11 @@ TEST_F(RpcTypesTest, testRSet)
 }
 
 
+enum EnumType { etA, etB, etC };
+typedef RpcIntType<EnumType, 3> REnumType;
+
 TEST_F(RpcTypesTest, testEnum)
 {
-    enum EnumType { etA, etB, etC };
-    typedef RpcIntType<EnumType, 3> REnumType;
-
     EnumType exp(etC);
     REnumType expected(exp);
     expected.write(*ostream_);
@@ -273,7 +273,7 @@ TEST_F(RpcTypesTest, testRUserDefinedString)
     RUserDefinedString actual;
     actual.read(*istream_);
     EXPECT_EQ(
-        expected.size() - 2,
+        static_cast<int>(expected.size() - 2),
         static_cast<int>(actual.size()));
 }
 
