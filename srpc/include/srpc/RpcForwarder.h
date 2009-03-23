@@ -27,6 +27,8 @@ public:
     RpcForwarder(RpcNetwork* rpcNetwork = 0) :
         rpcNetwork_(rpcNetwork) {}
 
+    virtual ~RpcForwarder() {}
+
     /**
      * RPC 메세지를 전송한다.
      * @param command RPC Command 인스턴스.
