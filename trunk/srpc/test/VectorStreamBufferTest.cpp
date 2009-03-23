@@ -3,6 +3,8 @@
 
 using namespace srpc;
 
+const size_t space_ = 10;
+
 /**
 * @class VectorStreamBufferTest
 *
@@ -21,23 +23,22 @@ private:
 
 protected:
     StreamBuffer* buffer_;
-    static const size_t space_ = 10;
 };
 
 
 TEST_F(VectorStreamBufferTest, testEmpty)
 {
     EXPECT_TRUE(buffer_->empty()) << "empty";
-    EXPECT_EQ(0, buffer_->size()) << "0 size";
+    EXPECT_EQ(0, static_cast<int>(buffer_->size())) << "0 size";
 }
 
 
 TEST_F(VectorStreamBufferTest, testPush)
 {
     buffer_->push(1);
-    EXPECT_EQ(1, buffer_->size()) << "1 size";
+    EXPECT_EQ(1, static_cast<int>(buffer_->size())) << "1 size";
     buffer_->push(2);
-    EXPECT_EQ(2, buffer_->size()) << "2 size";
+    EXPECT_EQ(2, static_cast<int>(buffer_->size())) << "2 size";
 }
 
 
@@ -61,7 +62,7 @@ TEST_F(VectorStreamBufferTest, testPop)
     EXPECT_EQ(true, buffer_->empty()) << "empty";
 
     buffer_->push(3);
-    EXPECT_EQ(1, buffer_->size()) << "1 size";
+    EXPECT_EQ(1, static_cast<int>(buffer_->size())) << "1 size";
 }
 
 
@@ -71,7 +72,7 @@ TEST_F(VectorStreamBufferTest, testReset)
     buffer_->push(2);
     buffer_->reset();
     EXPECT_TRUE(buffer_->empty());
-    EXPECT_EQ(0, buffer_->size());
+    EXPECT_EQ(0, static_cast<int>(buffer_->size()));
 
     EXPECT_TRUE(static_cast<VectorStreamBuffer*>(buffer_)->isValid()) <<
         "must be valid";
@@ -98,7 +99,7 @@ TEST_F(VectorStreamBufferTest, testExtendedSpace)
     for (size_t i = 0; i < (space_ * 2); ++i) {
         buffer_->push(1);
     }
-    EXPECT_EQ(0, buffer_->space());
+    EXPECT_EQ(0, static_cast<int>(buffer_->space()));
 
     buffer_->reset();
     EXPECT_EQ(space_ * 2, buffer_->space());
@@ -127,6 +128,6 @@ TEST_F(VectorStreamBufferTest, testCopyTo)
     buffer_->copyTo(static_cast<StreamBuffer::Item*>(toPtr),
         sizeof(to));
     EXPECT_TRUE(buffer_->empty());
-    EXPECT_EQ(0, buffer_->size());
+    EXPECT_EQ(0, static_cast<int>(buffer_->size()));
     EXPECT_EQ(value, to);
 }

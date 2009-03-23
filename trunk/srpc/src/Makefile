@@ -8,7 +8,7 @@ TARGET := ../lib/libsrpc
 ifeq "$(DEBUG)" "yes"
   TARGET := $(TARGET)d
 endif
-TARGET := $(TARGET).so
+TARGET := $(TARGET).$(SOEXT)
 
 SOURCES := *.cpp
 OBJECTS := $(patsubst %.cpp,%.o,$(wildcard $(SOURCES)))
@@ -16,7 +16,8 @@ DEPENDENCIES := $(patsubst %.cpp,%.d,$(wildcard $(SOURCES)))
 
 CXXFLAGS += -DSRPC_EXPORTS $(GCC_VISIBILITY)
 CXXFLAGS += -I./ -I../include/
-CXXFLAGS += -shared
+
+LDFLAGS += $(SOFLAGS)
 
 all: $(TARGET)
 test: all
