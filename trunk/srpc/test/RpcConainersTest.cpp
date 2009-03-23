@@ -11,22 +11,10 @@ using namespace srpc;
 */
 class RpcConainersTest : public BitStreamTexture
 {
-    CPPUNIT_TEST_SUITE(RpcConainersTest );
-    CPPUNIT_TEST(testRVector);
-    CPPUNIT_TEST(testRList);
-    CPPUNIT_TEST(testRSet);
-    CPPUNIT_TEST(testRMap);
-    CPPUNIT_TEST_SUITE_END();
-private:
-    void testRVector();
-    void testRList();
-    void testRSet();
-    void testRMap();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RpcConainersTest );
 
-void RpcConainersTest::testRVector()
+TEST_F(RpcConainersTest, testRVector)
 {
     RVector<RInt32> expected;
     expected.push_back(1);
@@ -37,15 +25,13 @@ void RpcConainersTest::testRVector()
     RVector<RInt32> actual;
     actual.read(*istream_);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("size",
-        static_cast<int>(expected.size()), static_cast<int>(actual.size()));
+    EXPECT_EQ(expected.size(), actual.size());
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("last",
-        expected.back(), actual.back());
+    EXPECT_EQ(expected.back(), actual.back());
 }
 
 
-void RpcConainersTest::testRList()
+TEST_F(RpcConainersTest, testRList)
 {
     RList<RInt32> expected;
     expected.push_back(1);
@@ -56,15 +42,13 @@ void RpcConainersTest::testRList()
     RList<RInt32> actual;
     actual.read(*istream_);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("size",
-        static_cast<int>(expected.size()), static_cast<int>(actual.size()));
+    EXPECT_EQ(expected.size(), actual.size());
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("last",
-        expected.back(), actual.back());
+    EXPECT_EQ(expected.back(), actual.back());
 }
 
 
-void RpcConainersTest::testRSet()
+TEST_F(RpcConainersTest, testRSet)
 {
     RSet<RShortString> expected;
     expected.insert("1234");
@@ -75,15 +59,13 @@ void RpcConainersTest::testRSet()
     RSet<RShortString> actual;
     actual.read(*istream_);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("size",
-        static_cast<int>(expected.size()), static_cast<int>(actual.size()));
+    EXPECT_EQ(expected.size(), actual.size());
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("first",
-        *expected.begin(), *actual.begin());
+    EXPECT_EQ(*expected.begin(), *actual.begin());
 }
 
 
-void RpcConainersTest::testRMap()
+TEST_F(RpcConainersTest, testRMap)
 {
     typedef RMap<RInt32, RShortString> MapType;
     MapType expected;
@@ -95,9 +77,7 @@ void RpcConainersTest::testRMap()
     MapType actual;
     actual.read(*istream_);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("size",
-        static_cast<int>(expected.size()), static_cast<int>(actual.size()));
+    EXPECT_EQ(expected.size(), actual.size());
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("first",
-        (*expected.begin()).second, (*actual.begin()).second);
+    EXPECT_EQ((*expected.begin()).second, (*actual.begin()).second);
 }
