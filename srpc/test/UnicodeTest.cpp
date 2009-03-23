@@ -59,10 +59,10 @@ TEST_F(UnicodeTest, testKorean)
 
 TEST_F(UnicodeTest, testInvalidUtf8)
 {
-    const WString str(L"가나 다라 마바사 아자 차카타파하. 거너 더러머버서");
+    const WString str(L"1234567890ABCDEFGHIZKLMNOPQRSTUVWXYZ");
 
     const String utf8(toUtf8(str));
-    const UInt32 strLen = 60;
+    const UInt32 strLen = 10;
     String invalidUtf8;
     for (String::size_type i = 0; i < strLen; ++i) {
         invalidUtf8.push_back(utf8[i]);
@@ -70,6 +70,6 @@ TEST_F(UnicodeTest, testInvalidUtf8)
 
     const WString converted(fromUtf8(invalidUtf8));
     EXPECT_EQ(
-        WString(L"가나 다라 마바사 아자 차카타파하. 거너 더"), converted) <<
+        WString(L"1234567890"), converted) <<
         "converting";
 }
