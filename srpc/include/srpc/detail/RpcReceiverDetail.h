@@ -90,6 +90,9 @@ public:
 #define SRPC_RPC_EVENT(RpcClass, method) \
     RpcEvent_##RpcClass##_##method
 
+#define SRPC_RPC_EVENT_INSTANCE(RpcClass, method) \
+    RpcEvent_##RpcClass##_##method##_instance
+
 #ifdef USE_BOOST_FAST_POOL_ALLOCATOR_FOR_SRPC
 // boost::pool을 쓸 경우 singleton pool의 소멸자가 먼저 호출되어
 // 메모리를 2번 해제하는 문제가 발생하여 메모리를 해제하지 않게함
@@ -149,11 +152,11 @@ public:
                 unmarshalFunctor_; \
         }; \
         static SRPC_RPC_EVENT(RpcClass, method) \
-            SRPC_RPC_EVENT(RpcClass, method)##_instance; \
+            SRPC_RPC_EVENT_INSTANCE(RpcClass, method); \
         srpc::EventRegister<SRPC_RPC_EVENT(RpcClass, method), RpcClass> \
             RpcClass##_##method##_EventRegister( \
                 RpcClass::SRPC_GET_RPCID(method)(), \
-                &SRPC_RPC_EVENT(RpcClass, method)##_instance); \
+                &SRPC_RPC_EVENT_INSTANCE(RpcClass, method)); \
     }
 
 // = IMPLEMENT_SRPC_METHOD_DETAIL_n

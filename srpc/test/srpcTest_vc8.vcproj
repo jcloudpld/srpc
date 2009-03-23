@@ -220,26 +220,12 @@
 						GeneratePreprocessedFile="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ForwardingFunctorTest.cpp"
 				>
 				<FileConfiguration
 					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -256,26 +242,12 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\IByteStreamTest.cpp"
 				>
 				<FileConfiguration
 					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -292,26 +264,12 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\MultipleRpcReceiverTest.cpp"
 				>
 				<FileConfiguration
 					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -328,26 +286,12 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\OByteStreamTest.cpp"
 				>
 				<FileConfiguration
 					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -383,26 +327,16 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\RpcConainersTest.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\RpcEventTest.cpp"
 				>
 				<FileConfiguration
 					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -419,26 +353,12 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RpcIdTest.cpp"
 				>
 				<FileConfiguration
 					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -455,26 +375,12 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RpcTypesTest.cpp"
 				>
 				<FileConfiguration
 					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -515,26 +421,12 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\VectorStreamBufferTest.cpp"
 				>
 				<FileConfiguration
 					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="StaticRelease|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
