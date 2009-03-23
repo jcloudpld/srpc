@@ -3,11 +3,11 @@
 #
 
 # Boost library
-BOOST_INC=-I/usr/include/boost
+BOOST_INC=-I/opt/local/include
 
 # GoogleTest library
-GTEST_INC=-I/usr/include/gtest
-GTEST_LIB_DIR=-L/usr/lib
+GTEST_INC=-I/usr/local/include
+GTEST_LIB_DIR=-L/usr/local/lib
 GTEST_LIB = $(GTEST_LIB_DIR) -lgtest
 
 # precompiled header
@@ -39,8 +39,21 @@ ifeq ($(GXX_4_OR_BETTER), 1)
   GCC_VISIBILITY += -fvisibility-inlines-hidden
 endif # GXX_4_OR_BETTER == 1
 
+# OS specific options
+OS_TYPE := $(shell $(CXX_FOR_VERSION_TEST) -dumpmachine)
+ifeq (apple-darwin,$(findstring apple-darwin,$(OS_TYPE)))
+  CXXFLAGS += -pthread
+  SOFLAGS = -dynamiclib -Wl,-undefined -Wl,dynamic_lookup -Wl,-single_module
+  SOEXT = dylib
+else
+  CXXFLAGS = -D_REENTRANT -fPIC
+  SOFLAGS = -shared
+  SOEXT = so
+endif
+
 # compiler options
-CXXFLAGS += -Wall -Wpointer-arith -fexceptions -D_REENTRANT $(BOOST_INC)
+CXXFLAGS += -Wall -Wpointer-arith -fexceptions
+CXXFLAGS += $(BOOST_INC)
 CXXFLAGS += -DSRPC_DLL
 
 # debug options
