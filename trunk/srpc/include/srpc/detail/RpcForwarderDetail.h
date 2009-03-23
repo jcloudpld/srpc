@@ -1,9 +1,9 @@
 #ifndef SRPC_RPCFORWARDERDETAIL_H
 #define SRPC_RPCFORWARDERDETAIL_H
 
-#include "RpcPrototype.h"
 #include "RpcCommand.h"
 #include "ForwardingFunctors.h"
+#include "../RpcPrototype.h"
 #include "../RpcPacketType.h"
 
 /** @addtogroup RpcForwarding

@@ -4,7 +4,7 @@
 #include "ReceivingFunctors.h"
 #include "RpcEvent.h"
 #include "RpcId.h"
-#include "utility/StlUtils.h"
+#include "../utility/StlUtils.h"
 #include "../ContainerTypes.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
