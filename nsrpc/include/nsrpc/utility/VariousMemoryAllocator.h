@@ -82,7 +82,7 @@ public:
         {
             ACE_GUARD_RETURN(Mutex, monitor, lock_, 0);
 
-            const Blocks::iterator pos = find(nbytes);
+            const typename Blocks::iterator pos = find(nbytes);
             if (pos != cachedBlocks_.end()) {
                 Block& block = *pos;
                 assert(block.chunkSize_ >= nbytes);
@@ -140,7 +140,7 @@ private:
     }
 
     void insert(const Block& block) {
-        const Blocks::iterator pos = find(block.chunkSize_);
+        const typename Blocks::iterator pos = find(block.chunkSize_);
         if (pos != cachedBlocks_.end()) {
             assert(! (*pos < block));
             cachedBlocks_.insert(pos, block);
