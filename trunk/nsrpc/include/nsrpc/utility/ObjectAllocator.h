@@ -105,8 +105,8 @@ private:
     void destroy() {
         ACE_GUARD(Mutex, monitor, lock_);
 
-        Pool::iterator pos = pool_.begin();
-        const Pool::iterator end = pool_.end();
+        typename Pool::iterator pos = pool_.begin();
+        const typename Pool::iterator end = pool_.end();
         for (; pos != end; ++pos) {
             std::free(*pos);
         }
