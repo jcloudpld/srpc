@@ -8,7 +8,7 @@ TARGET := ../lib/libnsrpc
 ifeq "$(DEBUG)" "yes"
   TARGET := $(TARGET)d
 endif
-TARGET := $(TARGET).so
+TARGET := $(TARGET).$(SOEXT)
 
 SOURCES := *.cpp
 OBJECTS := $(patsubst %.cpp,%.o,$(wildcard $(SOURCES)))
@@ -16,7 +16,7 @@ DEPENDENCIES := $(patsubst %.cpp,%.d,$(wildcard $(SOURCES)))
 
 CXXFLAGS += $(GCC_VISIBILITY) -DNSRPC_EXPORTS
 CXXFLAGS += -I./ -I../include/
-CXXFLAGS += -shared
+CXXFLAGS += $(SOFLAGS)
 LIBS += $(SRPC_LIB) $(TPROACTOR_LIB) $(ACE_LIB)
 
 all: $(TARGET)

@@ -19,8 +19,8 @@ SOURCES=*.cpp
 OBJECTS := $(patsubst %.cpp,%.o,$(wildcard $(SOURCES)))
 DEPENDENCIES := $(patsubst %.cpp,%.d,$(wildcard $(SOURCES)))
 
-CXXFLAGS += -I./ -I$(NSRPC_ROOT)/include/ $(CPPUNIT_INC)
-LIBS += $(SRPC_LIB) $(TPROACTOR_LIB) $(ACE_LIB) $(CPPUNIT_LIB)
+CXXFLAGS += -I./ -I$(NSRPC_ROOT)/include/ $(GTEST_INC)
+LIBS += $(SRPC_LIB) $(TPROACTOR_LIB) $(ACE_LIB) $(GTEST_LIB)
 
 .PHONY: all nsrpc 
 all: nsrpc $(TARGET)

@@ -12,20 +12,19 @@ SRPC_INC=-I$(SRPC_ROOT)/include
 SRPC_LIB_DIR=$(SRPC_ROOT)/lib
 SRPC_LIB=-L$(SRPC_LIB_DIR)
 ifeq "$(DEBUG)" "yes"
-	SRPC_LIB += -lsrpcd
+  SRPC_LIB += -lsrpcd
 else
-	SRPC_LIB += -lsrpc
+  SRPC_LIB += -lsrpc
 endif
 LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SRPC_LIB_DIR)
 
 # Boost library
 BOOST_INC=-I/usr/include/boost
 
-# CppUnit library
-CPPUNIT_INC=-I/usr/include/cppunit
-CPPUNIT_LIB_DIR=/usr/lib
-CPPUNIT_LIB = -L$(CPPUNIT_LIB_DIR) -lcppunit
-#LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(CPPUNIT_LIB_DIR)
+# GoogleTest library
+GTEST_INC=-I/usr/include/cppunit
+GTEST_LIB_DIR=/usr/lib
+GTEST_LIB = -L$(GTEST_LIB_DIR) -lgtest
 
 # TProactor library
 TPROACTOR_INC=-I$(AIO_ROOT)
@@ -68,15 +67,28 @@ ifeq ($(GXX_4_OR_BETTER), 1)
   GCC_VISIBILITY += -fvisibility-inlines-hidden
 endif # GXX_4_OR_BETTER == 1
 
+# OS specific options
+OS_TYPE := $(shell $(CXX_FOR_VERSION_TEST) -dumpmachine)
+ifeq (apple-darwin,$(findstring apple-darwin,$(OS_TYPE)))
+  CXXFLAGS += -pthread
+  SOFLAGS = -dynamiclib -Wl,-undefined -Wl,dynamic_lookup -Wl,-single_module
+  SOEXT = dylib
+else
+  CXXFLAGS = -D_REENTRANT -fPIC
+  SOFLAGS = -shared
+  SOEXT = so
+endif
+
 # compiler options
-CXXFLAGS += -Wall -Wpointer-arith -fexceptions -D_REENTRANT $(SRPC_INC) $(BOOST_INC) $(TPROACTOR_INC) $(ACE_INC) 
+CXXFLAGS += -Wall -Wpointer-arith -fexceptions
+CXXFLAGS += $(SRPC_INC) $(BOOST_INC) $(TPROACTOR_INC) $(ACE_INC) 
 CXXFLAGS += -DNSRPC_DLL
 
 # debug options
 ifdef DEBUG
-	CXXFLAGS += -g
+  CXXFLAGS += -g
 else
-	CXXFLAGS += -DNDEBUG -O3
+  CXXFLAGS += -DNDEBUG -O3
 endif
 
 .PHONY: all clean
