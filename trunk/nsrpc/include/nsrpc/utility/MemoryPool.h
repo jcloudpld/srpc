@@ -106,7 +106,7 @@ public:
             insertActiveResource(resource);
         }
         else {
-            throw std::bad_alloc("out of memory");
+            throw std::bad_alloc();
         }
         return resource;
     }
