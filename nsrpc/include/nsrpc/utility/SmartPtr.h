@@ -29,11 +29,11 @@ protected:
             "공유 가능한 객체는 동적할당해야 한다");
     }
 public:
-    int getReferenceCount() const {
+    long getReferenceCount() const {
         return referenceCount_;
     }
 private:
-    mutable int referenceCount_;
+    mutable long referenceCount_;
 };
 
 
