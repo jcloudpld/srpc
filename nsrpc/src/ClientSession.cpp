@@ -218,7 +218,6 @@ void ClientSession::disconnect_i(bool fireEvent)
     if (peer().get_handle() != ACE_INVALID_HANDLE) {
         const ACE_Reactor_Mask masks =
             ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL;
-        reactor()->remove_handler(&notifier_, masks);
         reactor()->remove_handler(this, masks);
         disconnectReserved_ = false;
         fireEventAfterFlush_ = false;
