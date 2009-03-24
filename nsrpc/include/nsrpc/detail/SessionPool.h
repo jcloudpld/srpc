@@ -30,7 +30,7 @@ public:
 
     /// 현재 사용 중인 모든 세션을 취소한다.
     void cancel() {
-        forEachActiveResources(std::mem_fun(&Session::disconnect));
+        Parent::forEachActiveResources(std::mem_fun(&Session::disconnect));
     }
 };
 
