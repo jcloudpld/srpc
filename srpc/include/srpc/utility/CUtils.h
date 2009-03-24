@@ -3,8 +3,10 @@
 
 #include <cstdio>
 
-#ifndef snprintf
-#define snprintf _snprintf
+#ifdef _snprintf
+#  ifndef snprintf
+#    define snprintf _snprintf
+#  endif
 #endif
 
 #endif // SRPC_CUTILS_H
