@@ -115,7 +115,8 @@ public:
     void release(Resource* resource) {
         ACE_GUARD(Mutex, monitor, lock_);
 
-        typename ActiveResources::iterator pos = findActiveResource(resource);
+        const typename ActiveResources::iterator pos =
+            findActiveResource(resource);
         if ((pos != activeResources_.end()) && (*pos == resource)) {
             inactiveResources_.push(resource);
             activeResources_.erase(pos); // 비용이 제일 크다!
@@ -129,8 +130,8 @@ public:
     void destroy() {
         ACE_GUARD(Mutex, monitor, lock_);
 
-        ActiveResources::iterator pos = activeResources_.begin();
-        const ActiveResources::iterator end = activeResources_.end();
+        typename ActiveResources::iterator pos = activeResources_.begin();
+        const typename ActiveResources::iterator end = activeResources_.end();
         for (; pos != end; ++pos) {
             allocator_.free(*pos);
         }
@@ -190,7 +191,8 @@ private:
     }
 
     void insertActiveResource(Resource* resource) {
-        const ActiveResources::iterator pos = findActiveResource(resource);
+        const typename ActiveResources::iterator pos =
+            findActiveResource(resource);
         if (pos != activeResources_.end()) {
             assert(*pos != resource);
             activeResources_.insert(pos, resource);
