@@ -3,7 +3,7 @@
 
 #include <cstdio>
 
-#ifdef _snprintf
+#ifdef _MSC_VER
 #  ifndef snprintf
 #    define snprintf _snprintf
 #  endif
