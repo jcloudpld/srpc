@@ -2,14 +2,6 @@
 #define NSRPC_ACETESTFIXTURE_H
 
 #include <nsrpc/utility/LogManager.h>
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4702 4312 4512)
-#endif
-#include <cppunit/TestFixture.h>
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
 
 //#define PRINT_ACE_LOG
 
