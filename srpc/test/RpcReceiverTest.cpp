@@ -246,7 +246,8 @@ TEST_F(RpcReceiverTest, testRpcPrototype)
     rpcId.write(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, 0);
-    EXPECT_EQ("rpc0", response_->getRpcId().getMethodName());
+    EXPECT_EQ(std::string("rpc0"),
+        std::string(response_->getRpcId().getMethodName()));
 }
 
 
@@ -256,5 +257,6 @@ TEST_F(RpcReceiverTest, testOnReceiving)
     rpcId.write(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, 0);
-    EXPECT_EQ("rpc0", response_->getLastRpcId().getMethodName());
+    EXPECT_EQ(std::string("rpc0"),
+        std::string(response_->getLastRpcId().getMethodName()));
 }

@@ -1,7 +1,7 @@
 #ifndef SRPC_RPCFORWARDER_H
 #define SRPC_RPCFORWARDER_H
 
-#include "config/config.h"
+#include "config/srpc.h"
 #include "detail/RpcForwarderDetail.h"
 #include <boost/noncopyable.hpp>
 #include <cassert>

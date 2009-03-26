@@ -27,7 +27,8 @@ TEST_F(UnicodeTest, testEnglish)
     }
     {
         const WString expected(L"You aren't gonna need it!");
-        EXPECT_EQ(expected, fromUtf8("You aren't gonna need it!")) <<
+        EXPECT_TRUE(wcscmp(expected.c_str(),
+            fromUtf8("You aren't gonna need it!").c_str()) == 0) <<
             "UTF-8 to UCS";
     }
 }
@@ -69,7 +70,6 @@ TEST_F(UnicodeTest, testInvalidUtf8)
     }
 
     const WString converted(fromUtf8(invalidUtf8));
-    EXPECT_EQ(
-        WString(L"1234567890"), converted) <<
+    EXPECT_TRUE(wcscmp(L"1234567890", converted.c_str()) == 0) <<
         "converting";
 }

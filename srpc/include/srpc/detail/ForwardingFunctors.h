@@ -2,7 +2,7 @@
 #define SRPC_FORWARDINGFUNCTORS_H
 
 #include "TypeList.h"
-#include "../config/config.h"
+#include "../config/srpc.h"
 #include <boost/utility.hpp>
 
 namespace srpc {
