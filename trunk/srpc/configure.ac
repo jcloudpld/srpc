@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT([srpc], [1.5], [kcando@gmail.com], [sprc])
+AC_INIT([libsrpc], [1.5], [kcando@gmail.com], [libsprc])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_HEADERS([include/srpc/config/config.h])
 
@@ -52,7 +52,7 @@ AC_PROG_LIBTOOL
 # pedantic complaints about package files, and enable various distribution
 # targets.
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 dist-zip foreign subdir-objects]) 
-AM_INIT_AUTOMAKE(srpc, $SRPC_VERSION)
+AM_INIT_AUTOMAKE(libsrpc, $SRPC_VERSION)
 
 # Checks for Boost library
 AC_ARG_WITH(boost,
