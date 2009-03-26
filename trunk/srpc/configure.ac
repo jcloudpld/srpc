@@ -85,7 +85,7 @@ AC_CHECK_HEADER([gtest/gtest.h],,
 
 # OS specific
 
-AC_DEFINE(_REENTRANT, [1], [])
+CXXFLAGS="$CXXFLAGS -D_REENTRANT"
 
 WINDOWS=no
 case $host in
