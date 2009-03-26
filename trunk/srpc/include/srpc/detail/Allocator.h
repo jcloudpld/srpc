@@ -1,7 +1,7 @@
 #ifndef SRPC_ALLOCATOR_H
 #define SRPC_ALLOCATOR_H
 
-#include "../config/config.h"
+#include "../config/srpc.h"
 #include <memory>
 
 #if defined(USE_BOOST_POOL_ALLOCATOR_FOR_SRPC) || \

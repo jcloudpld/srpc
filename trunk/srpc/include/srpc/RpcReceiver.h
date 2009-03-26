@@ -1,7 +1,7 @@
 #ifndef SRPC_RPCRECEIVER_H
 #define SRPC_RPCRECEIVER_H
 
-#include "config/config.h"
+#include "config/srpc.h"
 #include "detail/RpcReceiverDetail.h"
 #include <cassert>
 

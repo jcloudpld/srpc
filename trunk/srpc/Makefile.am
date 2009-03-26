@@ -1,0 +1,13 @@
+AUTOMAKE_OPTIONS = 1.9 foreign dist-bzip2 dist-zip
+
+SUBDIRS = include src test benchmark examples
+
+EXTRA_DIST = \
+	build \
+	doc \
+	CHANGES.txt \
+	DEPENDENCIES.txt \
+	INSTALL.txt \
+	README.txt \
+	THANKS.txt
+

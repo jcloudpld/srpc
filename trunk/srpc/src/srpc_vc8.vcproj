@@ -520,15 +520,15 @@
 					Name="config"
 					>
 					<File
-						RelativePath="..\include\srpc\config\config.h"
-						>
-					</File>
-					<File
 						RelativePath="..\include\srpc\config\config_gcc.h"
 						>
 					</File>
 					<File
 						RelativePath="..\include\srpc\config\config_msvc.h"
+						>
+					</File>
+					<File
+						RelativePath="..\include\srpc\config\srpc.h"
 						>
 					</File>
 				</Filter>

@@ -1,0 +1,4 @@
+Changes for 1.5:
+
+  * First public release
+

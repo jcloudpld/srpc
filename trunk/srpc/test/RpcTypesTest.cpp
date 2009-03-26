@@ -180,7 +180,7 @@ TEST_F(RpcTypesTest, testRWString)
 
     RWString actual;
     actual.read(*istream_);
-    EXPECT_EQ(expected.ref(), actual.ref());
+    EXPECT_TRUE(wcscmp(expected.c_str(), actual.c_str()) == 0);
 }
 
 
@@ -191,7 +191,7 @@ TEST_F(RpcTypesTest, testRWShortString)
 
     RWShortString actual;
     actual.read(*istream_);
-    EXPECT_EQ(expected.ref(), actual.ref());
+    EXPECT_TRUE(wcscmp(expected.c_str(), actual.c_str()) == 0);
 }
 
 

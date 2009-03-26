@@ -1,7 +1,7 @@
 #ifndef SRPC_HASH_H
 #define SRPC_HASH_H
 
-#include "../config/config.h"
+#include "../config/srpc.h"
 #include "../Types.h"
 
 namespace srpc {
