@@ -3,6 +3,7 @@
 
 #include "../RpcTypes.h"
 #include "../utility/Hash.h"
+#include <cstring>
 
 namespace srpc {
 
