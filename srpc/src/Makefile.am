@@ -21,7 +21,8 @@ libsrpc_la_CPPFLAGS = $(AM_CPPFLAGS) -DSRPC_DLL -DSRPC_EXPORTS
 libsrpc_la_CXXFLAGS = $(AM_CXXFLAGS) -I$(top_builddir)/include
 
 libsrpc_la_LDFLAGS= \
- -no-undefined -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
- -release $(LT_RELEASE)
+ -no-undefined
+## -no-undefined -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+## -release $(LT_RELEASE)
  
 

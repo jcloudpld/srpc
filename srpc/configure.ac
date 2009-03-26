@@ -2,40 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT([libsrpc], [1.5], [kcando@gmail.com], [libsprc])
+
+AC_INIT([libsrpc], [1.7.33], [kcando@gmail.com], [libsprc])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_HEADERS([include/srpc/config/config.h])
-
-# Making releases:
-#   SRPC_MICRO_VERSION += 1;
-#   SRPC_INTERFACE_AGE += 1;
-#   SRPC_BINARY_AGE += 1;
-# if any functions have been added, set SRPC_INTERFACE_AGE to 0.
-# if backwards compatibility has been broken,
-# set SRPC_BINARY_AGE and SRPC_INTERFACE_AGE to 0.
-#
-SRPC_MAJOR_VERSION=1
-SRPC_MINOR_VERSION=5
-SRPC_MICRO_VERSION=0
-SRPC_INTERFACE_AGE=0
-SRPC_BINARY_AGE=0
-SRPC_VERSION=$SRPC_MAJOR_VERSION.$SRPC_MINOR_VERSION.$SRPC_MICRO_VERSION
-AC_SUBST(SRPC_MAJOR_VERSION)
-AC_SUBST(SRPC_MINOR_VERSION)
-AC_SUBST(SRPC_MICRO_VERSION)
-AC_SUBST(SRPC_INTERFACE_AGE)
-AC_SUBST(SRPC_BINARY_AGE)
-AC_SUBST(SRPC_VERSION)
-
-# libtool versioning
-LT_RELEASE=$SRPC_MAJOR_VERSION.$SRPC_MINOR_VERSION
-LT_CURRENT=`expr $SRPC_MICRO_VERSION - $SRPC_INTERFACE_AGE`
-LT_REVISION=$SRPC_INTERFACE_AGE
-LT_AGE=`expr $SRPC_BINARY_AGE - $SRPC_INTERFACE_AGE`
-AC_SUBST(LT_RELEASE)
-AC_SUBST(LT_CURRENT)
-AC_SUBST(LT_REVISION)
-AC_SUBST(LT_AGE) 
 
 # Checks for programs.
 AC_PROG_CXX
@@ -52,7 +22,6 @@ AC_PROG_LIBTOOL
 # pedantic complaints about package files, and enable various distribution
 # targets.
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 dist-zip foreign subdir-objects]) 
-AM_INIT_AUTOMAKE(libsrpc, $SRPC_VERSION)
 
 # Checks for Boost library
 AC_ARG_WITH(boost,
