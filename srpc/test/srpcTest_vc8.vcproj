@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gmockd.lib"
+				AdditionalDependencies="gtestd.lib"
 				OutputFile="$(OutDir)/srpcTest_d.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -144,7 +144,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gmock.lib"
+				AdditionalDependencies="gtest.lib"
 				OutputFile="$(OutDir)/srpcTest.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames=""
@@ -224,90 +224,34 @@
 			<File
 				RelativePath=".\ForwardingFunctorTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\IBitStreamTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\IByteStreamTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\MockRpcNetwork.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\MultipleRpcReceiverTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\OBitStreamTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\OByteStreamTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ReceivingFunctorTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 				<FileConfiguration
 					Name="StaticRelease|Win32"
 					>
@@ -320,13 +264,6 @@
 			<File
 				RelativePath=".\RpcCommandTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RpcConainersTest.cpp"
@@ -335,57 +272,22 @@
 			<File
 				RelativePath=".\RpcEventTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RpcForwarderTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RpcIdTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RpcReceiverTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RpcTypesTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\srpcTest.cpp"
@@ -414,24 +316,10 @@
 			<File
 				RelativePath=".\UnicodeTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\VectorStreamBufferTest.cpp"
 				>
-				<FileConfiguration
-					Name="StaticDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
