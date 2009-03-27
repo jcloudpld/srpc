@@ -1,7 +1,7 @@
 #ifndef SRPC_RPCNETWORK_H
 #define SRPC_RPCNETWORK_H
 
-#include "config/srpc.h"
+#include "srpc.h"
 #include "RpcPacketType.h"
 #include "ContainerTypes.h"
 #include "detail/RpcId.h"

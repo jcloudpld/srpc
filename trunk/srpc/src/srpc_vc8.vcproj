@@ -501,6 +501,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\srpc\srpc.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\srpc\StreamBuffer.h"
 					>
 				</File>
@@ -525,10 +529,6 @@
 					</File>
 					<File
 						RelativePath="..\include\srpc\config\config_msvc.h"
-						>
-					</File>
-					<File
-						RelativePath="..\include\srpc\config\srpc.h"
 						>
 					</File>
 				</Filter>

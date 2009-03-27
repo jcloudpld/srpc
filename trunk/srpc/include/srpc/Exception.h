@@ -1,7 +1,7 @@
 #ifndef SRPC_EXCEPTION_H
 #define SRPC_EXCEPTION_H
 
-#include "config/srpc.h"
+#include "srpc.h"
 #include "utility/CUtils.h"
 #include <stdexcept>
 

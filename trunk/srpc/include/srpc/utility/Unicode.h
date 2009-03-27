@@ -1,7 +1,7 @@
 #ifndef SRPC_UNICODE_H
 #define SRPC_UNICODE_H
 
-#include "../config/srpc.h"
+#include "../srpc.h"
 #include "../StringTypes.h"
 
 namespace srpc {

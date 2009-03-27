@@ -6,13 +6,13 @@
 #endif
 
 #if defined(HAVE_CONFIG_H)
-#   include "config.h"
+#   include "config/config.h"
 #endif
 
 #if defined(_MSC_VER)
-#   include "config_msvc.h"
+#   include "config/config_msvc.h"
 #elif defined(__GNUC__)
-#   include "config_gcc.h"
+#   include "config/config_gcc.h"
 #else
 #   error other compiler(except GCC, VC++) is not supported
 #endif
