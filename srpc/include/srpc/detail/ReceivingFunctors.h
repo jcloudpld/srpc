@@ -1,7 +1,7 @@
 #ifndef SRPC_RECEIVINGFUNCTORS_H
 #define SRPC_RECEIVINGFUNCTORS_H
 
-#include "../config/srpc.h"
+#include "../srpc.h"
 #include "TypeList.h"
 #include <boost/utility.hpp>
 

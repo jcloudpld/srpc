@@ -1,7 +1,7 @@
 #ifndef SRPC_STREAMFACTORY_H
 #define SRPC_STREAMFACTORY_H
 
-#include "config/srpc.h"
+#include "srpc.h"
 #include "IStream.h"
 #include "OStream.h"
 
