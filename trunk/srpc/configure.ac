@@ -100,12 +100,12 @@ AM_CONDITIONAL(WINDOWS_TARGET,test x$WINDOWS != xno)
 
 # Checks for library functions.
 AC_CONFIG_FILES([Makefile
-                 include/Makefile
-                 src/Makefile
-                 test/Makefile
-                 benchmark/Makefile
-                 benchmark/StreamingTest/Makefile
-                 examples/Makefile
-                 examples/NamingService/Makefile])
+    include/Makefile
+    src/Makefile
+    test/Makefile
+    benchmark/Makefile
+    benchmark/StreamingTest/Makefile
+    examples/Makefile
+    examples/NamingService/Makefile])
 
 AC_OUTPUT
