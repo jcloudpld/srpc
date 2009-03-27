@@ -98,8 +98,40 @@ fi
 
 AM_CONDITIONAL(WINDOWS_TARGET,test x$WINDOWS != xno)
 
+# check for doxygen
+AC_ARG_ENABLE(doxygen,   [  --enable-doxygen        enable documentation generation with doxygen (auto)])
+AC_ARG_ENABLE(dot,       [  --enable-dot            use 'dot' to generate graphs in doxygen (auto)])
+AC_ARG_ENABLE(html-docs, [  --enable-html-docs      enable HTML generation with doxygen (yes)], [], [ enable_html_docs=yes])
+if test "x$enable_doxygen" = xno; then
+        enable_doc=no
+else 
+        AC_PATH_PROG(DOXYGEN, doxygen, , $PATH)
+        if test "x$DOXYGEN" = x; then
+                if test "x$enable_doxygen" = xyes; then
+                    AC_MSG_ERROR([could not find doxygen])
+                fi
+                enable_doc=no
+        else
+                enable_doc=yes
+                AC_PATH_PROG(DOT, dot, , $PATH)
+        fi
+fi
+AM_CONDITIONAL(DOC, test x$enable_doc = xyes)
+
+if test x$DOT = x; then
+        if test "x$enable_dot" = xyes; then
+            AC_MSG_ERROR([could not find dot])
+        fi
+        enable_dot=no
+else
+        enable_dot=yes
+fi
+AC_SUBST(enable_dot)
+AC_SUBST(enable_html_docs)
+
 # Checks for library functions.
 AC_CONFIG_FILES([Makefile
+    doc/Makefile
     include/Makefile
     src/Makefile
     test/Makefile
