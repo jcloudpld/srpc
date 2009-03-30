@@ -1,6 +1,8 @@
 #ifndef SRPC_STDAFX_H
 #define SRPC_STDAFX_H
 
+#include <srpc/srpc.h>
+
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4819)
@@ -16,3 +18,4 @@
 #include <cassert>
 
 #endif // SRPC_STDAFX_H
+

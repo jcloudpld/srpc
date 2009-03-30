@@ -1,6 +1,10 @@
 #ifndef NSRPC_TESTSESSION_H
 #define NSRPC_TESTSESSION_H
 
+#include <nsrpc/nsrpc.h>
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/Session.h>
 #include <nsrpc/detail/PacketCoderFactory.h>
 
@@ -39,5 +43,7 @@ private:
     size_t arrivedMessageCount_;
     size_t acquireSendBlockCallCount_;
 };
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
 #endif // !defined(NSRPC_TESTSESSION_H)

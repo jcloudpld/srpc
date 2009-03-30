@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "EchoClient.h"
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include <srpc/Exception.h>
 
 DEFINE_SRPC_METHOD_1(EchoClientRpcSession, echo, srpc::RString, data)
@@ -16,3 +19,5 @@ IMPLEMENT_SRPC_METHOD_1(EchoClientRpcSession, onEcho,
         echo(data);
     }
 }
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)

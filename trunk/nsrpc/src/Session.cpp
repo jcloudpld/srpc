@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include "BandwidthLimit.h"
 #include <nsrpc/Session.h>
 #include <nsrpc/SessionConfig.h>
@@ -458,3 +461,5 @@ ACE_Message_Block& Session::acquireRecvBlock()
 }
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)

@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/ProactorTask.h>
 #include <nsrpc/utility/AceUtil.h>
 #ifdef USE_TPROACTOR
@@ -44,3 +47,5 @@ int ProactorTask::svc()
 }
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)

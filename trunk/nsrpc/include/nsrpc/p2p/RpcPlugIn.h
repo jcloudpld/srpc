@@ -2,7 +2,7 @@
 #define NSRPC_RPCPLUGIN_H
 
 #include "PlugIn.h"
-#include "../config/config.h"
+#include "../nsrpc.h"
 #include <srpc/RpcP2p.h>
 
 namespace nsrpc

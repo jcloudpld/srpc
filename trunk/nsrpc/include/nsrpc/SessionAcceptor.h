@@ -1,7 +1,10 @@
 #ifndef NSRPC_SESSIONACCEPTOR_H
 #define NSRPC_SESSIONACCEPTOR_H
 
-#include "config/config.h"
+#include "nsrpc.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include "config/Proactor.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -91,5 +94,7 @@ private:
 /** @} */ // addtogroup session
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)
 
 #endif // NSRPC_SESSIONACCEPTOR_H

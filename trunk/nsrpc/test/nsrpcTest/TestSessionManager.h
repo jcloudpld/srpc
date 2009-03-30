@@ -1,6 +1,10 @@
 #ifndef NSRPC_TESTSESSIONMANAGER_H
 #define NSRPC_TESTSESSIONMANAGER_H
 
+#include <nsrpc/nsrpc.h>
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "TestSession.h"
 #include <nsrpc/SessionConfig.h>
 #include <nsrpc/detail/SessionManager.h>
@@ -65,5 +69,7 @@ private:
     TestSession* lastSession_;
     int sessionCount_;
 };
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
 #endif // !defined(NSRPC_TESTSESSIONMANAGER_H)

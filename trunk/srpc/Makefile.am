@@ -1,6 +1,8 @@
 AUTOMAKE_OPTIONS = 1.9 foreign dist-bzip2 dist-zip
 
-SUBDIRS = doc include src test benchmark examples
+ACLOCAL_AMFLAGS = -I m4
+
+SUBDIRS = src include doc test benchmark examples
 
 EXTRA_DIST = \
 	build \
@@ -13,11 +15,7 @@ EXTRA_DIST = \
 dist-hook:
 	find $(distdir) -name .svn | xargs rm -rf
 
-.PHONY: release snapshot dox doc-dist 
-
-release:
-	rm -rf .deps */.deps
-	$(MAKE) distcheck
+.PHONY: snapshot dox doc-dist 
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-`date +%Y-%m-%d` 

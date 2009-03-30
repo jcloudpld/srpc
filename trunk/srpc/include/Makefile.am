@@ -1,9 +1,26 @@
 nobase_include_HEADERS = \
-	srpc/config/config.h \
+	srpc/srpc.h \
+	srpc/srpc_macros.h \
+	srpc/ContainerTypes.h \
+	srpc/Exception.h \
+	srpc/IStream.h \
+	srpc/OStream.h \
+	srpc/RpcContainers.h \
+	srpc/RpcForwarder.h \
+	srpc/RpcInterface.h \
+	srpc/RpcNetwork.h \
+	srpc/RpcP2p.h \
+	srpc/RpcPacketType.h \
+	srpc/RpcPrototype.h \
+	srpc/RpcReceiver.h \
+	srpc/RpcTypes.h \
+	srpc/StreamBuffer.h \
+	srpc/StreamFactory.h \
+	srpc/StringTypes.h \
+	srpc/Types.h \
+	srpc/Version.h \
 	srpc/config/config_gcc.h \
 	srpc/config/config_msvc.h \
-	srpc/config/srpc.h \
-	srpc/ContainerTypes.h \
 	srpc/detail/Allocator.h \
 	srpc/detail/ForwardingFunctors.h \
 	srpc/detail/IBitStream.h \
@@ -26,21 +43,4 @@ nobase_include_HEADERS = \
 	srpc/utility/Endian.h \
 	srpc/utility/Hash.h \
 	srpc/utility/StlUtils.h \
-	srpc/utility/Unicode.h \
-	srpc/Exception.h \
-	srpc/IStream.h \
-	srpc/OStream.h \
-	srpc/RpcContainers.h \
-	srpc/RpcForwarder.h \
-	srpc/RpcInterface.h \
-	srpc/RpcNetwork.h \
-	srpc/RpcP2p.h \
-	srpc/RpcPacketType.h \
-	srpc/RpcPrototype.h \
-	srpc/RpcReceiver.h \
-	srpc/RpcTypes.h \
-	srpc/StreamBuffer.h \
-	srpc/StreamFactory.h \
-	srpc/StringTypes.h \
-	srpc/Types.h
-
+	srpc/utility/Unicode.h

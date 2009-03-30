@@ -34,7 +34,7 @@ protected:
 
 TEST_F(MemoryPoolTest, testInitialize)
 {
-    EXPECT_EQ(0, pool_->getActiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
     EXPECT_EQ(poolSize, pool_->getInactiveResourceCount());
 }
 
@@ -44,8 +44,8 @@ TEST_F(MemoryPoolTest, testAcquire)
     void* resource = pool_->acquire();
     EXPECT_TRUE(0 != resource);
 
-    EXPECT_EQ(1, pool_->getActiveResourceCount());
-    EXPECT_EQ(poolSize - 1, pool_->getInactiveResourceCount());
+    EXPECT_EQ(1, int(pool_->getActiveResourceCount()));
+    EXPECT_EQ(poolSize - 1, int(pool_->getInactiveResourceCount()));
 }
 
 
@@ -54,7 +54,7 @@ TEST_F(MemoryPoolTest, testRelease)
     void* resource = pool_->acquire();
 
     pool_->release(resource);
-    EXPECT_EQ(0, pool_->getActiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
     EXPECT_EQ(poolSize, pool_->getInactiveResourceCount());
 }
 
@@ -68,15 +68,15 @@ TEST_F(MemoryPoolTest, testMassAcquireAndRelease)
         resources[i] = pool_->acquire();
     }
 
-    EXPECT_EQ(acquireCount, pool_->getActiveResourceCount());
-    EXPECT_EQ(0, pool_->getInactiveResourceCount());
+    EXPECT_EQ(acquireCount, int(pool_->getActiveResourceCount()));
+    EXPECT_EQ(0, int(pool_->getInactiveResourceCount()));
 
     for (int i = acquireCount - 1; i >= 0; --i) {
         pool_->release(resources[i]);
     }
 
-    EXPECT_EQ(0, pool_->getActiveResourceCount());
-    EXPECT_EQ(10, pool_->getInactiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
+    EXPECT_EQ(10, int(pool_->getInactiveResourceCount()));
 }
 
 
@@ -88,6 +88,6 @@ TEST_F(MemoryPoolTest, testDestroy)
 
     pool_->destroy();
 
-    EXPECT_EQ(0, pool_->getActiveResourceCount());
-    EXPECT_EQ(0, pool_->getInactiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
+    EXPECT_EQ(0, int(pool_->getInactiveResourceCount()));
 }

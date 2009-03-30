@@ -1,7 +1,7 @@
 #ifndef P2PTEST_STDAFX_H
 #define P2PTEST_STDAFX_H
 
-#include <nsrpc/config/config.h>
+#include <nsrpc/nsrpc.h>
 
 // boost
 #ifdef _MSC_VER

@@ -45,7 +45,10 @@ void AnonymousMessageManager::handleIncomingReliableMessages()
     const UnknownReliableMessages::iterator end =
         incomingUnknownReliableMessages_.end();
     for (; pos != end; ++pos) {
-        handleIncomingMessage((*pos).peerId_, *pos, srpc::ptReliable);
+        // for Cygwin (GCC 3.4.4)
+        UnknownReliableMessage& message =
+            const_cast<UnknownReliableMessage&>(*pos);
+        handleIncomingMessage(message.peerId_, message, srpc::ptReliable);
     }
     incomingUnknownReliableMessages_.clear();
 }
@@ -58,7 +61,10 @@ void AnonymousMessageManager::handleIncomingUnreliableMessages()
     const UnknownUnreliableMessages::iterator end =
         incomingUnknownUnreliableMessages_.end();
     for (; pos != end; ++pos) {
-        handleIncomingMessage((*pos).peerId_, *pos, srpc::ptUnreliable);
+        // for Cygwin (GCC 3.4.4)
+        UnknownUnreliableMessage& message =
+            const_cast<UnknownUnreliableMessage&>(*pos);
+        handleIncomingMessage(message.peerId_, message, srpc::ptUnreliable);
     }
     incomingUnknownUnreliableMessages_.clear();
 }

@@ -139,7 +139,7 @@ IMPLEMENT_SRPC_METHOD_WITH_HINT_1(DummyRpcServer2, rpc1, RInt32, p1)
 {
     rpcId_ = getRpcId_rpc1();
     p1_ = p1;
-    rpcHint;
+    SRPC_UNUSED_ARG(rpcHint);
 }
 
 #ifdef _MSC_VER

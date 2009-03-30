@@ -1,27 +1,29 @@
 #ifndef NSRPC_STDAFX_H
 #define NSRPC_STDAFX_H
 
-#include <nsrpc/config/config.h>
+#include <nsrpc/nsrpc.h>
 
-// TProactor
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4127 4244 4267 4312 4996)
-#endif
-#ifdef USE_TPROACTOR
-#include <TProactor/Asynch_Acceptor.h>
-#include <TProactor/Asynch_Connector.h>
-#include <TProactor/Asynch_IO.h>
-#include <TProactor/Proactor.h>
-#else
-#include <ace/Asynch_Acceptor.h>
-#include <ace/Asynch_Connector.h>
-#include <ace/Asynch_IO.h>
-#include <ace/Proactor.h>
-#endif // USE_TPROACTOR
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
+#include <ace/config.h>
+
+// AIO
+#  ifdef _MSC_VER
+#    pragma warning (push)
+#    pragma warning (disable: 4127 4244 4267 4312 4996)
+#  endif
+#  ifdef USE_TPROACTOR
+#    include <TProactor/Asynch_Acceptor.h>
+#    include <TProactor/Asynch_Connector.h>
+#    include <TProactor/Asynch_IO.h>
+#    include <TProactor/Proactor.h>
+#  else
+#    include <ace/Asynch_Acceptor.h>
+#    include <ace/Asynch_Connector.h>
+#    include <ace/Asynch_IO.h>
+#    include <ace/Proactor.h>
+#  endif // USE_TPROACTOR
+#  ifdef _MSC_VER
+#    pragma warning (pop)
+#  endif
 
 // ACE
 #ifdef _MSC_VER

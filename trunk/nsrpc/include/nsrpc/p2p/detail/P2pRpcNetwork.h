@@ -1,7 +1,7 @@
 #ifndef NSRPC_P2PRPCNETWORK_H
 #define NSRPC_P2PRPCNETWORK_H
 
-#include <nsrpc/config/config.h>
+#include <nsrpc/nsrpc.h>
 #include <nsrpc/p2p/PeerId.h>
 #include <srpc/RpcNetwork.h>
 

@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONTESTFIXTURE_H
 #define NSRPC_SESSIONTESTFIXTURE_H
 
+#include <nsrpc/nsrpc.h>
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "AceTestFixture.h"
 #include "TestSessionManager.h"
 #include <nsrpc/SessionAcceptor.h>
@@ -86,5 +90,7 @@ protected:
     nsrpc::SessionAcceptor* acceptor_;
     nsrpc::PacketCoder* packetCoder_;
 };
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
 #endif // !defined(NSRPC_SESSIONTESTFIXTURE_H)

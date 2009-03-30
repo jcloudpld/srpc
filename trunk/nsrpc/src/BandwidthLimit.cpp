@@ -19,7 +19,8 @@ bool BandwidthLimit::check()
     }
 
     const time_t now = time(0);
-    if ((now - badTime_) >= capacity_.secondsForThrottling_) {
+    if ((now - badTime_) >=
+        static_cast<time_t>(capacity_.secondsForThrottling_)) {
         reset();
         return true;
     }

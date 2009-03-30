@@ -1,7 +1,7 @@
 #ifndef NSRPC_PROTOCOL_H
 #define NSRPC_PROTOCOL_H
 
-#include "../config/config.h"
+#include "../nsrpc.h"
 #include <srpc/Types.h>
 #include <srpc/utility/Endian.h>
 

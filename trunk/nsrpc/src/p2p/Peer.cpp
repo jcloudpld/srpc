@@ -332,7 +332,8 @@ bool Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
     ReliableMessages::iterator pos = outgoingReliableMessages_.begin();
     const ReliableMessages::iterator end = outgoingReliableMessages_.end();
     for (; pos != end;) {
-        ReliableMessage& message = *pos;
+        // for Cygwin (GCC 3.4.4)
+        ReliableMessage& message = const_cast<ReliableMessage&>(*pos);
 
         message.attemptToSending(p2pConfig_, rtt_, currentTime);
 
@@ -365,7 +366,8 @@ bool Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
     Messages::iterator pos = outgoingUnreliableMessages_.begin();
     const Messages::iterator end = outgoingUnreliableMessages_.end();
     for (; pos != end;) {
-        Message& message = *pos;
+        // for Cygwin (GCC 3.4.4)
+        Message& message = const_cast<Message&>(*pos);
         if (! send(fromPeerId,  message, srpc::ptUnreliable,
             shouldReleaseMessageBlock)) {
             return false;
@@ -390,7 +392,8 @@ void Peer::checkTimeout()
     ReliableMessages::iterator pos = sentReliableMessages_.begin();
     const ReliableMessages::iterator end = sentReliableMessages_.end();
     for (; pos != end;) {
-        ReliableMessage& message = *pos;
+        // for Cygwin (GCC 3.4.4)
+        ReliableMessage& message = const_cast<ReliableMessage&>(*pos);
 
         if (! message.shouldCheckTimeout(currentTime)) {
             break; // 메세지가 시간(SeqNo) 순으로 정렬되어 있으므로
@@ -487,7 +490,9 @@ bool Peer::sendOutgoingDelayedMessages(DelayedOutboundMessages& messages)
     DelayedOutboundMessages::iterator pos = messages.begin();
     const DelayedOutboundMessages::iterator end = messages.end();
     for (; pos != end;) {
-        DelayedOutboundMessage& message = *pos;
+        // for Cygwin (GCC 3.4.4)
+        DelayedOutboundMessage& message =
+            const_cast<DelayedOutboundMessage&>(*pos);
 
         if (! message.shouldFire(currentTime)) {
             break; // 시간 순으로 정렬되어 있으므로
@@ -582,7 +587,8 @@ void Peer::handleIncomingReliableMessage()
         //const PeerTime startTime = getPeerTime();
         const ReliableMessages::iterator firstPos =
             incomingReliableMessages_.begin();
-        ReliableMessage& message = *firstPos;
+        // for Cygwin (GCC 3.4.4)
+        ReliableMessage& message = const_cast<ReliableMessage&>(*firstPos);
         if (message.sequenceNumber_ ==
             (incomingReliableSequenceNumber_ + 1)) {
             if (messageHandler_.handleIncomingMessage(peerId_, message)) {
@@ -614,7 +620,8 @@ bool Peer::handleIncomingUnreliableMessage()
     if (! incomingUnreliableMessages_.empty()) {
         const Messages::iterator firstPos =
             incomingUnreliableMessages_.begin();
-        Message& message = *firstPos;
+        // for Cygwin (GCC 3.4.4)
+        Message& message = const_cast<Message&>(*firstPos);
         if (message.sequenceNumber_ >=
             (incomingUnreliableSequenceNumber_ + 1)) {
             if (messageHandler_.handleIncomingMessage(peerId_, message)) {
@@ -636,7 +643,8 @@ void Peer::handleIncomingDelayedMessages(DelayedInboundMessages& messages)
     DelayedInboundMessages::iterator pos = messages.begin();
     const DelayedInboundMessages::iterator end = messages.end();
     for (; pos != end;) {
-        DelayedInboundMessage& message = *pos;
+        // for Cygwin (GCC 3.4.4)
+        DelayedInboundMessage& message = const_cast<DelayedInboundMessage&>(*pos);
 
         if (! message.shouldFire(currentTime)) {
             break; // 시간 순으로 정렬되어 있으므로
@@ -660,7 +668,8 @@ bool Peer::removeSentReliableMessage(SequenceNumber sequenceNumber)
     ReliableMessages::iterator pos = sentReliableMessages_.begin();
     const ReliableMessages::iterator end = sentReliableMessages_.end();
     for (; pos != end;) {
-        ReliableMessage& message = *pos;
+        // for Cygwin (GCC 3.4.4)
+        ReliableMessage& message = const_cast<ReliableMessage&>(*pos);
         if (message.sequenceNumber_ > sequenceNumber) {
             // GPG5 참고(수신자가 신뢰 패킷을 순서대로 처리하므로)
             break;

@@ -2,6 +2,7 @@
 #include <nsrpc/utility/LogManager.h>
 #include <srpc/ContainerTypes.h>
 #include <ace/Log_Msg_Callback.h>
+#include <ace/Null_Mutex.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4244)

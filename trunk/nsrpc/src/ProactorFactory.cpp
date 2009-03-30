@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/ProactorFactory.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -137,3 +140,5 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType ptype)
 }
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)

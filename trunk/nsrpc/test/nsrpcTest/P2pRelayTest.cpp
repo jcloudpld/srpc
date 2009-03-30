@@ -41,6 +41,7 @@ TEST_F(P2pRelayTest, testConnectViaRelayServer)
         pause(1);
     }
 
-    EXPECT_EQ(2, relayService_->getLastRelayPeerIdPair().from_);
+    EXPECT_EQ(nsrpc::PeerId(2),
+        relayService_->getLastRelayPeerIdPair().from_);
     EXPECT_EQ(pseudoHostPeerId, relayService_->getLastRelayPeerIdPair().to_);
 }

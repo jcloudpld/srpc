@@ -21,7 +21,7 @@ void printLogs(nsrpc::LogRepository& logRepository)
         std::cout << logRepository.getLog();
     }
 #else
-    logRepository;
+    SRPC_UNUSED_ARG(logRepository);
 #endif
 }
 

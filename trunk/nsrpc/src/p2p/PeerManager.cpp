@@ -243,7 +243,8 @@ void PeerManager::handleIncomingMessages()
 {
     if (! relayServer_.isNull()) {
         const bool result = relayServer_->handleIncomingMessages();
-        assert(result); result;
+        assert(result);
+        SRPC_UNUSED_ARG(result);
     }
 
     Peers::iterator pos = peers_.begin();

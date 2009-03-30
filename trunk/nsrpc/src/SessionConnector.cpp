@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/SessionConnector.h>
 #include <nsrpc/Session.h>
 #include <nsrpc/detail/SessionCreator.h>
@@ -86,3 +89,5 @@ int SessionConnector::validate_connection(
 }
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)

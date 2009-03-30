@@ -27,8 +27,8 @@ SimpleRelayService::SimpleRelayService(ACE_Reactor* reactor,
     packetCoder_(packetCoder),
     recvBlock_(new ACE_Message_Block(packetCoder_->getDefaultPacketSize())),
     sendBlock_(new ACE_Message_Block(packetCoder_->getDefaultPacketSize())),
-    rpcNetwork_(*this, *recvBlock_, *sendBlock_, useBitPacking),
     endpoint_(*this, *recvBlock_, reactor_),
+    rpcNetwork_(*this, *recvBlock_, *sendBlock_, useBitPacking),
     outgoingUnreliableSequenceNumber_(invalidSequenceNumber),
     lastRelayPeerIdPair_(invalidPeerId, invalidPeerId),
     peerCipherKeys_(*packetCoder_)
@@ -184,7 +184,8 @@ IMPLEMENT_SRPC_P2P_METHOD_6(SimpleRelayService, rpcRelay,
 {
     assert(rpcHint != 0);
     const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
-    assert(hint.isValid()); hint;
+    assert(hint.isValid());
+    SRPC_UNUSED_ARG(hint);
 
     const ACE_INET_Addr fromAddress(hint.getAddress());
     char fromIp[INET_ADDRSTRLEN];

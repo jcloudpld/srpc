@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "SessionTestFixture.h"
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/SessionConnector.h>
 #include <nsrpc/utility/SystemUtil.h>
 
@@ -70,3 +73,5 @@ TEST_F(SessionConnectorTest, testStopToConnect)
     EXPECT_EQ(0,
         connector_->start(getTestAddress(), proactorTask_->getProactor()));
 }
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)

@@ -1,7 +1,10 @@
 #ifndef NSRPC_SESSION_H
 #define NSRPC_SESSION_H
 
-#include "config/config.h"
+#include "nsrpc.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include "config/Proactor.h"
 #include "detail/MessageBlockProvider.h"
 #include "detail/CsProtocol.h"
@@ -196,5 +199,7 @@ private:
 /** @} */ // addtogroup session
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)
 
 #endif // NSRPC_SESSION_H

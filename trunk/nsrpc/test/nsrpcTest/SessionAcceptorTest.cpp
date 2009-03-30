@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "SessionTestFixture.h"
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "TestClient.h"
 #include <nsrpc/utility/SystemUtil.h>
 
@@ -82,3 +85,5 @@ TEST_F(SessionAcceptorTest, testDisconnected)
 
     EXPECT_EQ(0, getSessionManager()->getSessionCount());
 }
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)

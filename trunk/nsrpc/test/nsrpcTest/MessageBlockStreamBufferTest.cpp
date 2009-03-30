@@ -5,6 +5,8 @@
 using namespace srpc;
 using namespace nsrpc;
 
+static const size_t initialSpace = 10;
+
 /**
 * @class MessageBlockStreamBufferTest
 *
@@ -14,7 +16,7 @@ class MessageBlockStreamBufferTest : public testing::Test
 {
 private:
     virtual void SetUp() {
-        mblock_ = new ACE_Message_Block(space_);
+        mblock_ = new ACE_Message_Block(initialSpace);
         buffer_ = new MessageBlockStreamBuffer(mblock_);
     }
 
@@ -26,7 +28,6 @@ private:
 protected:
     ACE_Message_Block* mblock_;
     MessageBlockStreamBuffer* buffer_;
-    static const size_t space_ = 10;
 };
 
 
@@ -90,14 +91,14 @@ TEST_F(MessageBlockStreamBufferTest, testReset)
 
 TEST_F(MessageBlockStreamBufferTest, testSpace)
 {
-    EXPECT_EQ(space_, buffer_->space());
+    EXPECT_EQ(initialSpace, buffer_->space());
     buffer_->push(1);
     buffer_->push(2);
-    EXPECT_EQ(space_ - 2, buffer_->space());
+    EXPECT_EQ(initialSpace - 2, buffer_->space());
 
     buffer_->pop();
     buffer_->pop();
-    EXPECT_EQ(space_, buffer_->space());
+    EXPECT_EQ(initialSpace, buffer_->space());
 
     EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
@@ -105,15 +106,15 @@ TEST_F(MessageBlockStreamBufferTest, testSpace)
 
 TEST_F(MessageBlockStreamBufferTest, testExtendedSpace)
 {
-    EXPECT_EQ(space_, buffer_->space()) << "empty";
+    EXPECT_EQ(initialSpace, buffer_->space()) << "empty";
 
-    for (size_t i = 0; i < (space_ * 2); ++i) {
+    for (size_t i = 0; i < (initialSpace * 2); ++i) {
         buffer_->push(1);
     }
     EXPECT_EQ(0, buffer_->space());
 
     buffer_->reset();
-    EXPECT_EQ(space_ * 2, buffer_->space()) << "fully empty";
+    EXPECT_EQ(initialSpace * 2, buffer_->space()) << "fully empty";
 
     EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
@@ -155,7 +156,7 @@ TEST_F(MessageBlockStreamBufferTest, testResetWithNewBlock)
     buffer_->push(1);
     EXPECT_EQ(1, buffer_->size());
 
-    AceMessageBlockGuard second(new ACE_Message_Block(space_));
+    AceMessageBlockGuard second(new ACE_Message_Block(initialSpace));
     buffer_->reset(second.get());
     EXPECT_EQ(0, buffer_->size());
 

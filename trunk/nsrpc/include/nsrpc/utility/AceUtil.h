@@ -1,7 +1,7 @@
 #ifndef NSRPC_ACEUTIL_H
 #define NSRPC_ACEUTIL_H
 
-#include "../config/config.h"
+#include "../nsrpc.h"
 #include "../config/Proactor.h"
 #include <srpc/StringTypes.h>
 #include <srpc/ContainerTypes.h>

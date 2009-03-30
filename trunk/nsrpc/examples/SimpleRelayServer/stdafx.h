@@ -1,7 +1,7 @@
 #ifndef SRS_STDAFX_H
 #define SRS_STDAFX_H
 
-#include <nsrpc/config/config.h>
+#include <nsrpc/nsrpc.h>
 
 // ACE
 #ifdef _MSC_VER

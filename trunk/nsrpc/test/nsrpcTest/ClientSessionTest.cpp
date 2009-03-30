@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "ClientSessionTestFixture.h"
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "TestClient.h"
 #include <nsrpc/utility/SystemUtil.h>
 
@@ -99,3 +102,5 @@ TEST_F(ClientSessionTest, testRecvPackets)
         getLastServerSession().getStats().sentBytes_) << "sent bytes";
     EXPECT_EQ(sendCount, clientSession_->getMessageCount()) << "message count";
 }
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)

@@ -505,6 +505,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\srpc\srpc_macros.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\srpc\StreamBuffer.h"
 					>
 				</File>

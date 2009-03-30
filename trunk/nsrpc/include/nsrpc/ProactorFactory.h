@@ -1,7 +1,10 @@
 #ifndef NSRPC_PROACTORFACTORY_H
 #define NSRPC_PROACTORFACTORY_H
 
-#include "config/config.h"
+#include "nsrpc.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include "config/Proactor.h"
 #include <srpc/StringTypes.h>
 
@@ -61,5 +64,7 @@ struct NSRPC_API ProactorFactory
 /** @} */ // addtogroup proactor
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)
 
 #endif // NSRPC_PROACTORFACTORY_H

@@ -2,6 +2,7 @@
 #define SRPC_RPCFORWARDER_H
 
 #include "srpc.h"
+#include "srpc_macros.h"
 #include "detail/RpcForwarderDetail.h"
 #include <boost/noncopyable.hpp>
 #include <cassert>
@@ -48,7 +49,7 @@ public:
         rpcNetwork_ = 0;
     }
 private:
-    virtual void onForwarding(const RRpcId& rpcId) { rpcId; }
+    virtual void onForwarding(const RRpcId& rpcId) { SRPC_UNUSED_ARG(rpcId); }
 private:
     RpcNetwork* rpcNetwork_;
 };

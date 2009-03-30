@@ -1,7 +1,7 @@
 #ifndef MESSAGEBLOCKMANAGERTEST_STDAFX_H
 #define MESSAGEBLOCKMANAGERTEST_STDAFX_H
 
-#include <nsrpc/config/config.h>
+#include <nsrpc/nsrpc.h>
 
 // ACE
 #ifdef _MSC_VER

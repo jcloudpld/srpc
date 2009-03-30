@@ -58,29 +58,55 @@ bool setMaximumSocketBufferSize(ACE_HANDLE handle)
 long setupTimer(NSRPC_Proactor& proactor,
     NSRPC_Handler& handler, size_t msec, const void* act)
 {
+#if defined (NSRPC_HAS_PROACTOR)
+    // This only works on Win32 platforms and on Unix platforms supporting
+    // POSIX aio calls.
+
     const long timerId =
         proactor.schedule_timer(handler, act, makeTimeValue(msec));
     assert(timerId != -1);
     return timerId;
+
+#else
+    assert(false && "Proactor timer is not supported.");
+    return -1;
+#endif
 }
 
 
 long setupRepeatingTimer(NSRPC_Proactor& proactor,
     NSRPC_Handler& handler, size_t msec, const void* act)
 {
+#if defined (NSRPC_HAS_PROACTOR)
+    // This only works on Win32 platforms and on Unix platforms supporting
+    // POSIX aio calls.
+
     const long timerId =
         proactor.schedule_repeating_timer(handler, act, makeTimeValue(msec));
     assert(timerId != -1);
     return timerId;
+
+#else
+    assert(false && "Proactor timer is not supported.");
+    return -1;
+#endif
 }
 
 
 void cancelTimer(NSRPC_Proactor& proactor, long& timerId)
 {
+#if defined (NSRPC_HAS_PROACTOR)
+    // This only works on Win32 platforms and on Unix platforms supporting
+    // POSIX aio calls.
+
     if (timerId != -1) {
         proactor.cancel_timer(timerId);
         timerId = -1;
     }
+
+#else
+    assert(false && "Proactor timer is not supported.");
+#endif
 }
 
 

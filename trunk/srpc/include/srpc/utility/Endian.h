@@ -1,6 +1,7 @@
 #ifndef SRPC_ENDIAN_H
 #define SRPC_ENDIAN_H
 
+#include "../Types.h"
 #include <boost/detail/endian.hpp>
 #include <cassert>
 

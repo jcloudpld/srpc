@@ -34,8 +34,8 @@ struct PeerHint
         p2pOptions_(poNone) {}
 
     PeerHint(GroupId groupId) :
-        groupId_(groupId),
         peerId_(invalidPeerId),
+        groupId_(groupId),
         address_(0),
         isCandidate_(false),
         p2pOptions_(poNone) {}

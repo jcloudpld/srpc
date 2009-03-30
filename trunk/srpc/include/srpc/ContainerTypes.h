@@ -117,6 +117,14 @@ class HashMultiSet :
     public stdext::hash_multiset<Key, Traits, SrpcNodeAllocator<Key> >
 {};
 
+#else
+
+#define HashMap Map
+#define HashMultiMap MultiMap
+
+#define HashSet Set
+#define HashMultiSet MultiSet
+
 #endif //_MSC_VER
 
 /** @} */ // addtogroup types

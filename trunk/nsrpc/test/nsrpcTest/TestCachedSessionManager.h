@@ -1,6 +1,10 @@
 #ifndef NSRPC_TESTRPCSESSIONMANAGER_H
 #define NSRPC_TESTRPCSESSIONMANAGER_H
 
+#include <nsrpc/nsrpc.h>
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/detail/SessionRpcNetwork.h>
 #include <nsrpc/detail/PacketCoderFactory.h>
 #include <nsrpc/CachedSessionManager.h>
@@ -85,5 +89,7 @@ public:
 private:
     nsrpc::Session* lastSession_;
 };
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
 #endif // !defined(NSRPC_TESTRPCSESSIONMANAGER_H)

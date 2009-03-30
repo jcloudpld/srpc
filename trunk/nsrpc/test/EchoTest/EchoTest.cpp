@@ -2,17 +2,24 @@
 #include "Config.h"
 #include "EchoServer.h"
 #include "EchoClient.h"
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/ProactorTask.h>
 #include <nsrpc/ProactorFactory.h>
 #include <nsrpc/CachedSessionManager.h>
 #include <nsrpc/SessionAcceptor.h>
 #include <nsrpc/SessionConnector.h>
+
 #include <nsrpc/utility/SystemUtil.h>
 #include <nsrpc/utility/LogManager.h>
 #include <ace/Profile_Timer.h>
-#include <algorithm>
 #include <iostream>
 #include <conio.h>
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
+
+#if defined(NSRPC_HAS_PROACTOR)
 
 using namespace nsrpc;
 
@@ -117,6 +124,7 @@ void run(const Config& config)
     clientSessionManager.reset();
 }
 
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
 int ACE_TMAIN(int argc, ACE_TCHAR* argv[])
 {
@@ -124,6 +132,8 @@ int ACE_TMAIN(int argc, ACE_TCHAR* argv[])
     if (! config.parseArgs(argc, argv)) {
         return -1;
     }
+
+#if defined(NSRPC_HAS_PROACTOR)
 
     nsrpc::LogManager logManager;
     if (config.isVerbose()) {
@@ -135,6 +145,8 @@ int ACE_TMAIN(int argc, ACE_TCHAR* argv[])
     }
 
     run(config);
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
     return 0;
 }

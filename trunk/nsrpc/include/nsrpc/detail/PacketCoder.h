@@ -1,7 +1,7 @@
 #ifndef NSRPC_PACKETCODER_H
 #define NSRPC_PACKETCODER_H
 
-#include "../config/config.h"
+#include "../nsrpc.h"
 #include "Protocol.h"
 #include <srpc/utility/Endian.h>
 #include <srpc/StringTypes.h>
