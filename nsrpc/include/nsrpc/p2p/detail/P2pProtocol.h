@@ -1,7 +1,7 @@
 #ifndef NSRPC_P2PPROTOCOL_H
 #define NSRPC_P2PPROTOCOL_H
 
-#include "Peertime.h"
+#include "PeerTime.h"
 #include "../../detail/Protocol.h"
 #include "../PeerId.h"
 #include <srpc/RpcPacketType.h>
