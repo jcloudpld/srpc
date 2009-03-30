@@ -215,78 +215,6 @@ struct UnknownUnreliableMessage : Message
 
 
 /**
- * @class MessageSet
- * - squenceNumber 순으로 오름차순 정렬되어야 한다
- */
-template <class MessageType>
-class MessageSet : public srpc::Set<MessageType>
-{
-public:
-    typedef srpc::Set<MessageType> Parent;
-    typedef typename Parent::iterator iterator;
-    typedef typename Parent::const_iterator const_iterator;
-public:
-    ~MessageSet() {
-        release();
-    }
-
-    bool isExists(SequenceNumber sequenceNumber) const {
-        return getMessage(sequenceNumber) != this->end();
-    }
-
-    iterator getMessage(SequenceNumber sequenceNumber) {
-        messageForFind_.sequenceNumber_ = sequenceNumber;
-        return this->find(messageForFind_);
-    }
-
-    const_iterator getMessage(SequenceNumber sequenceNumber) const {
-        messageForFind_.sequenceNumber_ = sequenceNumber;
-        return this->find(messageForFind_);
-    }
-
-    void release(SequenceNumber sequenceNumber) {
-        const iterator pos = getMessage(sequenceNumber);
-        if (pos != this->end()) {
-            MessageType& msg = *pos;
-            msg.release();
-            this->erase(pos);
-        }
-    }
-
-    void releaseTo(SequenceNumber sequenceNumber) {
-        iterator pos = this->begin();
-        const iterator endPos = this->end();
-        while (pos != endPos) {
-            // for Cygwin (GCC 3.4.4)
-            MessageType& msg = const_cast<MessageType&>(*pos);
-            if (msg.sequenceNumber_ > sequenceNumber) {
-                break;
-            }
-            msg.release();
-            this->erase(pos++);
-        }
-    }
-
-    void release() {
-        // for Cygwin (GCC 3.4.4)
-        iterator pos = this->begin();
-        const iterator endPos = this->end();
-        while (pos != endPos) {
-            MessageType& message = const_cast<MessageType&>(*pos);
-            message.release();
-        }
-        //std::for_each(this->begin(), this->end(),
-        //    std::mem_fun_ref(&MessageType::release));
-
-        this->clear();
-    }
-private:
-    /// 불필요한 임시 변수 생성을 막기 위해 멤버 변수를 이용함
-    mutable MessageType messageForFind_;
-};
-
-
-/**
 * @struct DelayedOutboundMessage
 * 전송이 지연된 메세지
 */
@@ -393,6 +321,77 @@ private:
     AcknowledgementMessage(const AcknowledgementMessage& disabled);
 };
 
+
+/**
+ * @class MessageSet
+ * - squenceNumber 순으로 오름차순 정렬되어야 한다
+ */
+template <class MessageType>
+class MessageSet : public srpc::Set<MessageType>
+{
+public:
+    typedef srpc::Set<MessageType> Parent;
+    typedef typename Parent::iterator iterator;
+    typedef typename Parent::const_iterator const_iterator;
+public:
+    ~MessageSet() {
+        release();
+    }
+
+    bool isExists(SequenceNumber sequenceNumber) const {
+        return getMessage(sequenceNumber) != this->end();
+    }
+
+    iterator getMessage(SequenceNumber sequenceNumber) {
+        messageForFind_.sequenceNumber_ = sequenceNumber;
+        return this->find(messageForFind_);
+    }
+
+    const_iterator getMessage(SequenceNumber sequenceNumber) const {
+        messageForFind_.sequenceNumber_ = sequenceNumber;
+        return this->find(messageForFind_);
+    }
+
+    void release(SequenceNumber sequenceNumber) {
+        const iterator pos = getMessage(sequenceNumber);
+        if (pos != this->end()) {
+            MessageType& msg = *pos;
+            msg.release();
+            this->erase(pos);
+        }
+    }
+
+    void releaseTo(SequenceNumber sequenceNumber) {
+        iterator pos = this->begin();
+        const iterator endPos = this->end();
+        for (; pos != endPos; ++pos) {
+            // for Cygwin (GCC 3.4.4)
+            MessageType& msg = const_cast<MessageType&>(*pos);
+            if (msg.sequenceNumber_ > sequenceNumber) {
+                break;
+            }
+            msg.release();
+            this->erase(pos++);
+        }
+    }
+
+    void release() {
+        // for Cygwin (GCC 3.4.4)
+        iterator pos = this->begin();
+        const iterator endPos = this->end();
+        for (; pos != endPos; ++pos) {
+            MessageType& message = const_cast<MessageType&>(*pos);
+            message.release();
+        }
+        //std::for_each(this->begin(), this->end(),
+        //    std::mem_fun_ref(&MessageType::release));
+
+        this->clear();
+    }
+private:
+    /// 불필요한 임시 변수 생성을 막기 위해 멤버 변수를 이용함
+    mutable MessageType messageForFind_;
+};
 
 /** @} */ // addtogroup p2p
 
