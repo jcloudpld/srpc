@@ -2,6 +2,7 @@
 #define SRPC_RPCRECEIVER_H
 
 #include "srpc.h"
+#include "srpc_macros.h"
 #include "detail/RpcReceiverDetail.h"
 #include <cassert>
 
@@ -35,7 +36,7 @@ public:
 protected:
     virtual const RpcEventMap& getDefaultEventMap() const = 0;
 private:
-    virtual void onReceiving(const RRpcId& rpcId) { rpcId; }
+    virtual void onReceiving(const RRpcId& rpcId) { SRPC_UNUSED_ARG(rpcId); }
 
     virtual void dispatch(RpcEvent& rpcEvent, IStream& istream,
         const void* rpcHint) = 0;

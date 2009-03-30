@@ -36,8 +36,15 @@ srpcTest_SOURCES = \
 	VectorStreamBufferTest.cpp
 
 srpcTest_CPPFLAGS = $(AM_CPPFLAGS) -DSRPC_DLL
-srpcTest_CXXFLAGS = $(AM_CXXFLAGS) -I$(top_builddir)/include
+srpcTest_CXXFLAGS = $(AM_CXXFLAGS) -I$(top_builddir)/include -I$(top_srcdir)/include
 
 srpcTest_LDADD = $(top_builddir)/src/libsrpc.la 
 srpcTest_LDFLAGS = -lgtest
- 
+
+gch_file = stdafx.h.gch
+BUILT_SOURCES = $(gch_file)
+%.h.gch: %.h
+	$(CXXCOMPILE) -c $(srpcTest_CPPFLAGS) $(srpcTest_CXXFLAGS) $<
+
+clean-local:
+	-rm -f $(gch_file)

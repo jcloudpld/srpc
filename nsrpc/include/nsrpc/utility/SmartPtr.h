@@ -1,7 +1,7 @@
 #if !defined(NSRPC_SMARTPTR_H)
 #define NSRPC_SMARTPTR_H
 
-#include "../config/config.h"
+#include "../nsrpc.h"
 #include <boost/noncopyable.hpp>
 #include <cassert>
 

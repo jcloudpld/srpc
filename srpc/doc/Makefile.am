@@ -4,16 +4,16 @@ doxygen_input = mainpage.dox
 
 if DOC
 
-htmldir = $(pkgdatadir)/html
-html_DATA = html/index.html
+html_dir = $(pkgdatadir)/html
+#html_DATA = html/index.html
 
-install-data-hook:
-	cp -pR html/* $(DESTDIR)$(htmldir)
+#install-data-hook:
+#	cp -pR html/* $(DESTDIR)$(html_dir)
 
 # Automake's "distcheck" is sensitive to having files left over
 # after "make uninstall", so we have to clean up the install hook.
 uninstall-local:
-	rm -rf $(DESTDIR)$(htmldir)
+	rm -rf $(DESTDIR)$(html_dir)
 
 dox: html/index.html
 
@@ -25,18 +25,17 @@ else
 # "install-datahook", for example), and some make programs get upset
 # if no target exists.
 
-install-data-hook:
+#install-data-hook:
 uninstall-local:
 dox:
 
 endif
 
 
-all-local: dox
+#all-local: dox
 
 html/index.html: Doxyfile $(doxygen_input)
 	"@DOXYGEN@"
-
 
 # Make tarfile to distribute the HTML documentation.
 doc-dist: dox

@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/Session.h>
 #include <nsrpc/CachedSessionManager.h>
 #include <nsrpc/SessionFactory.h>
@@ -119,3 +122,5 @@ size_t CachedSessionManager::getInactiveSessionCount() const
 }
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)

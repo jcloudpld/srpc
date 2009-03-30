@@ -1,6 +1,10 @@
 #ifndef ECHOTEST_ECHOSERVER_H
 #define ECHOTEST_ECHOSERVER_H
 
+#include <nsrpc/nsrpc.h>
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "Config.h"
 #include "EchoInterface.h"
 #include <nsrpc/detail/SessionRpcNetwork.h>
@@ -96,5 +100,6 @@ private:
     nsrpc::SessionDestroyer* sessionDestroyer_;
 };
 
-#endif // ECHOTEST_ECHOSERVER_H
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
+#endif // ECHOTEST_ECHOSERVER_H

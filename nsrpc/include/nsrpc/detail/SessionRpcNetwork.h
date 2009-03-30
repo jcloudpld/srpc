@@ -2,7 +2,7 @@
 #define NSRPC_SESSIONRPCNETWORK_H
 
 #include <nsrpc/detail/CsProtocol.h>
-#include <nsrpc/config/config.h>
+#include <nsrpc/nsrpc.h>
 #include <srpc/RpcNetwork.h>
 #ifdef _MSC_VER
 #  pragma warning (push)

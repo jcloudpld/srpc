@@ -2,7 +2,7 @@
 #define NSRPC_PACKETSEEDEXCHANGER_H
 
 #include "detail/rpc_interface/SecurityService.h"
-#include "config/config.h"
+#include "nsrpc.h"
 #include <srpc/RpcForwarder.h>
 #include <srpc/RpcReceiver.h>
 

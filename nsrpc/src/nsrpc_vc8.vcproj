@@ -810,6 +810,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\nsrpc\nsrpc.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\nsrpc\PacketSeedExchanger.h"
 					>
 				</File>
@@ -940,10 +944,6 @@
 				<Filter
 					Name="config"
 					>
-					<File
-						RelativePath="..\include\nsrpc\config\config.h"
-						>
-					</File>
 					<File
 						RelativePath="..\include\nsrpc\config\config_gcc.h"
 						>

@@ -1,7 +1,7 @@
 #if !defined(NSRPC_CLIENTSESSION_H)
 #define NSRPC_CLIENTSESSION_H
 
-#include "../config/config.h"
+#include "../nsrpc.h"
 #include "CsProtocol.h"
 #include "MessageBlockProvider.h"
 #include <srpc/StringTypes.h>

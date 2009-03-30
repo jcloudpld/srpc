@@ -9,7 +9,8 @@ namespace {
 template <typename T>
 void AtomicIncrement(T* value)
 {
-#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32__ )
+#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32__ ) || \
+    defined( __CYGWIN__ )
     (void)BOOST_INTERLOCKED_INCREMENT(reinterpret_cast<long*>(value));
 #elif defined( __GNUC__ ) && ( defined( __i386__ ) || defined( __x86_64__ ) )
     (void)boost::detail::atomic_conditional_increment(value);
@@ -21,7 +22,8 @@ void AtomicIncrement(T* value)
 template <typename T>
 bool AtomicDecrement(T* value)
 {
-#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32__ )
+#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32__ ) || \
+    defined( __CYGWIN__ )
     return BOOST_INTERLOCKED_DECREMENT(reinterpret_cast<long*>(value)) == 0;
 #elif defined( __GNUC__ ) && ( defined( __i386__ ) || defined( __x86_64__ ) )
     return boost::detail::atomic_exchange_and_add(value) == 1;

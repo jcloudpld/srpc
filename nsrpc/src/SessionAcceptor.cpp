@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include <nsrpc/SessionAcceptor.h>
 #include <nsrpc/Session.h>
 #include <nsrpc/detail/SessionCreator.h>
@@ -125,3 +128,5 @@ int SessionAcceptor::should_reissue_accept()
 }
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)

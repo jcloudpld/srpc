@@ -5,6 +5,8 @@
 #   pragma once
 #endif
 
+#include <nsrpc/nsrpc.h>
+
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4512)
@@ -13,6 +15,8 @@
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
+
+#if defined(NSRPC_HAS_PROACTOR)
 
 // TProactor
 #ifdef _MSC_VER
@@ -33,6 +37,8 @@
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
 // ACE
 #ifdef _MSC_VER

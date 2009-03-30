@@ -1,7 +1,7 @@
 #ifndef NSRPC_REACTORTASK_H
 #define NSRPC_REACTORTASK_H
 
-#include "config/config.h"
+#include "nsrpc.h"
 #include <boost/scoped_ptr.hpp>
 
 // forward decl.

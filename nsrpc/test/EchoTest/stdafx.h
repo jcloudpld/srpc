@@ -1,7 +1,7 @@
 #ifndef ECHOTEST_STDAFX_H
 #define ECHOTEST_STDAFX_H
 
-#include <nsrpc/config/config.h>
+#include <nsrpc/nsrpc.h>
 
 // TProactor
 #ifdef _MSC_VER

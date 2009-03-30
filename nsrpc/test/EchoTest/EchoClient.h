@@ -1,6 +1,10 @@
 #ifndef ECHOTEST_ECHOCLIENT_H
 #define ECHOTEST_ECHOCLIENT_H
 
+#include <nsrpc/nsrpc.h>
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "Config.h"
 #include "EchoInterface.h"
 #include <nsrpc/detail/SessionRpcNetwork.h>
@@ -138,5 +142,7 @@ private:
     nsrpc::SynchMessageBlockManager messageBlockManager_;
     nsrpc::SessionDestroyer* sessionDestroyer_;
 };
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
 #endif // ECHOTEST_ECHOCLIENT_H

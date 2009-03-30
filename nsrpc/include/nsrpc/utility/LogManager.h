@@ -1,7 +1,7 @@
 #ifndef NSRPC_LOGMANAGER_H
 #define NSRPC_LOGMANAGER_H
 
-#include "../config/config.h"
+#include "../nsrpc.h"
 #include <srpc/StringTypes.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>

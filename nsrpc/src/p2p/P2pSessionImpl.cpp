@@ -4,6 +4,7 @@
 #include <nsrpc/p2p/P2pEventHandler.h>
 #include <nsrpc/utility/AceUtil.h>
 #include <nsrpc/utility/Logger.h>
+#include <srpc/srpc_macros.h>
 #include <ace/Reactor.h>
 #include <cassert>
 
@@ -48,9 +49,9 @@ P2pSessionImpl::P2pSessionImpl(PeerId peerId, P2pEventHandler& eventHandler,
     relayService_(*this, rpcNetwork_),
     anonymousMessageManager_(*this),
     peerCipherKeys_(*packetCoder_),
-    groupManager_(systemService_),
     peerCandidateManager_(*this, p2pConfig_, myPeerId_),
-    peerManager_(*this, *this, p2pConfig_, groupManager_)
+    peerManager_(*this, *this, p2pConfig_, groupManager_),
+    groupManager_(systemService_)
 {
     assert(isAllowedPeerId(peerId));
 }
@@ -425,7 +426,7 @@ bool P2pSessionImpl::canRelay(const ACE_INET_Addr& targetAddress) const
         return false;
     }
 #else
-    targetAddress;
+    SRPC_UNUSED_ARG(targetAddress);
 #endif
 
     return peerManager_.isExists(relayServerPeerId);

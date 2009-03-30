@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "SystemServiceImpl.h"
-#include "PeerManager.h"
 #include "SystemServiceHandler.h"
+#include "PeerManager.h"
 #include <nsrpc/p2p/detail/P2pPeerHint.h>
 #include <nsrpc/p2p/P2pEventHandler.h>
-#include <nsrpc/utility/Logger.h >
 #include <nsrpc/utility/LogManager.h>
+#include <nsrpc/utility/Logger.h>
 #include <cassert>
 
 namespace nsrpc
@@ -232,7 +232,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcNewPeerConnected,
     RPeerInfo, peerInfo, srpc::ptReliable)
 {
     assert(rpcHint != 0);
-    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint); hint;
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
     assert(hint.isValid());
     logRpc("rpcNewPeerConnected", hint);
 
@@ -275,7 +275,7 @@ IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcDisconnect,
 IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcPing, srpc::ptReliable)
 {
     assert(rpcHint != 0);
-    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint); hint;
+    const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
     assert(hint.isValid());
     logRpc("rpcPing", hint);
 

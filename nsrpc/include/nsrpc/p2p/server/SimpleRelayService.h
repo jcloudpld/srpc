@@ -8,7 +8,7 @@
 #include "../detail/PeerNetworkSender.h"
 #include "../detail/PeerNotifier.h"
 #include "../detail/PeerCipherKeyCache.h"
-#include "../../config/config.h"
+#include "../../nsrpc.h"
 
 namespace nsrpc
 {

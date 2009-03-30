@@ -1,7 +1,7 @@
 #ifndef NSRPC_SYSTEMUTIL_H
 #define NSRPC_SYSTEMUTIL_H
 
-#include "../config/config.h"
+#include "../nsrpc.h"
 
 namespace nsrpc
 {

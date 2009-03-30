@@ -222,49 +222,63 @@ template <class MessageType>
 class MessageSet : public srpc::Set<MessageType>
 {
 public:
+    typedef srpc::Set<MessageType> Parent;
+    typedef typename Parent::iterator iterator;
+    typedef typename Parent::const_iterator const_iterator;
+public:
     ~MessageSet() {
         release();
     }
 
     bool isExists(SequenceNumber sequenceNumber) const {
-        return getMessage(sequenceNumber) != end();
+        return getMessage(sequenceNumber) != this->end();
     }
 
     iterator getMessage(SequenceNumber sequenceNumber) {
         messageForFind_.sequenceNumber_ = sequenceNumber;
-        return find(messageForFind_);
+        return this->find(messageForFind_);
     }
 
     const_iterator getMessage(SequenceNumber sequenceNumber) const {
         messageForFind_.sequenceNumber_ = sequenceNumber;
-        return find(messageForFind_);
+        return this->find(messageForFind_);
     }
 
     void release(SequenceNumber sequenceNumber) {
         const iterator pos = getMessage(sequenceNumber);
-        if (pos != end()) {
+        if (pos != this->end()) {
             MessageType& msg = *pos;
             msg.release();
-            erase(pos);
+            this->erase(pos);
         }
     }
 
     void releaseTo(SequenceNumber sequenceNumber) {
-        iterator pos = begin();
-        const iterator endPos = end();
+        iterator pos = this->begin();
+        const iterator endPos = this->end();
         while (pos != endPos) {
-            MessageType& msg = *pos;
+            // for Cygwin (GCC 3.4.4)
+            MessageType& msg = const_cast<MessageType&>(*pos);
             if (msg.sequenceNumber_ > sequenceNumber) {
                 break;
             }
             msg.release();
-            erase(pos++);
+            this->erase(pos++);
         }
     }
 
     void release() {
-        std::for_each(begin(), end(), std::mem_fun_ref(&MessageType::release));
-        clear();
+        // for Cygwin (GCC 3.4.4)
+        iterator pos = this->begin();
+        const iterator endPos = this->end();
+        while (pos != endPos) {
+            MessageType& message = const_cast<MessageType&>(*pos);
+            message.release();
+        }
+        //std::for_each(this->begin(), this->end(),
+        //    std::mem_fun_ref(&MessageType::release));
+
+        this->clear();
     }
 private:
     /// 불필요한 임시 변수 생성을 막기 위해 멤버 변수를 이용함

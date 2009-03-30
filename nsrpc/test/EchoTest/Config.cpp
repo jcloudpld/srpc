@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Config.h"
+#include <nsrpc/nsrpc.h>
 #include <ace/Get_Opt.h>
 #include <iostream>
 
@@ -23,6 +24,8 @@ Config::Config() :
 
 bool Config::parseArgs(int argc, ACE_TCHAR* argv[])
 {
+#if defined(NSRPC_HAS_PROACTOR)
+
     ACE_Get_Opt getOpt(argc, argv, ACE_TEXT("a:c:e:k:m:n:p:s:t:hrv"));
 
     bool isOk = true;
@@ -82,11 +85,19 @@ bool Config::parseArgs(int argc, ACE_TCHAR* argv[])
         printUsage();
     }
     return isOk;
+
+#else
+
+    printUsage();
+    return false;
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 }
 
 
 void Config::printUsage()
 {
+#if defined(NSRPC_HAS_PROACTOR)
     std::cout << "USAGE: EchoTest [options]\n" <<
         "  -m client, server or both\n" <<
         "      server : server only\n" <<
@@ -122,4 +133,10 @@ void Config::printUsage()
         " ex) server only: EchoTest -m server -t iocp\n" <<
         "     client only: EchoTest -m client -t select -n 2\n" <<
         "     server/client: EchoTest -t epoll -e 2000 -k 512\n";
+
+#else
+
+    std::cout << "Not supported platform!\n";
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 }

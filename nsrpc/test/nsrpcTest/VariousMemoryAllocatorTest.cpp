@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <nsrpc/utility/VariousMemoryAllocator.h>
+#include <ace/Null_Mutex.h>
 
 using namespace nsrpc;
 
@@ -10,6 +11,9 @@ using namespace nsrpc;
 */
 class VariousMemoryAllocatorTest : public testing::Test
 {
+protected:
+    typedef VariousMemoryAllocator<ACE_Null_Mutex> IntegerAllocator;
+
 private:
     virtual void SetUp() {
         allocator_ = new IntegerAllocator(poolSize, blockSize);
@@ -25,7 +29,6 @@ protected:
         blockSize = sizeof(int)
     };
 
-    typedef VariousMemoryAllocator<ACE_Null_Mutex> IntegerAllocator;
     IntegerAllocator* allocator_;
 };
 

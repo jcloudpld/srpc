@@ -3,7 +3,7 @@
 
 #include "P2pAddress.h"
 #include "../PeerId.h"
-#include "../../config/config.h"
+#include "../../nsrpc.h"
 #include <srpc/Types.h>
 #include <ace/Event_Handler.h>
 #include <boost/scoped_ptr.hpp>

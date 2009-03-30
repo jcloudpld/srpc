@@ -1,7 +1,10 @@
 #ifndef NSRPC_CACHEDSESSIONMANAGER_H
 #define NSRPC_CACHEDSESSIONMANAGER_H
 
-#include "config/config.h"
+#include "nsrpc.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include "config/Proactor.h"
 #include "detail/SessionManager.h"
 #include <srpc/StringTypes.h>
@@ -71,5 +74,7 @@ private:
 /** @} */ // addtogroup session
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)
 
 #endif // NSRPC_CACHEDSESSIONMANAGER_H

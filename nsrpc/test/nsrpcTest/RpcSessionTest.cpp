@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "SessionTestFixture.h"
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "TestClient.h"
 #include "TestCachedSessionManager.h"
 #include <nsrpc/detail/SessionRpcNetwork.h>
@@ -94,3 +97,5 @@ TEST_F(RpcSessionTest, testSendRpcCommands)
         EXPECT_EQ(valueExpected.get(), toRpcByteOrder(received[1]));
     }
 }
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)

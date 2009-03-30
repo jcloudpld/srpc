@@ -1,11 +1,12 @@
 #ifndef NSRPC_MESSAGEBLOCKMANAGER_H
 #define NSRPC_MESSAGEBLOCKMANAGER_H
 
-#include "../config/config.h"
+#include "../nsrpc.h"
 #include "ObjectAllocator.h"
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
 #include "VariousMemoryAllocator.h"
 #endif
+#include <srpc/srpc_macros.h>
 #include <ace/Message_Block.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -50,7 +51,7 @@ public:
         ,
         bufferAllocator_(poolSize, blockSize)
 #endif
-        { blockSize; }
+        { SRPC_UNUSED_ARG(blockSize); }
 
     /// ACE_Message_Block을 요청한다.
     ACE_Message_Block* create(size_t size) {

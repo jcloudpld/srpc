@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "SessionTestFixture.h"
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "TestClient.h"
 #include <nsrpc/utility/SystemUtil.h>
 
@@ -119,3 +122,5 @@ TEST_F(SessionTest, testConnect)
 
     sessionManager_->release(session);
 }
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)

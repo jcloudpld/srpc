@@ -1,6 +1,10 @@
 #ifndef NSRPC_RPCSESSION_H
 #define NSRPC_RPCSESSION_H
 
+#include "nsrpc.h"
+
+#if defined (NSRPC_HAS_PROACTOR)
+
 #include "Session.h"
 #include "detail/SessionRpcNetworkCallback.h"
 #include "detail/rpc_interface/SecurityService.h"
@@ -62,5 +66,7 @@ private:
 };
 
 } // namespace nsrpc
+
+#endif // #if defined (NSRPC_HAS_PROACTOR)
 
 #endif // !defined(NSRPC_RPCSESSION_H)

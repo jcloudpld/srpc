@@ -2,7 +2,7 @@
 #define NSRPC_RPCNETWORKFORBROADCAST_H
 
 #include <nsrpc/detail/MessageBlockProvider.h>
-#include <nsrpc/config/config.h>
+#include <nsrpc/nsrpc.h>
 #include <srpc/RpcNetwork.h>
 #include <srpc/RpcForwarder.h>
 #include <boost/scoped_ptr.hpp>

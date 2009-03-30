@@ -1,6 +1,10 @@
 #ifndef NSRPC_CLIENTSESSIONTESTFIXTURE_H
 #define NSRPC_CLIENTSESSIONTESTFIXTURE_H
 
+#include <nsrpc/nsrpc.h>
+
+#if defined(NSRPC_HAS_PROACTOR)
+
 #include "SessionTestFixture.h"
 #include "TestClientSession.h"
 #include <nsrpc/ReactorTask.h>
@@ -42,5 +46,7 @@ protected:
     TestClientSession* clientSession_;
     nsrpc::PacketCoder* packetCoder_;
 };
+
+#endif // #if defined(NSRPC_HAS_PROACTOR)
 
 #endif // !defined(NSRPC_CLIENTSESSIONTESTFIXTURE_H)
