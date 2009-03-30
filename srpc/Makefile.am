@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = 1.9 foreign dist-bzip2 dist-zip
 
-ACLOCAL_AMFLAGS = -I m4
+##ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = src include doc test benchmark examples
 
