@@ -87,8 +87,9 @@ case $host in
     WINDOWS=yes
     ;;
   *-pc-cygwin*)
-    CXXFLAGS="$CXXFLAGS -D_WIN32_WINNT=0x0501" ## -D__USE_W32_SOCKETS
+    ##CXXFLAGS="$CXXFLAGS -D_WIN32_WINNT=0x0501 -D__USE_W32_SOCKETS"
     ##LIBS="$LIBS -lws2_32 -lmswsock"
+    LDFLAGS="$LDFLAGS -Wl,--enable-auto-import"
     WINDOWS=yes
     ;;
   *-apple-darwin*)
