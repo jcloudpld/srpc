@@ -1,6 +1,7 @@
 필수 라이브러리
 ===============
 * Boost Library (http://boost.org)
+  - above 1.35.0
 * Speex Library (http://www.speex.org)
   
 옵션 라이브러리
