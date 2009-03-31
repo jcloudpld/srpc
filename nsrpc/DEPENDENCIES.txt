@@ -2,6 +2,7 @@
 ===============
 * srpc
 * Boost Library (http://boost.org)
+  - above 1.35.0
 * ACE Framework (http://www.cs.wustl.edu/~schmidt/ACE.html)
   
 옵션 라이브러리
