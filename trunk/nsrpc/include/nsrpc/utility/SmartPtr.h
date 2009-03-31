@@ -2,6 +2,7 @@
 #define NSRPC_SMARTPTR_H
 
 #include "../nsrpc.h"
+#include <boost/cstdint.hpp>
 #include <boost/noncopyable.hpp>
 #include <cassert>
 
@@ -26,14 +27,14 @@ protected:
         referenceCount_(0) {}
     virtual ~SharedObject() {
         assert((referenceCount_ == 0) &&
-            "공유 가능한 객체는 동적할당해야 한다");
+            "Shared object must be allocated dynamically.");
     }
 public:
     long getReferenceCount() const {
         return referenceCount_;
     }
 private:
-    mutable long referenceCount_;
+    mutable boost::uint32_t referenceCount_;
 };
 
 
