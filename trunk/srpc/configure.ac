@@ -30,7 +30,7 @@ AC_PROG_LIBTOOL
 # Initialize Automake with various options. We require at least v1.9, prevent
 # pedantic complaints about package files, and enable various distribution
 # targets.
-AM_INIT_AUTOMAKE([1.9 dist-bzip2 dist-zip foreign subdir-objects]) 
+AM_INIT_AUTOMAKE([1.9 -Wall -Werror dist-bzip2 dist-zip foreign subdir-objects])
 
 # Checks for Boost library
 AC_ARG_WITH(boost,
@@ -63,7 +63,8 @@ AC_CHECK_HEADER([gtest/gtest.h],,
 
 # OS specific
 
-CXXFLAGS="$CXXFLAGS -D_REENTRANT"
+CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+CXXFLAGS="$CXXFLAGS -Winvalid-pch"
 
 WINDOWS=no
 case $host in
@@ -101,10 +102,6 @@ case $host in
     LDFLAGS="$LDFLAGS -pthread"
     ;;
 esac
-
-if test "$GXX" = yes; then
-  CXXFLAGS="$CXXFLAGS -Wall -Winvalid-pch -ftemplate-depth-256"
-fi
 
 AM_CONDITIONAL(WINDOWS_TARGET,test x$WINDOWS != xno)
 

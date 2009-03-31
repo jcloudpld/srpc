@@ -18,11 +18,3 @@ NamingService_CPPFLAGS = $(AM_CPPFLAGS) -DSRPC_DLL
 NamingService_CXXFLAGS = $(AM_CXXFLAGS) -I$(top_builddir)/include -I$(top_srcdir)/include
 
 NamingService_LDADD= $(top_builddir)/src/libsrpc.la 
- 
-gch_file = stdafx.h.gch
-BUILT_SOURCES = $(gch_file)
-%.h.gch: %.h
-	$(CXXCOMPILE) -c $(NamingService_CPPFLAGS) $(NamingService_CXXFLAGS) $<
-
-clean-local:
-	-rm -f $(gch_file)
