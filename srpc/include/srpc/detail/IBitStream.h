@@ -72,9 +72,8 @@ public:
     }
 
     virtual void read(Float32& value, int bitCount) {
-        UInt32 numeric;
-        readNumeric(numeric, bitCount);
-        value = *static_cast<const Float32*>(static_cast<const void*>(&numeric));
+        readNumeric(*static_cast<UInt32*>(static_cast<void*>(&value)),
+            bitCount);
     }
 
     virtual void read(String& value, size_t maxLength, int sizeBitCount);
