@@ -5,7 +5,6 @@
 #include <nsrpc/p2p/PeerHint.h>
 #include <nsrpc/utility/SystemUtil.h>
 #include <sstream>
-#include <windows.h>
 
 namespace
 {
