@@ -6,9 +6,11 @@ namespace nsrpc {
 
 void MTSmartPtrTraits::addReference(const SharedObject* rawPtr)
 {
-    if (rawPtr != 0) {
-        boost::interprocess::detail::atomic_inc32(&rawPtr->referenceCount_);
+    if (! rawPtr) {
+        return;
     }
+
+    boost::interprocess::detail::atomic_inc32(&rawPtr->referenceCount_);
 }
 
 

@@ -1,6 +1,7 @@
 Required dependencies
 =====================
 * Boost Library (http://boost.org)
+  - above 1.35.0
   
 Optional dependencies
 =====================
