@@ -18,11 +18,3 @@ EchoTest_CXXFLAGS = $(AM_CXXFLAGS) -I$(top_builddir)/include  -I$(top_srcdir)/in
 
 EchoTest_LDADD = $(top_builddir)/src/libnsrpc.la
 EchoTest_LIBS = -lsrpc
-
-gch_file = stdafx.h.gch
-BUILT_SOURCES = $(gch_file)
-%.h.gch: %.h
-	$(CXXCOMPILE) -c $(EchoTest_CPPFLAGS) $(EchoTest_CXXFLAGS) $<
-
-clean-local:
-	-rm -f $(gch_file)

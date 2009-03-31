@@ -15,12 +15,4 @@ P2pTest_SOURCES = \
 P2pTest_CPPFLAGS = $(AM_CPPFLAGS) -DNSRPC_DLL -DSRPC_DLL
 P2pTest_CXXFLAGS = $(AM_CXXFLAGS) -I$(top_builddir)/include  -I$(top_srcdir)/include
 
-P2pTest_LDADD= $(top_builddir)/src/libnsrpc.la 
- 
-gch_file = stdafx.h.gch
-BUILT_SOURCES = $(gch_file)
-%.h.gch: %.h
-	$(CXXCOMPILE) -c $(P2pTest_CPPFLAGS) $(P2pTest_CXXFLAGS) $<
-
-clean-local:
-	-rm -f $(gch_file)
+P2pTest_LDADD= $(top_builddir)/src/libnsrpc.la

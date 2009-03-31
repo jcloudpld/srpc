@@ -43,11 +43,3 @@ nsrpcTest_CXXFLAGS = $(AM_CXXFLAGS) -I$(top_builddir)/include  -I$(top_srcdir)/i
 
 nsrpcTest_LDADD = $(top_builddir)/src/libnsrpc.la 
 nsrpcTest_LDFLAGS = -lsrpc -lgtest
- 
-gch_file = stdafx.h.gch
-BUILT_SOURCES = $(gch_file)
-%.h.gch: %.h
-	$(CXXCOMPILE) -c $(nsrpcTest_CPPFLAGS) $(nsrpcTest_CXXFLAGS) $<
-
-clean-local:
-	-rm -f $(gch_file)

@@ -3,8 +3,8 @@
 
 // GCC Configuration
 
-#if defined(GCC_HASCLASSVISIBILITY) && defined(NSRPC_DLL) && \
-    defined(NSRPC_EXPORTS)
+#if defined(NSRPC_GCC_HAS_CLASSVISIBILITY) && \
+    defined(NSRPC_DLL) && defined(NSRPC_EXPORTS)
 #  define NSRPC_API __attribute__ ((visibility("default")))
 #else
 #  define NSRPC_API

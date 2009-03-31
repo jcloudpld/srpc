@@ -40,11 +40,3 @@ srpcTest_CXXFLAGS = $(AM_CXXFLAGS) -I$(top_builddir)/include -I$(top_srcdir)/inc
 
 srpcTest_LDADD = $(top_builddir)/src/libsrpc.la 
 srpcTest_LDFLAGS = -lgtest
-
-gch_file = stdafx.h.gch
-BUILT_SOURCES = $(gch_file)
-%.h.gch: %.h
-	$(CXXCOMPILE) -c $(srpcTest_CPPFLAGS) $(srpcTest_CXXFLAGS) $<
-
-clean-local:
-	-rm -f $(gch_file)
