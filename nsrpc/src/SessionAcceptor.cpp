@@ -39,7 +39,7 @@ bool SessionAcceptor::open(const ACE_INET_Addr& listenAddr,
                 ACE_TEXT("NSRPC_Asynch_Acceptor::accept() FAILED(%m)."));
             return false;
         }
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
         ++pendingCount_;
 #endif
     }
@@ -90,7 +90,7 @@ int SessionAcceptor::validate_connection(
         return -1;
     }
 
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
     assert(pendingCount_ > 0);
     --pendingCount_;
 #endif
@@ -118,7 +118,7 @@ int SessionAcceptor::should_reissue_accept()
                 ACE_TEXT("NSRPC_Asynch_Acceptor::accept() FAILED(%m)."));
         }
         else {
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
             ++pendingCount_;
 #endif
         }

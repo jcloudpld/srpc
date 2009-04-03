@@ -10,9 +10,9 @@
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4267 4312)
 #endif
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
 #  include <TProactor/Asynch_Acceptor.h>
-#endif // USE_TPROACTOR
+#endif // NSRPC_USE_TPROACTOR
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
@@ -42,7 +42,7 @@ public:
         sessionCreator_(sessionCreator),
         started_(false),
         shouldFinish_(false)
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
         , pendingCount_(0)
 #endif
         {}
@@ -71,7 +71,7 @@ public:
     /// 안전하게 인스턴스를 삭제할 수 있는가?
     bool isSafeToDelete() const {
         // TProactor와 ACE Proactor간에 AIO cancel과 관련하여 동작 방식이 다름
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
         return pendingCount_ <= 0;
 #else
         return true;
@@ -86,7 +86,7 @@ private:
     SessionCreator& sessionCreator_;
     bool started_;
     bool shouldFinish_;
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingCount_;
 #endif
 };

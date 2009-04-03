@@ -29,15 +29,21 @@ protected:
         nsrpc::disableSignals(SIGPIPE, SIGPIPE);
         nsrpc::disableSignals(SIGIO, SIGIO);
 
-#if defined(ACE_WIN32)
+#if defined (ACE_WIN32)
+
         proactorTask_ = new nsrpc::ProactorTask(
             nsrpc::ProactorFactory::create(nsrpc::ptWin32), true);
-#elif defined(ACE_HAS_LINUX_EPOLL)
+
+#elif defined (NSRPC_USE_TPROACTOR)
+
+# if defined (ACE_HAS_LINUX_EPOLL)
         proactorTask_ = new nsrpc::ProactorTask(
             nsrpc::ProactorFactory::create(nsrpc::ptEpoll), true);
-#else
+# else
         proactorTask_ = new nsrpc::ProactorTask(
             nsrpc::ProactorFactory::create(nsrpc::ptSelect), true);
+# endif
+
 #endif
         proactorTask_->start(1);
 

@@ -1,7 +1,8 @@
 #ifndef NSRPC_TPROACTOR_H
 #define NSRPC_TPROACTOR_H
 
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
+
 #  define NSRPC_Proactor TRB_Proactor
 #  define NSRPC_Asynch_Read_Stream TRB_Asynch_Read_Stream
 #  define NSRPC_Asynch_Write_Stream TRB_Asynch_Write_Stream
@@ -17,9 +18,12 @@
 #  define NSRPC_Proactor_Impl TRB_Proactor_Impl
 #  define NSRPC_WIN32_Proactor TRB_WIN32_Proactor
 #  define NSRPC_POSIX_AIOCB_Proactor TRB_POSIX_AIOCB_Proactor
-#  define NSRPC_SUN_Proactor TRB_SUN_Proactor
 #  define NSRPC_POSIX_CB_Proactor TRB_POSIX_CB_Proactor
+#  define NSRPC_POSIX_SIG_Proactor TRB_POSIX_SIG_Proactor
+#  define NSRPC_SUN_Proactor TRB_SUN_Proactor
+
 #else
+
 #  define NSRPC_Proactor ACE_Proactor
 #  define NSRPC_Asynch_Read_Stream ACE_Asynch_Read_Stream
 #  define NSRPC_Asynch_Write_Stream ACE_Asynch_Write_Stream
@@ -34,9 +38,11 @@
 
 #  define NSRPC_Proactor_Impl ACE_Proactor_Impl
 #  define NSRPC_WIN32_Proactor ACE_WIN32_Proactor
-#  define NSRPC_POSIX_AIOCB_Proactor ACE_POSIX_Proactor
-#  define NSRPC_SUN_Proactor ACE_SUN_Proactor
+#  define NSRPC_POSIX_AIOCB_Proactor ACE_POSIX_AIOCB_Proactor
 #  define NSRPC_POSIX_CB_Proactor ACE_POSIX_CB_Proactor
+#  define NSRPC_POSIX_SIG_Proactor ACE_POSIX_SIG_Proactor
+#  define NSRPC_SUN_Proactor ACE_SUN_Proactor
+
 #endif
 
 #endif // NSRPC_TPROACTOR_H

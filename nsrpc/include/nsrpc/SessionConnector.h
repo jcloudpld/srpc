@@ -10,9 +10,9 @@
 #  pragma warning (push)
 #  pragma warning (disable: 4127)
 #endif
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
 #  include <TProactor/Asynch_Connector.h>
-#endif // USE_TPROACTOR
+#endif // NSRPC_USE_TPROACTOR
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
@@ -45,7 +45,7 @@ public:
     SessionConnector(SessionCreator& sessionCreator) :
         sessionCreator_(sessionCreator),
         shouldFinish_(false)
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
         , pendingCount_(0)
 #endif
         {}
@@ -69,7 +69,7 @@ public:
 
     /// 안전하게 인스턴스를 삭제할 수 있는가?
     bool isSafeToDelete() const {
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
         return pendingCount_ <= 0;
 #else
         return true;
@@ -82,7 +82,7 @@ private:
 private:
     SessionCreator& sessionCreator_;
     bool shouldFinish_;
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingCount_;
 #endif
 };
