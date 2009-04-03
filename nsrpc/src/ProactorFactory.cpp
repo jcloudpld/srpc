@@ -140,19 +140,19 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType proactorType)
 
 #   if defined (ACE_POSIX_SIG_PROACTOR) || defined (ACE_HAS_POSIX_REALTIME_SIGNALS)
     if (ptSig == proactorType) {
-        return proactorImpl = new ACE_POSIX_SIG_Proactor(maxAioOperations);
+        proactorImpl = new ACE_POSIX_SIG_Proactor(maxAioOperations);
     }
 #   endif
 
 #   if !defined(ACE_HAS_BROKEN_SIGEVENT_STRUCT)
     if (ptCallback == proactorType) {
-        return proactorImpl = new ACE_POSIX_CB_Proactor(maxAioOperations);
+        proactorImpl = new ACE_POSIX_CB_Proactor(maxAioOperations);
     }
 #   endif
 
 #   if defined (sun)
     if (ptSun == proactorType) {
-        return proactorImpl = new ACE_SUN_Proactor(maxAioOperations);
+        proactorImpl = new ACE_SUN_Proactor(maxAioOperations);
     }
 #   endif
 
