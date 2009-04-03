@@ -66,9 +66,9 @@ protected:
 
 TEST_F(P2pHostMigrationTest, testConnect)
 {
-    EXPECT_EQ(3, hostSession_->getPeerCount());
-    EXPECT_EQ(3, peer1_->getPeerCount());
-    EXPECT_EQ(3, peer2_->getPeerCount());
+    EXPECT_EQ(3, int(hostSession_->getPeerCount()));
+    EXPECT_EQ(3, int(peer1_->getPeerCount()));
+    EXPECT_EQ(3, int(peer2_->getPeerCount()));
 }
 
 
@@ -78,8 +78,8 @@ TEST_F(P2pHostMigrationTest, testHostMigration)
 
     tick(3 * 3);
 
-    EXPECT_EQ(2, peer1_->getPeerCount());
-    EXPECT_EQ(2, peer2_->getPeerCount());
+    EXPECT_EQ(2, int(peer1_->getPeerCount()));
+    EXPECT_EQ(2, int(peer2_->getPeerCount()));
 
     EXPECT_EQ(peerId1_, peerEventHandler1_.getNewHostPeerId()) <<
         "peer1: host migrated";
@@ -95,7 +95,7 @@ TEST_F(P2pHostMigrationTest, testHostMigrationNextPriorityPeer)
 
     tick(3 * 4);
 
-    EXPECT_EQ(1, peer2_->getPeerCount());
+    EXPECT_EQ(1, int(peer2_->getPeerCount()));
 
     EXPECT_EQ(peerId2_, peerEventHandler2_.getNewHostPeerId()) <<
         "peer2: host migrated";
@@ -121,11 +121,12 @@ TEST_F(P2pHostMigrationTest, testDisableHostMigration)
 
     tick(3 * 3);
 
-    EXPECT_EQ(2, peer1_->getPeerCount());
-    EXPECT_EQ(2, peer2_->getPeerCount());
+    EXPECT_EQ(2, int(peer1_->getPeerCount()));
+    EXPECT_EQ(2, int(peer2_->getPeerCount()));
 
     EXPECT_EQ(invalidPeerId, peerEventHandler1_.getNewHostPeerId()) <<
         "peer1: host not migrated";
     EXPECT_EQ(invalidPeerId, peerEventHandler2_.getNewHostPeerId()) <<
         "peer2: host not migrated";
 }
+

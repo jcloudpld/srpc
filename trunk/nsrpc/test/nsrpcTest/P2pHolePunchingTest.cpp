@@ -72,8 +72,8 @@ TEST_F(P2pHolePunchingTest, testOnePeerConnectWithAddresses)
         hostSession_->tick();
     }
 
-    EXPECT_EQ(2, hostSession_->getPeerCount());
-    EXPECT_EQ(2, peer->getPeerCount());
+    EXPECT_EQ(2, int(hostSession_->getPeerCount()));
+    EXPECT_EQ(2, int(peer->getPeerCount()));
 }
 
 
@@ -109,10 +109,11 @@ TEST_F(P2pHolePunchingTest, testMultiplePeerConnectWithAddresses)
         hostSession_->tick();
     }
 
-    EXPECT_EQ(peerCount + 1, hostSession_->getPeerCount());
+    EXPECT_EQ(peerCount + 1, int(hostSession_->getPeerCount()));
 
     for (int i = 0; i < peerCount; ++i) {
-        EXPECT_EQ(peerCount + 1, peers[i]->getPeerCount()) <<
+        EXPECT_EQ(peerCount + 1, int(peers[i]->getPeerCount())) <<
             "#" << i << " peer";
     }
 }
+

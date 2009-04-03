@@ -55,11 +55,11 @@ TEST_F(SessionTest, testRecvPackets)
 
     EXPECT_EQ((packetCoder_->getHeaderSize() + bodySize) * sendCount,
         getLastSession().getStats().recvBytes_);
-    EXPECT_EQ(sendCount, getLastSession().getArrivedMessageCount());
+    EXPECT_EQ(sendCount, int(getLastSession().getArrivedMessageCount()));
 
-    // ¾Æ·¡ Å×½ºÆ®´Â Å« ÀÇ¹Ì°¡ ¾øÀ½
+    // ?Æ·? ?×½?Æ®?? Å« ?Ç¹Ì°? ??À½
     EXPECT_EQ(0,
-        static_cast<int>(getLastSession().getAcquireSendBlockCallCount())) <<
+        int(getLastSession().getAcquireSendBlockCallCount())) <<
         "acquireSendBlock call count";
 }
 
@@ -93,7 +93,8 @@ TEST_F(SessionTest, testSendPackets)
     EXPECT_EQ((packetCoder_->getHeaderSize() + bodySize) * sendCount,
         getLastSession().getStats().sentBytes_) << "sent bytes";
 
-    EXPECT_EQ(sendCount, getLastSession().getAcquireSendBlockCallCount()) <<
+    EXPECT_EQ(sendCount,
+	    int(getLastSession().getAcquireSendBlockCallCount())) <<
         "acquireSendBlock call count";
 }
 
@@ -117,10 +118,11 @@ TEST_F(SessionTest, testConnect)
 
     pause(1);
 
-    EXPECT_EQ(1, session->getArrivedMessageCount()) <<
+    EXPECT_EQ(1, int(session->getArrivedMessageCount())) <<
         "received count";
 
     sessionManager_->release(session);
 }
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
+

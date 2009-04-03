@@ -19,6 +19,8 @@ public:
 };
 
 
+static const size_t poolSize = 2;
+
 /**
 * @class ObjectPoolTest
 *
@@ -37,10 +39,6 @@ private:
     }
 
 protected:
-    enum {
-        poolSize = 2
-    };
-
     IntegerAllocator allocator_;
     typedef ObjectPool<int, IntegerAllocator> IntegerPool;
     IntegerPool* pool_;
@@ -49,7 +47,7 @@ protected:
 
 TEST_F(ObjectPoolTest, testInitialize)
 {
-    EXPECT_EQ(0, pool_->getActiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
     EXPECT_EQ(poolSize, pool_->getInactiveResourceCount());
 }
 
@@ -59,7 +57,7 @@ TEST_F(ObjectPoolTest, testAcquire)
     int* resource = pool_->acquire();
     EXPECT_TRUE(0 != resource);
 
-    EXPECT_EQ(1, pool_->getActiveResourceCount());
+    EXPECT_EQ(1, int(pool_->getActiveResourceCount()));
     EXPECT_EQ(poolSize - 1, pool_->getInactiveResourceCount());
 }
 
@@ -69,29 +67,29 @@ TEST_F(ObjectPoolTest, testRelease)
     int* resource = pool_->acquire();
 
     pool_->release(resource);
-    EXPECT_EQ(0, pool_->getActiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
     EXPECT_EQ(poolSize, pool_->getInactiveResourceCount());
 }
 
 
 TEST_F(ObjectPoolTest, testMassAcquireAndRelease)
 {
-    const int acquireCount = 10;
+    const size_t acquireCount = 10;
     int* resources[acquireCount];
 
-    for (int i = 0; i < acquireCount; ++i) {
+    for (size_t i = 0; i < acquireCount; ++i) {
         resources[i] = pool_->acquire();
     }
 
     EXPECT_EQ(acquireCount, pool_->getActiveResourceCount());
-    EXPECT_EQ(0, pool_->getInactiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getInactiveResourceCount()));
 
     for (int i = acquireCount - 1; i >= 0; --i) {
         pool_->release(resources[i]);
     }
 
-    EXPECT_EQ(0, pool_->getActiveResourceCount());
-    EXPECT_EQ(10, pool_->getInactiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
+    EXPECT_EQ(10, int(pool_->getInactiveResourceCount()));
 }
 
 
@@ -103,6 +101,7 @@ TEST_F(ObjectPoolTest, testDestroy)
 
     pool_->destroy();
 
-    EXPECT_EQ(0, pool_->getActiveResourceCount());
-    EXPECT_EQ(0, pool_->getInactiveResourceCount());
+    EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
+    EXPECT_EQ(0, int(pool_->getInactiveResourceCount()));
 }
+

@@ -9,6 +9,8 @@
 
 using namespace nsrpc;
 
+const size_t  clientCount = 8;
+
 /**
 * @class CachedSessionManagerTest
 *
@@ -45,10 +47,6 @@ protected:
     }
 
 protected:
-    enum {
-        clientCount = 8
-    };
-
     RpcSessionFactory* sessionFactory_;
     TestClient* client_[clientCount];
 };
@@ -56,7 +54,7 @@ protected:
 
 void CachedSessionManagerTest::connect()
 {
-    for (int i = 0; i < clientCount; ++i) {
+    for (size_t i = 0; i < clientCount; ++i) {
         client_[i] = new TestClient;
         EXPECT_TRUE(client_[i]->connect(10, getTestAddress())) <<
             "#" << i << " connect";
@@ -68,7 +66,7 @@ void CachedSessionManagerTest::connect()
 
 void CachedSessionManagerTest::disconnect()
 {
-    for (int i = 0; i < clientCount; ++i) {
+    for (size_t i = 0; i < clientCount; ++i) {
         if (client_[i] != 0) {
             client_[i]->close();
             delete client_[i];
@@ -81,13 +79,13 @@ void CachedSessionManagerTest::disconnect()
 TEST_F(CachedSessionManagerTest, testAcquireAndRelease)
 {
     EXPECT_EQ(clientCount, getSessionManager()->getActiveSessionCount());
-    EXPECT_EQ(0, getSessionManager()->getInactiveSessionCount());
+    EXPECT_EQ(0, int(getSessionManager()->getInactiveSessionCount()));
 
     disconnect();
 
     pause(10);
 
-    EXPECT_EQ(0, getSessionManager()->getActiveSessionCount());
+    EXPECT_EQ(0, int(getSessionManager()->getActiveSessionCount()));
     EXPECT_EQ(clientCount, getSessionManager()->getInactiveSessionCount());
 }
 
@@ -96,7 +94,7 @@ TEST_F(CachedSessionManagerTest, testCancel)
 {
     sessionManager_->cancel();
 
-    EXPECT_EQ(0, getSessionManager()->getActiveSessionCount());
+    EXPECT_EQ(0, int(getSessionManager()->getActiveSessionCount()));
     EXPECT_EQ(clientCount, getSessionManager()->getInactiveSessionCount());
 }
 
@@ -108,7 +106,8 @@ TEST_F(CachedSessionManagerTest, testReuseSession)
     pause(10);
 
     EXPECT_EQ(clientCount, getSessionManager()->getActiveSessionCount());
-    EXPECT_EQ(0, getSessionManager()->getInactiveSessionCount());
+    EXPECT_EQ(0, int(getSessionManager()->getInactiveSessionCount()));
 }
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
+

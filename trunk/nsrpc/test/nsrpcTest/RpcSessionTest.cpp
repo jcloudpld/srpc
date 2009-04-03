@@ -92,7 +92,7 @@ TEST_F(RpcSessionTest, testSendRpcCommands)
     for (int i = 0; i < sendCount; ++i) {
         UInt32 received[2] = { 0, };
         EXPECT_EQ(sizeof(received),
-            client_->recvMessage(received, sizeof(received)));
+            size_t(client_->recvMessage(received, sizeof(received))));
         EXPECT_EQ(rpcId.get(), toRpcByteOrder(received[0]));
         EXPECT_EQ(valueExpected.get(), toRpcByteOrder(received[1]));
     }

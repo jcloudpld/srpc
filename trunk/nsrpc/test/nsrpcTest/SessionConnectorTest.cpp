@@ -44,34 +44,35 @@ protected:
 TEST_F(SessionConnectorTest, testConnect)
 {
     EXPECT_EQ(1,
-        connector_->start(getTestAddress(), proactorTask_->getProactor()));
+        int(connector_->start(getTestAddress(), proactorTask_->getProactor())));
 
     pause(20);
 
-    EXPECT_EQ(1 * 2, getSessionManager()->getSessionCount());
+    EXPECT_EQ(1 * 2, int(getSessionManager()->getSessionCount()));
 }
 
 
 TEST_F(SessionConnectorTest, testMultipleConnect)
 {
     EXPECT_EQ(5,
-        connector_->start(getTestAddress(), proactorTask_->getProactor(), 5));
+        int(connector_->start(getTestAddress(), proactorTask_->getProactor(), 5)));
 
     pause(15);
 
-    EXPECT_EQ(5 * 2, getSessionManager()->getSessionCount());
+    EXPECT_EQ(5 * 2, int(getSessionManager()->getSessionCount()));
 }
 
 
 TEST_F(SessionConnectorTest, testStopToConnect)
 {
     EXPECT_EQ(0,
-        connector_->start(getTestAddress(), proactorTask_->getProactor(), 0));
+        int(connector_->start(getTestAddress(), proactorTask_->getProactor(), 0)));
 
     connector_->stop();
 
     EXPECT_EQ(0,
-        connector_->start(getTestAddress(), proactorTask_->getProactor()));
+        int(connector_->start(getTestAddress(), proactorTask_->getProactor())));
 }
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
+
