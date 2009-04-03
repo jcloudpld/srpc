@@ -35,12 +35,12 @@ protected:
         proactor = nsrpc::ProactorFactory::create(nsrpc::ptWin32);
 #elif defined (NSRPC_USE_TPROACTOR)
 # if defined (ACE_HAS_LINUX_EPOLL)
-        proactorTask_ = nsrpc::ProactorFactory::create(nsrpc::ptEpoll);
+        proactor = nsrpc::ProactorFactory::create(nsrpc::ptEpoll);
 # else
-        proactorTask_ = nsrpc::ProactorFactory::create(nsrpc::ptSelect);
+        proactor = nsrpc::ProactorFactory::create(nsrpc::ptSelect);
 # endif
 #else
-        proactorTask_ = nsrpc::ProactorFactory::create(nsrpc::ptAny);
+        proactor = nsrpc::ProactorFactory::create(nsrpc::ptAny);
 #endif
 
         proactorTask_ = new nsrpc::ProactorTask(proactor, true);
