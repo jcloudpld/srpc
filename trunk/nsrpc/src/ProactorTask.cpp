@@ -4,7 +4,7 @@
 
 #include <nsrpc/ProactorTask.h>
 #include <nsrpc/utility/AceUtil.h>
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
 #  include <TProactor/Proactor.h>
 #endif
 

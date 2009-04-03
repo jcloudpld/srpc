@@ -8,7 +8,7 @@
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4244 4267 4312 4996)
 #endif
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
 #include <TProactor/Asynch_Acceptor.h>
 #include <TProactor/Asynch_Connector.h>
 #include <TProactor/Asynch_IO.h>
@@ -18,7 +18,7 @@
 #include <ace/Asynch_Connector.h>
 #include <ace/Asynch_IO.h>
 #include <ace/Proactor.h>
-#endif // USE_TPROACTOR
+#endif // NSRPC_USE_TPROACTOR
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif

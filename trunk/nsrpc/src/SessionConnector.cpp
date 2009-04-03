@@ -34,7 +34,7 @@ size_t SessionConnector::start(const ACE_INET_Addr& serverAddr,
                 ACE_TEXT("NSRPC_Asynch_Connector::connect() FAILED(%m)."));
             break;
         }
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
         ++pendingCount_;
 #endif
     }
@@ -71,7 +71,7 @@ int SessionConnector::validate_connection(
 {
     ACE_UNUSED_ARG(local);
 
-#ifdef USE_TPROACTOR
+#if defined (NSRPC_USE_TPROACTOR)
     --pendingCount_;
 #endif
 

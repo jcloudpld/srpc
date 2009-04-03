@@ -24,27 +24,119 @@ enum ProactorType
     ptUnknown = -1,
 
     ptWin32, ///< IOCP (WIN32)
-    ptAioCb, ///< aiosuspend() (POSIX)
-    ptCallback, ///< style aio callbacks (SGI)
-    ptSun, ///< aiowait() (SunOS)
-#ifdef USE_TPROACTOR
+
     ptSelect, ///< select() (all POSIX systems)
+
     ptPoll, ///< poll() (all POSIX systems)
+
     ptEpoll, ///< epoll_wait() (Linux kernel 2.6+)
-    ptLinuxRt, ///< waitsiginfo() (Linux kernel 2.4+)
     ptLinux, ///< io_getevents() (Linux kernel 2.6+)
+    ptLinuxRt, ///< waitsiginfo() (Linux kernel 2.4+)
+
     ptSig, ///< sigwaitinfo() (POSIX)
+
     ptDevPoll, ///< /dev/poll (SunOS 5.8+)
+
     ptSunPort, ///< port_get() (SunOS 5.10)
-#endif // USE_TPROACTOR
+
+    ptAioCb, ///< aiosuspend() (POSIX)
+
+    ptCallback, ///< aio callbacks (SGI)
+
+    ptSun, ///< aiowait() (SunOS)
 
     ptCount
 };
 
 
-/// 문자열을 ProactorType으로 변환
+/// convert a string to ProactorType
 ProactorType NSRPC_API toProactorType(const srpc::String& pt);
 
+
+inline bool isSupportedProactor(ProactorType proactorType)
+{
+# if defined (ACE_WIN32)
+
+    if (ptWin32 == proactorType) {
+        return true;
+    }
+
+# elif defined (NSRPC_USE_TPROACTOR)
+
+    if (ptSelect == proactorType) {
+        return true;
+    }
+
+#   if defined (ACE_HAS_POLL)
+    if (ptPoll == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (linux)
+#     if defined (ACE_HAS_EVENT_POLL)
+    if (ptEpoll == proactorType) {
+        return true;
+    }
+#     endif
+#     if defined (ACE_HAS_LINUX_LIBAIO)
+    if (ptLinux == proactorType) {
+        return true;
+    }
+#     endif
+    if (ptLinuxRt == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (ACE_POSIX_SIG_PROACTOR) || defined (ACE_HAS_POSIX_REALTIME_SIGNALS)
+    if (ptSig == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (ACE_HAS_DEV_POLL)
+    if (ptDevPoll == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (sun)
+    if (ptSunPort == proactorType) {
+        return true;
+    }
+#   endif
+
+# else
+
+#   if defined (ACE_POSIX_AIOCB_PROACTOR)
+    if (ptAioCb == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (ACE_POSIX_SIG_PROACTOR) || defined (ACE_HAS_POSIX_REALTIME_SIGNALS)
+    if (ptSig == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if !defined(ACE_HAS_BROKEN_SIGEVENT_STRUCT)
+    if (ptCallback == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (sun)
+    if (ptSun == proactorType) {
+        return true;
+    }
+#   endif
+
+# endif
+
+    return false;
+}
 
 /**
 * @struct ProactorFactory
@@ -54,9 +146,9 @@ ProactorType NSRPC_API toProactorType(const srpc::String& pt);
 struct NSRPC_API ProactorFactory
 {
     /**
-     * Proactor를 생성한다.
+     * create a Proactor instance
      * @param ptype Proactor Type.
-     * @return Proactor 객체. 사용 후 반드시 메모리를 해제해야 한다.
+     * @return Proactor instance. you must deallocate memory.
      */
     static NSRPC_Proactor* create(ProactorType ptype);
 };
