@@ -109,7 +109,7 @@ TEST_F(P2pSessionTest, testMultiplePeerConnect)
         "host - connected peer count";
 
     for (int i = 0; i < peerCount; ++i) {
-        EXPECT_EQ(peerCount + 1, peers[i]->getPeerCount()) <<
+        EXPECT_EQ(peerCount + 1, int(peers[i]->getPeerCount())) <<
             "#" << i << " peer";
         const PeerStats stats = peers[i]->getStats(1);
         EXPECT_EQ(peerCount, int(eventHandlers[i].getConnectedPeers())) <<
@@ -251,7 +251,7 @@ TEST_F(P2pSessionTest, testLimitPeers)
     EXPECT_EQ(maxPeers, int(hostSession_->getPeerCount()));
     EXPECT_EQ(maxPeers - 1, int(hostEventHandler_.getConnectedPeers()));
 
-    for (size_t i = 0; i < peerCount; ++i) {
+    for (int i = 0; i < peerCount; ++i) {
         delete peers[i];
     }
 }
