@@ -78,7 +78,8 @@ TEST_F(ClientSessionTest, testSendPackets)
 
     EXPECT_EQ((packetCoder_->getHeaderSize() + bodySize) * sendCount,
         getLastServerSession().getStats().recvBytes_) << "received bytes";
-    EXPECT_EQ(sendCount, getLastServerSession().getArrivedMessageCount()) <<
+    EXPECT_EQ(sendCount,
+	    int(getLastServerSession().getArrivedMessageCount())) <<
         "received count";
 }
 
@@ -100,7 +101,9 @@ TEST_F(ClientSessionTest, testRecvPackets)
 
     EXPECT_EQ((packetCoder_->getHeaderSize() + bodySize) * sendCount,
         getLastServerSession().getStats().sentBytes_) << "sent bytes";
-    EXPECT_EQ(sendCount, clientSession_->getMessageCount()) << "message count";
+    EXPECT_EQ(sendCount,
+		int(clientSession_->getMessageCount())) << "message count";
 }
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
+
