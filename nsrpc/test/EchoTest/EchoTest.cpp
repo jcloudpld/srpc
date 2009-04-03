@@ -15,7 +15,6 @@
 #include <nsrpc/utility/LogManager.h>
 #include <ace/Profile_Timer.h>
 #include <iostream>
-#include <conio.h>
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
 
@@ -100,10 +99,8 @@ void run(const Config& config)
             "system time = " << et.system_time << " secs\n";
     }
     else if (config.isServer()) { // server only
+        std::cout << "Press Ctrl-C to exit...\n";
         for (;;) {
-            if (_kbhit()) {
-                break;
-            }
             nsrpc::pause(1000);
         }
     }
