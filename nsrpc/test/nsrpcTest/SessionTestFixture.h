@@ -29,22 +29,21 @@ protected:
         nsrpc::disableSignals(SIGPIPE, SIGPIPE);
         nsrpc::disableSignals(SIGIO, SIGIO);
 
+        NSRPC_Proactor* proactor = 0;
+
 #if defined (ACE_WIN32)
-
-        proactorTask_ = new nsrpc::ProactorTask(
-            nsrpc::ProactorFactory::create(nsrpc::ptWin32), true);
-
+        proactor = nsrpc::ProactorFactory::create(nsrpc::ptWin32);
 #elif defined (NSRPC_USE_TPROACTOR)
-
 # if defined (ACE_HAS_LINUX_EPOLL)
-        proactorTask_ = new nsrpc::ProactorTask(
-            nsrpc::ProactorFactory::create(nsrpc::ptEpoll), true);
+        proactorTask_ = nsrpc::ProactorFactory::create(nsrpc::ptEpoll);
 # else
-        proactorTask_ = new nsrpc::ProactorTask(
-            nsrpc::ProactorFactory::create(nsrpc::ptSelect), true);
+        proactorTask_ = nsrpc::ProactorFactory::create(nsrpc::ptSelect);
 # endif
-
+#else
+        proactorTask_ = nsrpc::ProactorFactory::create(nsrpc::ptAny);
 #endif
+
+        proactorTask_ = new nsrpc::ProactorTask(proactor, true);
         proactorTask_->start(1);
 
         sessionManager_ = createSessionManager();
