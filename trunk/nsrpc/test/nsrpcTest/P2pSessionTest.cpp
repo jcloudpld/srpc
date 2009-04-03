@@ -82,12 +82,13 @@ TEST_F(P2pSessionTest, testMultiplePeerConnect)
     typedef boost::shared_ptr<P2pSession> P2pSessionPtr;
     typedef std::vector<P2pSessionPtr> P2pSessions;
 
-    const size_t peerCount = 3;
+    const int peerCount = 3;
     P2pSessions peers;
     peers.reserve(peerCount);
     TestP2pEventHandler eventHandlers[peerCount];
-    for (size_t i = 0; i < peerCount; ++i) {
-        P2pSessionPtr peer(P2pSessionFactory::create(2 + i, eventHandlers[i]));
+    for (int i = 0; i < peerCount; ++i) {
+        P2pSessionPtr peer(
+            P2pSessionFactory::create(PeerId(2 + i), eventHandlers[i]));
         EXPECT_TRUE(peer->open(ACE_DEFAULT_SERVER_PORT + (u_short)i + 1)) <<
             "#" << i << " peer";
         peer->connect(getHostAddresses());
@@ -95,23 +96,23 @@ TEST_F(P2pSessionTest, testMultiplePeerConnect)
         peers.push_back(peer);
     }
 
-    for (size_t x = 0; x < (peerCount * 8); ++x) {
-        for (size_t i = 0; i < peerCount; ++i) {
+    for (int x = 0; x < (peerCount * 8); ++x) {
+        for (int i = 0; i < peerCount; ++i) {
             peers[i]->tick();
         }
         hostSession_->tick();
         pause(1);
     }
 
-    EXPECT_EQ(peerCount + 1, hostSession_->getPeerCount());
-    EXPECT_EQ(peerCount, size_t(hostEventHandler_.getConnectedPeers())) <<
+    EXPECT_EQ(peerCount + 1, int(hostSession_->getPeerCount()));
+    EXPECT_EQ(peerCount, int(hostEventHandler_.getConnectedPeers())) <<
         "host - connected peer count";
 
-    for (size_t i = 0; i < peerCount; ++i) {
+    for (int i = 0; i < peerCount; ++i) {
         EXPECT_EQ(peerCount + 1, peers[i]->getPeerCount()) <<
             "#" << i << " peer";
         const PeerStats stats = peers[i]->getStats(1);
-        EXPECT_EQ(peerCount, size_t(eventHandlers[i].getConnectedPeers())) <<
+        EXPECT_EQ(peerCount, int(eventHandlers[i].getConnectedPeers())) <<
             "#" << i << " peer - connected peer count";
     }
 }
@@ -130,7 +131,7 @@ TEST_F(P2pSessionTest, testDisconnect)
         hostSession_->tick();
     }
 
-    EXPECT_EQ(hostSession_->getPeerCount(), peer->getPeerCount());
+    EXPECT_EQ(int(hostSession_->getPeerCount()), int(peer->getPeerCount()));
 
     peer->close();
 
@@ -225,30 +226,30 @@ TEST_F(P2pSessionTest, testConnectWithValidPassword)
 
 TEST_F(P2pSessionTest, testLimitPeers)
 {
-    const size_t maxPeers = 2;
+    const int maxPeers = 2;
 
     hostSession_->close();
     openHost("", maxPeers);
 
-    const size_t peerCount = 2;
+    const int peerCount = 2;
     P2pSession* peers[peerCount];
     TestP2pEventHandler eventHandlers[peerCount];
-    for (size_t i = 0; i < peerCount; ++i) {
-        peers[i] = P2pSessionFactory::create(2 + i, eventHandlers[i]);
+    for (int i = 0; i < peerCount; ++i) {
+        peers[i] = P2pSessionFactory::create(PeerId(2 + i), eventHandlers[i]);
         EXPECT_TRUE(peers[i]->open(ACE_DEFAULT_SERVER_PORT + (u_short)i + 1)) <<
             "#" << i << "peer";
         peers[i]->connect(getHostAddresses());
     }
 
-    for (size_t x = 0; x < (peerCount * 8); ++x) {
-        for (size_t i = 0; i < peerCount; ++i) {
+    for (int x = 0; x < (peerCount * 8); ++x) {
+        for (int i = 0; i < peerCount; ++i) {
             peers[i]->tick();
         }
         hostSession_->tick();
     }
 
-    EXPECT_EQ(maxPeers, hostSession_->getPeerCount());
-    EXPECT_EQ(maxPeers - 1, size_t(hostEventHandler_.getConnectedPeers()));
+    EXPECT_EQ(maxPeers, int(hostSession_->getPeerCount()));
+    EXPECT_EQ(maxPeers - 1, int(hostEventHandler_.getConnectedPeers()));
 
     for (size_t i = 0; i < peerCount; ++i) {
         delete peers[i];
@@ -321,7 +322,7 @@ TEST_F(P2pSessionTest, testBroadcast)
         hostSession_->tick();
     }
 
-    EXPECT_EQ(hostSession_->getPeerCount(), peer1->getPeerCount());
+    EXPECT_EQ(int(hostSession_->getPeerCount()), int(peer1->getPeerCount()));
 
     hostRpcPlugIn_->hello("hi");
 
@@ -372,7 +373,7 @@ TEST_F(P2pSessionTest, testUnicast)
         hostSession_->tick();
     }
 
-    EXPECT_EQ(hostSession_->getPeerCount(), peer1->getPeerCount());
+    EXPECT_EQ(int(hostSession_->getPeerCount()), int(peer1->getPeerCount()));
 
     const PeerHint hint(2);
     hostRpcPlugIn_->hello("hi", &hint);

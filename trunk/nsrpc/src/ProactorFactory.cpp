@@ -67,13 +67,13 @@ ProactorType toProactorType(const srpc::String& typeString)
 
 // = ProactorFactory
 
-NSRPC_Proactor* ProactorFactory::create(ProactorType ptype)
+NSRPC_Proactor* ProactorFactory::create(ProactorType proactorType)
 {
     NSRPC_Proactor_Impl* proactorImpl = 0;
 
 # if defined (ACE_WIN32) && !defined (ACE_HAS_WINCE)
 
-    if (ptype == ptWin32) {
+    if (proactorType == ptWin32) {
         proactorImpl = new NSRPC_WIN32_Proactor;
     }
 
@@ -93,7 +93,7 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType ptype)
     // POSIX : start aio type :  1 - any thread , 0- only leader
     const int startAioType = 1;
 
-    switch (ptype) {
+    switch (proactorType) {
     case ptSelect:
         proactorImpl = new TRB_Select_Proactor(maxAioOperations,
             signalToInterrupt, leaderType, startAioType);
@@ -132,30 +132,29 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType ptype)
 
 # else
 
-    switch (ptype) {
-#   if defined (ptAioCb)
-    case ptAioCb:
+#   if defined (ACE_POSIX_AIOCB_PROACTOR)
+    if (ptAioCb == proactorType) {
         proactorImpl = new ACE_POSIX_AIOCB_Proactor(maxAioOperations);
-        break;
-#   endif
-#   if defined (ptSun)
-    case ptSun:
-        proactorImpl = new ACE_SUN_Proactor(maxAioOperations);
-        break;
-#   endif
-#   if defined (ptCallback)
-    case ptCallback:
-        proactorImpl = new ACE_POSIX_CB_Proactor(maxAioOperations);
-        break;
-#   endif
-#   if defined (ptSig)
-    case ptSig:
-        proactorImpl = new ACE_POSIX_SIG_Proactor(maxAioOperations);
-        break;
-#   endif
-    default:
-        break;
     }
+#   endif
+
+#   if defined (ACE_POSIX_SIG_PROACTOR) || defined (ACE_HAS_POSIX_REALTIME_SIGNALS)
+    if (ptSig == proactorType) {
+        return proactorImpl = new ACE_POSIX_SIG_Proactor(maxAioOperations);
+    }
+#   endif
+
+#   if !defined(ACE_HAS_BROKEN_SIGEVENT_STRUCT)
+    if (ptCallback == proactorType) {
+        return proactorImpl = new ACE_POSIX_CB_Proactor(maxAioOperations);
+    }
+#   endif
+
+#   if defined (sun)
+    if (ptSun == proactorType) {
+        return proactorImpl = new ACE_SUN_Proactor(maxAioOperations);
+    }
+#   endif
 
 # endif // NSRPC_USE_TPROACTOR
 

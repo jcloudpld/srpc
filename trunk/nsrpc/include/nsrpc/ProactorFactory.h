@@ -147,10 +147,10 @@ struct NSRPC_API ProactorFactory
 {
     /**
      * create a Proactor instance
-     * @param ptype Proactor Type.
+     * @param proactorType Proactor Type.
      * @return Proactor instance. you must deallocate memory.
      */
-    static NSRPC_Proactor* create(ProactorType ptype);
+    static NSRPC_Proactor* create(ProactorType proactorType);
 };
 
 /** @} */ // addtogroup proactor
