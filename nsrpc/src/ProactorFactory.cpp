@@ -3,6 +3,8 @@
 
 #if defined (NSRPC_HAS_PROACTOR)
 
+#include <srpc/srpc_macros.h>
+
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4250 4267 4355 4800)
@@ -79,6 +81,7 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType ptype)
 
     // POSIX : > 0 max number aio operations  proactor,
     const size_t maxAioOperations = 0;
+    SRPC_UNUSED_ARG(maxAioOperations);
 
 #  if defined (NSRPC_USE_TPROACTOR)
 

@@ -4,6 +4,9 @@
 
 using namespace nsrpc;
 
+static const size_t poolSize = 2;
+static const size_t blockSize = sizeof(int);
+
 /**
 * @class VariousMemoryAllocatorTest
 *
@@ -24,11 +27,6 @@ private:
     }
 
 protected:
-    enum {
-        poolSize = 2,
-        blockSize = sizeof(int)
-    };
-
     IntegerAllocator* allocator_;
 };
 
@@ -90,7 +88,7 @@ TEST_F(VariousMemoryAllocatorTest, testMultipleVariousMemoryMallocFree)
     for (int i = 0; i < count; ++i) {
         memories[i] = allocator_->malloc((count % blockSize) + 2);
     }
-    EXPECT_EQ(0, allocator_->getCachedMemoryCount());
+    EXPECT_EQ(0, int(allocator_->getCachedMemoryCount()));
 
     for (int i = 0; i < count; ++i) {
         allocator_->free(memories[i]);

@@ -34,16 +34,16 @@ protected:
 TEST_F(MessageBlockStreamBufferTest, testEmpty)
 {
     EXPECT_TRUE(buffer_->empty());
-    EXPECT_EQ(0, buffer_->size());
+    EXPECT_EQ(0, int(buffer_->size()));
 }
 
 
 TEST_F(MessageBlockStreamBufferTest, testPush)
 {
     buffer_->push(1);
-    EXPECT_EQ(1, buffer_->size());
+    EXPECT_EQ(1, int(buffer_->size()));
     buffer_->push(2);
-    EXPECT_EQ(2, buffer_->size());
+    EXPECT_EQ(2, int(buffer_->size()));
 
     EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
@@ -71,7 +71,7 @@ TEST_F(MessageBlockStreamBufferTest, testPop)
     EXPECT_EQ(true, buffer_->empty());
 
     buffer_->push(3);
-    EXPECT_EQ(1, buffer_->size());
+    EXPECT_EQ(1, int(buffer_->size()));
 
     EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
@@ -83,7 +83,7 @@ TEST_F(MessageBlockStreamBufferTest, testReset)
     buffer_->push(2);
     buffer_->reset();
     EXPECT_TRUE(buffer_->empty());
-    EXPECT_EQ(0, buffer_->size());
+    EXPECT_EQ(0, int(buffer_->size()));
 
     EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
@@ -111,7 +111,7 @@ TEST_F(MessageBlockStreamBufferTest, testExtendedSpace)
     for (size_t i = 0; i < (initialSpace * 2); ++i) {
         buffer_->push(1);
     }
-    EXPECT_EQ(0, buffer_->space());
+    EXPECT_EQ(0, int(buffer_->space()));
 
     buffer_->reset();
     EXPECT_EQ(initialSpace * 2, buffer_->space()) << "fully empty";
@@ -144,7 +144,7 @@ TEST_F(MessageBlockStreamBufferTest, testCopyTo)
     buffer_->copyTo(static_cast<StreamBuffer::Item*>(toPtr),
         sizeof(to));
     EXPECT_TRUE(buffer_->empty());
-    EXPECT_EQ(0, buffer_->size());
+    EXPECT_EQ(0, int(buffer_->size()));
     EXPECT_EQ(value, to);
 
     EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
@@ -154,14 +154,15 @@ TEST_F(MessageBlockStreamBufferTest, testCopyTo)
 TEST_F(MessageBlockStreamBufferTest, testResetWithNewBlock)
 {
     buffer_->push(1);
-    EXPECT_EQ(1, buffer_->size());
+    EXPECT_EQ(1, int(buffer_->size()));
 
     AceMessageBlockGuard second(new ACE_Message_Block(initialSpace));
     buffer_->reset(second.get());
-    EXPECT_EQ(0, buffer_->size());
+    EXPECT_EQ(0, int(buffer_->size()));
 
     buffer_->push(2);
-    EXPECT_EQ(1, buffer_->size());
+    EXPECT_EQ(1, int(buffer_->size()));
 
     EXPECT_TRUE(static_cast<MessageBlockStreamBuffer*>(buffer_)->isValid());
 }
+

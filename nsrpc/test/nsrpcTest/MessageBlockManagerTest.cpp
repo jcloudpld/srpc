@@ -27,6 +27,8 @@ public:
 #endif
 };
 
+static const size_t poolSize = 2;
+static const size_t blockSize = 100;
 
 /**
 * @class MessageBlockManagerTest
@@ -45,10 +47,6 @@ private:
     }
 
 protected:
-    enum {
-        poolSize = 2,
-        blockSize = 100
-    };
 
     TestMessageBlockManager* manager_;
 };

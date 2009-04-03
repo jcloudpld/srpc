@@ -3,6 +3,9 @@
 
 using namespace nsrpc;
 
+static const size_t poolSize = 2;
+static const size_t blockSize = sizeof(int);
+
 /**
 * @class ObjectAllocatorTest
 *
@@ -20,11 +23,6 @@ private:
     }
 
 protected:
-    enum {
-        poolSize = 2,
-        blockSize = sizeof(int)
-    };
-
     typedef ObjectAllocator<int> IntegerAllocator;
     IntegerAllocator* allocator_;
 };
@@ -41,7 +39,7 @@ TEST_F(ObjectAllocatorTest, testMalloc)
     void* memory = allocator_->malloc(blockSize);
     EXPECT_TRUE(0 != memory);
 
-    EXPECT_EQ(poolSize - 1, int(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 1, allocator_->getCachedMemoryCount());
 }
 
 
@@ -50,7 +48,7 @@ TEST_F(ObjectAllocatorTest, testCalloc)
     void* memory = allocator_->calloc(blockSize);
     EXPECT_TRUE(0 != memory);
 
-    EXPECT_EQ(poolSize - 1, int(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 1, allocator_->getCachedMemoryCount());
 }
 
 
@@ -66,7 +64,7 @@ TEST_F(ObjectAllocatorTest, testMallocSmaller)
     void* memory = allocator_->malloc(blockSize / 2);
     EXPECT_TRUE(0 != memory);
 
-    EXPECT_EQ(poolSize - 1, int(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize - 1, allocator_->getCachedMemoryCount());
 }
 
 
@@ -90,5 +88,6 @@ TEST_F(ObjectAllocatorTest, testMultipleMallocFree)
     for (int i = 0; i < count; ++i) {
         allocator_->free(memories[i]);
     }
-    EXPECT_EQ(poolSize + 1000 - 2, int(allocator_->getCachedMemoryCount()));
+    EXPECT_EQ(poolSize + 1000 - 2, allocator_->getCachedMemoryCount());
 }
+

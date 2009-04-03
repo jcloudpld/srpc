@@ -3,6 +3,9 @@
 
 using namespace nsrpc;
 
+static const size_t memorySize = 128;
+static const size_t poolSize = 2;
+
 /**
 * @class MemoryPoolTest
 *
@@ -21,10 +24,6 @@ private:
     }
 
 protected:
-    enum {
-        memorySize = 128,
-        poolSize = 2
-    };
 
     MemoryAllocator<memorySize> allocator_;
     typedef MemoryPool<memorySize> TestingPool;
@@ -45,7 +44,7 @@ TEST_F(MemoryPoolTest, testAcquire)
     EXPECT_TRUE(0 != resource);
 
     EXPECT_EQ(1, int(pool_->getActiveResourceCount()));
-    EXPECT_EQ(poolSize - 1, int(pool_->getInactiveResourceCount()));
+    EXPECT_EQ(poolSize - 1, pool_->getInactiveResourceCount());
 }
 
 
@@ -91,3 +90,4 @@ TEST_F(MemoryPoolTest, testDestroy)
     EXPECT_EQ(0, int(pool_->getActiveResourceCount()));
     EXPECT_EQ(0, int(pool_->getInactiveResourceCount()));
 }
+

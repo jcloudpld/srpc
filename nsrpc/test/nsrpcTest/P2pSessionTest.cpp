@@ -32,11 +32,11 @@ protected:
 
 TEST_F(P2pSessionTest, testOpen)
 {
-    EXPECT_EQ(1, hostSession_->getPeerCount());
-    EXPECT_EQ(1, hostSession_->getPeerId());
+    EXPECT_EQ(1, int(hostSession_->getPeerCount()));
+    EXPECT_EQ(PeerId(1), hostSession_->getPeerId());
 
-    EXPECT_EQ(0, hostSession_->getStats(1).sentReliablePackets_);
-    EXPECT_EQ(0, hostSession_->getStats(1).receivedReliablePackets_);
+    EXPECT_EQ(0, int(hostSession_->getStats(1).sentReliablePackets_));
+    EXPECT_EQ(0, int(hostSession_->getStats(1).receivedReliablePackets_));
 }
 
 
@@ -52,7 +52,7 @@ TEST_F(P2pSessionTest, testClose)
 TEST_F(P2pSessionTest, testHost)
 {
     EXPECT_TRUE(hostSession_->isHost());
-    EXPECT_EQ(1, hostSession_->getPeerCount());
+    EXPECT_EQ(1, int(hostSession_->getPeerCount()));
 }
 
 
@@ -70,8 +70,8 @@ TEST_F(P2pSessionTest, testOnePeerConnect)
         hostSession_->tick();
     }
 
-    EXPECT_EQ(2, hostSession_->getPeerCount()) << "host: two peer";
-    EXPECT_EQ(2, peer->getPeerCount()) << "peer: two peer";
+    EXPECT_EQ(2, int(hostSession_->getPeerCount())) << "host: two peer";
+    EXPECT_EQ(2, int(peer->getPeerCount())) << "peer: two peer";
 
     EXPECT_TRUE(peerEventHandler.isConnected(1)) << "the host connected";
 }
@@ -82,11 +82,11 @@ TEST_F(P2pSessionTest, testMultiplePeerConnect)
     typedef boost::shared_ptr<P2pSession> P2pSessionPtr;
     typedef std::vector<P2pSessionPtr> P2pSessions;
 
-    const int peerCount = 3;
+    const size_t peerCount = 3;
     P2pSessions peers;
     peers.reserve(peerCount);
     TestP2pEventHandler eventHandlers[peerCount];
-    for (int i = 0; i < peerCount; ++i) {
+    for (size_t i = 0; i < peerCount; ++i) {
         P2pSessionPtr peer(P2pSessionFactory::create(2 + i, eventHandlers[i]));
         EXPECT_TRUE(peer->open(ACE_DEFAULT_SERVER_PORT + (u_short)i + 1)) <<
             "#" << i << " peer";
@@ -95,8 +95,8 @@ TEST_F(P2pSessionTest, testMultiplePeerConnect)
         peers.push_back(peer);
     }
 
-    for (int x = 0; x < (peerCount * 8); ++x) {
-        for (int i = 0; i < peerCount; ++i) {
+    for (size_t x = 0; x < (peerCount * 8); ++x) {
+        for (size_t i = 0; i < peerCount; ++i) {
             peers[i]->tick();
         }
         hostSession_->tick();
@@ -104,14 +104,14 @@ TEST_F(P2pSessionTest, testMultiplePeerConnect)
     }
 
     EXPECT_EQ(peerCount + 1, hostSession_->getPeerCount());
-    EXPECT_EQ(peerCount, hostEventHandler_.getConnectedPeers()) <<
+    EXPECT_EQ(peerCount, size_t(hostEventHandler_.getConnectedPeers())) <<
         "host - connected peer count";
 
-    for (int i = 0; i < peerCount; ++i) {
+    for (size_t i = 0; i < peerCount; ++i) {
         EXPECT_EQ(peerCount + 1, peers[i]->getPeerCount()) <<
             "#" << i << " peer";
         const PeerStats stats = peers[i]->getStats(1);
-        EXPECT_EQ(peerCount, eventHandlers[i].getConnectedPeers()) <<
+        EXPECT_EQ(peerCount, size_t(eventHandlers[i].getConnectedPeers())) <<
             "#" << i << " peer - connected peer count";
     }
 }
@@ -139,10 +139,10 @@ TEST_F(P2pSessionTest, testDisconnect)
         hostSession_->tick();
     }
 
-    EXPECT_EQ(0, hostEventHandler_.getConnectedPeers());
-    EXPECT_EQ(1, hostSession_->getPeerCount());
+    EXPECT_EQ(0, int(hostEventHandler_.getConnectedPeers()));
+    EXPECT_EQ(1, int(hostSession_->getPeerCount()));
 
-    EXPECT_EQ(1, peerEventHandler.getConnectedPeers());
+    EXPECT_EQ(1, int(peerEventHandler.getConnectedPeers()));
     EXPECT_EQ(0, int(peer->getPeerCount()));
 }
 
@@ -230,27 +230,27 @@ TEST_F(P2pSessionTest, testLimitPeers)
     hostSession_->close();
     openHost("", maxPeers);
 
-    const int peerCount = 2;
+    const size_t peerCount = 2;
     P2pSession* peers[peerCount];
     TestP2pEventHandler eventHandlers[peerCount];
-    for (int i = 0; i < peerCount; ++i) {
+    for (size_t i = 0; i < peerCount; ++i) {
         peers[i] = P2pSessionFactory::create(2 + i, eventHandlers[i]);
         EXPECT_TRUE(peers[i]->open(ACE_DEFAULT_SERVER_PORT + (u_short)i + 1)) <<
             "#" << i << "peer";
         peers[i]->connect(getHostAddresses());
     }
 
-    for (int x = 0; x < (peerCount * 8); ++x) {
-        for (int i = 0; i < peerCount; ++i) {
+    for (size_t x = 0; x < (peerCount * 8); ++x) {
+        for (size_t i = 0; i < peerCount; ++i) {
             peers[i]->tick();
         }
         hostSession_->tick();
     }
 
     EXPECT_EQ(maxPeers, hostSession_->getPeerCount());
-    EXPECT_EQ(maxPeers - 1, hostEventHandler_.getConnectedPeers());
+    EXPECT_EQ(maxPeers - 1, size_t(hostEventHandler_.getConnectedPeers()));
 
-    for (int i = 0; i < peerCount; ++i) {
+    for (size_t i = 0; i < peerCount; ++i) {
         delete peers[i];
     }
 }
@@ -283,8 +283,8 @@ TEST_F(P2pSessionTest, testCannotConnectPeerBeforeHostConnected)
         hostSession_->tick();
     }
 
-    EXPECT_EQ(2, hostSession_->getPeerCount());
-    EXPECT_EQ(2, peer1->getPeerCount());
+    EXPECT_EQ(2, int(hostSession_->getPeerCount()));
+    EXPECT_EQ(2, int(peer1->getPeerCount()));
 }
 
 
@@ -389,3 +389,4 @@ TEST_F(P2pSessionTest, testUnicast)
     EXPECT_EQ("", peerRpcPlugIn2->getLastWorld());
     EXPECT_EQ(invalidPeerId, peerRpcPlugIn2->getLastPeerId());
 }
+
