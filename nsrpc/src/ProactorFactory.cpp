@@ -70,7 +70,7 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType ptype)
         proactorImpl = new NSRPC_WIN32_Proactor;
     }
 
-#elif defined (ACE_HAS_AIO_CALLS) || defined (ACE_HAS_AIO_EMULATION)
+#elif defined (ACE_HAS_AIO_CALLS)
 
     // POSIX : > 0 max number aio operations  proactor,
     const size_t maxAioOperations = 0;
@@ -87,13 +87,17 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType ptype)
         proactorImpl = new NSRPC_POSIX_AIOCB_Proactor(maxAioOperations,
             signalToInterrupt, leaderType, startAioType);
         break;
+# if defined (sun)
     case ptSun:
         proactorImpl = new NSRPC_SUN_Proactor(maxAioOperations,
             signalToInterrupt, leaderType, startAioType);
         break;
+# endif
+# if !defined (ACE_HAS_BROKEN_SIGEVENT_STRUCT)
     case ptCallback:
         proactorImpl = new NSRPC_POSIX_CB_Proactor(maxAioOperations);
         break;
+# endif
 #  ifdef USE_TPROACTOR
     case ptSelect:
         proactorImpl = new TRB_Select_Proactor(maxAioOperations,
