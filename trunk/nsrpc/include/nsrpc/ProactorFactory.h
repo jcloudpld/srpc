@@ -23,6 +23,8 @@ enum ProactorType
 {
     ptUnknown = -1,
 
+    ptAny, ///< depends on ACE
+
     ptWin32, ///< IOCP (WIN32)
 
     ptSelect, ///< select() (all POSIX systems)
@@ -55,6 +57,10 @@ ProactorType NSRPC_API toProactorType(const srpc::String& pt);
 
 inline bool isSupportedProactor(ProactorType proactorType)
 {
+    if (ptAny == proactorType) {
+        return true;
+    }
+
 # if defined (ACE_WIN32)
 
     if (ptWin32 == proactorType) {

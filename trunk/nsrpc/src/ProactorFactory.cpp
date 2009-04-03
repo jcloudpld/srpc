@@ -43,6 +43,7 @@ ProactorType toProactorType(const srpc::String& typeString)
 
     const ProactorTable proactorTable[] =
     {
+        { ptAny, "any" },
         { ptWin32, "iocp" },
         { ptSelect, "select" },
         { ptPoll, "poll" },
@@ -160,7 +161,9 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType proactorType)
 
 #endif // (ACE_WIN32) && !defined (ACE_HAS_WINCE)
 
-    assert(proactorImpl != 0 && "Unknown Proactor Type");
+    if ((! proactorImpl) && (ptAny != proactorType)) {
+        assert(false && "Unknown Proactor Type");
+    }
 
     return new NSRPC_Proactor(proactorImpl, 1);
 }
