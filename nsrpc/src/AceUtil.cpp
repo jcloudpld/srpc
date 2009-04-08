@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <nsrpc/utility/AceUtil.h>
+#include <nsrpc/utility/Logger.h>
 #include <ace/Proactor.h>
 #include <ace/Init_ACE.h>
 #include <cassert>
@@ -190,6 +191,23 @@ srpc::String obtainPublicIpAddress()
     }
 
     return "127.0.0.1";
+}
+
+
+void workaroundWinsockConnectionResetProblem(ACE_HANDLE socket)
+{
+#if defined (_WIN32)
+    DWORD dwBytesReturned = 0;
+    BOOL  bNewBehavior = FALSE; // disable
+    const DWORD status = ::WSAIoctl(reinterpret_cast<ACE_SOCKET>(socket),
+        SIO_UDP_CONNRESET, &bNewBehavior, sizeof(bNewBehavior), NULL, 0,
+        &dwBytesReturned, NULL, NULL);
+    if (status == SOCKET_ERROR) {
+        NSRPC_LOG_ERROR("Failed to disable SIO_UDP_CONNRESET(%m)");
+    }
+#else
+    SRPC_UNUSED_ARG(socket);
+#endif
 }
 
 } // namespace nsrpc

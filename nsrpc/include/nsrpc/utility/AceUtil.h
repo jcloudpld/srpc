@@ -145,6 +145,16 @@ bool NSRPC_API isPublicAddress(const ACE_INET_Addr& address);
 /// 공인 아이피 주소 얻기
 srpc::String NSRPC_API obtainPublicIpAddress();
 
+
+/**
+* From: http://support.microsoft.com/kb/263823
+* Disable "new behavior" using IOCTL: SIO_UDP_CONNRESET.
+* Without this call, recvfrom() can fail, repeatedly,
+* after a bad sendto() call.
+* -- http://www.gamedev.net/community/forums/topic.asp?topic_id=307848
+*/
+void workaroundWinsockConnectionResetProblem(ACE_HANDLE socket);
+
 /** @} */ // addtogroup utility
 
 } // namespace nsrpc
