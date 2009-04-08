@@ -153,7 +153,7 @@ srpc::String NSRPC_API obtainPublicIpAddress();
 * after a bad sendto() call.
 * -- http://www.gamedev.net/community/forums/topic.asp?topic_id=307848
 */
-void workaroundWinsockConnectionResetProblem(ACE_HANDLE socket);
+void NSRPC_API workaroundWinsockConnectionResetProblem(ACE_HANDLE socket);
 
 /** @} */ // addtogroup utility
 
