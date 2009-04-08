@@ -1,4 +1,0 @@
-Changes for 1.7.34:
-
-  * First public release
-
