@@ -45,6 +45,8 @@ bool P2pEndpoint::open(srpc::UInt16 port)
     setMaximumSocketBufferSize(get_handle());
     udp_->enable(ACE_NONBLOCK);
 
+    workaroundWinsockConnectionResetProblem(get_handle());
+
     const ACE_Reactor_Mask masks = ACE_Event_Handler::READ_MASK;
     if (reactor()->register_handler(this, masks) == -1) {
         NSRPC_LOG_ERROR2(
@@ -145,9 +147,9 @@ bool P2pEndpoint::readMessage(ACE_INET_Addr& peerAddr,
         if (error == EWOULDBLOCK) {
             return false;
         }
-        if (error == ECONNRESET) {
-            return false;
-        }
+        //if (error == ECONNRESET) {
+        //    return false;
+        //}
 
         NSRPC_LOG_ERROR4(
             ACE_TEXT("P2pEndpoint::readMessage(from: %s:%d) FAILED!!!(%d,%m)"),
