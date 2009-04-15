@@ -4,7 +4,6 @@
 // 기본 데이터 타입(primitive type)을 정의한다
 
 #include <boost/cstdint.hpp>
-#include <boost/static_assert.hpp>
 
 namespace srpc {
 
@@ -36,15 +35,6 @@ typedef unsigned int UInt32;
 typedef boost::int32_t Int32;
 typedef boost::uint32_t UInt32;
 #endif
-
-BOOST_STATIC_ASSERT(1 == sizeof(srpc::Int8));
-BOOST_STATIC_ASSERT(1 == sizeof(srpc::UInt8));
-BOOST_STATIC_ASSERT(2 == sizeof(srpc::Int16));
-BOOST_STATIC_ASSERT(2 == sizeof(srpc::UInt16));
-BOOST_STATIC_ASSERT(4 == sizeof(srpc::Int32));
-BOOST_STATIC_ASSERT(4 == sizeof(srpc::UInt32));
-BOOST_STATIC_ASSERT(4 == sizeof(srpc::Float32));
-BOOST_STATIC_ASSERT(8 == sizeof(srpc::Float64));
 
 /** @} */ // addtogroup types
 

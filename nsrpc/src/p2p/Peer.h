@@ -182,7 +182,7 @@ private:
 
     void setNextTimeoutCheckTime(PeerTime timeout);
 
-    bool send(PeerId fromPeerId, Message& message,
+    bool sendMessage(PeerId fromPeerId, Message& message,
         srpc::RpcPacketType packetType, bool shouldReleaseMessageBlock);
     bool sendNow(const PeerIdPair& peerIdPair,
         const AddressPair& addressPair, Message& message,

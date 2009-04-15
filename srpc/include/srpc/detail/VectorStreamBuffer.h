@@ -60,7 +60,7 @@ public:
                 "buffer is corrupted");
         }
 
-        copyVector(buffer_.begin() + readIndex_, buffer, bufferSize);
+        copy(buffer_.begin() + readIndex_, buffer, bufferSize);
         readIndex_ += bufferSize;
         
         if (empty()) {

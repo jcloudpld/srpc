@@ -583,10 +583,10 @@ bool P2pSessionImpl::sendNow(const PeerIdPair& peerIdPair,
     else {
         const P2pPeerHint hint(relayServerPeerId);
         const size_t headerSize = packetCoder_->getHeaderSize();
+        const RMessageBuffer buffer(mblock.rd_ptr() + headerSize,
+            static_cast<srpc::UInt16>(mblock.length() - headerSize));
         relayService_.rpcRelay(peerIdPair, addressPair.peerAddress_,
-            RMessageBuffer(mblock.rd_ptr() + headerSize,
-                static_cast<srpc::UInt16>(mblock.length() - headerSize)),
-            packetType, sequenceNumber, sentTime, &hint);
+            buffer, packetType, sequenceNumber, sentTime, &hint);
     }
     return true;
 }
@@ -839,8 +839,7 @@ void P2pSessionImpl::resolved(const srpc::String& ipAddress, srpc::UInt16 port)
         return;
     }
 
-    const ACE_INET_Addr resolvedAddress(port, ipAddress.c_str());
-    me->setResolvedAddress(resolvedAddress);
+    me->setResolvedAddress(ACE_INET_Addr(port, ipAddress.c_str()));
     onAddressResolved(ipAddress, port);
 }
 

@@ -67,7 +67,7 @@ public:
                 "block is corrupted");
         }
 
-        srpc::copyVector(block_->rd_ptr(), block, blockSize);
+        srpc::copy(block_->rd_ptr(), block, blockSize);
         block_->rd_ptr(blockSize);
 
         if (block_->length() == 0) {

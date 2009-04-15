@@ -1,9 +1,6 @@
 #ifndef SRPC_ALLOCATOR_H
 #define SRPC_ALLOCATOR_H
 
-#include "../srpc.h"
-#include <memory>
-
 #if defined(USE_BOOST_POOL_ALLOCATOR_FOR_SRPC) || \
     defined(USE_BOOST_FAST_POOL_ALLOCATOR_FOR_SRPC) || \
     defined(USE_BOOST_POOL_ALLOCATOR_FOR_SRPC_STRING)
@@ -16,6 +13,10 @@
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
+
+#else
+
+#include <memory>
 
 #endif
 

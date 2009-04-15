@@ -8,7 +8,7 @@ namespace srpc {
 
 /// copy [src, src + size) to [dest, ...)
 template<typename InIt, typename OutIt>
-inline void copyVector(InIt src, OutIt dest, size_t size)
+inline void copy(InIt src, OutIt dest, size_t size)
 {
 #if _MSC_VER >= 1400 // MSVC++ 8.0
     stdext::unchecked_copy(src, src + size, dest);

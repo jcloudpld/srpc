@@ -345,7 +345,7 @@ bool Peer::sendOutgoingReliableMessages(PeerId fromPeerId)
 
         ++stats_.sentReliablePackets_;
 
-        const bool succeeded = send(fromPeerId, message, srpc::ptReliable,
+        const bool succeeded = sendMessage(fromPeerId, message, srpc::ptReliable,
             dontReleaseMessageBlock);
 
         outgoingReliableMessages_.erase(pos++);
@@ -368,7 +368,7 @@ bool Peer::sendOutgoingUnreliableMessages(PeerId fromPeerId)
     for (; pos != end;) {
         // for Cygwin (GCC 3.4.4)
         Message& message = const_cast<Message&>(*pos);
-        if (! send(fromPeerId,  message, srpc::ptUnreliable,
+        if (! sendMessage(fromPeerId,  message, srpc::ptUnreliable,
             shouldReleaseMessageBlock)) {
             return false;
         }
@@ -739,7 +739,7 @@ void Peer::setNextTimeoutCheckTime(PeerTime timeout)
 }
 
 
-bool Peer::send(PeerId fromPeerId, Message& message,
+bool Peer::sendMessage(PeerId fromPeerId, Message& message,
     srpc::RpcPacketType packetType, bool shouldReleaseMessageBlock)
 {
     assert(packetType != srpc::ptUnknown);
