@@ -18,7 +18,7 @@ class RRpcId : public RpcUIntType<RpcId>
 {
 public:
     explicit RRpcId(RpcId rpcId = 0) :
-        methodName_("unknown") {
+        methodName_("(unknown)") {
         set(rpcId);
     }
 

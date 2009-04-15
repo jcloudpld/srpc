@@ -60,6 +60,10 @@ public:
      * - 다중 쓰레드 환경 하에서는 배타적(thread-safe)으로 처리해야 한다
      */
     virtual void onReceive(IStream& istream, const void* rpcHint = 0);
+
+private:
+    bool handleMessage(RpcId rpcId, IStream& istream, const void* rpcHint);
+
 private:
     RpcReceivers receivers_;
 };

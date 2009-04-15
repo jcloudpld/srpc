@@ -66,6 +66,96 @@ ProactorType toProactorType(const srpc::String& typeString)
     return ptUnknown;
 }
 
+
+bool isSupportedProactor(ProactorType proactorType)
+{
+    if (ptAny == proactorType) {
+        return true;
+    }
+
+# if defined (ACE_WIN32)
+
+    if (ptWin32 == proactorType) {
+        return true;
+    }
+
+# elif defined (NSRPC_USE_TPROACTOR)
+
+    if (ptSelect == proactorType) {
+        return true;
+    }
+
+#   if defined (ACE_HAS_POLL)
+    if (ptPoll == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (linux)
+#     if defined (ACE_HAS_EVENT_POLL)
+    if (ptEpoll == proactorType) {
+        return true;
+    }
+#     endif
+#     if defined (ACE_HAS_LINUX_LIBAIO)
+    if (ptLinux == proactorType) {
+        return true;
+    }
+#     endif
+    if (ptLinuxRt == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (ACE_POSIX_SIG_PROACTOR) || defined (ACE_HAS_POSIX_REALTIME_SIGNALS)
+    if (ptSig == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (ACE_HAS_DEV_POLL)
+    if (ptDevPoll == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (sun)
+    if (ptSunPort == proactorType) {
+        return true;
+    }
+#   endif
+
+# else
+
+#   if defined (ACE_POSIX_AIOCB_PROACTOR)
+    if (ptAioCb == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (ACE_POSIX_SIG_PROACTOR) || defined (ACE_HAS_POSIX_REALTIME_SIGNALS)
+    if (ptSig == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if !defined(ACE_HAS_BROKEN_SIGEVENT_STRUCT)
+    if (ptCallback == proactorType) {
+        return true;
+    }
+#   endif
+
+#   if defined (sun)
+    if (ptSun == proactorType) {
+        return true;
+    }
+#   endif
+
+# endif
+
+    return false;
+}
+
 // = ProactorFactory
 
 NSRPC_Proactor* ProactorFactory::create(ProactorType proactorType)

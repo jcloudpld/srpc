@@ -5,15 +5,8 @@
 #pragma once
 #endif
 
-namespace srpc
-{
+#include <boost/statechart/detail/avoid_unused_warning.hpp>
 
-// stolen from boost/statechart/detail/avoid_unused_warning.hpp
-template< typename T >
-inline void avoid_unused_warning(const T &) {}
-
-} // namespace srpc
-
-#define SRPC_UNUSED_ARG     srpc::avoid_unused_warning
+#define SRPC_UNUSED_ARG     boost::statechart::detail::avoid_unused_warning
 
 #endif // SRPC_SRPC_MACROS_H

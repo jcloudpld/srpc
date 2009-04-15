@@ -16,7 +16,7 @@ IStream* StreamFactory::createIStream(StreamType streamType,
     case stByte:
         return new IByteStream(streamBuffer);
     }
-    assert(false && "알 수 없는 스트림 타입 ");
+    assert(false && "Unknown stream type");
     return 0;
 }
 
@@ -30,7 +30,7 @@ OStream* StreamFactory::createOStream(StreamType streamType,
     case stByte:
         return new OByteStream(streamBuffer);
     }
-    assert(false && "알 수 없는 스트림 타입 ");
+    assert(false && "Unknown stream type");
     return 0;
 }
 

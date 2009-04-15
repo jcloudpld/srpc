@@ -3,6 +3,7 @@
 #include <srpc/IStream.h>
 #include <srpc/RpcReceiver.h>
 #include <srpc/Exception.h>
+#include <srpc/utility/CUtils.h>
 #include <algorithm>
 
 namespace srpc {
@@ -28,7 +29,7 @@ void RpcNetwork::registerRpcReceiver(RpcReceiver* receiver)
 void RpcNetwork::unregisterRpcReceiver(RpcReceiver* receiver)
 {
     assert(receiver != 0);
-    RpcReceivers::iterator pos =
+    const RpcReceivers::iterator pos =
         std::find(receivers_.begin(), receivers_.end(), receiver);
     if (pos != receivers_.end()) {
         receivers_.erase(pos);
@@ -38,26 +39,40 @@ void RpcNetwork::unregisterRpcReceiver(RpcReceiver* receiver)
 
 void RpcNetwork::onReceive(IStream& istream, const void* rpcHint)
 {
-    bool isHandled = false;
     RRpcId rpcId;
     rpcId.read(istream);
 
+    if (handleMessage(rpcId, istream, rpcHint)) {
+        return; // succeeded
+    }
+
+    char msg[64];
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4996)
+#endif
+    snprintf(msg, sizeof(msg) - 1, "RPC Id: %u", rpcId.get());
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
+
+    throw srpc::UnknownRpcMethodException(__FILE__, __LINE__, msg);
+}
+
+
+bool RpcNetwork::handleMessage(RpcId rpcId, IStream& istream,
+    const void* rpcHint)
+{
+    RpcReceivers::const_iterator pos = receivers_.begin();
     const RpcReceivers::const_iterator end = receivers_.end();
-    for (RpcReceivers::const_iterator pos = receivers_.begin();
-        pos != end; ++pos) {
+    for (; pos != end; ++pos) {
         RpcReceiver* receiver = *pos;
         if (receiver->handle(rpcId, istream, rpcHint)) {
-            isHandled = true;
-            break;
+            return true;
         }
     }
 
-    if (! isHandled) {
-        OStringStream oss;
-        oss << "RPC Id: " << rpcId;
-        throw srpc::UnknownRpcMethodException(__FILE__, __LINE__,
-            oss.str().c_str());
-    }
+    return false;
 }
 
 } // namespace srpc

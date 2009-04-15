@@ -326,10 +326,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Hash.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\IBitStream.cpp"
 				>
 			</File>
@@ -553,10 +549,6 @@
 					</File>
 					<File
 						RelativePath="..\include\srpc\detail\IByteStream.h"
-						>
-					</File>
-					<File
-						RelativePath="..\include\srpc\detail\Mutex.h"
 						>
 					</File>
 					<File
