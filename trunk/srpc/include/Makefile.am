@@ -25,7 +25,6 @@ nobase_include_HEADERS = \
 	srpc/detail/ForwardingFunctors.h \
 	srpc/detail/IBitStream.h \
 	srpc/detail/IByteStream.h \
-	srpc/detail/Mutex.h \
 	srpc/detail/OBitStream.h \
 	srpc/detail/OByteStream.h \
 	srpc/detail/ReceivingFunctors.h \

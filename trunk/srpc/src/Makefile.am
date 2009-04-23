@@ -3,7 +3,6 @@ EXTRA_DIST = srpc.vcproj srpc_vc8.vcproj
 lib_LTLIBRARIES = libsrpc.la
 
 libsrpc_la_SOURCES = \
-	Hash.cpp \
 	IBitStream.cpp \
  	IByteStream.cpp \
 	OBitStream.cpp \
