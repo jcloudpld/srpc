@@ -55,6 +55,20 @@ public:
 
 
 /**
+* @class DuplicatedRpcMethodException
+*
+* 같은 RPC를 등록할 경우
+*/
+class SRPC_API_INLINE DuplicatedRpcMethodException : public Exception
+{
+public:
+    DuplicatedRpcMethodException(const char* file, int fileno,
+        const char* what) :
+        Exception(file, fileno, what) {}
+};
+
+
+/**
  * @class UnknownRpcMethodException
  *
  * 알 수 없는 RPC 요청을 수신한 경우

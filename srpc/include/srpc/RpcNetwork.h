@@ -21,9 +21,9 @@ class RpcCommand;
  */
 class SRPC_API RpcNetwork : public boost::noncopyable
 {
-    typedef Vector<RpcReceiver*> RpcReceivers;
+    typedef Map<RpcId, RpcReceiver*> RpcReceivers;
 public:
-    RpcNetwork();
+    RpcNetwork() {}
     virtual ~RpcNetwork() {}
 
     /**
@@ -50,6 +50,7 @@ public:
         RpcPacketType packetType = ptReliable,
         const void* rpcHint = 0) = 0;
 
+public:
     /**
      * 서버로 부터 메세지가 도착하였다
      * @param istream 입력 스트림.
@@ -57,9 +58,9 @@ public:
      * @exception StreamingException 스트리밍 에러가 발생할 경우
      * @exception UnknownRpcMethodException 알 수 없는 요청이 발생할 경우
      * @exception RpcFailedException RPC요청을 처리하는 도중 에러가 발생할 경우
-     * - 다중 쓰레드 환경 하에서는 배타적(thread-safe)으로 처리해야 한다
+     * - 다중 쓰레드 환경 하에서는 배타적(thread-safe)으로 호출해야 한다
      */
-    virtual void onReceive(IStream& istream, const void* rpcHint = 0);
+    void onReceive(IStream& istream, const void* rpcHint = 0);
 
 private:
     bool handleMessage(RpcId rpcId, IStream& istream, const void* rpcHint);
