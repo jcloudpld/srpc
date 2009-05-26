@@ -33,6 +33,8 @@ public:
 
     void setRpcNetwork(RpcNetwork* rpcNetwork);
     void resetRpcNetwork();
+
+    RpcIds getRegisteredRpcIds() const;
 protected:
     virtual const RpcEventMap& getDefaultEventMap() const = 0;
 private:
@@ -50,6 +52,9 @@ private:
     }
     bool handleEvent(RpcEvent& rpcEvent, IStream& istream,
         const void* rpcHint);
+    void resetRpcEvents() {
+        eventMap_.reset();
+    }
     bool shouldCloneRpcEvents() const {
         return eventMap_.isEmpty();
     }

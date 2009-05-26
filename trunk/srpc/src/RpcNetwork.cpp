@@ -8,31 +8,61 @@
 
 namespace srpc {
 
-RpcNetwork::RpcNetwork()
-{
-    const size_t reservedCount = 10;
+namespace {
 
-    // registerRpcReceiver 호출시 메모리 할당이 일어나는 것을 막기 위해
-    receivers_.reserve(reservedCount);
+template <typename Exception>
+inline void throwRpcException(const char* file, int fileno, RpcId rpcId)
+{
+    char msg[64];
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4996)
+#endif
+    snprintf(msg, sizeof(msg) - 1, "RPC Id: %u", rpcId);
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
+
+    throw Exception(file, fileno, msg);
 }
 
+} // namespace
+
+// = RpcNetwork
 
 void RpcNetwork::registerRpcReceiver(RpcReceiver* receiver)
 {
     assert(receiver != 0);
-    assert(std::find(receivers_.begin(), receivers_.end(), receiver) ==
-        receivers_.end());
-    receivers_.push_back(receiver);
+
+    const RpcIds rpcIds = receiver->getRegisteredRpcIds();
+
+    RpcIds::const_iterator pos = rpcIds.begin();
+    const RpcIds::const_iterator end = rpcIds.end();
+    for (; pos != end; ++pos) {
+        const RpcId rpcId = *pos;
+
+        if (receivers_.find(rpcId) != receivers_.end()) {
+            throwRpcException<DuplicatedRpcMethodException>(
+                __FILE__, __LINE__, rpcId);
+        }
+
+        receivers_.insert(RpcReceivers::value_type(rpcId, receiver));
+    }
 }
 
 
 void RpcNetwork::unregisterRpcReceiver(RpcReceiver* receiver)
 {
     assert(receiver != 0);
-    const RpcReceivers::iterator pos =
-        std::find(receivers_.begin(), receivers_.end(), receiver);
-    if (pos != receivers_.end()) {
-        receivers_.erase(pos);
+
+    const RpcIds rpcIds = receiver->getRegisteredRpcIds();
+
+    RpcIds::const_iterator pos = rpcIds.begin();
+    const RpcIds::const_iterator end = rpcIds.end();
+    for (; pos != end; ++pos) {
+        const RpcId rpcId = *pos;
+
+        receivers_.erase(rpcId);
     }
 }
 
@@ -42,37 +72,23 @@ void RpcNetwork::onReceive(IStream& istream, const void* rpcHint)
     RRpcId rpcId;
     rpcId.read(istream);
 
-    if (handleMessage(rpcId, istream, rpcHint)) {
-        return; // succeeded
+    if (! handleMessage(rpcId, istream, rpcHint)) {
+        throwRpcException<UnknownRpcMethodException>(
+            __FILE__, __LINE__, rpcId);
     }
-
-    char msg[64];
-#ifdef _MSC_VER
-#  pragma warning (push)
-#  pragma warning (disable: 4996)
-#endif
-    snprintf(msg, sizeof(msg) - 1, "RPC Id: %u", rpcId.get());
-#ifdef _MSC_VER
-#  pragma warning (pop)
-#endif
-
-    throw srpc::UnknownRpcMethodException(__FILE__, __LINE__, msg);
 }
 
 
 bool RpcNetwork::handleMessage(RpcId rpcId, IStream& istream,
     const void* rpcHint)
 {
-    RpcReceivers::const_iterator pos = receivers_.begin();
-    const RpcReceivers::const_iterator end = receivers_.end();
-    for (; pos != end; ++pos) {
-        RpcReceiver* receiver = *pos;
-        if (receiver->handle(rpcId, istream, rpcHint)) {
-            return true;
-        }
+    const RpcReceivers::iterator pos = receivers_.find(rpcId);
+    if (pos == receivers_.end()) {
+        return false;
     }
+    RpcReceiver* receiver = (*pos).second;
 
-    return false;
+    return receiver->handle(rpcId, istream, rpcHint);
 }
 
 } // namespace srpc
