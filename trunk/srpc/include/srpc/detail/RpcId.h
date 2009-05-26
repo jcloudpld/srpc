@@ -1,7 +1,7 @@
 #ifndef SRPC_RPCID_H
 #define SRPC_RPCID_H
 
-#include "../RpcContainers.h"
+#include "../RpcTypes.h"
 #include "../utility/Hash.h"
 #include <cstring>
 
@@ -37,9 +37,6 @@ public:
 private:
     const char* methodName_;
 };
-
-
-typedef Vector<RpcId> RpcIds;
 
 } // namespace srpc
 

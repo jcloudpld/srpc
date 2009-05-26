@@ -37,21 +37,16 @@ public:
         deleteRpcEvents_(deleteRpcEvents) {}
 
     ~RpcEventMap() {
-        reset();
+        if (deleteRpcEvents_) {
+            std::for_each(rpcEvents_.begin(), rpcEvents_.end(),
+                srpc::delete_second<RpcEvents::value_type>);
+        }
     }
 
     void insert(RpcId rpcId, RpcEvent* event) {
         assert(event != 0);
         assert(! isExists(rpcId));
         rpcEvents_.insert(value_type(rpcId, event));
-    }
-
-    void reset() {
-        if (deleteRpcEvents_) {
-            std::for_each(rpcEvents_.begin(), rpcEvents_.end(),
-                srpc::delete_second<RpcEvents::value_type>);
-        }
-        rpcEvents_.clear();
     }
 
     RpcEvent* getRpcEvent(RpcId rpcId) const {
