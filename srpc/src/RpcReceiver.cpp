@@ -23,6 +23,10 @@ RpcReceiver::~RpcReceiver()
 bool RpcReceiver::handle(RpcId rpcId, IStream& istream,
     const void* rpcHint)
 {
+    if (shouldCloneRpcEvents()) {
+        cloneRpcEvents();
+    }
+
     RpcEvent* rpcEvent = lookupEvent(rpcId);
     if (! rpcEvent)
         return false;
@@ -34,14 +38,9 @@ bool RpcReceiver::handle(RpcId rpcId, IStream& istream,
 void RpcReceiver::setRpcNetwork(RpcNetwork* rpcNetwork)
 {
     assert(rpcNetwork != 0);
-    assert(! rpcNetwork_);
 
     rpcNetwork_ = rpcNetwork;
     if (rpcNetwork_ != 0) {
-        if (shouldCloneRpcEvents()) {
-            cloneRpcEvents();
-        }
-
         rpcNetwork_->registerRpcReceiver(this);
     }
 }
@@ -52,27 +51,7 @@ void RpcReceiver::resetRpcNetwork()
     if (rpcNetwork_ != 0) {
         rpcNetwork_->unregisterRpcReceiver(this);
         rpcNetwork_ = 0;
-        resetRpcEvents();
     }
-}
-
-
-RpcIds RpcReceiver::getRegisteredRpcIds() const
-{
-    const RpcEventMap::RpcEvents& defaultEvents =
-        getDefaultEventMap().getRpcEvents();
-
-    RpcIds rpcIds;
-    rpcIds.reserve(defaultEvents.size());
-
-    RpcEventMap::RpcEvents::const_iterator pos = defaultEvents.begin();
-    const RpcEventMap::RpcEvents::const_iterator end = defaultEvents.end();
-    for (; pos != end; ++pos) {
-        const RpcId rpcId = (*pos).first;
-        rpcIds.push_back(rpcId);
-    }
-
-    return rpcIds;
 }
 
 
