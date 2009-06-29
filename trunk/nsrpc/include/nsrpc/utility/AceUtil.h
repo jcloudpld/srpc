@@ -48,7 +48,8 @@ struct NSRPC_API InitAce
 inline ACE_Time_Value makeTimeValue(size_t msec)
 {
     return ACE_Time_Value(msec / 1000,
-        (ACE_U_ONE_SECOND_IN_USECS / 1000) * (msec % 1000));
+        static_cast<suseconds_t>(
+            (ACE_U_ONE_SECOND_IN_USECS / 1000) * (msec % 1000)));
 }
 
 

@@ -4,7 +4,7 @@
 // ACE
 #ifdef _MSC_VER
 #  pragma warning (push)
-#  pragma warning (disable: 4127 4244 4996)
+#  pragma warning (disable: 4127 4244 4267 4996)
 #endif
 #include <ace/SOCK_Stream.h>
 #include <ace/SOCK_Connector.h>
