@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -63,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libsrpc_d.lib acesd.lib gtestd.lib"
+				AdditionalDependencies="libsrpc_d.lib acesd.lib gmockd.lib"
 				OutputFile="$(OutDir)/nsrpcTest_d.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -71,6 +74,89 @@
 				SubSystem="1"
 				ImportLibrary=""
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="StaticDebug|x64"
+			OutputDirectory="$(ProjectDir)..\..\bin"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(ProjectDir)..\..\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;ACE_AS_STATIC_LIBS"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="2"
+				WarningLevel="4"
+				WarnAsError="true"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="libsrpc64_d.lib acesd.lib gmockd.lib"
+				OutputFile="$(OutDir)/nsrpcTest64_d.exe"
+				LinkIncremental="2"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				SubSystem="1"
+				ImportLibrary=""
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -145,7 +231,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libsrpc.lib aces.lib gtest.lib"
+				AdditionalDependencies="libsrpc.lib ACEs.lib gmock.lib"
 				OutputFile="$(OutDir)/nsrpcTest.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
@@ -182,91 +268,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="TProactorDebug|Win32"
+			Name="StaticRelease|x64"
 			OutputDirectory="$(ProjectDir)..\..\bin"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\..\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_USRDLL;NSRPC_DLL;SRPC_DLL;USE_TPROACTOR"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				WarningLevel="4"
-				WarnAsError="true"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="srpc_d.lib cppunitd_dll.lib TProactord.lib aced.lib"
-				OutputFile="$(OutDir)/nsrpcTest_tp_d.exe"
-				LinkIncremental="2"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
-				SubSystem="1"
-				ImportLibrary=""
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="TProactorRelease|Win32"
-			OutputDirectory="$(ProjectDir)..\..\bin"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -286,13 +290,14 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(ProjectDir)..\..\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_USRDLL;NSRPC_DLL;SRPC_DLL;USE_TPROACTOR"
-				RuntimeLibrary="2"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ACE_AS_STATIC_LIBS;_SECURE_SCL=0"
+				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
@@ -311,8 +316,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="srpc.lib cppunit_dll.lib TProactor.lib ace.lib"
-				OutputFile="$(OutDir)/nsrpcTest_tp.exe"
+				AdditionalDependencies="libsrpc64.lib aces.lib gmock.lib"
+				OutputFile="$(OutDir)/nsrpcTest64.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
@@ -320,7 +325,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ImportLibrary=""
-				TargetMachine="1"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -448,6 +453,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="StaticDebug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="StaticRelease|Win32"
 					>
 					<Tool
@@ -456,15 +469,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="TProactorDebug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="TProactorRelease|Win32"
+					Name="StaticRelease|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

@@ -52,8 +52,9 @@ public:
             static_cast<srpc::UInt8>(nsrpc::mtGeneral);
         msg.wr_ptr(packetCoder_->getHeaderSize());
         const void* bodyPtr = body;
-        msg.copy(static_cast<const char*>(bodyPtr), bodySize);
-        return stream_.send_n(&msg);
+        msg.copy(static_cast<const char*>(bodyPtr),
+            static_cast<size_t>(bodySize));
+        return static_cast<int>(stream_.send_n(&msg));
     }
 
     int recvMessage(void* body, int bodySize) {
@@ -70,7 +71,8 @@ public:
         if (recv_n(&messageType, sizeof(messageType), &timeout) == -1) {
             return -1;
         }
-        return recv_n(body, bodySize, &timeout);
+        return static_cast<int>(
+            recv_n(body, static_cast<size_t>(bodySize), &timeout));
     }
 
     bool isDisconnected() {
