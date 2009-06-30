@@ -2,7 +2,7 @@
 #include <srpc/RpcTypes.h>
 #include <srpc/RpcContainers.h>
 #include <srpc/utility/Unicode.h>
-#include "StreamTexture.h"
+#include "StreamFixture.h"
 #include <srpc/detail/RpcId.h>
 
 using namespace srpc;
@@ -14,7 +14,7 @@ using namespace srpc;
 * - I(Bit|Byte)StreamTest와 어느 정도 유사하지만 RpcType 테스트를 한 눈에
 *   볼 수 있도록 의도적으로 중복 시킴
 */
-class RpcTypesTest : public BitStreamTexture
+class RpcTypesTest : public BitStreamFixture
 {
 };
 

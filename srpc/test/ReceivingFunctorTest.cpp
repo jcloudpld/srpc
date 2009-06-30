@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "StreamTexture.h"
+#include "StreamFixture.h"
 #include <srpc/RpcTypes.h>
 #include <srpc/detail/ReceivingFunctors.h>
 
@@ -10,11 +10,11 @@ using namespace srpc;
 *
 * marshaling functor test
 */
-class ReceivingFunctorTest : public BitStreamTexture
+class ReceivingFunctorTest : public BitStreamFixture
 {
 private:
     virtual void SetUp() {
-        BitStreamTexture::SetUp();
+        BitStreamFixture::SetUp();
 
         for (int i = 0; i < 10; ++i) {
             RInt32 value(i);

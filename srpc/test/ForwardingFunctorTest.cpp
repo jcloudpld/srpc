@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <srpc/detail/ForwardingFunctors.h>
-#include "StreamTexture.h"
+#include "StreamFixture.h"
 #include <srpc/RpcTypes.h>
 
 using namespace srpc;
@@ -10,7 +10,7 @@ using namespace srpc;
 *
 * marshaling functor test
 */
-class ForwardingFunctorTest : public BitStreamTexture
+class ForwardingFunctorTest : public BitStreamFixture
 {
 };
 
