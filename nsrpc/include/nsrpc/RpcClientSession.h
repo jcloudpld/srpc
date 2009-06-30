@@ -23,12 +23,15 @@ class NSRPC_API RpcClientSession : public ClientSession,
 {
     DECLARE_SRPC_EVENT_DISPATCHER(RpcClientSession);
 public:
-    RpcClientSession(ACE_Reactor* reactor,
+    explicit RpcClientSession(ACE_Reactor* reactor = 0,
         PacketCoderFactory* packetCoderFactory = 0,
         bool useBitPacking = true);
     virtual ~RpcClientSession();
 
-    SessionRpcNetwork* getRpcNetwork();
+    SessionRpcNetwork& getRpcNetwork() {
+        return *rpcNetwork_;
+    }
+
 private:
     void initRpcNetwork();
     void sendingFailed();

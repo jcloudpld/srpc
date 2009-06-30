@@ -14,14 +14,12 @@ RpcPlugIn::RpcPlugIn() :
 }
 
 
-void RpcPlugIn::attached(P2pSession* session)
+void RpcPlugIn::attached(P2pSession& session)
 {
-    assert(session != 0);
+    session_ = &session;
 
-    session_ = session;
-
-    srpc::RpcReceiver::setRpcNetwork(&session_->getRpcNetwork());
-    srpc::RpcForwarder::setRpcNetwork(&session_->getRpcNetwork());
+    srpc::RpcReceiver::setRpcNetwork(session_->getRpcNetwork());
+    srpc::RpcForwarder::setRpcNetwork(session_->getRpcNetwork());
 }
 
 

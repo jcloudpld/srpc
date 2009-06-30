@@ -23,7 +23,7 @@ class NSRPC_API RpcPlugIn : public PlugIn,
 public:
     RpcPlugIn();
 
-    virtual void attached(P2pSession* session);
+    virtual void attached(P2pSession& session);
 
     virtual void detached();
 

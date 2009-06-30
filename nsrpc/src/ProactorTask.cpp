@@ -13,6 +13,17 @@ namespace nsrpc
 
 // = ProactorTask
 
+ProactorTask::ProactorTask(NSRPC_Proactor* proactor, bool deleteProactor) :
+    proactor_(proactor),
+    deleteProactor_(deleteProactor)
+{
+    if (! proactor_) {
+        proactor_ = NSRPC_Proactor::instance();
+        deleteProactor_ = false;
+    }
+}
+
+
 ProactorTask::~ProactorTask()
 {
     stop();
@@ -24,9 +35,6 @@ ProactorTask::~ProactorTask()
 
 bool ProactorTask::start(size_t proactorThreadCount)
 {
-    if (proactor_ == 0) {
-        proactor_ = NSRPC_Proactor::instance();
-    }
     const long thread_flag = THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED;
     return activate(thread_flag,
         static_cast<int>(proactorThreadCount)) == 0;

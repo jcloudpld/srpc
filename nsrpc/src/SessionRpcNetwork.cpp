@@ -36,14 +36,11 @@ SessionRpcNetwork::~SessionRpcNetwork()
 }
 
 
-void SessionRpcNetwork::initialize(SessionRpcNetworkCallback* callback,
-    MessageBlockProvider* messageBlockProvider)
+void SessionRpcNetwork::initialize(SessionRpcNetworkCallback& callback,
+    MessageBlockProvider& messageBlockProvider)
 {
-    assert(callback != 0);
-    assert(messageBlockProvider != 0);
-
-    callback_ = callback;
-    messageBlockProvider_ = messageBlockProvider;
+    callback_ = &callback;
+    messageBlockProvider_ = &messageBlockProvider;
 
     reset();
 }
@@ -53,7 +50,7 @@ void SessionRpcNetwork::reset()
 {
     ACE_GUARD(ACE_Thread_Mutex, monitor, recvLock_);
 
-    initInputStream(getRecvBlock());
+    initInputStream(*getRecvBlock());
 
     enabled_ = true;
 }
@@ -61,11 +58,11 @@ void SessionRpcNetwork::reset()
 
 bool SessionRpcNetwork::messageArrived(CsMessageType /*messageType*/)
 {
-    return handleMessageNow(getRecvBlock());
+    return handleMessageNow(*getRecvBlock());
 }
 
 
-bool SessionRpcNetwork::handleMessageNow(ACE_Message_Block* mblock)
+bool SessionRpcNetwork::handleMessageNow(ACE_Message_Block& mblock)
 {
     ACE_GUARD_RETURN(ACE_Thread_Mutex, monitor, recvLock_, false);
 
@@ -100,7 +97,7 @@ ACE_Message_Block* SessionRpcNetwork::getRecvBlock()
 }
 
 
-void SessionRpcNetwork::registerRpcReceiver(srpc::RpcReceiver* receiver)
+void SessionRpcNetwork::registerRpcReceiver(srpc::RpcReceiver& receiver)
 {
     ACE_GUARD(ACE_Thread_Mutex, monitor, recvLock_);
 
@@ -108,7 +105,7 @@ void SessionRpcNetwork::registerRpcReceiver(srpc::RpcReceiver* receiver)
 }
 
 
-void SessionRpcNetwork::unregisterRpcReceiver(srpc::RpcReceiver* receiver)
+void SessionRpcNetwork::unregisterRpcReceiver(srpc::RpcReceiver& receiver)
 {
     ACE_GUARD(ACE_Thread_Mutex, monitor, recvLock_);
 
@@ -165,17 +162,17 @@ ACE_Message_Block* SessionRpcNetwork::marshal(srpc::RpcCommand& command)
 }
 
 
-void SessionRpcNetwork::initInputStream(ACE_Message_Block* mblock)
+void SessionRpcNetwork::initInputStream(ACE_Message_Block& mblock)
 {
     if (! istream_.get()) { // lazy evaluation
-        rstreamBuffer_.reset(new MessageBlockStreamBuffer(mblock));
+        rstreamBuffer_.reset(new MessageBlockStreamBuffer(&mblock));
         istream_.reset(
             srpc::StreamFactory::createIStream(
                 getStreamType(useBitPacking_), *rstreamBuffer_));
     }
     else {
         istream_->reset(false);
-        rstreamBuffer_->reset(mblock);
+        rstreamBuffer_->reset(&mblock);
     }
 }
 

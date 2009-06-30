@@ -27,12 +27,12 @@ RpcSession::RpcSession(const RpcSessionConfig& config) :
 {
     assert(rpcNetwork_.get() != 0);
 
-    rpcNetwork_->initialize(this, this);
+    rpcNetwork_->initialize(*this, *this);
 
-    srpc::RpcReceiver::setRpcNetwork(getRpcNetwork());
-    srpc::RpcForwarder::setRpcNetwork(getRpcNetwork());
+    srpc::RpcReceiver::setRpcNetwork(*rpcNetwork_);
+    srpc::RpcForwarder::setRpcNetwork(*rpcNetwork_);
 
-    seedExchanger_->initialize(config.packetCoder_, rpcNetwork_.get());
+    seedExchanger_->initialize(*config.packetCoder_, *rpcNetwork_);
 }
 
 #ifdef _MSC_VER

@@ -40,9 +40,8 @@ public:
         const void* rpcHint);
 
     /// 메세지 전송을 위한 RpcNetwork 인스턴스를 설정한다
-    void setRpcNetwork(RpcNetwork* rpcNetwork) {
-        assert(rpcNetwork != 0);
-        rpcNetwork_ = rpcNetwork;
+    void setRpcNetwork(RpcNetwork& rpcNetwork) {
+        rpcNetwork_ = &rpcNetwork;
     }
 
     void resetRpcNetwork() {

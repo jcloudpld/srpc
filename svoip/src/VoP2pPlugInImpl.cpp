@@ -57,11 +57,11 @@ void VoP2pPlugInImpl::update()
 }
 
 
-void VoP2pPlugInImpl::attached(nsrpc::P2pSession* session)
+void VoP2pPlugInImpl::attached(nsrpc::P2pSession& session)
 {
     VoP2pPlugIn::attached(session);
 
-    session->addP2pOptions(nsrpc::allowVoP2p);
+    session.addP2pOptions(nsrpc::allowVoP2p);
 }
 
 

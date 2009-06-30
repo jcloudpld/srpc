@@ -50,8 +50,8 @@ Peer::Peer(const Config& config) :
     p2pSession_.reset(nsrpc::P2pSessionFactory::create(config_.getPeerId(),
         *this, p2pConfig));
 
-    srpc::RpcReceiver::setRpcNetwork(&p2pSession_->getRpcNetwork());
-    srpc::RpcForwarder::setRpcNetwork(&p2pSession_->getRpcNetwork());
+    srpc::RpcReceiver::setRpcNetwork(p2pSession_->getRpcNetwork());
+    srpc::RpcForwarder::setRpcNetwork(p2pSession_->getRpcNetwork());
 }
 
 #ifdef _MSC_VER

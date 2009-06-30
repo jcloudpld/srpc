@@ -26,8 +26,7 @@ public:
         packetCoder_(0) {}
 
     /// @internal
-    void initialize(PacketCoder* packetCoder,
-        SessionRpcNetwork* rpcNetwork);
+    void initialize(PacketCoder& packetCoder, SessionRpcNetwork& rpcNetwork);
 
     /// 클라이언트가 서버에 접속했을 경우 서버에서 초기 시드값을 교환한다
     virtual void exchangeFirstSeed() = 0;
@@ -36,6 +35,7 @@ public:
     virtual void exchangeNextSeed() = 0;
 protected:
     PacketCoder& getPacketCoder() {
+        assert(packetCoder_ != 0);
         return *packetCoder_;
     }
 private:

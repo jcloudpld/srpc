@@ -71,7 +71,7 @@ P2pSessionImpl::~P2pSessionImpl()
 void P2pSessionImpl::attach(PlugInPtr& plugIn)
 {
     plugInManager_.add(plugIn);
-    plugIn->attached(this);
+    plugIn->attached(*this);
 }
 
 

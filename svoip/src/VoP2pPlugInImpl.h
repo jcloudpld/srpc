@@ -85,7 +85,7 @@ private:
     virtual bool initialize();
     virtual void update();
 
-    virtual void attached(nsrpc::P2pSession* session);
+    virtual void attached(nsrpc::P2pSession& session);
 
     virtual void onPeerConnected(nsrpc::PeerId peerId);
     virtual void onPeerDisconnected(nsrpc::PeerId peerId);

@@ -43,10 +43,9 @@ public:
         }
     }
 
-    void insert(RpcId rpcId, RpcEvent* event) {
-        assert(event != 0);
+    void insert(RpcId rpcId, RpcEvent& event) {
         assert(! isExists(rpcId));
-        rpcEvents_.insert(value_type(rpcId, event));
+        rpcEvents_.insert(value_type(rpcId, &event));
     }
 
     RpcEvent* getRpcEvent(RpcId rpcId) const {
@@ -78,7 +77,7 @@ template <class T, class RpcClass>
 class EventRegister
 {
 public:
-    EventRegister(RpcId rpcId, T* event) {
+    EventRegister(RpcId rpcId, T& event) {
         RpcClass::getStaticEventMap().insert(rpcId, event);
     }
 };
@@ -141,8 +140,9 @@ public:
                 srpc::RpcEvent(RpcClass::SRPC_GET_RPCID(method)()), \
                 unmarshalFunctor_(&RpcClass::method##suffix) {} \
         private: \
-            virtual srpc::RpcEvent* clone() const { \
-                return new SRPC_RPC_EVENT(RpcClass, method); \
+            virtual std::auto_ptr<RpcEvent> clone() const { \
+                return std::auto_ptr<RpcEvent>( \
+                    new SRPC_RPC_EVENT(RpcClass, method)); \
             } \
             virtual srpc::ReceivingFunctor& getDispatcher() { \
                 return unmarshalFunctor_; \
@@ -156,7 +156,7 @@ public:
         srpc::EventRegister<SRPC_RPC_EVENT(RpcClass, method), RpcClass> \
             RpcClass##_##method##_EventRegister( \
                 RpcClass::SRPC_GET_RPCID(method)(), \
-                &SRPC_RPC_EVENT_INSTANCE(RpcClass, method)); \
+                SRPC_RPC_EVENT_INSTANCE(RpcClass, method)); \
     }
 
 // = IMPLEMENT_SRPC_METHOD_DETAIL_n
