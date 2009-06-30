@@ -3,7 +3,7 @@
 
 #if defined (_MSC_VER)
 #  pragma warning ( push )
-#  pragma warning ( disable: 4127 4244 4267 4311 4312 )
+#  pragma warning ( disable: 4127 4244 4267 4311 4312 4996)
 #endif
 #include <ace/Log_Msg.h>
 #if defined (_MSC_VER)
