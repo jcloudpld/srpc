@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DummyRpcEvent.h"
-#include "StreamTexture.h"
+#include "StreamFixture.h"
 
 using namespace srpc;
 
@@ -9,7 +9,7 @@ using namespace srpc;
 *
 * RpcEvent test
 */
-class RpcEventTest : public BitStreamTexture
+class RpcEventTest : public BitStreamFixture
 {
 };
 

@@ -6,10 +6,10 @@
 #include <boost/scoped_ptr.hpp>
 
 /**
-* @class StreamTexture 
+* @class StreamFixture 
 *
 */
-class StreamTexture : public testing::Test
+class StreamFixture : public testing::Test
 {
 protected:
     virtual void SetUp() {
@@ -30,10 +30,10 @@ protected:
 
 
 /**
-* @class BitStreamTexture 
+* @class BitStreamFixture 
 *
 */
-class BitStreamTexture : public StreamTexture
+class BitStreamFixture : public StreamFixture
 {
 private:
     virtual srpc::StreamFactory::StreamType getStreamType() const {
@@ -43,10 +43,10 @@ private:
 
 
 /**
-* @class ByteStreamTexture 
+* @class ByteStreamFixture 
 *
 */
-class ByteStreamTexture : public StreamTexture
+class ByteStreamFixture : public StreamFixture
 {
 private:
     virtual srpc::StreamFactory::StreamType getStreamType() const {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <srpc/RpcContainers.h>
-#include "StreamTexture.h"
+#include "StreamFixture.h"
 
 using namespace srpc;
 
@@ -9,7 +9,7 @@ using namespace srpc;
 *
 * Rpc containers test
 */
-class RpcConainersTest : public BitStreamTexture
+class RpcConainersTest : public BitStreamFixture
 {
 };
 

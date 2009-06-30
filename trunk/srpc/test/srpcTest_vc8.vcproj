@@ -578,7 +578,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\StreamTexture.h"
+				RelativePath=".\StreamFixture.h"
 				>
 			</File>
 		</Filter>

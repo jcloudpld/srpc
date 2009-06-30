@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DummyRpcServer.h"
 #include "MockRpcNetwork.h"
-#include "StreamTexture.h"
+#include "StreamFixture.h"
 #include <srpc/detail/ForwardingFunctors.h>
 #include <srpc/detail/RpcId.h>
 
@@ -12,11 +12,11 @@ using namespace srpc;
 *
 * RpcReceiver test
 */
-class MultipleRpcReceiverTest : public BitStreamTexture
+class MultipleRpcReceiverTest : public BitStreamFixture
 {
 private:
     virtual void SetUp() {
-        BitStreamTexture::SetUp();
+        BitStreamFixture::SetUp();
 
         rpcNetwork_ = new MockRpcNetwork;
         response_ = new DummyRpcServer(rpcNetwork_);

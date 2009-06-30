@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "StreamTexture.h"
+#include "StreamFixture.h"
 
 using namespace srpc;
 
@@ -8,7 +8,7 @@ using namespace srpc;
 *
 * input bit-stream Test
 */
-class IByteStreamTest : public ByteStreamTexture
+class IByteStreamTest : public ByteStreamFixture
 {
 };
 
