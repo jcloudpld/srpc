@@ -20,10 +20,10 @@ RpcClientSession::RpcClientSession(ACE_Reactor* reactor,
 {
     initRpcNetwork();
 
-    srpc::RpcReceiver::setRpcNetwork(rpcNetwork_.get());
-    srpc::RpcForwarder::setRpcNetwork(rpcNetwork_.get());
+    srpc::RpcReceiver::setRpcNetwork(*rpcNetwork_);
+    srpc::RpcForwarder::setRpcNetwork(*rpcNetwork_);
 
-    seedExchanger_->initialize(&getPacketCoder(), rpcNetwork_.get());
+    seedExchanger_->initialize(getPacketCoder(), *rpcNetwork_);
 }
 
 
@@ -32,15 +32,9 @@ RpcClientSession::~RpcClientSession()
 }
 
 
-SessionRpcNetwork* RpcClientSession::getRpcNetwork()
-{
-    return rpcNetwork_.get();
-}
-
-
 void RpcClientSession::initRpcNetwork()
 {
-    rpcNetwork_->initialize(this, this);
+    rpcNetwork_->initialize(*this, *this);
 }
 
 

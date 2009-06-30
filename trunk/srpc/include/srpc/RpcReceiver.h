@@ -31,7 +31,7 @@ public:
     /// RPC 요청을 파싱하여 RPC method를 실행한다.
     bool handle(RpcId rpcId, IStream& istream, const void* rpcHint = 0);
 
-    void setRpcNetwork(RpcNetwork* rpcNetwork);
+    void setRpcNetwork(RpcNetwork& rpcNetwork);
     void resetRpcNetwork();
 protected:
     virtual const RpcEventMap& getDefaultEventMap() const = 0;
@@ -42,7 +42,7 @@ private:
         const void* rpcHint) = 0;
 private:
     void cloneRpcEvents();
-    void insertRpcEvent(RpcId rpcId, RpcEvent* event) {
+    void insertRpcEvent(RpcId rpcId, RpcEvent& event) {
         eventMap_.insert(rpcId, event);
     }
     RpcEvent* lookupEvent(RpcId rpcId) const {

@@ -30,13 +30,13 @@ public:
      * RpReceiver를 등록한다.
      * - 다중 쓰레드 환경 하에서는 배타적(thread-safe)으로 처리해야 한다.
      */
-    virtual void registerRpcReceiver(RpcReceiver* receiver);
+    virtual void registerRpcReceiver(RpcReceiver& receiver);
 
     /**
      * RpReceiver의 등록을 해제한다
      * - 다중 쓰레드 환경 하에서는 배타적(thread-safe)으로 처리해야 한다.
      */
-    virtual void unregisterRpcReceiver(RpcReceiver* receiver);
+    virtual void unregisterRpcReceiver(RpcReceiver& receiver);
 
     /**
      * 서버로 메세지를 전송한다.

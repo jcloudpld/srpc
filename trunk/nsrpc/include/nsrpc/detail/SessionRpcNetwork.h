@@ -47,8 +47,8 @@ public:
     SessionRpcNetwork(bool useBitPacking);
     virtual ~SessionRpcNetwork();
 
-    void initialize(SessionRpcNetworkCallback* callback,
-        MessageBlockProvider* messageBlockProvider);
+    void initialize(SessionRpcNetworkCallback& callback,
+        MessageBlockProvider& messageBlockProvider);
 
     /// 입력 스트림을 초기화한다
     void reset();
@@ -63,19 +63,19 @@ public:
 protected:
     /// 수신 메세지를 지금 바로 처리한다
     /// @param mblock 메모리 소유권을 넘기지 않는다
-    bool handleMessageNow(ACE_Message_Block* mblock);
+    bool handleMessageNow(ACE_Message_Block& mblock);
 
     void unmarshalingErrorOccurred();
 
     ACE_Message_Block* getRecvBlock();
 public: // for Test
-    virtual void registerRpcReceiver(srpc::RpcReceiver* receiver);
-    virtual void unregisterRpcReceiver(srpc::RpcReceiver* receiver);
+    virtual void registerRpcReceiver(srpc::RpcReceiver& receiver);
+    virtual void unregisterRpcReceiver(srpc::RpcReceiver& receiver);
     virtual void send(srpc::RpcCommand& command,
         srpc::RpcPacketType packetType, const void* rpcHint);
 private:
     ACE_Message_Block* marshal(srpc::RpcCommand& command);
-    void initInputStream(ACE_Message_Block* mblock);
+    void initInputStream(ACE_Message_Block& mblock);
     ACE_Message_Block* initOutputStream();
 private:
     SessionRpcNetworkCallback* callback_;

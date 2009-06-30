@@ -33,8 +33,8 @@ SimpleRelayService::SimpleRelayService(ACE_Reactor* reactor,
     lastRelayPeerIdPair_(invalidPeerId, invalidPeerId),
     peerCipherKeys_(*packetCoder_)
 {
-    srpc::RpcReceiver::setRpcNetwork(&rpcNetwork_);
-    srpc::RpcForwarder::setRpcNetwork(&rpcNetwork_);
+    srpc::RpcReceiver::setRpcNetwork(rpcNetwork_);
+    srpc::RpcForwarder::setRpcNetwork(rpcNetwork_);
 }
 
 #ifdef _MSC_VER

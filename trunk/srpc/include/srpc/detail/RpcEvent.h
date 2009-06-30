@@ -4,6 +4,7 @@
 #include "ReceivingFunctors.h"
 #include "RpcId.h"
 #include <boost/noncopyable.hpp>
+#include <memory>
 
 namespace srpc {
 
@@ -37,7 +38,7 @@ public:
         return rpcId_;
     }
 public:
-    virtual RpcEvent* clone() const = 0;
+    virtual std::auto_ptr<RpcEvent> clone() const = 0;
 
     virtual ReceivingFunctor& getDispatcher() = 0;
 private:

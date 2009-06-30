@@ -51,6 +51,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_0()> : public ReceivingFunctor
     virtual void unmarshal(IStream& /*istream*/) {}
 
     virtual void call(void* objPtr, const void* rpcHint) {
+        assert(objPtr != 0);
         (static_cast<T*>(objPtr)->*memFnPtr_)(rpcHint);
     }
 
@@ -73,6 +74,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_1(P1)> : public ReceivingFunctor
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
+        assert(objPtr != 0);
         (static_cast<T*>(objPtr)->*memFnPtr_)(p1_, rpcHint);
     }
 
@@ -98,6 +100,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_2(P1, P2)> : public ReceivingFunctor
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
+        assert(objPtr != 0);
         (static_cast<T*>(objPtr)->*memFnPtr_)(p1_, p2_, rpcHint);
     }
 
@@ -126,6 +129,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_3(P1, P2, P3)> :
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
+        assert(objPtr != 0);
         (static_cast<T*>(objPtr)->*memFnPtr_)(p1_, p2_, p3_, rpcHint);
     }
 
@@ -156,6 +160,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_4(P1, P2, P3, P4)> :
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
+        assert(objPtr != 0);
         (static_cast<T*>(objPtr)->*memFnPtr_)(p1_, p2_, p3_, p4_, rpcHint);
     }
 
@@ -189,6 +194,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_5(P1, P2, P3, P4, P5)> :
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
+        assert(objPtr != 0);
         (static_cast<T*>(objPtr)->*memFnPtr_)(p1_, p2_, p3_, p4_, p5_,
             rpcHint);
     }
@@ -226,6 +232,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
+        assert(objPtr != 0);
         (static_cast<T*>(objPtr)->*memFnPtr_)(p1_, p2_, p3_, p4_, p5_, p6_,
             rpcHint);
     }
@@ -265,6 +272,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7)> :
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
+        assert(objPtr != 0);
         (static_cast<T*>(objPtr)->*memFnPtr_)(p1_, p2_, p3_, p4_, p5_, p6_,
             p7_, rpcHint);
     }

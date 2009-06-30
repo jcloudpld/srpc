@@ -22,13 +22,14 @@ public:
         set(rpcId);
     }
 
+    explicit RRpcId(const String& id) :
+        methodName_("(unknown") {
+        set(hash(id.c_str(), id.size()));
+    }
+
     RRpcId(const char* id, const char* methodName) :
         methodName_(methodName) {
         set(hash(id, strlen(id)));
-    }
-
-    RRpcId(const String& id) {
-        set(hash(id.c_str(), id.size()));
     }
 
     const char* getMethodName() const {

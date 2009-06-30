@@ -17,20 +17,18 @@ RpcNetwork::RpcNetwork()
 }
 
 
-void RpcNetwork::registerRpcReceiver(RpcReceiver* receiver)
+void RpcNetwork::registerRpcReceiver(RpcReceiver& receiver)
 {
-    assert(receiver != 0);
-    assert(std::find(receivers_.begin(), receivers_.end(), receiver) ==
+    assert(std::find(receivers_.begin(), receivers_.end(), &receiver) ==
         receivers_.end());
-    receivers_.push_back(receiver);
+    receivers_.push_back(&receiver);
 }
 
 
-void RpcNetwork::unregisterRpcReceiver(RpcReceiver* receiver)
+void RpcNetwork::unregisterRpcReceiver(RpcReceiver& receiver)
 {
-    assert(receiver != 0);
     const RpcReceivers::iterator pos =
-        std::find(receivers_.begin(), receivers_.end(), receiver);
+        std::find(receivers_.begin(), receivers_.end(), &receiver);
     if (pos != receivers_.end()) {
         receivers_.erase(pos);
     }

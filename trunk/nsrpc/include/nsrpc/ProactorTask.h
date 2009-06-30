@@ -40,9 +40,7 @@ public:
      * @param proactor Proactor 객체. 0일 경우 singleton 객체가 사용됨.
      * @param deleteProactor true일 경우 메모리를 해제합니다.
      */
-    ProactorTask(NSRPC_Proactor* proactor = 0, bool deleteProactor = false) :
-        proactor_(proactor),
-        deleteProactor_(deleteProactor) {}
+    ProactorTask(NSRPC_Proactor* proactor = 0, bool deleteProactor = false);
 
     /// 모든 쓰레드를 종료할 때까지 대기하고 @c deleteProactor_가 true일 경우
     /// 메모리를 해제합니다.

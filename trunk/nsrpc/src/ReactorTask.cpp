@@ -24,7 +24,7 @@ namespace detail
 class ReactorTaskImpl : public ACE_Task_Base
 {
 public:
-    ReactorTaskImpl(ACE_Reactor* reactor) :
+    ReactorTaskImpl(ACE_Reactor& reactor) :
         reactor_(reactor) {}
 
     bool start(size_t reactorThreadCount) {
@@ -34,16 +34,16 @@ public:
     }
 
     void stop() {
-        (void)reactor_->end_reactor_event_loop();
+        (void)reactor_.end_reactor_event_loop();
     }
 private:
     virtual int svc() {
         disableSignals();
-        reactor_->owner(ACE_OS::thr_self());
-        return reactor_->run_reactor_event_loop();
+        reactor_.owner(ACE_OS::thr_self());
+        return reactor_.run_reactor_event_loop();
     }
 private:
-    ACE_Reactor* reactor_;
+    ACE_Reactor& reactor_;
 };
 
 } // namespace detail
@@ -53,7 +53,7 @@ private:
 ReactorTask::ReactorTask(bool allocReactor) :
     allocReactor_(allocReactor),
     reactor_(allocReactor ? new ACE_Reactor : ACE_Reactor::instance()),
-    pimpl_(new detail::ReactorTaskImpl(reactor_))
+    pimpl_(new detail::ReactorTaskImpl(*reactor_))
 {
 }
 

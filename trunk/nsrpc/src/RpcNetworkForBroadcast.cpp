@@ -27,7 +27,7 @@ RpcNetworkForBroadcast::RpcNetworkForBroadcast() :
     useBitPacking_(false),
     sendBlock_(0)
 {
-    srpc::RpcForwarder::setRpcNetwork(this);
+    srpc::RpcForwarder::setRpcNetwork(*this);
 }
 
 

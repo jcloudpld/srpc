@@ -10,7 +10,7 @@ RpcReceiver::RpcReceiver(RpcNetwork* rpcNetwork) :
     eventMap_(true)
 {
     if (rpcNetwork != 0) {
-        setRpcNetwork(rpcNetwork);
+        setRpcNetwork(*rpcNetwork);
     }
 }
 
@@ -35,13 +35,11 @@ bool RpcReceiver::handle(RpcId rpcId, IStream& istream,
 }
 
 
-void RpcReceiver::setRpcNetwork(RpcNetwork* rpcNetwork)
+void RpcReceiver::setRpcNetwork(RpcNetwork& rpcNetwork)
 {
-    assert(rpcNetwork != 0);
-
-    rpcNetwork_ = rpcNetwork;
+    rpcNetwork_ = &rpcNetwork;
     if (rpcNetwork_ != 0) {
-        rpcNetwork_->registerRpcReceiver(this);
+        rpcNetwork_->registerRpcReceiver(*this);
     }
 }
 
@@ -49,7 +47,7 @@ void RpcReceiver::setRpcNetwork(RpcNetwork* rpcNetwork)
 void RpcReceiver::resetRpcNetwork()
 {
     if (rpcNetwork_ != 0) {
-        rpcNetwork_->unregisterRpcReceiver(this);
+        rpcNetwork_->unregisterRpcReceiver(*this);
         rpcNetwork_ = 0;
     }
 }
@@ -80,7 +78,7 @@ void RpcReceiver::cloneRpcEvents()
     for (; pos != end; ++pos) {
         const RpcId rpcId = (*pos).first;
         const RpcEvent* event = (*pos).second;
-        insertRpcEvent(rpcId, event->clone());
+        insertRpcEvent(rpcId, *(event->clone().release()));
     }
 }
 

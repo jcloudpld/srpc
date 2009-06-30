@@ -24,8 +24,8 @@ public:
         return p2_;
     }
 private:
-    virtual srpc::RpcEvent* clone() const {
-        return 0;
+    virtual std::auto_ptr<RpcEvent> clone() const {
+        return std::auto_ptr<RpcEvent>(0);
     }
     virtual srpc::ReceivingFunctor& getDispatcher() {
         return unmarshalFunctor_;
