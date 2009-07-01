@@ -47,9 +47,9 @@ private:
     }
 public:
     // = RpcPeerService overriding
-    DECLARE_SRPC_P2P_METHOD_1(chat, srpc::RShortString, message);
-    DECLARE_SRPC_P2P_METHOD_1(tick, srpc::RUInt32, tick);
-    DECLARE_SRPC_P2P_METHOD_0(dummy);
+    OVERRIDE_SRPC_P2P_METHOD_1(chat, srpc::RShortString, message);
+    OVERRIDE_SRPC_P2P_METHOD_1(tick, srpc::RUInt32, tick);
+    OVERRIDE_SRPC_P2P_METHOD_0(dummy);
 private:
     // = P2pEventHandler overriding
     virtual void onPeerConnected(nsrpc::PeerId peerId);

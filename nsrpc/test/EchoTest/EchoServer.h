@@ -49,8 +49,8 @@ public:
     EchoServerRpcSession(const nsrpc::RpcSessionConfig& config) :
         nsrpc::RpcSession(config) {}
 
-    DECLARE_SRPC_METHOD_1(echo, srpc::RString, data);
-    DECLARE_SRPC_METHOD_1(onEcho, srpc::RString, data);
+    OVERRIDE_SRPC_METHOD_1(echo, srpc::RString, data);
+    OVERRIDE_SRPC_METHOD_1(onEcho, srpc::RString, data);
 private:
     virtual void onDisconnected() {}
 };

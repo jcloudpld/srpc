@@ -44,11 +44,11 @@ void PacketSeedExchangerForServer::exchangeSeed()
 }
 
 
-DEFINE_SRPC_METHOD_2(PacketSeedExchangerForServer, exchangeSeed,
+FORWARD_SRPC_METHOD_2(PacketSeedExchangerForServer, exchangeSeed,
     srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed);
 
 
-IMPLEMENT_SRPC_METHOD_1(PacketSeedExchangerForServer, onConfirmSeed,
+RECEIVE_SRPC_METHOD_1(PacketSeedExchangerForServer, onConfirmSeed,
     srpc::RShortString, encryptSeed)
 {
     assert(getPacketCoder().shouldExchangeCipherSeed());
@@ -62,7 +62,7 @@ IMPLEMENT_SRPC_METHOD_1(PacketSeedExchangerForServer, onConfirmSeed,
 
 // = PacketSeedExchangerForClient
 
-IMPLEMENT_SRPC_METHOD_2(PacketSeedExchangerForClient, exchangeSeed,
+RECEIVE_SRPC_METHOD_2(PacketSeedExchangerForClient, exchangeSeed,
     srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed)
 {
     getPacketCoder().setDecryptSeed(encryptSeed);
@@ -72,7 +72,7 @@ IMPLEMENT_SRPC_METHOD_2(PacketSeedExchangerForClient, exchangeSeed,
 }
 
 
-DEFINE_SRPC_METHOD_1(PacketSeedExchangerForClient, onConfirmSeed,
+FORWARD_SRPC_METHOD_1(PacketSeedExchangerForClient, onConfirmSeed,
     srpc::RShortString, encryptSeed);
 
 } // namespace nsrpc

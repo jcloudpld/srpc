@@ -59,9 +59,9 @@ void RpcStunServiceImpl::resolve()
 
 // = RPC
 
-DEFINE_SRPC_P2P_METHOD_0(RpcStunServiceImpl, rpcResolve, srpc::ptUnreliable);
+FORWARD_SRPC_P2P_METHOD_0(RpcStunServiceImpl, rpcResolve, srpc::ptUnreliable);
 
-IMPLEMENT_SRPC_P2P_METHOD_2(RpcStunServiceImpl, rpcResolved,
+EXCHANGE_SRPC_P2P_METHOD_2(RpcStunServiceImpl, rpcResolved,
     srpc::RShortString, ipAddress, srpc::RUInt16, port, srpc::ptUnreliable)
 {
     assert(rpcHint != 0);

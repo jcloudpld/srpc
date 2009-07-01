@@ -41,8 +41,8 @@ public:
 
     void resolve();
 public:
-    DECLARE_SRPC_METHOD_0(rpcResolve);
-    DECLARE_SRPC_P2P_METHOD_2(rpcResolved,
+    OVERRIDE_SRPC_METHOD_0(rpcResolve);
+    OVERRIDE_SRPC_P2P_METHOD_2(rpcResolved,
         srpc::RShortString, ipAddress, srpc::RUInt16, port);
 private:
     StunServiceHandler& serviceHandler_;

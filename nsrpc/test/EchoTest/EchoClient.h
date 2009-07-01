@@ -78,8 +78,8 @@ public:
         blockSize_(blockSize),
         body_(blockSize - getPacketCoder().getHeaderSize(), 'R') {}
 
-    DECLARE_SRPC_METHOD_1(echo, srpc::RString, data);
-    DECLARE_SRPC_METHOD_1(onEcho, srpc::RString, data);
+    OVERRIDE_SRPC_METHOD_1(echo, srpc::RString, data);
+    OVERRIDE_SRPC_METHOD_1(onEcho, srpc::RString, data);
 private:
     virtual void open(ACE_HANDLE new_handle,
         ACE_Message_Block& message_block) {

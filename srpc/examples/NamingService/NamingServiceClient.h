@@ -16,19 +16,19 @@ public:
     NamingServiceClient(srpc::RpcNetwork* rpcNetwork = 0);
 
     // = 요청
-    DECLARE_SRPC_METHOD_2(bind, srpc::RString, name, srpc::RString, value);
-    DECLARE_SRPC_METHOD_2(rebind, srpc::RString, name, srpc::RString, value);
-    DECLARE_SRPC_METHOD_1(unbind, srpc::RString, name);
-    DECLARE_SRPC_METHOD_1(resolve, srpc::RString, name);
+    OVERRIDE_SRPC_METHOD_2(bind, srpc::RString, name, srpc::RString, value);
+    OVERRIDE_SRPC_METHOD_2(rebind, srpc::RString, name, srpc::RString, value);
+    OVERRIDE_SRPC_METHOD_1(unbind, srpc::RString, name);
+    OVERRIDE_SRPC_METHOD_1(resolve, srpc::RString, name);
 
     // = 응답
-    DECLARE_SRPC_METHOD_3(onBind, srpc::RString, name, srpc::RString, value,
+    OVERRIDE_SRPC_METHOD_3(onBind, srpc::RString, name, srpc::RString, value,
         srpc::RBool, succeeded);
-    DECLARE_SRPC_METHOD_3(onRebind, srpc::RString, name, srpc::RString, value,
+    OVERRIDE_SRPC_METHOD_3(onRebind, srpc::RString, name, srpc::RString, value,
         srpc::RBool, succeeded);
-    DECLARE_SRPC_METHOD_2(onUnbind, srpc::RString, name,
+    OVERRIDE_SRPC_METHOD_2(onUnbind, srpc::RString, name,
         srpc::RBool, succeeded);
-    DECLARE_SRPC_METHOD_3(onResolve, srpc::RString, name, srpc::RString, value,
+    OVERRIDE_SRPC_METHOD_3(onResolve, srpc::RString, name, srpc::RString, value,
         srpc::RBool, succeeded);
 
     const srpc::String& getName() const {

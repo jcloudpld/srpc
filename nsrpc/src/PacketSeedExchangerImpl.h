@@ -18,9 +18,9 @@ private:
     void exchangeSeed();
 public:
     // = RpcSecurityService
-    DECLARE_SRPC_METHOD_2(exchangeSeed,
+    OVERRIDE_SRPC_METHOD_2(exchangeSeed,
         srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed);
-    DECLARE_SRPC_METHOD_1(onConfirmSeed, srpc::RShortString, encryptSeed);
+    OVERRIDE_SRPC_METHOD_1(onConfirmSeed, srpc::RShortString, encryptSeed);
 private:
     srpc::String exchangingDecryptSeed_;
 };
@@ -41,9 +41,9 @@ public:
     }
 public:
     // = RpcSecurityService
-    DECLARE_SRPC_METHOD_2(exchangeSeed,
+    OVERRIDE_SRPC_METHOD_2(exchangeSeed,
         srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed);
-    DECLARE_SRPC_METHOD_1(onConfirmSeed, srpc::RShortString, encryptSeed);
+    OVERRIDE_SRPC_METHOD_1(onConfirmSeed, srpc::RShortString, encryptSeed);
 };
 
 } // namespace nsrpc

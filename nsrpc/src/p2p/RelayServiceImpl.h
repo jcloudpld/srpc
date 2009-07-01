@@ -32,12 +32,12 @@ public:
     RpcRelayServiceImpl(RelayServiceHandler& serviceHandler,
         srpc::RpcNetwork& rpcNetwork);
 public:
-    DECLARE_SRPC_METHOD_6(rpcRelay,
+    OVERRIDE_SRPC_METHOD_6(rpcRelay,
         RPeerIdPair, peerIdPair, RAddress, peerAddress,
         RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
         RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
 
-    DECLARE_SRPC_P2P_METHOD_5(rpcRelayed,
+    OVERRIDE_SRPC_P2P_METHOD_5(rpcRelayed,
         RPeerId, peerId, RMessageBuffer, messageBlock,
         srpc::RRpcPacketType, packetType, RSequenceNumber, sequenceNumber,
         RRelativeTime, sentTime);

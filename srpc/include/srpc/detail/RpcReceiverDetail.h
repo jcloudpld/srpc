@@ -159,41 +159,41 @@ public:
                 SRPC_RPC_EVENT_INSTANCE(RpcClass, method)); \
     }
 
-// = IMPLEMENT_SRPC_METHOD_DETAIL_n
+// = RECEIVE_SRPC_METHOD_DETAIL_n
 
 /// 파라미터가 없는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_DETAIL_0(RpcClass, method, rpcHint) \
+#define RECEIVE_SRPC_METHOD_DETAIL_0(RpcClass, method, rpcHint) \
     REGISTER_SRPC_METHOD(RpcClass, method, SRPC_TYPELIST_0(), ); \
     void RpcClass::method(const void* rpcHint)
 
 /// 파라미터가 1개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_DETAIL_1(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_DETAIL_1(RpcClass, method, \
         P1, p1, rpcHint) \
     REGISTER_SRPC_METHOD(RpcClass, method, SRPC_TYPELIST_1(P1), ) \
     void RpcClass::method(const P1& p1, const void* rpcHint)
 
 /// 파라미터가 2개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_DETAIL_2(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_DETAIL_2(RpcClass, method, \
         P1, p1, P2, p2, rpcHint) \
     REGISTER_SRPC_METHOD(RpcClass, method, SRPC_TYPELIST_2(P1, P2), ) \
     void RpcClass::method(const P1& p1, const P2& p2, const void* rpcHint)
 
 /// 파라미터가 3개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_DETAIL_3(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_DETAIL_3(RpcClass, method, \
         P1, p1, P2, p2, P3, p3, rpcHint) \
     REGISTER_SRPC_METHOD(RpcClass, method, SRPC_TYPELIST_3(P1, P2, P3), ) \
     void RpcClass::method(const P1& p1, const P2& p2, const P3& p3, \
         const void* rpcHint)
 
 /// 파라미터가 4개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_DETAIL_4(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_DETAIL_4(RpcClass, method, \
         P1, p1, P2, p2, P3, p3, P4, p4, rpcHint) \
     REGISTER_SRPC_METHOD(RpcClass, method, SRPC_TYPELIST_4(P1, P2, P3, P4), ) \
     void RpcClass::method(const P1& p1, const P2& p2, const P3& p3, \
         const P4& p4, const void* rpcHint)
 
 /// 파라미터가 5개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_DETAIL_5(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_DETAIL_5(RpcClass, method, \
         P1, p1, P2, p2, P3, p3, P4, p4, P5, p5, rpcHint) \
     REGISTER_SRPC_METHOD(RpcClass, method, \
         SRPC_TYPELIST_5(P1, P2, P3, P4, P5), ) \
@@ -201,7 +201,7 @@ public:
         const P4& p4, const P5& p5, const void* rpcHint)
 
 /// 파라미터가 6개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_DETAIL_6(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_DETAIL_6(RpcClass, method, \
         P1, p1, P2, p2, P3, p3, P4, p4, P5, p5, P6, p6, rpcHint) \
     REGISTER_SRPC_METHOD(RpcClass, method, \
         SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6), ) \
@@ -209,7 +209,7 @@ public:
         const P4& p4, const P5& p5, const P6& p6, const void* rpcHint)
 
 /// 파라미터가 7개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_DETAIL_7(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_DETAIL_7(RpcClass, method, \
         P1, p1, P2, p2, P3, p3, P4, p4, P5, p5, P6, p6, P7, p7, rpcHint) \
     REGISTER_SRPC_METHOD(RpcClass, method, \
         SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7), ) \

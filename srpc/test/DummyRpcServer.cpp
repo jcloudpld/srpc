@@ -18,14 +18,14 @@ DummyRpcServer::DummyRpcServer(srpc::RpcNetwork* rpcNetwork) :
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_0(DummyRpcServer, rpc0)
+RECEIVE_SRPC_METHOD_WITH_HINT_0(DummyRpcServer, rpc0)
 {
     rpcId_ = getRpcId_rpc0();
     rpcHint_ = reinterpret_cast<int>(rpcHint);
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_1(DummyRpcServer, rpc1, RInt32, p1)
+RECEIVE_SRPC_METHOD_WITH_HINT_1(DummyRpcServer, rpc1, RInt32, p1)
 {
     rpcId_ = getRpcId_rpc1();
     p1_ = p1;
@@ -33,7 +33,7 @@ IMPLEMENT_SRPC_METHOD_WITH_HINT_1(DummyRpcServer, rpc1, RInt32, p1)
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_2(DummyRpcServer, rpc2,
+RECEIVE_SRPC_METHOD_WITH_HINT_2(DummyRpcServer, rpc2,
     RInt32, p1, RInt32, p2)
 {
     rpcId_ = getRpcId_rpc2();
@@ -43,7 +43,7 @@ IMPLEMENT_SRPC_METHOD_WITH_HINT_2(DummyRpcServer, rpc2,
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_3(DummyRpcServer, rpc3,
+RECEIVE_SRPC_METHOD_WITH_HINT_3(DummyRpcServer, rpc3,
     RInt32, p1, RInt32, p2, RInt32, p3)
 {
     rpcId_ = getRpcId_rpc3();
@@ -54,7 +54,7 @@ IMPLEMENT_SRPC_METHOD_WITH_HINT_3(DummyRpcServer, rpc3,
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_4(DummyRpcServer, rpc4,
+RECEIVE_SRPC_METHOD_WITH_HINT_4(DummyRpcServer, rpc4,
     RInt32, p1, RInt32, p2, RInt32, p3, RInt32, p4)
 {
     rpcId_ = getRpcId_rpc4();
@@ -66,7 +66,7 @@ IMPLEMENT_SRPC_METHOD_WITH_HINT_4(DummyRpcServer, rpc4,
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_5(DummyRpcServer, rpc5,
+RECEIVE_SRPC_METHOD_WITH_HINT_5(DummyRpcServer, rpc5,
     RInt32, p1, RInt32, p2, RInt32, p3, RInt32, p4, RInt32, p5)
 {
     rpcId_ = getRpcId_rpc5();
@@ -79,7 +79,7 @@ IMPLEMENT_SRPC_METHOD_WITH_HINT_5(DummyRpcServer, rpc5,
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_6(DummyRpcServer, rpc6,
+RECEIVE_SRPC_METHOD_WITH_HINT_6(DummyRpcServer, rpc6,
     RInt32, p1, RInt32, p2, RInt32, p3, RInt32, p4, RInt32, p5, RInt32, p6)
 {
     rpcId_ = getRpcId_rpc6();
@@ -93,7 +93,7 @@ IMPLEMENT_SRPC_METHOD_WITH_HINT_6(DummyRpcServer, rpc6,
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_7(DummyRpcServer, rpc7,
+RECEIVE_SRPC_METHOD_WITH_HINT_7(DummyRpcServer, rpc7,
     RInt32, p1, RInt32, p2, RInt32, p3, RInt32, p4, RInt32, p5, RInt32, p6,
     RInt32, p7)
 {
@@ -109,7 +109,7 @@ IMPLEMENT_SRPC_METHOD_WITH_HINT_7(DummyRpcServer, rpc7,
 }
 
 
-IMPLEMENT_SRPC_METHOD_2(DummyRpcServer, rpcBits,
+RECEIVE_SRPC_METHOD_2(DummyRpcServer, rpcBits,
     RInt15, p1, RInt31, p2)
 {
     rpcId_ = getRpcId_rpcBits();
@@ -118,7 +118,7 @@ IMPLEMENT_SRPC_METHOD_2(DummyRpcServer, rpcBits,
 }
 
 
-IMPLEMENT_SRPC_METHOD_0(DummyRpcServer, rpcFailed)
+RECEIVE_SRPC_METHOD_0(DummyRpcServer, rpcFailed)
 {
     rpcId_ = getRpcId_rpcFailed();
     throw srpc::RpcFailedException(__FILE__, __LINE__, "rpc failed");
@@ -135,7 +135,7 @@ DummyRpcServer2::DummyRpcServer2(srpc::RpcNetwork* rpcNetwork) :
 }
 
 
-IMPLEMENT_SRPC_METHOD_WITH_HINT_1(DummyRpcServer2, rpc1, RInt32, p1)
+RECEIVE_SRPC_METHOD_WITH_HINT_1(DummyRpcServer2, rpc1, RInt32, p1)
 {
     rpcId_ = getRpcId_rpc1();
     p1_ = p1;

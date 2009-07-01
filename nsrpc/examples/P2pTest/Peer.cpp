@@ -241,10 +241,10 @@ void Peer::onGroupLeft(nsrpc::GroupId groupId, nsrpc::PeerId peerId)
 
 // = RpcPeerService overriding
 
-IMPLEMENT_SRPC_P2P_METHOD_1(Peer, chat, srpc::RShortString, message,
+EXCHANGE_SRPC_P2P_METHOD_1(Peer, chat, srpc::RShortString, message,
     srpc::ptReliable)
 {
-    // rpcHint is a hidden variable. see IMPLEMENT_SRPC_P2P_METHOD_1 macro
+    // rpcHint is a hidden variable. see EXCHANGE_SRPC_P2P_METHOD_1 macro
     const nsrpc::PeerHint& hint = nsrpc::toPeerHint(rpcHint);
 
     std::cout << "* Chat(from:P" << hint.peerId_ << "): [" << message << "]\n";
@@ -254,7 +254,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(Peer, chat, srpc::RShortString, message,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
+EXCHANGE_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
 {
     const nsrpc::PeerHint& hint = nsrpc::toPeerHint(rpcHint);
 
@@ -286,7 +286,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(Peer, tick, srpc::RUInt32, tick, srpc::ptReliable)
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_0(Peer, dummy, srpc::ptUnreliable)
+EXCHANGE_SRPC_P2P_METHOD_0(Peer, dummy, srpc::ptUnreliable)
 {
     const nsrpc::PeerHint& hint = nsrpc::toPeerHint(rpcHint);
 

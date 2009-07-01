@@ -133,7 +133,7 @@ void VoP2pPlugInImpl::sampled(nsrpc::PeerId targetPeerId,
 
 // = RpcVoP2pService overriding
 
-IMPLEMENT_SRPC_P2P_METHOD_4(VoP2pPlugInImpl, say,
+EXCHANGE_SRPC_P2P_METHOD_4(VoP2pPlugInImpl, say,
     nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
     RSpeech, speech, RSequence, sequence,
     srpc::ptUnreliable)

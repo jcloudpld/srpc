@@ -153,7 +153,7 @@ size_t SimpleRelayService::getPacketHeaderSize() const
 
 // = RpcStunService
 
-IMPLEMENT_SRPC_P2P_METHOD_0(SimpleRelayService, rpcResolve, srpc::ptUnreliable)
+EXCHANGE_SRPC_P2P_METHOD_0(SimpleRelayService, rpcResolve, srpc::ptUnreliable)
 {
     assert(rpcHint != 0);
     const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
@@ -170,13 +170,13 @@ IMPLEMENT_SRPC_P2P_METHOD_0(SimpleRelayService, rpcResolve, srpc::ptUnreliable)
 }
 
 
-DEFINE_SRPC_P2P_METHOD_2(SimpleRelayService, rpcResolved,
+FORWARD_SRPC_P2P_METHOD_2(SimpleRelayService, rpcResolved,
     srpc::RShortString, ipAddress, srpc::RUInt16, port,
     srpc::ptUnreliable);
 
 // = RpcRelayService
 
-IMPLEMENT_SRPC_P2P_METHOD_6(SimpleRelayService, rpcRelay,
+EXCHANGE_SRPC_P2P_METHOD_6(SimpleRelayService, rpcRelay,
     RPeerIdPair, peerIdPair, RAddress, peerAddress,
     RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
     RSequenceNumber, sequenceNumber, RRelativeTime, sentTime,
@@ -206,7 +206,7 @@ IMPLEMENT_SRPC_P2P_METHOD_6(SimpleRelayService, rpcRelay,
 }
 
 
-DEFINE_SRPC_P2P_METHOD_5(SimpleRelayService, rpcRelayed,
+FORWARD_SRPC_P2P_METHOD_5(SimpleRelayService, rpcRelayed,
     RPeerId, peerId, RMessageBuffer, messageBlock,
     srpc::RRpcPacketType, packetType, RSequenceNumber, sequenceNumber,
     RRelativeTime, sentTime, srpc::ptUnreliable);

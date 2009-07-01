@@ -25,14 +25,14 @@ RpcRelayServiceImpl::RpcRelayServiceImpl(RelayServiceHandler& serviceHandler,
 }
 
 
-DEFINE_SRPC_P2P_METHOD_6(RpcRelayServiceImpl, rpcRelay,
+FORWARD_SRPC_P2P_METHOD_6(RpcRelayServiceImpl, rpcRelay,
     RPeerIdPair, peerIdPair, RAddress, peerAddress,
     RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
     RSequenceNumber, sequenceNumber, RRelativeTime, sentTime,
     srpc::ptUnreliable);
 
 
-IMPLEMENT_SRPC_P2P_METHOD_5(RpcRelayServiceImpl, rpcRelayed,
+EXCHANGE_SRPC_P2P_METHOD_5(RpcRelayServiceImpl, rpcRelayed,
     RPeerId, peerId, RMessageBuffer, messageBlock,
     srpc::RRpcPacketType, packetType, RSequenceNumber, sequenceNumber,
     RRelativeTime, sentTime, srpc::ptUnreliable)
