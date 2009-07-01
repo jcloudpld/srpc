@@ -39,29 +39,29 @@ public:
     void setHost(const RP2pProperty& p2pProperty);
     void reset();
 public:
-    DECLARE_SRPC_P2P_METHOD_4(rpcConnect, RAddresses, peerAddresses,
+    OVERRIDE_SRPC_P2P_METHOD_4(rpcConnect, RAddresses, peerAddresses,
         RP2pOptions, p2pOptions, srpc::RShortString, sessionPassword,
         srpc::RUInt32, sessionKey);
-    DECLARE_SRPC_P2P_METHOD_5(rpcConnected, RAddresses, peerAddresses,
+    OVERRIDE_SRPC_P2P_METHOD_5(rpcConnected, RAddresses, peerAddresses,
         srpc::RBool, isHost, RP2pProperty, p2pProperty, RP2pOptions, p2pOptions,
         RGroupMap, groups);
-    DECLARE_SRPC_P2P_METHOD_1(rpcRequestConnectReversal,
+    OVERRIDE_SRPC_P2P_METHOD_1(rpcRequestConnectReversal,
         RAddresses, peerAddresses);
-    DECLARE_SRPC_P2P_METHOD_2(rpcConnectReversal,
+    OVERRIDE_SRPC_P2P_METHOD_2(rpcConnectReversal,
         RAddresses, peerAddresses, RP2pOptions, p2pOptions);
-    DECLARE_SRPC_P2P_METHOD_1(rpcNewPeerConnected, RPeerInfo, peerInfo);
-    DECLARE_SRPC_P2P_METHOD_0(rpcDisconnect);
-    DECLARE_SRPC_P2P_METHOD_0(rpcPing);
-    DECLARE_SRPC_P2P_METHOD_2(rpcAcknowledgement,
+    OVERRIDE_SRPC_P2P_METHOD_1(rpcNewPeerConnected, RPeerInfo, peerInfo);
+    OVERRIDE_SRPC_P2P_METHOD_0(rpcDisconnect);
+    OVERRIDE_SRPC_P2P_METHOD_0(rpcPing);
+    OVERRIDE_SRPC_P2P_METHOD_2(rpcAcknowledgement,
         RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
-    DECLARE_SRPC_P2P_METHOD_0(rpcHostMigrated);
-    DECLARE_SRPC_P2P_METHOD_1(rpcGroupCreated,
+    OVERRIDE_SRPC_P2P_METHOD_0(rpcHostMigrated);
+    OVERRIDE_SRPC_P2P_METHOD_1(rpcGroupCreated,
         RGroupInfo, groupInfo);
-    DECLARE_SRPC_P2P_METHOD_1(rpcGroupDestroyed,
+    OVERRIDE_SRPC_P2P_METHOD_1(rpcGroupDestroyed,
         RGroupId, groupId);
-    DECLARE_SRPC_P2P_METHOD_2(rpcGroupJoined,
+    OVERRIDE_SRPC_P2P_METHOD_2(rpcGroupJoined,
         RGroupId, groupId, RPeerId, peerId);
-    DECLARE_SRPC_P2P_METHOD_2(rpcGroupLeft,
+    OVERRIDE_SRPC_P2P_METHOD_2(rpcGroupLeft,
         RGroupId, groupId, RPeerId, peerId);
 private:
     void connectToNewPeer(const RPeerInfo& pi);

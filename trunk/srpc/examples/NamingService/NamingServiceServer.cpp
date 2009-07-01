@@ -14,7 +14,7 @@ NamingServiceServer::NamingServiceServer(srpc::RpcNetwork* rpcNetwork) :
 
 // = 처리
 
-IMPLEMENT_SRPC_METHOD_2(NamingServiceServer, bind, srpc::RString, name,
+RECEIVE_SRPC_METHOD_2(NamingServiceServer, bind, srpc::RString, name,
     srpc::RString, value)
 {
     bool succeeded =
@@ -23,7 +23,7 @@ IMPLEMENT_SRPC_METHOD_2(NamingServiceServer, bind, srpc::RString, name,
 }
 
 
-IMPLEMENT_SRPC_METHOD_2(NamingServiceServer, rebind,
+RECEIVE_SRPC_METHOD_2(NamingServiceServer, rebind,
     srpc::RString, name, srpc::RString, value)
 {
     bool succeeded = false;
@@ -40,7 +40,7 @@ IMPLEMENT_SRPC_METHOD_2(NamingServiceServer, rebind,
 }
 
 
-IMPLEMENT_SRPC_METHOD_1(NamingServiceServer, unbind,
+RECEIVE_SRPC_METHOD_1(NamingServiceServer, unbind,
     srpc::RString, name)
 {
     bool exists = false;
@@ -53,7 +53,7 @@ IMPLEMENT_SRPC_METHOD_1(NamingServiceServer, unbind,
 }
 
 
-IMPLEMENT_SRPC_METHOD_1(NamingServiceServer, resolve,
+RECEIVE_SRPC_METHOD_1(NamingServiceServer, resolve,
     srpc::RString, name)
 {
     bool exists = false;
@@ -68,13 +68,13 @@ IMPLEMENT_SRPC_METHOD_1(NamingServiceServer, resolve,
 
 // = 응답
 
-DEFINE_SRPC_METHOD_3(NamingServiceServer, onBind, srpc::RString, name,
+FORWARD_SRPC_METHOD_3(NamingServiceServer, onBind, srpc::RString, name,
     srpc::RString, value, srpc::RBool, succeeded);
-DEFINE_SRPC_METHOD_3(NamingServiceServer, onRebind, srpc::RString, name,
+FORWARD_SRPC_METHOD_3(NamingServiceServer, onRebind, srpc::RString, name,
     srpc::RString, value, srpc::RBool, succeeded);
-DEFINE_SRPC_METHOD_2(NamingServiceServer, onUnbind, srpc::RString, name,
+FORWARD_SRPC_METHOD_2(NamingServiceServer, onUnbind, srpc::RString, name,
     srpc::RBool, succeeded);
-DEFINE_SRPC_METHOD_3(NamingServiceServer, onResolve,
+FORWARD_SRPC_METHOD_3(NamingServiceServer, onResolve,
     srpc::RString, name, srpc::RString, value, srpc::RBool, succeeded);
 
 } // namespace ns

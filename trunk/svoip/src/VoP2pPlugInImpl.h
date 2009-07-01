@@ -98,7 +98,7 @@ private:
 
 public:
     // = RpcVoP2pService overriding
-    DECLARE_SRPC_P2P_METHOD_4(say,
+    OVERRIDE_SRPC_P2P_METHOD_4(say,
         nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
         RSpeech, speech, RSequence, sequence);
 

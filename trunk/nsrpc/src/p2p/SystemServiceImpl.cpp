@@ -97,7 +97,7 @@ void RpcSystemServiceImpl::logRpc(const char* rpc, const P2pPeerHint& hint,
 
 // = RpcSystemService overriding
 
-IMPLEMENT_SRPC_P2P_METHOD_4(RpcSystemServiceImpl, rpcConnect,
+EXCHANGE_SRPC_P2P_METHOD_4(RpcSystemServiceImpl, rpcConnect,
     RAddresses, peerAddresses, RP2pOptions, p2pOptions,
     srpc::RShortString, sessionPassword, srpc::RUInt32, sessionKey,
     srpc::ptReliable)
@@ -150,7 +150,7 @@ IMPLEMENT_SRPC_P2P_METHOD_4(RpcSystemServiceImpl, rpcConnect,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_5(RpcSystemServiceImpl, rpcConnected,
+EXCHANGE_SRPC_P2P_METHOD_5(RpcSystemServiceImpl, rpcConnected,
     RAddresses, peerAddresses, srpc::RBool, isHost, RP2pProperty, p2pProperty,
     RP2pOptions, p2pOptions,
     RGroupMap, groups,
@@ -185,7 +185,7 @@ IMPLEMENT_SRPC_P2P_METHOD_5(RpcSystemServiceImpl, rpcConnected,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcRequestConnectReversal,
+EXCHANGE_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcRequestConnectReversal,
     RAddresses, peerAddresses, srpc::ptReliable)
 {
     assert(rpcHint != 0);
@@ -204,7 +204,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcRequestConnectReversal,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcConnectReversal,
+EXCHANGE_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcConnectReversal,
     RAddresses, peerAddresses, RP2pOptions, p2pOptions, srpc::ptUnreliable)
 {
     assert(rpcHint != 0);
@@ -228,7 +228,7 @@ IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcConnectReversal,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcNewPeerConnected,
+EXCHANGE_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcNewPeerConnected,
     RPeerInfo, peerInfo, srpc::ptReliable)
 {
     assert(rpcHint != 0);
@@ -248,7 +248,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcNewPeerConnected,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcDisconnect,
+EXCHANGE_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcDisconnect,
     srpc::ptReliable)
 {
     assert(rpcHint != 0);
@@ -272,7 +272,7 @@ IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcDisconnect,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcPing, srpc::ptReliable)
+EXCHANGE_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcPing, srpc::ptReliable)
 {
     assert(rpcHint != 0);
     const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);
@@ -283,7 +283,7 @@ IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcPing, srpc::ptReliable)
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcAcknowledgement,
+EXCHANGE_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcAcknowledgement,
     RSequenceNumber, sequenceNumber, RRelativeTime, sentTime,
     srpc::ptUnreliable)
 {
@@ -299,7 +299,7 @@ IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcAcknowledgement,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcHostMigrated,
+EXCHANGE_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcHostMigrated,
     srpc::ptReliable)
 {
     assert(rpcHint != 0);
@@ -311,7 +311,7 @@ IMPLEMENT_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcHostMigrated,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupCreated,
+EXCHANGE_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupCreated,
     RGroupInfo, groupInfo,
     srpc::ptReliable)
 {
@@ -324,7 +324,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupCreated,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupDestroyed,
+EXCHANGE_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupDestroyed,
     RGroupId, groupId,
     srpc::ptReliable)
 {
@@ -337,7 +337,7 @@ IMPLEMENT_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupDestroyed,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
+EXCHANGE_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
     RGroupId, groupId, RPeerId, peerId,
     srpc::ptReliable)
 {
@@ -350,7 +350,7 @@ IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
 }
 
 
-IMPLEMENT_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupLeft,
+EXCHANGE_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupLeft,
     RGroupId, groupId, RPeerId, peerId,
     srpc::ptReliable)
 {

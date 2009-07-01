@@ -5,9 +5,9 @@
 
 #include <srpc/Exception.h>
 
-DEFINE_SRPC_METHOD_1(EchoClientRpcSession, echo, srpc::RString, data)
+FORWARD_SRPC_METHOD_1(EchoClientRpcSession, echo, srpc::RString, data)
 
-IMPLEMENT_SRPC_METHOD_1(EchoClientRpcSession, onEcho,
+RECEIVE_SRPC_METHOD_1(EchoClientRpcSession, onEcho,
     srpc::RString, data)
 {
     assert(echoedCount_ < echoCount_);

@@ -50,16 +50,16 @@ public:
     }
 public:
     // = RpcStunService
-    DECLARE_SRPC_P2P_METHOD_0(rpcResolve);
-    DECLARE_SRPC_METHOD_2(rpcResolved,
+    OVERRIDE_SRPC_P2P_METHOD_0(rpcResolve);
+    OVERRIDE_SRPC_METHOD_2(rpcResolved,
         srpc::RShortString, ipAddress, srpc::RUInt16, port);
 
     // = RpcRelayService
-    DECLARE_SRPC_P2P_METHOD_6(rpcRelay,
+    OVERRIDE_SRPC_P2P_METHOD_6(rpcRelay,
         RPeerIdPair, peerIdPair, RAddress, peerAddress,
         RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
         RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
-    DECLARE_SRPC_METHOD_5(rpcRelayed,
+    OVERRIDE_SRPC_METHOD_5(rpcRelayed,
         RPeerId, peerId, RMessageBuffer, messageBlock,
         srpc::RRpcPacketType, packetType,
         RSequenceNumber, sequenceNumber,

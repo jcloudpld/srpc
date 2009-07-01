@@ -4,7 +4,7 @@
 
 // = TestRpcPlugIn
 
-IMPLEMENT_SRPC_P2P_METHOD_1(TestRpcPlugIn, hello, srpc::RShortString, world,
+EXCHANGE_SRPC_P2P_METHOD_1(TestRpcPlugIn, hello, srpc::RShortString, world,
     srpc::ptReliable)
 {
     const PeerHint& hint = toPeerHint(rpcHint);

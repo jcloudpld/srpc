@@ -14,17 +14,17 @@ NamingServiceClient::NamingServiceClient(srpc::RpcNetwork* rpcNetwork) :
 
 // = 요청
 
-DEFINE_SRPC_METHOD_2(NamingServiceClient, bind, srpc::RString, name,
+FORWARD_SRPC_METHOD_2(NamingServiceClient, bind, srpc::RString, name,
     srpc::RString, value);
-DEFINE_SRPC_METHOD_2(NamingServiceClient, rebind, srpc::RString, name,
+FORWARD_SRPC_METHOD_2(NamingServiceClient, rebind, srpc::RString, name,
     srpc::RString, value);
-DEFINE_SRPC_METHOD_1(NamingServiceClient, unbind, srpc::RString, name);
-DEFINE_SRPC_METHOD_1(NamingServiceClient, resolve, srpc::RString, name);
+FORWARD_SRPC_METHOD_1(NamingServiceClient, unbind, srpc::RString, name);
+FORWARD_SRPC_METHOD_1(NamingServiceClient, resolve, srpc::RString, name);
 
 // = 응답
 
 
-IMPLEMENT_SRPC_METHOD_3(NamingServiceClient, onBind,
+RECEIVE_SRPC_METHOD_3(NamingServiceClient, onBind,
     srpc::RString, name, srpc::RString, value, srpc::RBool, succeeded)
 {
     reset();
@@ -36,7 +36,7 @@ IMPLEMENT_SRPC_METHOD_3(NamingServiceClient, onBind,
 }
 
 
-IMPLEMENT_SRPC_METHOD_3(NamingServiceClient, onRebind,
+RECEIVE_SRPC_METHOD_3(NamingServiceClient, onRebind,
     srpc::RString, name, srpc::RString, value, srpc::RBool, succeeded)
 {
     reset();
@@ -48,7 +48,7 @@ IMPLEMENT_SRPC_METHOD_3(NamingServiceClient, onRebind,
 }
 
 
-IMPLEMENT_SRPC_METHOD_2(NamingServiceClient, onUnbind,
+RECEIVE_SRPC_METHOD_2(NamingServiceClient, onUnbind,
     srpc::RString, name, srpc::RBool, succeeded)
 {
     reset();
@@ -59,7 +59,7 @@ IMPLEMENT_SRPC_METHOD_2(NamingServiceClient, onUnbind,
 }
 
 
-IMPLEMENT_SRPC_METHOD_3(NamingServiceClient, onResolve,
+RECEIVE_SRPC_METHOD_3(NamingServiceClient, onResolve,
     srpc::RString, name, srpc::RString, value, srpc::RBool, succeeded)
 {
     reset();

@@ -57,48 +57,48 @@ private:
 
 // = Rpc request Macros
 
-// = DEFINE_SRPC_METHOD_n
+// = FORWARD_SRPC_METHOD_n
 
 /// 파라미터가 없는 RPC Method를 정의한다.
-#define DEFINE_SRPC_METHOD_0(RpcClass, method) \
-    DEFINE_SRPC_METHOD_DETAIL_0(RpcClass, method, srpc::ptReliable)
+#define FORWARD_SRPC_METHOD_0(RpcClass, method) \
+    FORWARD_SRPC_METHOD_DETAIL_0(RpcClass, method, srpc::ptReliable)
 
 /// 파라미터가 1개인 RPC Method를 정의한다
-#define DEFINE_SRPC_METHOD_1(RpcClass, method, T1, p1) \
-    DEFINE_SRPC_METHOD_DETAIL_1(RpcClass, method, T1, p1, srpc::ptReliable)
+#define FORWARD_SRPC_METHOD_1(RpcClass, method, T1, p1) \
+    FORWARD_SRPC_METHOD_DETAIL_1(RpcClass, method, T1, p1, srpc::ptReliable)
 
 /// 파라미터가 2개인 RPC Method를 정의한다
-#define DEFINE_SRPC_METHOD_2(RpcClass, method, T1, p1, T2, p2) \
-    DEFINE_SRPC_METHOD_DETAIL_2(RpcClass, method, T1, p1, T2, p2, \
+#define FORWARD_SRPC_METHOD_2(RpcClass, method, T1, p1, T2, p2) \
+    FORWARD_SRPC_METHOD_DETAIL_2(RpcClass, method, T1, p1, T2, p2, \
         srpc::ptReliable)
 
 /// 파라미터가 3개인 RPC Method를 정의한다
-#define DEFINE_SRPC_METHOD_3(RpcClass, method, T1, p1, T2, p2, T3, p3) \
-    DEFINE_SRPC_METHOD_DETAIL_3(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+#define FORWARD_SRPC_METHOD_3(RpcClass, method, T1, p1, T2, p2, T3, p3) \
+    FORWARD_SRPC_METHOD_DETAIL_3(RpcClass, method, T1, p1, T2, p2, T3, p3, \
         srpc::ptReliable)
 
 /// 파라미터가 4개인 RPC Method를 정의한다
-#define DEFINE_SRPC_METHOD_4(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+#define FORWARD_SRPC_METHOD_4(RpcClass, method, T1, p1, T2, p2, T3, p3, \
         T4, p4) \
-    DEFINE_SRPC_METHOD_DETAIL_4(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+    FORWARD_SRPC_METHOD_DETAIL_4(RpcClass, method, T1, p1, T2, p2, T3, p3, \
         T4, p4, srpc::ptReliable)
 
 /// 파라미터가 5개인 RPC Method를 정의한다
-#define DEFINE_SRPC_METHOD_5(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+#define FORWARD_SRPC_METHOD_5(RpcClass, method, T1, p1, T2, p2, T3, p3, \
         T4, p4, T5, p5) \
-    DEFINE_SRPC_METHOD_DETAIL_5(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+    FORWARD_SRPC_METHOD_DETAIL_5(RpcClass, method, T1, p1, T2, p2, T3, p3, \
         T4, p4, T5, p5, srpc::ptReliable)
 
 /// 파라미터가 6개인 RPC Method를 정의한다
-#define DEFINE_SRPC_METHOD_6(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+#define FORWARD_SRPC_METHOD_6(RpcClass, method, T1, p1, T2, p2, T3, p3, \
         T4, p4, T5, p5, T6, p6) \
-    DEFINE_SRPC_METHOD_DETAIL_6(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+    FORWARD_SRPC_METHOD_DETAIL_6(RpcClass, method, T1, p1, T2, p2, T3, p3, \
         T4, p4, T5, p5, T6, p6, srpc::ptReliable)
 
 /// 파라미터가 7개인 RPC Method를 정의한다
-#define DEFINE_SRPC_METHOD_7(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+#define FORWARD_SRPC_METHOD_7(RpcClass, method, T1, p1, T2, p2, T3, p3, \
         T4, p4, T5, p5, T6, p6, T7, p7) \
-    DEFINE_SRPC_METHOD_DETAIL_7(RpcClass, method, T1, p1, T2, p2, T3, p3, \
+    FORWARD_SRPC_METHOD_DETAIL_7(RpcClass, method, T1, p1, T2, p2, T3, p3, \
     T4, p4, T5, p5, T6, p6, T7, p7, srpc::ptReliable)
 
 /** @} */ // addtogroup RpcForwarding

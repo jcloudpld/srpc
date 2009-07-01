@@ -70,95 +70,95 @@ private:
 #define IMPLEMENT_SRPC_EVENT_DISPATCHER(RpcClass) \
     IMPLEMENT_SRPC_EVENT_DISPATCHER_DETAIL(RpcClass)
 
-// = IMPLEMENT_SRPC_METHOD_n
+// = RECEIVE_SRPC_METHOD_n
 
 /// 힌트가 없고 파라미터가 없는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_0(RpcClass, method) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_0(RpcClass, method, )
+#define RECEIVE_SRPC_METHOD_0(RpcClass, method) \
+    RECEIVE_SRPC_METHOD_DETAIL_0(RpcClass, method, )
 
 /// 힌트가 없고 파라미터가 1개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_1(RpcClass, method, T1, p1) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_1(RpcClass, method, T1, p1, )
+#define RECEIVE_SRPC_METHOD_1(RpcClass, method, T1, p1) \
+    RECEIVE_SRPC_METHOD_DETAIL_1(RpcClass, method, T1, p1, )
 
 /// 힌트가 없고 파라미터가 2개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_2(RpcClass, method, T1, p1, T2, p2) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_2(RpcClass, method, T1, p1, T2, p2, )
+#define RECEIVE_SRPC_METHOD_2(RpcClass, method, T1, p1, T2, p2) \
+    RECEIVE_SRPC_METHOD_DETAIL_2(RpcClass, method, T1, p1, T2, p2, )
 
 /// 힌트가 없고 파라미터가 3개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_3(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_3(RpcClass, method, \
         T1, p1, T2, p2, T3, p3) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_3(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_3(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, )
 
 /// 힌트가 없고 파라미터가 4개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_4(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_4(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_4(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_4(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, )
 
 /// 힌트가 없고 파라미터가 5개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_5(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_5(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_5(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_5(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, )
 
 /// 힌트가 없고 파라미터가 6개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_6(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_6(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, T6, p6) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_6(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_6(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, T6, p6, )
 
 /// 힌트가 없고 파라미터가 7개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_7(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_7(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, T6, p6, T7, p7) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_7(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_7(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, T6, p6, T7, p7, )
 
-// = IMPLEMENT_SRPC_METHOD_WITH_HINT_n
+// = RECEIVE_SRPC_METHOD_WITH_HINT_n
 
 /// 힌트가 있고 파라미터가 없는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_WITH_HINT_0(RpcClass, method) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_0(RpcClass, method, rpcHint)
+#define RECEIVE_SRPC_METHOD_WITH_HINT_0(RpcClass, method) \
+    RECEIVE_SRPC_METHOD_DETAIL_0(RpcClass, method, rpcHint)
 
 /// 힌트가 있고 파라미터가 1개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_WITH_HINT_1(RpcClass, method, T1, p1) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_1(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_WITH_HINT_1(RpcClass, method, T1, p1) \
+    RECEIVE_SRPC_METHOD_DETAIL_1(RpcClass, method, \
         T1, p1, rpcHint)
 
 /// 힌트가 있고 파라미터가 2개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_WITH_HINT_2(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_WITH_HINT_2(RpcClass, method, \
         T1, p1, T2, p2) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_2(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_2(RpcClass, method, \
         T1, p1, T2, p2, rpcHint)
 
 /// 힌트가 있고 파라미터가 3개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_WITH_HINT_3(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_WITH_HINT_3(RpcClass, method, \
         T1, p1, T2, p2, T3, p3) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_3(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_3(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, rpcHint)
 
 /// 힌트가 있고 파라미터가 4개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_WITH_HINT_4(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_WITH_HINT_4(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_4(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_4(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, rpcHint)
 
 /// 힌트가 있고 파라미터가 5개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_WITH_HINT_5(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_WITH_HINT_5(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_5(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_5(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, rpcHint)
 
 /// 힌트가 있고 파라미터가 6개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_WITH_HINT_6(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_WITH_HINT_6(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, T6, p6) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_6(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_6(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, T6, p6, rpcHint)
 
 /// 힌트가 있고 파라미터가 7개 있는 RPC Method를 구현한다
-#define IMPLEMENT_SRPC_METHOD_WITH_HINT_7(RpcClass, method, \
+#define RECEIVE_SRPC_METHOD_WITH_HINT_7(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, T6, p6, T7, p7) \
-    IMPLEMENT_SRPC_METHOD_DETAIL_7(RpcClass, method, \
+    RECEIVE_SRPC_METHOD_DETAIL_7(RpcClass, method, \
         T1, p1, T2, p2, T3, p3, T4, p4, T5, p5, T6, p6, T7, p7, rpcHint)
 
 /** @} */ // addtogroup RpcReceiving

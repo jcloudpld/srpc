@@ -17,20 +17,20 @@ class DummyRpcServer : public DummyRpc,
 public:
     DummyRpcServer(srpc::RpcNetwork* rpcNetwork = 0);
 
-    DECLARE_SRPC_METHOD_0(rpc0);
-    DECLARE_SRPC_METHOD_1(rpc1, RInt32, p1);
-    DECLARE_SRPC_METHOD_2(rpc2, RInt32, p1, RInt32, p2);
-    DECLARE_SRPC_METHOD_3(rpc3, RInt32, p1, RInt32, p2, RInt32, p3);
-    DECLARE_SRPC_METHOD_4(rpc4, RInt32, p1, RInt32, p2, RInt32, p3,
+    OVERRIDE_SRPC_METHOD_0(rpc0);
+    OVERRIDE_SRPC_METHOD_1(rpc1, RInt32, p1);
+    OVERRIDE_SRPC_METHOD_2(rpc2, RInt32, p1, RInt32, p2);
+    OVERRIDE_SRPC_METHOD_3(rpc3, RInt32, p1, RInt32, p2, RInt32, p3);
+    OVERRIDE_SRPC_METHOD_4(rpc4, RInt32, p1, RInt32, p2, RInt32, p3,
         RInt32, p4);
-    DECLARE_SRPC_METHOD_5(rpc5, RInt32, p1, RInt32, p2, RInt32, p3,
+    OVERRIDE_SRPC_METHOD_5(rpc5, RInt32, p1, RInt32, p2, RInt32, p3,
         RInt32, p4, RInt32, p5);
-    DECLARE_SRPC_METHOD_6(rpc6, RInt32, p1, RInt32, p2, RInt32, p3,
+    OVERRIDE_SRPC_METHOD_6(rpc6, RInt32, p1, RInt32, p2, RInt32, p3,
         RInt32, p4, RInt32, p5, RInt32, p6);
-    DECLARE_SRPC_METHOD_7(rpc7, RInt32, p1, RInt32, p2, RInt32, p3,
+    OVERRIDE_SRPC_METHOD_7(rpc7, RInt32, p1, RInt32, p2, RInt32, p3,
         RInt32, p4, RInt32, p5, RInt32, p6, RInt32, p7);
-    DECLARE_SRPC_METHOD_2(rpcBits, RInt15, p1, RInt31, p2);
-    DECLARE_SRPC_METHOD_0(rpcFailed);
+    OVERRIDE_SRPC_METHOD_2(rpcBits, RInt15, p1, RInt31, p2);
+    OVERRIDE_SRPC_METHOD_0(rpcFailed);
 private:
     virtual void onReceiving(const srpc::RRpcId& rpcId) {
         lastRpcId_ = rpcId;
@@ -104,7 +104,7 @@ class DummyRpcServer2 : public DummyRpc2,
 public:
     DummyRpcServer2(srpc::RpcNetwork* rpcNetwork = 0);
 
-    DECLARE_SRPC_METHOD_1(rpc1, RInt32, p1);
+    OVERRIDE_SRPC_METHOD_1(rpc1, RInt32, p1);
 public:
     const srpc::RpcId getRpcId() const {
         return rpcId_;
