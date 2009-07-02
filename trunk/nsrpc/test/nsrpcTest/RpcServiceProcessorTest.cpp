@@ -21,16 +21,17 @@ using namespace nsrpc::sao;
 class MockRpcServant : public RpcServant
 {
 public:
-    MockRpcServant() :
-        dispatched_(false) {}
+    MockRpcServant(){}
 
     virtual void dispatch(ACE_Message_Block& /*mblock*/) {
-        dispatched_ = true;
+        ++dispatched_;
     }
 public:
-    bool dispatched_;
+    static int dispatched_;
 };
 
+
+int MockRpcServant::dispatched_ = 0;
 
 /**
 * @class RpcServiceProcessorTest
@@ -68,7 +69,9 @@ TEST_F(RpcServiceProcessorTest, testRpcDispatch)
     ACE_Message_Block dummy(100);
     dummy.copy("0123456789");
 
-    for (int i = 0; i < 10; ++i) {
+    const int loopCount = 10;
+
+    for (int i = 0; i < loopCount; ++i) {
         RpcMethod* method = rpcMethodManager.acquire();
         method->setParameter(&rpcServant_, &dummy);
         serviceProcessor_->getProxy().schedule(method);
@@ -76,5 +79,5 @@ TEST_F(RpcServiceProcessorTest, testRpcDispatch)
     nsrpc::pause(50);
 
     //serviceProcessor_->finalize();
-    EXPECT_EQ(true, rpcServant_.dispatched_);
+    EXPECT_EQ(loopCount, rpcServant_.dispatched_);
 }
