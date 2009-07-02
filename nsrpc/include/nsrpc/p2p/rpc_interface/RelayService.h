@@ -28,7 +28,7 @@ public:
     // = request
 
     /// relay를 요청한다
-    DECLARE_SRPC_PURE_METHOD_6(RpcRelayService, rpcRelay,
+    DECLARE_SRPC_METHOD_6(RpcRelayService, rpcRelay,
         RPeerIdPair, peerIdPair, RAddress, peerAddress,
         RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
         RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
@@ -36,7 +36,7 @@ public:
     // = event
 
     /// relay 메세지가 도착했다
-    DECLARE_SRPC_PURE_METHOD_5(RpcRelayService, rpcRelayed,
+    DECLARE_SRPC_METHOD_5(RpcRelayService, rpcRelayed,
         RPeerId, peerId, RMessageBuffer, messageBlock,
         srpc::RRpcPacketType, packetType, RSequenceNumber, sequenceNumber,
         RRelativeTime, sentTime);

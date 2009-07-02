@@ -15,15 +15,15 @@ public:
     virtual ~RpcPeerService() {}
 
     /// chat. reliable message.
-    DECLARE_SRPC_PURE_METHOD_1(RpcPeerService, chat,
+    DECLARE_SRPC_METHOD_1(RpcPeerService, chat,
         srpc::RShortString, message);
 
     /// tick. reliable message.
-    DECLARE_SRPC_PURE_METHOD_1(RpcPeerService, tick,
+    DECLARE_SRPC_METHOD_1(RpcPeerService, tick,
         srpc::RUInt32, tick);
 
     /// dummy. unreliable message
-    DECLARE_SRPC_PURE_METHOD_0(RpcPeerService, dummy);
+    DECLARE_SRPC_METHOD_0(RpcPeerService, dummy);
 };
 
 #endif // P2PTEST_PEERSERVICE_H

@@ -32,7 +32,7 @@ public:
      * @param decryptSeed 서버의 복호화 시드
      * - Response: onConfirmSeed
      */
-    DECLARE_SRPC_PURE_METHOD_2(RpcSecurityService, exchangeSeed,
+    DECLARE_SRPC_METHOD_2(RpcSecurityService, exchangeSeed,
         srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed);
 
     // = response
@@ -41,7 +41,7 @@ public:
      * seed 변경에 대한 응답을 한다(클라이언트 -> 서버)
      * @param encryptSeed 클라이언트의 암호화 시드
      */
-    DECLARE_SRPC_PURE_METHOD_1(RpcSecurityService, onConfirmSeed,
+    DECLARE_SRPC_METHOD_1(RpcSecurityService, onConfirmSeed,
         srpc::RShortString, encryptSeed);
 };
 
