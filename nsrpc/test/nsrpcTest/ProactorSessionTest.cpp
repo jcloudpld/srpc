@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SessionTestFixture.h"
+#include "ProactorSessionTestFixture.h"
 
 #if defined(NSRPC_HAS_PROACTOR)
 
@@ -10,15 +10,15 @@ using namespace srpc;
 using namespace nsrpc;
 
 /**
-* @class SessionTest
+* @class ProactorSessionTest
 *
 * Session Test
 */
-class SessionTest : public SessionTestFixture
+class ProactorSessionTest : public ProactorSessionTestFixture
 {
 private:
     virtual void SetUp() {
-        SessionTestFixture::SetUp();
+        ProactorSessionTestFixture::SetUp();
 
         client_ = new TestClient;
         (void)client_->connect(1, getTestAddress());
@@ -28,12 +28,12 @@ private:
         client_->close();
         delete client_;
 
-        SessionTestFixture::TearDown();
+        ProactorSessionTestFixture::TearDown();
     }
 
 protected:
-    TestSession& getLastSession() {
-        return static_cast<TestSessionManager*>(sessionManager_)->getSession();
+    TestProactorSession& getLastSession() {
+        return static_cast<TestProactorSessionManager*>(sessionManager_)->getSession();
     }
 
 protected:
@@ -41,7 +41,7 @@ protected:
 };
 
 
-TEST_F(SessionTest, testRecvPackets)
+TEST_F(ProactorSessionTest, testRecvPackets)
 {
     const int sendCount = 5;
     const UInt8 body[] = "1234567890";
@@ -64,7 +64,7 @@ TEST_F(SessionTest, testRecvPackets)
 }
 
 
-TEST_F(SessionTest, testSendPackets)
+TEST_F(ProactorSessionTest, testSendPackets)
 {
     pause(1);
 
@@ -99,10 +99,10 @@ TEST_F(SessionTest, testSendPackets)
 }
 
 
-TEST_F(SessionTest, testConnect)
+TEST_F(ProactorSessionTest, testConnect)
 {
-    TestSession* session =
-        static_cast<TestSession*>(sessionManager_->acquire());
+    TestProactorSession* session =
+        static_cast<TestProactorSession*>(sessionManager_->acquire());
 
     EXPECT_TRUE(
         session->connect(getTestAddress().get_host_name(),

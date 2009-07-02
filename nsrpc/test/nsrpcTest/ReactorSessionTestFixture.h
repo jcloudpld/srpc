@@ -1,31 +1,31 @@
-#ifndef NSRPC_CLIENTSESSIONTESTFIXTURE_H
-#define NSRPC_CLIENTSESSIONTESTFIXTURE_H
+#ifndef NSRPC_REACTORSESSIONTESTFIXTURE_H
+#define NSRPC_REACTORSESSIONTESTFIXTURE_H
 
 #include <nsrpc/nsrpc.h>
 
 #if defined(NSRPC_HAS_PROACTOR)
 
-#include "SessionTestFixture.h"
-#include "TestClientSession.h"
+#include "ProactorSessionTestFixture.h"
+#include "TestReactorSession.h"
 #include <nsrpc/ReactorTask.h>
 #include <nsrpc/detail/PacketCoderFactory.h>
 #include <nsrpc/detail/PacketCoder.h>
 
 /**
-* @class ClientSessionTestFixture
+* @class ReactorSessionTestFixture
 *
-* ClientSession TestFixture
+* ReactorSession TestFixture
 */
-class ClientSessionTestFixture : public SessionTestFixture
+class ReactorSessionTestFixture : public ProactorSessionTestFixture
 {
 public:
     virtual void SetUp() {
-        SessionTestFixture::SetUp();
+        ProactorSessionTestFixture::SetUp();
 
         reactorTask_ = new nsrpc::ReactorTask(true);
         reactorTask_->start(1);
 
-        clientSession_ = new TestClientSession(reactorTask_->getReactor());
+        clientSession_ = new TestReactorSession(reactorTask_->getReactor());
 
         packetCoder_ = nsrpc::PacketCoderFactory().create();
     }
@@ -39,14 +39,14 @@ public:
 
         delete packetCoder_;
 
-        SessionTestFixture::TearDown();
+        ProactorSessionTestFixture::TearDown();
     }
 protected:
     nsrpc::ReactorTask* reactorTask_;
-    TestClientSession* clientSession_;
+    TestReactorSession* clientSession_;
     nsrpc::PacketCoder* packetCoder_;
 };
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
 
-#endif // !defined(NSRPC_CLIENTSESSIONTESTFIXTURE_H)
+#endif // !defined(NSRPC_REACTORSESSIONTESTFIXTURE_H)

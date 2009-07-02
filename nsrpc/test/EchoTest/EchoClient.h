@@ -11,20 +11,22 @@
 #include <nsrpc/detail/PacketCoderFactory.h>
 #include <nsrpc/utility/MessageBlockManager.h>
 #include <nsrpc/SessionFactory.h>
-#include <nsrpc/RpcSession.h>
+#include <nsrpc/RpcProactorSession.h>
 #include <nsrpc/RpcSessionConfig.h>
 #include <nsrpc/PacketSeedExchangerFactory.h>
 #include <nsrpc/detail/PacketCoder.h>
+#include <srpc/RpcForwarder.h>
+#include <srpc/RpcReceiver.h>
 
 /**
  * @class EchoClientSession
  */
-class EchoClientSession : public nsrpc::Session
+class EchoClientSession : public nsrpc::ProactorSession
 {
 public:
     EchoClientSession(srpc::UInt32 echoCount, srpc::UInt32 blockSize,
         const nsrpc::SessionConfig& config) :
-        nsrpc::Session(config),
+        nsrpc::ProactorSession(config),
         echoCount_(echoCount),
         blockSize_(blockSize),
         body_(blockSize - getPacketCoder().getHeaderSize(), 'X'),
@@ -45,7 +47,7 @@ private:
 
     virtual void open(ACE_HANDLE new_handle,
         ACE_Message_Block& message_block) {
-        nsrpc::Session::open(new_handle, message_block);
+        nsrpc::ProactorSession::open(new_handle, message_block);
         echoedCount_ = 0;
         send();
     }
@@ -68,22 +70,20 @@ private:
 * @class EchoClientRpcSession
 */
 class EchoClientRpcSession :
-    public nsrpc::RpcSession, public Echo
+    public nsrpc::RpcProactorSession, public Echo,
+    protected srpc::RpcForwarder, protected srpc::RpcReceiver
 {
+    DECLARE_SRPC_EVENT_DISPATCHER(EchoClientRpcSession);
 public:
     EchoClientRpcSession(srpc::UInt32 echoCount, srpc::UInt32 blockSize,
-        const nsrpc::RpcSessionConfig& config) :
-        nsrpc::RpcSession(config),
-        echoCount_(echoCount),
-        blockSize_(blockSize),
-        body_(blockSize - getPacketCoder().getHeaderSize(), 'R') {}
+        const nsrpc::RpcSessionConfig& config);
 
     OVERRIDE_SRPC_METHOD_1(echo, srpc::RString, data);
     OVERRIDE_SRPC_METHOD_1(onEcho, srpc::RString, data);
 private:
     virtual void open(ACE_HANDLE new_handle,
         ACE_Message_Block& message_block) {
-        nsrpc::RpcSession::open(new_handle, message_block);
+        nsrpc::RpcProactorSession::open(new_handle, message_block);
         echoedCount_ = 0;
         echo(body_);
     }

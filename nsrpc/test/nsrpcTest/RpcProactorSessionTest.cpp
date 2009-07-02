@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SessionTestFixture.h"
+#include "ProactorSessionTestFixture.h"
 
 #if defined(NSRPC_HAS_PROACTOR)
 
@@ -33,15 +33,15 @@ private:
 };
 
 /**
-* @class RpcSessionTest
+* @class RpcProactorSessionTest
 *
-* Session Test
+* RpcProactorSession Test
 */
-class RpcSessionTest : public SessionTestFixture
+class RpcProactorSessionTest : public ProactorSessionTestFixture
 {
 private:
     virtual void SetUp() {
-        SessionTestFixture::SetUp();
+        ProactorSessionTestFixture::SetUp();
 
         client_ = new TestClient;
         (void)client_->connect(1, getTestAddress());
@@ -51,30 +51,31 @@ private:
         client_->close();
         delete client_;
 
-        SessionTestFixture::TearDown();
+        ProactorSessionTestFixture::TearDown();
 
         delete sessionFactory_;
     }
 
 private:
     virtual SessionManager* createSessionManager() {
-        sessionFactory_ = new RpcSessionFactory(proactorTask_->getProactor());
+        sessionFactory_ = new RpcProactorSessionFactory(proactorTask_->getProactor());
         return new TestCachedSessionManager(*sessionFactory_);
     }
 
 protected:
-    nsrpc::RpcSession& getLastSession() {
-        return static_cast<TestCachedSessionManager*>(sessionManager_)->
-            getLastSession();
+    TestRpcProactorSession& getLastSession() {
+        return static_cast<TestRpcProactorSession&>(
+            static_cast<TestCachedSessionManager*>(sessionManager_)->
+                getLastSession());
     }
 
 protected:
-    RpcSessionFactory* sessionFactory_;
+    RpcProactorSessionFactory* sessionFactory_;
     TestClient* client_;
 };
 
 
-TEST_F(RpcSessionTest, testSendRpcCommands)
+TEST_F(RpcProactorSessionTest, testSendRpcCommands)
 {
     const RUInt32 valueExpected = 337;
 
@@ -84,7 +85,7 @@ TEST_F(RpcSessionTest, testSendRpcCommands)
     const RRpcId rpcId("testRpcId");
     for (int i = 0; i < sendCount; ++i) {
         TestRpcCommand command(rpcId, valueExpected);
-        getLastSession().getRpcNetwork()->send(command);
+        getLastSession().sendRpcCommand(command);
     }
 
     pause(1);

@@ -1,25 +1,25 @@
 #include "stdafx.h"
-#include "SessionTestFixture.h"
+#include "ProactorSessionTestFixture.h"
 
 #if defined(NSRPC_HAS_PROACTOR)
 
-#include <nsrpc/SessionConnector.h>
+#include <nsrpc/ProactorSessionConnector.h>
 #include <nsrpc/utility/SystemUtil.h>
 
 using namespace nsrpc;
 
 /**
-* @class SessionConnectorTest
+* @class ProactorSessionConnectorTest
 *
-* SessionConnector Test
+* ProactorSessionConnector Test
 */
-class SessionConnectorTest : public SessionTestFixture
+class ProactorSessionConnectorTest : public ProactorSessionTestFixture
 {
 private:
     virtual void SetUp() {
-        SessionTestFixture::SetUp();
+        ProactorSessionTestFixture::SetUp();
 
-        connector_ = new SessionConnector(*sessionManager_);
+        connector_ = new ProactorSessionConnector(*sessionManager_);
         pause(10);
     }
 
@@ -28,20 +28,20 @@ private:
         connector_->wait();
         delete connector_;
 
-        SessionTestFixture::TearDown();
+        ProactorSessionTestFixture::TearDown();
     }
 
 protected:
-    TestSessionManager* getSessionManager() {
-        return static_cast<TestSessionManager*>(sessionManager_);
+    TestProactorSessionManager* getSessionManager() {
+        return static_cast<TestProactorSessionManager*>(sessionManager_);
     }
 
 protected:
-    SessionConnector* connector_;
+    ProactorSessionConnector* connector_;
 };
 
 
-TEST_F(SessionConnectorTest, testConnect)
+TEST_F(ProactorSessionConnectorTest, testConnect)
 {
     EXPECT_EQ(1,
         int(connector_->start(getTestAddress(), proactorTask_->getProactor())));
@@ -52,7 +52,7 @@ TEST_F(SessionConnectorTest, testConnect)
 }
 
 
-TEST_F(SessionConnectorTest, testMultipleConnect)
+TEST_F(ProactorSessionConnectorTest, testMultipleConnect)
 {
     EXPECT_EQ(5,
         int(connector_->start(getTestAddress(), proactorTask_->getProactor(), 5)));
@@ -63,7 +63,7 @@ TEST_F(SessionConnectorTest, testMultipleConnect)
 }
 
 
-TEST_F(SessionConnectorTest, testStopToConnect)
+TEST_F(ProactorSessionConnectorTest, testStopToConnect)
 {
     EXPECT_EQ(0,
         int(connector_->start(getTestAddress(), proactorTask_->getProactor(), 0)));

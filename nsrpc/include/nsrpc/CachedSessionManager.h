@@ -5,12 +5,9 @@
 
 #if defined (NSRPC_HAS_PROACTOR)
 
-#include "config/Proactor.h"
 #include "detail/SessionManager.h"
 #include <srpc/StringTypes.h>
 #include <boost/scoped_ptr.hpp>
-
-class NSRPC_Proactor;
 
 namespace nsrpc
 {

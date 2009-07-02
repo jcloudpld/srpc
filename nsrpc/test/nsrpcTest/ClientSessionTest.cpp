@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ClientSessionTestFixture.h"
+#include "ReactorSessionTestFixture.h"
 
 #if defined(NSRPC_HAS_PROACTOR)
 
@@ -14,11 +14,11 @@ using namespace nsrpc;
 *
 * Session Test
 */
-class ClientSessionTest : public ClientSessionTestFixture
+class ClientSessionTest : public ReactorSessionTestFixture
 {
 private:
     virtual void SetUp() {
-        ClientSessionTestFixture::SetUp();
+        ReactorSessionTestFixture::SetUp();
 
         clientSession_->connect(getTestAddress().get_host_addr(),
             getTestAddress().get_port_number(), 1);
@@ -29,15 +29,15 @@ private:
     virtual void TearDown() {
         clientSession_->disconnect();
 
-        ClientSessionTestFixture::TearDown();
+        ReactorSessionTestFixture::TearDown();
     }
 
 protected:
-    TestSessionManager* getSessionManager() {
-        return static_cast<TestSessionManager*>(sessionManager_);
+    TestProactorSessionManager* getSessionManager() {
+        return static_cast<TestProactorSessionManager*>(sessionManager_);
     }
 
-    TestSession& getLastServerSession() {
+    TestProactorSession& getLastServerSession() {
         return getSessionManager()->getSession();
     }
 };

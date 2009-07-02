@@ -1,20 +1,20 @@
-#ifndef NSRPC_RPCSESSION_H
-#define NSRPC_RPCSESSION_H
+#ifndef NSRPC_RPCPROACTORSESSION_H
+#define NSRPC_RPCPROACTORSESSION_H
 
 #include "nsrpc.h"
 
 #if defined (NSRPC_HAS_PROACTOR)
 
-#include "Session.h"
+#include "ProactorSession.h"
 #include "detail/SessionRpcNetworkCallback.h"
 #include "detail/rpc_interface/SecurityService.h"
-#include <srpc/RpcForwarder.h>
-#include <srpc/RpcReceiver.h>
 #include <boost/scoped_ptr.hpp>
 
 namespace srpc
 {
 
+class RpcForwarder;
+class RpcReceiver;
 class RpcNetwork;
 
 } // namespace srpc
@@ -27,25 +27,23 @@ class PacketSeedExchanger;
 struct RpcSessionConfig;
 
 /**
- * @class RpcSession
+ * @class RpcProactorSession
  *
  * RPC enabled Session
  */
-class NSRPC_API RpcSession : public Session,
-    protected srpc::RpcReceiver, protected srpc::RpcForwarder,
+class NSRPC_API RpcProactorSession : public ProactorSession,
     private SessionRpcNetworkCallback
 {
-    DECLARE_SRPC_EVENT_DISPATCHER(RpcSession);
 public:
-    RpcSession(const RpcSessionConfig& config);
-    virtual ~RpcSession();
-public: // for Test
-    srpc::RpcNetwork* getRpcNetwork();
-public:
-    // = NSRPC_Service_Handler
-    virtual void open(ACE_HANDLE new_handle, ACE_Message_Block& message_block);
+    RpcProactorSession(const RpcSessionConfig& config);
+    virtual ~RpcProactorSession();
+
+    void registerRpcForwarder(srpc::RpcForwarder& forwarder);
+    void registerRpcReceiver(srpc::RpcReceiver& receiver);
+
 protected:
     // = Session overriding
+    virtual void onConnected();
     virtual void onDisconnected();
     virtual bool onMessageArrived(CsMessageType messageType);
 private:
@@ -60,6 +58,8 @@ private:
     virtual void unmarshalingErrorOccurred() {
         disconnect();
     }
+protected:
+    srpc::RpcNetwork* getRpcNetwork();
 private:
     boost::scoped_ptr<SessionRpcNetwork> rpcNetwork_;
     boost::scoped_ptr<PacketSeedExchanger> seedExchanger_;
@@ -69,4 +69,4 @@ private:
 
 #endif // #if defined (NSRPC_HAS_PROACTOR)
 
-#endif // !defined(NSRPC_RPCSESSION_H)
+#endif // !defined(NSRPC_RPCPROACTORSESSION_H)

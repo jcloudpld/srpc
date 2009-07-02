@@ -1,23 +1,23 @@
-#ifndef NSRPC_TESTSESSION_H
-#define NSRPC_TESTSESSION_H
+#ifndef NSRPC_TESTPROACTORSESSION_H
+#define NSRPC_TESTPROACTORSESSION_H
 
 #include <nsrpc/nsrpc.h>
 
 #if defined(NSRPC_HAS_PROACTOR)
 
-#include <nsrpc/Session.h>
+#include <nsrpc/ProactorSession.h>
 #include <nsrpc/detail/PacketCoderFactory.h>
 
 /**
- * @class TestSession
+ * @class TestProactorSession
  *
- * 테스트용 Session
+ * 테스트용 ProactorSession
  */
-class TestSession : public nsrpc::Session
+class TestProactorSession : public nsrpc::ProactorSession
 {
 public:
-    TestSession(const nsrpc::SessionConfig& config) :
-        nsrpc::Session(config),
+    TestProactorSession(const nsrpc::SessionConfig& config) :
+        nsrpc::ProactorSession(config),
         arrivedMessageCount_(0),
         acquireSendBlockCallCount_(0) {}
 
@@ -31,7 +31,7 @@ public:
 public:
     virtual ACE_Message_Block& acquireSendBlock() {
         ++acquireSendBlockCallCount_;
-        return nsrpc::Session::acquireSendBlock();
+        return nsrpc::ProactorSession::acquireSendBlock();
     }
 private:
     virtual bool onMessageArrived(nsrpc::CsMessageType /*messageType*/) {
@@ -46,4 +46,4 @@ private:
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
 
-#endif // !defined(NSRPC_TESTSESSION_H)
+#endif // !defined(NSRPC_TESTPROACTORSESSION_H)

@@ -1006,10 +1006,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ClientSession.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\CsPacketCoder.h"
 				>
 			</File>
@@ -1046,7 +1042,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ProactorSession.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ProactorTask.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ReactorSession.cpp"
 				>
 			</File>
 			<File
@@ -1054,15 +1058,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RpcClientSession.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\RpcNetworkForBroadcast.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\RpcSession.cpp"
+				RelativePath=".\RpcProactorSession.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RpcReactorSession.cpp"
 				>
 			</File>
 			<File
@@ -1361,7 +1365,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\nsrpc\ProactorSession.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\nsrpc\ProactorSessionAcceptor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\nsrpc\ProactorSessionConnector.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\nsrpc\ProactorTask.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\nsrpc\ReactorSession.h"
 					>
 				</File>
 				<File
@@ -1369,11 +1389,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\RpcClientSession.h"
+					RelativePath="..\include\nsrpc\RpcProactorSession.h"
 					>
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\RpcSession.h"
+					RelativePath="..\include\nsrpc\RpcReactorSession.h"
 					>
 				</File>
 				<File
@@ -1385,15 +1405,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\SessionAcceptor.h"
-					>
-				</File>
-				<File
 					RelativePath="..\include\nsrpc\SessionConfig.h"
-					>
-				</File>
-				<File
-					RelativePath="..\include\nsrpc\SessionConnector.h"
 					>
 				</File>
 				<File
@@ -1405,10 +1417,6 @@
 					>
 					<File
 						RelativePath="..\include\nsrpc\detail\Asynch_RW.h"
-						>
-					</File>
-					<File
-						RelativePath="..\include\nsrpc\detail\ClientSession.h"
 						>
 					</File>
 					<File

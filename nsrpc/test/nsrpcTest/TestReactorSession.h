@@ -1,17 +1,17 @@
-#ifndef NSRPC_TESTCLIENTSESSION_H
-#define NSRPC_TESTCLIENTSESSION_H
+#ifndef NSRPC_TESTREACTORSESSION_H
+#define NSRPC_TESTREACTORSESSION_H
 
-#include <nsrpc/detail/ClientSession.h>
+#include <nsrpc/ReactorSession.h>
 
 /**
- * @class TestClientSession
- * 테스트용 ClientSession
+ * @class TestReactorSession
+ * 테스트용 ReactorSession
  */
-class TestClientSession : public nsrpc::ClientSession
+class TestReactorSession : public nsrpc::ReactorSession
 {
 public:
-    TestClientSession(ACE_Reactor* reactor) :
-        nsrpc::ClientSession(reactor),
+    TestReactorSession(ACE_Reactor* reactor) :
+        nsrpc::ReactorSession(reactor),
         disconnected_(false),
         messageCount_(0) {}
 
@@ -32,7 +32,7 @@ private:
     }
 public: // for Test
     virtual ACE_Message_Block& acquireSendBlock() {
-        return nsrpc::ClientSession::acquireSendBlock();
+        return nsrpc::ReactorSession::acquireSendBlock();
     }
     //virtual ACE_Message_Block& acquireRecvBlock();
     //virtual void release(ACE_Message_Block& mblock);
@@ -41,4 +41,4 @@ private:
     size_t messageCount_;
 };
 
-#endif // !defined(NSRPC_TESTCLIENTSESSION_H)
+#endif // !defined(NSRPC_TESTREACTORSESSION_H)

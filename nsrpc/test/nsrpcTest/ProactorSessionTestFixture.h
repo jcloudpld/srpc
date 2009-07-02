@@ -1,13 +1,13 @@
-#ifndef NSRPC_SESSIONTESTFIXTURE_H
-#define NSRPC_SESSIONTESTFIXTURE_H
+#ifndef NSRPC_PROACTORSESSIONTESTFIXTURE_H
+#define NSRPC_PROACTORSESSIONTESTFIXTURE_H
 
 #include <nsrpc/nsrpc.h>
 
 #if defined(NSRPC_HAS_PROACTOR)
 
 #include "AceTestFixture.h"
-#include "TestSessionManager.h"
-#include <nsrpc/SessionAcceptor.h>
+#include "TestProactorSessionManager.h"
+#include <nsrpc/ProactorSessionAcceptor.h>
 #include <nsrpc/ProactorFactory.h>
 #include <nsrpc/ProactorTask.h>
 #include <nsrpc/utility/AceUtil.h>
@@ -15,11 +15,11 @@
 #include <nsrpc/detail/PacketCoder.h>
 
 /**
-* @class SessionTestFixture
+* @class ProactorSessionTestFixture
 *
 * Session TestFixture
 */
-class SessionTestFixture : public AceTestFixture
+class ProactorSessionTestFixture : public AceTestFixture
 {
 protected:
     virtual void SetUp() {
@@ -49,7 +49,7 @@ protected:
         sessionManager_ = createSessionManager();
         sessionManager_->initialize();
 
-        acceptor_ = new nsrpc::SessionAcceptor(*sessionManager_);
+        acceptor_ = new nsrpc::ProactorSessionAcceptor(*sessionManager_);
         (void)acceptor_->open(
             ACE_INET_Addr(getTestAddress().get_port_number()),
             proactorTask_->getProactor());
@@ -81,7 +81,7 @@ protected:
 
 private:
     virtual nsrpc::SessionManager* createSessionManager() {
-        return new TestSessionManager(proactorTask_->getProactor());
+        return new TestProactorSessionManager(proactorTask_->getProactor());
     }
 
 protected:
@@ -92,10 +92,10 @@ protected:
 protected:
     nsrpc::ProactorTask* proactorTask_;
     nsrpc::SessionManager* sessionManager_;
-    nsrpc::SessionAcceptor* acceptor_;
+    nsrpc::ProactorSessionAcceptor* acceptor_;
     nsrpc::PacketCoder* packetCoder_;
 };
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
 
-#endif // !defined(NSRPC_SESSIONTESTFIXTURE_H)
+#endif // !defined(NSRPC_PROACTORSESSIONTESTFIXTURE_H)

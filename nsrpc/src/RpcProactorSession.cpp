@@ -2,35 +2,31 @@
 
 #if defined (NSRPC_HAS_PROACTOR)
 
-#include <nsrpc/RpcSession.h>
+#include <nsrpc/RpcProactorSession.h>
 #include <nsrpc/RpcSessionConfig.h>
 #include <nsrpc/PacketSeedExchanger.h>
 #include <nsrpc/detail/SessionRpcNetwork.h>
 #include <nsrpc/detail/PacketCoder.h>
+#include <srpc/RpcForwarder.h>
+#include <srpc/RpcReceiver.h>
 
 namespace nsrpc
 {
 
-// = RpcSession
-
-IMPLEMENT_SRPC_EVENT_DISPATCHER(RpcSession);
+// = RpcProactorSession
 
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4355)
 #endif
 
-RpcSession::RpcSession(const RpcSessionConfig& config) :
-    Session(config),
+RpcProactorSession::RpcProactorSession(const RpcSessionConfig& config) :
+    ProactorSession(config),
     rpcNetwork_(config.rpcNetwork_),
     seedExchanger_(config.seedExchanger_)
 {
     assert(rpcNetwork_.get() != 0);
-
     rpcNetwork_->initialize(*this, *this);
-
-    srpc::RpcReceiver::setRpcNetwork(*rpcNetwork_);
-    srpc::RpcForwarder::setRpcNetwork(*rpcNetwork_);
 
     seedExchanger_->initialize(*config.packetCoder_, *rpcNetwork_);
 }
@@ -39,39 +35,48 @@ RpcSession::RpcSession(const RpcSessionConfig& config) :
 #  pragma warning (pop)
 #endif
 
-RpcSession::~RpcSession()
+RpcProactorSession::~RpcProactorSession()
 {
 }
 
 
-void RpcSession::open(ACE_HANDLE new_handle, ACE_Message_Block& message_block)
+void RpcProactorSession::registerRpcForwarder(srpc::RpcForwarder& forwarder)
 {
-    rpcNetwork_->reset();
+    assert(rpcNetwork_.get() != 0);
 
-    Session::open(new_handle, message_block);
-
-    if (isConnected()) {
-        ACE_GUARD(ACE_Thread_Mutex, recvMonitor, getRecvLock());
-        ACE_GUARD(ACE_Thread_Mutex, sendMonitor, getSendLock());
-
-        seedExchanger_->exchangeFirstSeed();
-    }
+    forwarder.setRpcNetwork(*rpcNetwork_);
 }
 
 
-srpc::RpcNetwork* RpcSession::getRpcNetwork()
+void RpcProactorSession::registerRpcReceiver(srpc::RpcReceiver& receiver)
+{
+    assert(rpcNetwork_.get() != 0);
+
+    receiver.setRpcNetwork(*rpcNetwork_);
+}
+
+
+srpc::RpcNetwork* RpcProactorSession::getRpcNetwork()
 {
     return rpcNetwork_.get();
 }
 
 
-void RpcSession::onDisconnected()
+void RpcProactorSession::onConnected()
+{
+    rpcNetwork_->reset();
+
+    seedExchanger_->exchangeFirstSeed();
+}
+
+
+void RpcProactorSession::onDisconnected()
 {
     rpcNetwork_->disable();
 }
 
 
-bool RpcSession::onMessageArrived(CsMessageType messageType)
+bool RpcProactorSession::onMessageArrived(CsMessageType messageType)
 {
     if (! rpcNetwork_->messageArrived(messageType)) {
         return false;
