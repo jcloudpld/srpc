@@ -26,12 +26,12 @@ public:
     // = request
 
     /// address resolving을 요청한다
-    DECLARE_SRPC_PURE_METHOD_0(RpcStunService, rpcResolve);
+    DECLARE_SRPC_METHOD_0(RpcStunService, rpcResolve);
 
     // = response
 
     /// address resolving에 대한 응답
-    DECLARE_SRPC_PURE_METHOD_2(RpcStunService, rpcResolved,
+    DECLARE_SRPC_METHOD_2(RpcStunService, rpcResolved,
         srpc::RShortString, ipAddress, srpc::RUInt16, port);
 };
 

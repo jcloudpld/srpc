@@ -18,7 +18,7 @@ class RpcTestService
 public:
     virtual ~RpcTestService() {}
 
-    DECLARE_SRPC_PURE_METHOD_1(RpcTestService, hello,
+    DECLARE_SRPC_METHOD_1(RpcTestService, hello,
         srpc::RShortString, world);
 };
 
