@@ -52,7 +52,7 @@ public:
         PacketCoderFactory* packetCoderFactory = 0);
     virtual ~ReactorSession();
 
-    virtual void cancelConnection() {
+    virtual void closeConnection() {
         disconnect();
     }
 public:

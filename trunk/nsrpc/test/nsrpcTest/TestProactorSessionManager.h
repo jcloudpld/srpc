@@ -44,7 +44,7 @@ public:
     }
 
     virtual void release(nsrpc::Session* session) {
-        session->cancelConnection();
+        session->closeConnection();
         --sessionCount_;
     }
 
