@@ -5,6 +5,20 @@
 
 #include <srpc/Exception.h>
 
+IMPLEMENT_SRPC_EVENT_DISPATCHER(EchoClientRpcSession);
+
+EchoClientRpcSession::EchoClientRpcSession(srpc::UInt32 echoCount, srpc::UInt32 blockSize,
+    const nsrpc::RpcSessionConfig& config) :
+    nsrpc::RpcProactorSession(config),
+    echoCount_(echoCount),
+    blockSize_(blockSize),
+    body_(blockSize - getPacketCoder().getHeaderSize(), 'R')
+{
+    registerRpcForwarder(*this);
+    registerRpcReceiver(*this);
+}
+
+
 FORWARD_SRPC_METHOD_1(EchoClientRpcSession, echo, srpc::RString, data)
 
 RECEIVE_SRPC_METHOD_1(EchoClientRpcSession, onEcho,

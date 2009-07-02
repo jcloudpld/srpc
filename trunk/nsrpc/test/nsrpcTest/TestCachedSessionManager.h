@@ -9,30 +9,34 @@
 #include <nsrpc/detail/PacketCoderFactory.h>
 #include <nsrpc/CachedSessionManager.h>
 #include <nsrpc/SessionFactory.h>
-#include <nsrpc/RpcSession.h>
+#include <nsrpc/RpcProactorSession.h>
 #include <nsrpc/RpcSessionConfig.h>
 #include <nsrpc/PacketSeedExchangerFactory.h>
 
 /**
- * @class TestRpcSession
+ * @class TestRpcProactorSession
  */
-class TestRpcSession : public nsrpc::RpcSession
+class TestRpcProactorSession : public nsrpc::RpcProactorSession
 {
 public:
-    TestRpcSession(const nsrpc::RpcSessionConfig& config) :
-        nsrpc::RpcSession(config) {}
+    TestRpcProactorSession(const nsrpc::RpcSessionConfig& config) :
+        nsrpc::RpcProactorSession(config) {}
+
+    void sendRpcCommand(srpc::RpcCommand& command) {
+        getRpcNetwork()->send(command);
+    }
 private:
     virtual void onDisconnected() {}
 };
 
 
 /**
- * @class RpcSessionFactory
+ * @class RpcProactorSessionFactory
  */
-class RpcSessionFactory : public nsrpc::SessionFactory
+class RpcProactorSessionFactory : public nsrpc::SessionFactory
 {
 public:
-    RpcSessionFactory(NSRPC_Proactor* proactor = 0,
+    RpcProactorSessionFactory(NSRPC_Proactor* proactor = 0,
         bool useBitPacking = true) :
         proactor_(proactor),
         useBitPacking_(useBitPacking),
@@ -52,7 +56,7 @@ public:
             proactor_, nsrpc::SessionCapacity::getNoLimitedCapacity(),
             new nsrpc::SessionRpcNetwork(useBitPacking_),
             nsrpc::PacketSeedExchangerFactory::createForServer());
-        return new TestRpcSession(config);
+        return new TestRpcProactorSession(config);
     }
 private:
     NSRPC_Proactor* proactor_;
@@ -83,8 +87,8 @@ public:
         return lastSession_;
     }
 public:
-    nsrpc::RpcSession& getLastSession() const {
-        return static_cast<nsrpc::RpcSession&>(*lastSession_);
+    nsrpc::RpcProactorSession& getLastSession() const {
+        return static_cast<nsrpc::RpcProactorSession&>(*lastSession_);
     }
 private:
     nsrpc::Session* lastSession_;

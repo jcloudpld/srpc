@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <nsrpc/detail/ClientSession.h>
+#include <nsrpc/ReactorSession.h>
 #include <nsrpc/detail/PacketCoderFactory.h>
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/detail/CsProtocol.h>
@@ -37,14 +37,14 @@ enum {
 
 } // namespace
 
-// = ClientSession
+// = ReactorSession
 
 #ifdef _MSC_VER
 #  pragma warning ( push )
 #  pragma warning ( disable: 4355 )
 #endif
 
-ClientSession::ClientSession(ACE_Reactor* reactor,
+ReactorSession::ReactorSession(ACE_Reactor* reactor,
     PacketCoderFactory* packetCoderFactory) :
     ACE_Event_Handler(reactor),
     msgQueue_(hwmMessageQueue, lwmMessageQueue),
@@ -74,7 +74,7 @@ ClientSession::ClientSession(ACE_Reactor* reactor,
 #  pragma warning ( pop )
 #endif
 
-ClientSession::~ClientSession()
+ReactorSession::~ReactorSession()
 {
     disconnect();
 
@@ -84,7 +84,7 @@ ClientSession::~ClientSession()
 }
 
 
-bool ClientSession::connect(const srpc::String& ip, u_short port,
+bool ReactorSession::connect(const srpc::String& ip, u_short port,
     size_t timeout)
 {
     const ACE_INET_Addr address(port, ip.c_str());
@@ -99,7 +99,7 @@ bool ClientSession::connect(const srpc::String& ip, u_short port,
 
     ACE_SOCK_Connector connector;
     if (connector.connect(peer(), address, &connectionTimeout) == -1) {
-        NSRPC_LOG_ERROR4(ACE_TEXT("ClientSession::connect(%s:%u) ")
+        NSRPC_LOG_ERROR4(ACE_TEXT("ReactorSession::connect(%s:%u) ")
             ACE_TEXT("FAILED!!!(%d,%m)\n"),
             ip.c_str(), port, ACE_OS::last_error());
         disconnect_i(false);
@@ -117,7 +117,7 @@ bool ClientSession::connect(const srpc::String& ip, u_short port,
 }
 
 
-void ClientSession::disconnect(bool fireEvent)
+void ReactorSession::disconnect(bool fireEvent)
 {
     ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
 
@@ -125,7 +125,7 @@ void ClientSession::disconnect(bool fireEvent)
 }
 
 
-void ClientSession::disconnectGracefully(bool fireEvent)
+void ReactorSession::disconnectGracefully(bool fireEvent)
 {
     ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
 
@@ -139,7 +139,7 @@ void ClientSession::disconnectGracefully(bool fireEvent)
 }
 
 
-bool ClientSession::sendMessage(ACE_Message_Block& mblock,
+bool ReactorSession::sendMessage(ACE_Message_Block& mblock,
     CsMessageType messageType)
 {
     ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
@@ -162,17 +162,17 @@ bool ClientSession::sendMessage(ACE_Message_Block& mblock,
                 block.release();
                 return true; // success
             }
-            NSRPC_LOG_ERROR3(ACE_TEXT("ClientSession::sendMessage() - ")
+            NSRPC_LOG_ERROR3(ACE_TEXT("ReactorSession::sendMessage() - ")
                 ACE_TEXT("enqueue_tail(%d,%m,%d queued) FAILED."),
                 ACE_OS::last_error(), msgQueue_.message_count());
         }
         else {
-            NSRPC_LOG_ERROR(ACE_TEXT("ClientSession::sendMessage() - ")
+            NSRPC_LOG_ERROR(ACE_TEXT("ReactorSession::sendMessage() - ")
                 ACE_TEXT("Packet encoding FAILED."));
         }
     }
     else {
-        NSRPC_LOG_ERROR2(ACE_TEXT("ClientSession::sendMessage() - ")
+        NSRPC_LOG_ERROR2(ACE_TEXT("ReactorSession::sendMessage() - ")
             ACE_TEXT("Too short message(%d)."), block->length());
     }
 
@@ -181,13 +181,13 @@ bool ClientSession::sendMessage(ACE_Message_Block& mblock,
 }
 
 
-PacketCoder& ClientSession::getPacketCoder()
+PacketCoder& ReactorSession::getPacketCoder()
 {
     return *packetCoder_;
 }
 
 
-bool ClientSession::initSession()
+bool ReactorSession::initSession()
 {
     packetCoder_->reset();
 
@@ -213,7 +213,7 @@ bool ClientSession::initSession()
 }
 
 
-void ClientSession::disconnect_i(bool fireEvent)
+void ReactorSession::disconnect_i(bool fireEvent)
 {
     if (peer().get_handle() != ACE_INVALID_HANDLE) {
         const ACE_Reactor_Mask masks =
@@ -231,14 +231,14 @@ void ClientSession::disconnect_i(bool fireEvent)
 }
 
 
-void ClientSession::closeSocket()
+void ReactorSession::closeSocket()
 {
     peer().close();
     peer().set_handle(ACE_INVALID_HANDLE);
 }
 
 
-bool ClientSession::read()
+bool ReactorSession::read()
 {
     if (recvBlock_->space() <= 0) {
         const size_t spare = recvBlock_->capacity() / 10;
@@ -253,7 +253,7 @@ bool ClientSession::read()
             return true;
         }
         NSRPC_LOG_ERROR2(
-            ACE_TEXT("ClientSession::read() FAILED!!!(%d,%m)"), 
+            ACE_TEXT("ReactorSession::read() FAILED!!!(%d,%m)"), 
             ACE_OS::last_error());
         return false;
     }
@@ -268,7 +268,7 @@ bool ClientSession::read()
 }
 
 
-bool ClientSession::write()
+bool ReactorSession::write()
 {
     int queueSize = -1;
 
@@ -288,7 +288,7 @@ bool ClientSession::write()
         if (sentSize == -1) {
             if (ACE_OS::last_error() != EWOULDBLOCK) {
                 NSRPC_LOG_DEBUG2(
-                    ACE_TEXT("ClientSession::write() ")
+                    ACE_TEXT("ReactorSession::write() ")
                     ACE_TEXT("FAILED!!!(%d,%m)"), ACE_OS::last_error());
                 return false;
             }
@@ -301,7 +301,7 @@ bool ClientSession::write()
             const int result = msgQueue_.enqueue_head(block.get());
             if (result == -1) {
                 NSRPC_LOG_ERROR2(
-                    ACE_TEXT("ClientSession::write() - ")
+                    ACE_TEXT("ReactorSession::write() - ")
                     ACE_TEXT("enqueue_head(%d, %m) FAILED!!!"),
                     ACE_OS::last_error());
                 return false;
@@ -315,7 +315,7 @@ bool ClientSession::write()
     }
 
     if (queueSize >= 0) {
-        NSRPC_LOG_INFO2("ClientSession: current write queue size = %u.",
+        NSRPC_LOG_INFO2("ReactorSession: current write queue size = %u.",
             queueSize);
     }
 
@@ -323,7 +323,7 @@ bool ClientSession::write()
 }
 
 
-void ClientSession::releaseMessageBlocks()
+void ReactorSession::releaseMessageBlocks()
 {
     ACE_Message_Block* mblock;
     ACE_Time_Value immediate(ACE_Time_Value::zero);
@@ -342,14 +342,14 @@ void ClientSession::releaseMessageBlocks()
 }
 
 
-bool ClientSession::parseHeader()
+bool ReactorSession::parseHeader()
 {
     assert(recvBlock_->length() >= packetCoder_->getHeaderSize());
     return packetCoder_->readHeader(headerForReceive_, *recvBlock_);
 }
 
 
-bool ClientSession::parseMessage()
+bool ReactorSession::parseMessage()
 {
     const size_t messageSize =
         packetCoder_->getHeaderSize() + headerForReceive_.bodySize_;
@@ -372,20 +372,20 @@ bool ClientSession::parseMessage()
 }
 
 
-bool ClientSession::isPacketHeaderArrived() const
+bool ReactorSession::isPacketHeaderArrived() const
 {
     return recvBlock_->length() >= packetCoder_->getHeaderSize();
 }
 
 
-bool ClientSession::isMessageArrived() const
+bool ReactorSession::isMessageArrived() const
 {
     return recvBlock_->length() >=
         (packetCoder_->getHeaderSize() + headerForReceive_.bodySize_);
 }
 
 
-int ClientSession::getWriteQueueSize()
+int ReactorSession::getWriteQueueSize()
 {
     const time_t logInterval = 3;
     const size_t queueThreshold = 3;
@@ -409,7 +409,7 @@ int ClientSession::getWriteQueueSize()
 
 // = ACE_Event_Handler overriding
 
-int ClientSession::handle_input(ACE_HANDLE)
+int ReactorSession::handle_input(ACE_HANDLE)
 {
     ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, -1);
 
@@ -431,7 +431,7 @@ int ClientSession::handle_input(ACE_HANDLE)
         }
 
         if (! isValidCsMessageType(headerForReceive_.messageType_)) {
-            NSRPC_LOG_ERROR(ACE_TEXT("ClientSession::handle_input() - ")
+            NSRPC_LOG_ERROR(ACE_TEXT("ReactorSession::handle_input() - ")
                 ACE_TEXT("Invalid Message Type."));
             return false;
         }
@@ -443,7 +443,7 @@ int ClientSession::handle_input(ACE_HANDLE)
 }
 
 
-int ClientSession::handle_output(ACE_HANDLE)
+int ReactorSession::handle_output(ACE_HANDLE)
 {
     if (! write()) {
         return -1;
@@ -465,7 +465,7 @@ int ClientSession::handle_output(ACE_HANDLE)
 }
 
 
-int ClientSession::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
+int ReactorSession::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
 {
     disconnect(true);
 
@@ -474,7 +474,7 @@ int ClientSession::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
 
 // = MessageBlockProvider overriding
 
-ACE_Message_Block& ClientSession::acquireSendBlock()
+ACE_Message_Block& ReactorSession::acquireSendBlock()
 {
     ACE_Message_Block* mblock =
         messageBlockManager_->create(packetCoder_->getDefaultPacketSize());
@@ -483,7 +483,7 @@ ACE_Message_Block& ClientSession::acquireSendBlock()
 }
 
 
-ACE_Message_Block& ClientSession::acquireRecvBlock()
+ACE_Message_Block& ReactorSession::acquireRecvBlock()
 {
     return *msgBlock_;
 }

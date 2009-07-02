@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SessionTestFixture.h"
+#include "ProactorSessionTestFixture.h"
 
 #if defined(NSRPC_HAS_PROACTOR)
 
@@ -16,11 +16,11 @@ const size_t  clientCount = 8;
 *
 * TestCachedSessionManager Test
 */
-class CachedSessionManagerTest : public SessionTestFixture
+class CachedSessionManagerTest : public ProactorSessionTestFixture
 {
 private:
     virtual void SetUp() {
-        SessionTestFixture::SetUp();
+        ProactorSessionTestFixture::SetUp();
 
         connect();
     }
@@ -28,13 +28,13 @@ private:
     virtual void TearDown() {
         disconnect();
 
-        SessionTestFixture::TearDown();
+        ProactorSessionTestFixture::TearDown();
 
         delete sessionFactory_;
     }
 
     virtual SessionManager* createSessionManager() {
-        sessionFactory_ = new RpcSessionFactory(proactorTask_->getProactor());
+        sessionFactory_ = new RpcProactorSessionFactory(proactorTask_->getProactor());
         return new TestCachedSessionManager(*sessionFactory_);
     }
 
@@ -47,7 +47,7 @@ protected:
     }
 
 protected:
-    RpcSessionFactory* sessionFactory_;
+    RpcProactorSessionFactory* sessionFactory_;
     TestClient* client_[clientCount];
 };
 

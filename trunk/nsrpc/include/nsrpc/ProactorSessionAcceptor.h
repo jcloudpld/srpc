@@ -1,5 +1,5 @@
-#ifndef NSRPC_SESSIONACCEPTOR_H
-#define NSRPC_SESSIONACCEPTOR_H
+#ifndef NSRPC_PROACTORSESSIONACCEPTOR_H
+#define NSRPC_PROACTORSESSIONACCEPTOR_H
 
 #include "nsrpc.h"
 
@@ -27,18 +27,18 @@ class SessionCreator;
 */
 
 /**
- * @class SessionAcceptor
+ * @class ProactorSessionAcceptor
  *
  * Asynchronous Session(connection) Acceptor.
  * - 인스턴스를 삭제하기 전에 wait()를 호출하여 안전하게 삭제할 수 있을 때까지
  *   대기해야 한다.
  */
-class NSRPC_API SessionAcceptor :
+class NSRPC_API ProactorSessionAcceptor :
     public NSRPC_Asynch_Acceptor<NSRPC_Service_Handler>
 {
     typedef NSRPC_Asynch_Acceptor<NSRPC_Service_Handler> Parent;
 public:
-    SessionAcceptor(SessionCreator& sessionCreator) :
+    ProactorSessionAcceptor(SessionCreator& sessionCreator) :
         sessionCreator_(sessionCreator),
         started_(false),
         shouldFinish_(false)
@@ -97,4 +97,4 @@ private:
 
 #endif // #if defined (NSRPC_HAS_PROACTOR)
 
-#endif // NSRPC_SESSIONACCEPTOR_H
+#endif // NSRPC_PROACTORSESSIONACCEPTOR_H

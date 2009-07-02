@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SessionTestFixture.h"
+#include "ProactorSessionTestFixture.h"
 
 #if defined(NSRPC_HAS_PROACTOR)
 
@@ -9,15 +9,15 @@
 using namespace nsrpc;
 
 /**
-* @class SessionAcceptorTest
+* @class ProactorSessionAcceptorTest
 *
-* SessionAcceptor Test
+* ProactorSessionAcceptor Test
 */
-class SessionAcceptorTest : public SessionTestFixture
+class ProactorSessionAcceptorTest : public ProactorSessionTestFixture
 {
 private:
     virtual void SetUp() {
-        SessionTestFixture::SetUp();
+        ProactorSessionTestFixture::SetUp();
 
         client_ = new TestClient;
         (void)client_->connect(1, getTestAddress());
@@ -27,12 +27,12 @@ private:
         client_->close();
         delete client_;
 
-        SessionTestFixture::TearDown();
+        ProactorSessionTestFixture::TearDown();
     }
 
 protected:
-    TestSessionManager* getSessionManager() {
-        return static_cast<TestSessionManager*>(sessionManager_);
+    TestProactorSessionManager* getSessionManager() {
+        return static_cast<TestProactorSessionManager*>(sessionManager_);
     }
 
 protected:
@@ -40,7 +40,7 @@ protected:
 };
 
 
-TEST_F(SessionAcceptorTest, testAccept)
+TEST_F(ProactorSessionAcceptorTest, testAccept)
 {
     pause(1);
 
@@ -48,7 +48,7 @@ TEST_F(SessionAcceptorTest, testAccept)
 }
 
 
-TEST_F(SessionAcceptorTest, testMultipleAccept)
+TEST_F(ProactorSessionAcceptorTest, testMultipleAccept)
 {
     const int connectionCount = 5;
     TestClient client[connectionCount];
@@ -62,7 +62,7 @@ TEST_F(SessionAcceptorTest, testMultipleAccept)
 }
 
 
-TEST_F(SessionAcceptorTest, testStopToAccept)
+TEST_F(ProactorSessionAcceptorTest, testStopToAccept)
 {
     acceptor_->close();
 
@@ -73,7 +73,7 @@ TEST_F(SessionAcceptorTest, testStopToAccept)
 }
 
 
-TEST_F(SessionAcceptorTest, testDisconnected)
+TEST_F(ProactorSessionAcceptorTest, testDisconnected)
 {
     pause(1);
 

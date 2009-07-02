@@ -422,19 +422,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RpcSessionTest.cpp"
+				RelativePath=".\ProactorSessionAcceptorTest.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SessionAcceptorTest.cpp"
+				RelativePath=".\ProactorSessionConnectorTest.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SessionConnectorTest.cpp"
+				RelativePath=".\ProactorSessionTest.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SessionTest.cpp"
+				RelativePath=".\RpcProactorSessionTest.cpp"
 				>
 			</File>
 			<File
@@ -492,10 +492,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ClientSessionTestFixture.h"
-				>
-			</File>
-			<File
 				RelativePath=".\P2pRelayTestFixture.h"
 				>
 			</File>
@@ -504,7 +500,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SessionTestFixture.h"
+				RelativePath=".\ProactorSessionTestFixture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ReactorSessionTestFixture.h"
 				>
 			</File>
 			<File
@@ -520,15 +520,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TestClientSession.h"
+				RelativePath=".\TestProactorSession.h"
 				>
 			</File>
 			<File
-				RelativePath=".\TestSession.h"
+				RelativePath=".\TestProactorSessionManager.h"
 				>
 			</File>
 			<File
-				RelativePath=".\TestSessionManager.h"
+				RelativePath=".\TestReactorSession.h"
 				>
 			</File>
 		</Filter>

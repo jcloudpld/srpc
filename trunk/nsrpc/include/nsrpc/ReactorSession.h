@@ -1,9 +1,10 @@
-#if !defined(NSRPC_CLIENTSESSION_H)
-#define NSRPC_CLIENTSESSION_H
+#if !defined(NSRPC_REACTORSESSION_H)
+#define NSRPC_REACTORSESSION_H
 
-#include "../nsrpc.h"
-#include "CsProtocol.h"
-#include "MessageBlockProvider.h"
+#include "nsrpc.h"
+#include "Session.h"
+#include "detail/CsProtocol.h"
+#include "detail/MessageBlockProvider.h"
 #include <srpc/StringTypes.h>
 #ifdef _MSC_VER
 #  pragma warning( push)
@@ -32,13 +33,13 @@ class PacketCoderFactory;
 class SynchMessageBlockManager;
 
 /**
- * @class ClientSession
- * Client Session (ACE_Reactor 기반)
+ * @class ReactorSession
+ * ACE_Reactor 기반의 Session
  * - disable Nagle-algorithm
  * - set non-blocking
  * - set maximum socket buffer size
  */
-class NSRPC_API ClientSession :
+class NSRPC_API ReactorSession : public Session,
     public ACE_Event_Handler, protected MessageBlockProvider
 {
 public:
@@ -47,10 +48,14 @@ public:
      * @param packetCoderFactory PacketCoder Factory.
      *          0이면 디폴트 PacketCoder가 사용된다.
      */
-    ClientSession(ACE_Reactor* reactor = 0,
+    ReactorSession(ACE_Reactor* reactor = 0,
         PacketCoderFactory* packetCoderFactory = 0);
-    virtual ~ClientSession();
+    virtual ~ReactorSession();
 
+    virtual void cancelConnection() {
+        disconnect();
+    }
+public:
     /**
      * 서버에 접속합니다.
      * @param ip 서버의 IP 주소
@@ -153,4 +158,4 @@ private:
 
 } // namespace nsrpc
 
-#endif // !defined(NSRPC_CLIENTSESSION_H)
+#endif // !defined(NSRPC_REACTORSESSION_H)

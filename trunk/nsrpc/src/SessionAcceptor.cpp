@@ -2,8 +2,8 @@
 
 #if defined (NSRPC_HAS_PROACTOR)
 
-#include <nsrpc/SessionAcceptor.h>
-#include <nsrpc/Session.h>
+#include <nsrpc/ProactorSessionAcceptor.h>
+#include <nsrpc/ProactorSession.h>
 #include <nsrpc/detail/SessionCreator.h>
 #include <nsrpc/utility/SystemUtil.h>
 #include <nsrpc/utility/Logger.h>
@@ -11,7 +11,7 @@
 namespace nsrpc
 {
 
-bool SessionAcceptor::open(const ACE_INET_Addr& listenAddr,
+bool ProactorSessionAcceptor::open(const ACE_INET_Addr& listenAddr,
     NSRPC_Proactor* proactor, size_t numberOfInitialAccepts)
 {
     if (shouldFinish_) {
@@ -28,14 +28,14 @@ bool SessionAcceptor::open(const ACE_INET_Addr& listenAddr,
     const int reissue_accept = 0;
     if (Parent::open(listenAddr, 0, pass_addresses, backlog, reuse_addr,
         proactor, validate_new_connection, reissue_accept, 0) != 0) {
-        NSRPC_LOG_ERROR(ACE_TEXT("SessionAcceptor::start() - ")
+        NSRPC_LOG_ERROR(ACE_TEXT("ProactorSessionAcceptor::start() - ")
             ACE_TEXT("NSRPC_Asynch_Acceptor::open() FAILED(%m)."));
         return false;
     }
 
     for (size_t i = 0; i < numberOfInitialAccepts; i++) {
         if (this->accept() == -1) {
-            NSRPC_LOG_ERROR(ACE_TEXT("SessionAcceptor::start() - ")
+            NSRPC_LOG_ERROR(ACE_TEXT("ProactorSessionAcceptor::start() - ")
                 ACE_TEXT("NSRPC_Asynch_Acceptor::accept() FAILED(%m)."));
             return false;
         }
@@ -48,13 +48,13 @@ bool SessionAcceptor::open(const ACE_INET_Addr& listenAddr,
 }
 
 
-void SessionAcceptor::start()
+void ProactorSessionAcceptor::start()
 {
     started_ = true;
 }
 
 
-void SessionAcceptor::close()
+void ProactorSessionAcceptor::close()
 {
     started_ = false;
     shouldFinish_ = true;
@@ -66,7 +66,7 @@ void SessionAcceptor::close()
 }
 
 
-void SessionAcceptor::wait()
+void ProactorSessionAcceptor::wait()
 {
     while (! isSafeToDelete()) {
         pause(1);
@@ -74,13 +74,13 @@ void SessionAcceptor::wait()
 }
 
 
-NSRPC_Service_Handler* SessionAcceptor::make_handler()
+NSRPC_Service_Handler* ProactorSessionAcceptor::make_handler()
 {
-    return sessionCreator_.acquire();
+    return static_cast<ProactorSession*>(sessionCreator_.acquire());
 }
 
 
-int SessionAcceptor::validate_connection(
+int ProactorSessionAcceptor::validate_connection(
     const NSRPC_Asynch_Accept::Result& result,
     const ACE_INET_Addr& remote, const ACE_INET_Addr& local)
 {
@@ -109,12 +109,12 @@ int SessionAcceptor::validate_connection(
 }
 
 
-int SessionAcceptor::should_reissue_accept()
+int ProactorSessionAcceptor::should_reissue_accept()
 {
     if (! shouldFinish_) {
         if (accept() == -1) {
             NSRPC_LOG_ERROR(
-                ACE_TEXT("SessionAcceptor::should_reissue_accept() - ")
+                ACE_TEXT("ProactorSessionAcceptor::should_reissue_accept() - ")
                 ACE_TEXT("NSRPC_Asynch_Acceptor::accept() FAILED(%m)."));
         }
         else {

@@ -1,11 +1,17 @@
-#if !defined(NSRPC_RPCCLIENTSESSION_H)
-#define NSRPC_RPCCLIENTSESSION_H
+#if !defined(NSRPC_RPCREACTORSESSION_H)
+#define NSRPC_RPCREACTORSESSION_H
 
-#include "detail/ClientSession.h"
+#include "ReactorSession.h"
 #include "detail/SessionRpcNetworkCallback.h"
-#include <srpc/RpcForwarder.h>
-#include <srpc/RpcReceiver.h>
 #include <boost/scoped_ptr.hpp>
+
+namespace srpc
+{
+
+class RpcForwarder;
+class RpcReceiver;
+
+} // namespace srpc
 
 namespace nsrpc
 {
@@ -14,26 +20,22 @@ class SessionRpcNetwork;
 class PacketSeedExchanger;
 
 /**
- * @class RpcClientSession
- * RPC Client Session
+ * @class RpcReactorSession
+ * RPC ReactorSession
  */
-class NSRPC_API RpcClientSession : public ClientSession,
-    protected srpc::RpcReceiver, protected srpc::RpcForwarder,
+class NSRPC_API RpcReactorSession : public ReactorSession,
     private SessionRpcNetworkCallback
 {
-    DECLARE_SRPC_EVENT_DISPATCHER(RpcClientSession);
 public:
-    explicit RpcClientSession(ACE_Reactor* reactor = 0,
+    explicit RpcReactorSession(ACE_Reactor* reactor = 0,
         PacketCoderFactory* packetCoderFactory = 0,
         bool useBitPacking = true);
-    virtual ~RpcClientSession();
+    virtual ~RpcReactorSession();
 
-    SessionRpcNetwork& getRpcNetwork() {
-        return *rpcNetwork_;
-    }
+    void registerRpcForwarder(srpc::RpcForwarder& forwarder);
+    void registerRpcReceiver(srpc::RpcReceiver& receiver);
 
 private:
-    void initRpcNetwork();
     void sendingFailed();
     void receivingFailed();
 protected:
@@ -65,4 +67,4 @@ private:
 
 } // namespace nsrpc
 
-#endif // !defined(NSRPC_RPCCLIENTSESSION_H)
+#endif // !defined(NSRPC_RPCREACTORSESSION_H)

@@ -1,11 +1,11 @@
-#ifndef NSRPC_TESTSESSIONMANAGER_H
-#define NSRPC_TESTSESSIONMANAGER_H
+#ifndef NSRPC_TESTPROACTORSESSIONMANAGER_H
+#define NSRPC_TESTPROACTORSESSIONMANAGER_H
 
 #include <nsrpc/nsrpc.h>
 
 #if defined(NSRPC_HAS_PROACTOR)
 
-#include "TestSession.h"
+#include "TestProactorSession.h"
 #include <nsrpc/SessionConfig.h>
 #include <nsrpc/detail/SessionManager.h>
 #include <nsrpc/utility/MessageBlockManager.h>
@@ -13,15 +13,15 @@
 #include <vector>
 
 /**
- * @class TestSessionManager
+ * @class TestProactorSessionManager
  *
  * 테스트용 SessionManager
  * - 메모리 누수가 발생하지만 의도적으로 놔둔 것임. 중요한 것은 세션 생성 여부!
  */
-class TestSessionManager : public nsrpc::SessionManager
+class TestProactorSessionManager : public nsrpc::SessionManager
 {
 public:
-    TestSessionManager(NSRPC_Proactor* proactor) :
+    TestProactorSessionManager(NSRPC_Proactor* proactor) :
         proactor_(proactor),
         lastSession_(0),
         sessionCount_(0) {
@@ -29,7 +29,7 @@ public:
             new nsrpc::SynchMessageBlockManager(10, 1024));
     }
 
-    virtual ~TestSessionManager() {
+    virtual ~TestProactorSessionManager() {
     }
 
     virtual void initialize() {}
@@ -39,12 +39,12 @@ public:
         nsrpc::SessionConfig config(this, messageBlockManager_.get(),
             nsrpc::PacketCoderFactory().create(), proactor_,
             nsrpc::SessionCapacity::getNoLimitedCapacity());
-        lastSession_ = new TestSession(config);
+        lastSession_ = new TestProactorSession(config);
         return lastSession_;
     }
 
     virtual void release(nsrpc::Session* session) {
-        session->disconnect();
+        session->cancelConnection();
         --sessionCount_;
     }
 
@@ -56,7 +56,7 @@ public:
         return true;
     }
 public:
-    TestSession& getSession() const {
+    TestProactorSession& getSession() const {
         return *lastSession_;
     }
 
@@ -66,10 +66,10 @@ public:
 private:
     NSRPC_Proactor* proactor_;
     boost::scoped_ptr<nsrpc::SynchMessageBlockManager> messageBlockManager_;
-    TestSession* lastSession_;
+    TestProactorSession* lastSession_;
     int sessionCount_;
 };
 
 #endif // #if defined(NSRPC_HAS_PROACTOR)
 
-#endif // !defined(NSRPC_TESTSESSIONMANAGER_H)
+#endif // !defined(NSRPC_TESTPROACTORSESSIONMANAGER_H)

@@ -8,8 +8,8 @@
 #include <nsrpc/ProactorTask.h>
 #include <nsrpc/ProactorFactory.h>
 #include <nsrpc/CachedSessionManager.h>
-#include <nsrpc/SessionAcceptor.h>
-#include <nsrpc/SessionConnector.h>
+#include <nsrpc/ProactorSessionAcceptor.h>
+#include <nsrpc/ProactorSessionConnector.h>
 
 #include <nsrpc/utility/SystemUtil.h>
 #include <nsrpc/utility/LogManager.h>
@@ -44,7 +44,7 @@ void run(const Config& config)
         new CachedSessionManager("ServerSessionManager", poolSize,
             serverSessionFactory));
     serverSessionManager->initialize();
-    SessionAcceptor acceptor(*serverSessionManager);
+    ProactorSessionAcceptor acceptor(*serverSessionManager);
 
     // client setup
     ClientSessionFactory clientSessionFactory(config,
@@ -53,7 +53,7 @@ void run(const Config& config)
         new CachedSessionManager("ClientSessionManager", poolSize,
             clientSessionFactory));
     clientSessionManager->initialize();
-    SessionConnector connector(*clientSessionManager);
+    ProactorSessionConnector connector(*clientSessionManager);
 
     // start
     ACE_Profile_Timer profiler;

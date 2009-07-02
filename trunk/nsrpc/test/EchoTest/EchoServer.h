@@ -11,18 +11,20 @@
 #include <nsrpc/detail/PacketCoderFactory.h>
 #include <nsrpc/utility/MessageBlockManager.h>
 #include <nsrpc/SessionFactory.h>
-#include <nsrpc/RpcSession.h>
+#include <nsrpc/RpcProactorSession.h>
 #include <nsrpc/RpcSessionConfig.h>
 #include <nsrpc/PacketSeedExchangerFactory.h>
+#include <srpc/RpcForwarder.h>
+#include <srpc/RpcReceiver.h>
 
 /**
  * @class EchoServerSession
  */
-class EchoServerSession : public nsrpc::Session
+class EchoServerSession : public nsrpc::ProactorSession
 {
 public:
     EchoServerSession(const nsrpc::SessionConfig& config) :
-        nsrpc::Session(config) {}
+        nsrpc::ProactorSession(config) {}
 private:
     virtual bool onMessageArrived(nsrpc::CsMessageType /*messageType*/) {
         echo();
@@ -43,11 +45,12 @@ private:
 * @class EchoServerRpcSession
 */
 class EchoServerRpcSession :
-    public nsrpc::RpcSession, public Echo
+    public nsrpc::RpcProactorSession, public Echo,
+    protected srpc::RpcForwarder, protected srpc::RpcReceiver
 {
+    DECLARE_SRPC_EVENT_DISPATCHER(EchoServerRpcSession);
 public:
-    EchoServerRpcSession(const nsrpc::RpcSessionConfig& config) :
-        nsrpc::RpcSession(config) {}
+    EchoServerRpcSession(const nsrpc::RpcSessionConfig& config);
 
     OVERRIDE_SRPC_METHOD_1(echo, srpc::RString, data);
     OVERRIDE_SRPC_METHOD_1(onEcho, srpc::RString, data);
