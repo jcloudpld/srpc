@@ -73,7 +73,7 @@ public:
     ProactorSession(const SessionConfig& config);
     virtual ~ProactorSession();
 
-    virtual void cancelConnection() {
+    virtual void closeConnection() {
         disconnect();
     }
 public:

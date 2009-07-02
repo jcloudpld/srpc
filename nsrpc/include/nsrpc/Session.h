@@ -21,7 +21,7 @@ public:
     virtual ~Session() {}
 
     /// 세션 연결을 취소(해제)한다
-    virtual void cancelConnection() = 0;
+    virtual void closeConnection() = 0;
 };
 
 /** @} */ // addtogroup session
