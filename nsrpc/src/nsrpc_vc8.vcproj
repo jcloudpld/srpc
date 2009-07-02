@@ -1337,6 +1337,34 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="sao"
+				>
+				<File
+					RelativePath=".\sao\PendingSessionRpcNetwork.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\sao\Processor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\sao\Proxy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\sao\RpcMethod.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\sao\Scheduler.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\sao\Scheduler.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -1660,6 +1688,50 @@
 						>
 						<File
 							RelativePath="..\include\nsrpc\p2p\server\SimpleRelayService.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="sao"
+					>
+					<File
+						RelativePath="..\include\nsrpc\sao\Processor.h"
+						>
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\sao\ProcessorCallback.h"
+						>
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\sao\Proxy.h"
+						>
+					</File>
+					<Filter
+						Name="detail"
+						>
+						<File
+							RelativePath="..\include\nsrpc\sao\detail\MethodMemoryManager.h"
+							>
+						</File>
+						<File
+							RelativePath="..\include\nsrpc\sao\detail\MethodReleaser.h"
+							>
+						</File>
+						<File
+							RelativePath="..\include\nsrpc\sao\detail\MethodRequest.h"
+							>
+						</File>
+						<File
+							RelativePath="..\include\nsrpc\sao\detail\PendingSessionRpcNetwork.h"
+							>
+						</File>
+						<File
+							RelativePath="..\include\nsrpc\sao\detail\RpcMethod.h"
+							>
+						</File>
+						<File
+							RelativePath="..\include\nsrpc\sao\detail\RpcServant.h"
 							>
 						</File>
 					</Filter>
