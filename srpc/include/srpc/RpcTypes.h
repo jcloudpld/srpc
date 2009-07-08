@@ -133,6 +133,7 @@ template <typename StringType, size_t maxLength,
         Bits<UInt16>::size : Bits<UInt8>::size>
 class RpcStringType : public StringType
 {
+public:
     typedef typename StringType::value_type value_type;
 public:
     typedef StringType NativeType;
