@@ -32,7 +32,7 @@ class RpcVoP2pService
 public:
     virtual ~RpcVoP2pService() {}
 
-    DECLARE_SRPC_PURE_METHOD_4(RpcVoP2pService, say,
+    DECLARE_SRPC_METHOD_4(RpcVoP2pService, say,
         nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
         RSpeech, speech, RSequence, sequence);
 };
