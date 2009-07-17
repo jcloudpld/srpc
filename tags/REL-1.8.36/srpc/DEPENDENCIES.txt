@@ -1,0 +1,10 @@
+Required dependencies
+=====================
+* Boost Library (http://boost.org)
+  - above 1.35.0
+  
+Optional dependencies
+=====================
+* Google Test Library (http://googletest.googlecode.com)
+  - needed for unit-test compile
+
