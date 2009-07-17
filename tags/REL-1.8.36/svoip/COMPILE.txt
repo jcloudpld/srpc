@@ -1,0 +1,11 @@
+===================
+      COMPILE
+===================
+
+1. 관련 라이브러리 컴파일 & 설치
+ 1.1. boost library (http://boost.org)
+ 1.2. Speex (http://www.speex.org)
+
+2. svoip 컴파일
+ 2.1. MSVC++
+   build\msvc\svoip.sln 솔루션 파일을 불러들인 후 컴파일한다
