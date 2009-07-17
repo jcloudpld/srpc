@@ -2,6 +2,7 @@
 #define ECHOTEST_ECHOCLIENT_H
 
 #include <nsrpc/nsrpc.h>
+#include <nsrpc/config/Proactor.h>
 
 #if defined(NSRPC_HAS_PROACTOR)
 

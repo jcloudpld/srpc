@@ -2,6 +2,7 @@
 #define NSRPC_TESTPROACTORSESSIONMANAGER_H
 
 #include <nsrpc/nsrpc.h>
+#include <nsrpc/config/Proactor.h>
 
 #if defined(NSRPC_HAS_PROACTOR)
 

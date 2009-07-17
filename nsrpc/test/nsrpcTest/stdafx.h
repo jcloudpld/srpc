@@ -6,6 +6,7 @@
 #endif
 
 #include <nsrpc/nsrpc.h>
+#include <nsrpc/config/Proactor.h>
 
 #ifdef _MSC_VER
 #  pragma warning (push)

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Config.h"
 #include <nsrpc/nsrpc.h>
+#include <nsrpc/config/Proactor.h>
 #include <ace/Get_Opt.h>
 #include <iostream>
 
