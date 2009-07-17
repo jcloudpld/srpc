@@ -2,8 +2,7 @@
 #define NSRPC_STDAFX_H
 
 #include <nsrpc/nsrpc.h>
-
-#include <ace/config.h>
+#include <nsrpc/config/Proactor.h>
 
 // AIO
 #  ifdef _MSC_VER

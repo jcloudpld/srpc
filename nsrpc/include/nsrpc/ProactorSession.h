@@ -2,10 +2,10 @@
 #define NSRPC_PROACTORSESSION_H
 
 #include "nsrpc.h"
+#include "config/Proactor.h"
 
 #if defined (NSRPC_HAS_PROACTOR)
 
-#include "config/Proactor.h"
 #include "detail/MessageBlockProvider.h"
 #include "detail/CsProtocol.h"
 #include "Session.h"

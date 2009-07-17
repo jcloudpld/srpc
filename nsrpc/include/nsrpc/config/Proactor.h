@@ -1,6 +1,23 @@
 #ifndef NSRPC_TPROACTOR_H
 #define NSRPC_TPROACTOR_H
 
+#if defined (_MSC_VER)
+#   pragma once
+#endif
+
+#include <ace/config.h>
+
+// Proactor supported?
+#if defined (ACE_HAS_AIO_CALLS) || defined (ACE_HAS_WIN32_OVERLAPPED_IO)
+#   define NSRPC_HAS_PROACTOR  1
+#else
+#   undef NSRPC_HAS_PROACTOR
+#endif
+
+
+// use TProactor?
+/* #define NSRPC_USE_TPROACTOR  0 */
+
 #if defined (NSRPC_USE_TPROACTOR)
 
 #  define NSRPC_Proactor TRB_Proactor
@@ -21,6 +38,8 @@
 #  define NSRPC_POSIX_CB_Proactor TRB_POSIX_CB_Proactor
 #  define NSRPC_POSIX_SIG_Proactor TRB_POSIX_SIG_Proactor
 #  define NSRPC_SUN_Proactor TRB_SUN_Proactor
+
+#   define NSRPC_HAS_PROACTOR  1
 
 #else
 
