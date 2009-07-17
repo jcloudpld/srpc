@@ -2,10 +2,10 @@
 #define NSRPC_PROACTORSESSIONACCEPTOR_H
 
 #include "nsrpc.h"
+#include "config/Proactor.h"
 
 #if defined (NSRPC_HAS_PROACTOR)
 
-#include "config/Proactor.h"
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4267 4312)

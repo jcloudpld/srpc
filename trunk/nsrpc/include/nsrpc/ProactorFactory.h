@@ -2,10 +2,10 @@
 #define NSRPC_PROACTORFACTORY_H
 
 #include "nsrpc.h"
+#include "config/Proactor.h"
 
 #if defined (NSRPC_HAS_PROACTOR)
 
-#include "config/Proactor.h"
 #include <srpc/StringTypes.h>
 
 // forward decl.

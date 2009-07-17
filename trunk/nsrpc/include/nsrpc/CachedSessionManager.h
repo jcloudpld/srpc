@@ -2,6 +2,7 @@
 #define NSRPC_CACHEDSESSIONMANAGER_H
 
 #include "nsrpc.h"
+#include "config/Proactor.h"
 
 #if defined (NSRPC_HAS_PROACTOR)
 
