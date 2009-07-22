@@ -48,11 +48,13 @@ private:
 
 // poolSize의 10%를 여분으로 둠
 CachedSessionManager::CachedSessionManager(const srpc::String& name,
-    size_t poolSize, SessionFactory& sessionFactory) :
+    size_t poolSize, SessionFactory& sessionFactory,
+    SessionManagerCallback* callback) :
     sessionAllocator_(new SessionAllocator(sessionFactory, *this)),
     sessionPool_(
         new CachedSessionPool(poolSize, poolSize / 10, *sessionAllocator_)),
     name_(name),
+    callback_(callback),
     shouldFinish_(false)
 {
 }
@@ -74,13 +76,23 @@ void CachedSessionManager::initialize()
 
 Session* CachedSessionManager::acquire()
 {
-    if (! shouldFinish_) {
-        Session* session = sessionPool_->acquire();
-        NSRPC_LOG_DEBUG3("CachedSessionManager(%s) - %d session(s) acquired.",
-               name_.c_str(), sessionPool_->getActiveResourceCount());
-        return session;
+    if (shouldFinish_) {
+        return 0;
     }
-    return 0;
+
+    Session* session = sessionPool_->acquire();
+    if (! session) {
+        return 0;
+    }
+
+    const size_t sessionCount = sessionPool_->getActiveResourceCount();
+    NSRPC_LOG_DEBUG3("CachedSessionManager(%s) - %d session(s) acquired.",
+        name_.c_str(), sessionCount);
+
+    if (callback_ != 0) {
+        callback_->sessionAcquired(sessionCount);
+    }
+    return session;
 }
 
 
@@ -90,8 +102,13 @@ void CachedSessionManager::release(Session* session)
 
     sessionPool_->release(session);
 
+    const size_t sessionCount = sessionPool_->getActiveResourceCount();
     NSRPC_LOG_DEBUG3("CachedSessionManager(%s) - %d session(s) left.",
-        name_.c_str(), sessionPool_->getActiveResourceCount());
+        name_.c_str(), sessionCount);
+
+    if (callback_ != 0) {
+        callback_->sessionReleased(sessionCount);
+    }
 }
 
 

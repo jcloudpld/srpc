@@ -63,7 +63,6 @@ void run(const Config& config)
             proactorTask.getProactor())) {
             return;
         }
-        acceptor.start();
         std::cout << "Running Server at " << ACE_LOCALHOST << ":" <<
             config.getPort() << "...\n";
     }

@@ -17,6 +17,7 @@ class SessionAllocator;
 class SessionFactory;
 template <class Allocator, class Mutex> class SessionPool;
 
+
 /** @addtogroup session
 * @{
 */
@@ -41,7 +42,7 @@ public:
      * @param sessionFactory 새로운 세션을 만들 팩토리 인스턴스.
      */
     CachedSessionManager(const srpc::String& name, size_t poolSize,
-        SessionFactory& sessionFactory);
+        SessionFactory& sessionFactory, SessionManagerCallback* callback = 0);
 
     virtual ~CachedSessionManager();
 
@@ -65,7 +66,8 @@ private:
     boost::scoped_ptr<SessionAllocator> sessionAllocator_;
     boost::scoped_ptr<CachedSessionPool> sessionPool_;
     srpc::String name_;
-    
+    SessionManagerCallback* callback_;
+
     bool shouldFinish_;
 };
 

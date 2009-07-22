@@ -12,6 +12,21 @@ namespace nsrpc
 * @{
 */
 
+
+/**
+ * @class SessionManagerCallback
+ */
+class SessionManagerCallback : public boost::noncopyable
+{
+public:
+    virtual ~SessionManagerCallback() {}
+
+    virtual void sessionAcquired(size_t acquiredSessionCount) = 0;
+
+    virtual void sessionReleased(size_t acquiredSessionCount) = 0;
+};
+
+
 /**
  * @class SessionManager
  *
