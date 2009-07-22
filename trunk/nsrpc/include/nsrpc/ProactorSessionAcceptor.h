@@ -40,7 +40,6 @@ class NSRPC_API ProactorSessionAcceptor :
 public:
     ProactorSessionAcceptor(SessionCreator& sessionCreator) :
         sessionCreator_(sessionCreator),
-        started_(false),
         shouldFinish_(false)
 #if defined (NSRPC_USE_TPROACTOR)
         , pendingCount_(0)
@@ -48,7 +47,7 @@ public:
         {}
 
     /**
-     * Acceptor를 초기화한다.
+     * Acceptor를 초기화하고 accept를 시작한다.
      * @param listenAddr 연결받을 IP 주소.
      * @param proactor Proactor 객체. 0일 경우 singleton이 사용됨.
      * @param numberOfInitialAccepts 초기에 accept할 갯수.
@@ -58,9 +57,6 @@ public:
      */
     bool open(const ACE_INET_Addr& listenAddr,
         NSRPC_Proactor* proactor = 0, size_t numberOfInitialAccepts = 10);
-
-    /// 서비스를 시작한다
-    void start();
 
     /// Acceptor를 닫는다
     void close();
@@ -77,14 +73,16 @@ public:
         return true;
 #endif;
     }
+
 private:
+    virtual int accept(size_t bytes_to_read, const void *act);
     virtual NSRPC_Service_Handler* make_handler();
     virtual int validate_connection(const NSRPC_Asynch_Accept::Result& result,
         const ACE_INET_Addr& remote, const ACE_INET_Addr& local);
     virtual int should_reissue_accept();
+
 private:
     SessionCreator& sessionCreator_;
-    bool started_;
     bool shouldFinish_;
 #if defined (NSRPC_USE_TPROACTOR)
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingCount_;

@@ -25,7 +25,7 @@ bool ProactorSessionAcceptor::open(const ACE_INET_Addr& listenAddr,
     const int pass_addresses = 1;
     const int reuse_addr = 1;
     const int validate_new_connection = 1;
-    const int reissue_accept = 0;
+    const int reissue_accept = 1;
     if (Parent::open(listenAddr, 0, pass_addresses, backlog, reuse_addr,
         proactor, validate_new_connection, reissue_accept, 0) != 0) {
         NSRPC_LOG_ERROR(ACE_TEXT("ProactorSessionAcceptor::start() - ")
@@ -34,29 +34,19 @@ bool ProactorSessionAcceptor::open(const ACE_INET_Addr& listenAddr,
     }
 
     for (size_t i = 0; i < numberOfInitialAccepts; i++) {
-        if (this->accept() == -1) {
+        if (accept(0, 0) == -1) {
             NSRPC_LOG_ERROR(ACE_TEXT("ProactorSessionAcceptor::start() - ")
                 ACE_TEXT("NSRPC_Asynch_Acceptor::accept() FAILED(%m)."));
             return false;
         }
-#if defined (NSRPC_USE_TPROACTOR)
-        ++pendingCount_;
-#endif
     }
 
     return true;
 }
 
 
-void ProactorSessionAcceptor::start()
-{
-    started_ = true;
-}
-
-
 void ProactorSessionAcceptor::close()
 {
-    started_ = false;
     shouldFinish_ = true;
 
     (void)cancel();
@@ -74,6 +64,21 @@ void ProactorSessionAcceptor::wait()
 }
 
 
+int ProactorSessionAcceptor::accept(size_t bytes_to_read, const void *act)
+{
+    const int result = Parent::accept(bytes_to_read, act);
+    if (result == -1) {
+        return -1;
+    }
+
+#if defined (NSRPC_USE_TPROACTOR)
+    ++pendingCount_;
+#endif
+
+    return result;
+}
+
+
 NSRPC_Service_Handler* ProactorSessionAcceptor::make_handler()
 {
     return static_cast<ProactorSession*>(sessionCreator_.acquire());
@@ -86,45 +91,34 @@ int ProactorSessionAcceptor::validate_connection(
 {
     ACE_UNUSED_ARG(local);
 
-    if (! started_) {
-        return -1;
-    }
-
 #if defined (NSRPC_USE_TPROACTOR)
     assert(pendingCount_ > 0);
     --pendingCount_;
 #endif
 
-    int rc = -1;
-    if (! shouldFinish_) {
-        if (result.success() != 0) {
-            ACE_TCHAR address[MAXHOSTNAMELEN];
-            NSRPC_LOG_DEBUG3(ACE_TEXT("Connecting from %s:%d..."),
-                remote.get_host_addr(address, MAXHOSTNAMELEN),
-                remote.get_port_number());
-            rc = 0;
-        }
+    if (shouldFinish_) {
+        return -1;
     }
-    return rc;
+
+    if (! result.success()) {
+        return -1;
+    }
+
+    ACE_TCHAR address[MAXHOSTNAMELEN];
+    NSRPC_LOG_DEBUG3(ACE_TEXT("Connecting from %s:%d..."),
+        remote.get_host_addr(address, MAXHOSTNAMELEN),
+        remote.get_port_number());
+    return 0;
 }
 
 
 int ProactorSessionAcceptor::should_reissue_accept()
 {
-    if (! shouldFinish_) {
-        if (accept() == -1) {
-            NSRPC_LOG_ERROR(
-                ACE_TEXT("ProactorSessionAcceptor::should_reissue_accept() - ")
-                ACE_TEXT("NSRPC_Asynch_Acceptor::accept() FAILED(%m)."));
-        }
-        else {
-#if defined (NSRPC_USE_TPROACTOR)
-            ++pendingCount_;
-#endif
-        }
+    if (shouldFinish_) {
+        return 0;
     }
 
-    return 0;
+    return Parent::should_reissue_accept();
 }
 
 } // namespace nsrpc

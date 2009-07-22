@@ -54,7 +54,6 @@ protected:
         (void)acceptor_->open(
             ACE_INET_Addr(getTestAddress().get_port_number()),
             proactorTask_->getProactor());
-        acceptor_->start();
 
         packetCoder_ = nsrpc::PacketCoderFactory().create();
     }
