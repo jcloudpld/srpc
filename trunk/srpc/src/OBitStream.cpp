@@ -116,12 +116,12 @@ void OBitStream::write(const String& value, size_t maxLength, int sizeBitCount)
 void OBitStream::write(const WString& value, size_t maxLength,
     int sizeBitCount)
 {
-    WString realValue = value;
-    if (value.size() > maxLength) {
-        realValue.resize(maxLength);
-    }
-
     if (shouldUseUtf8ForString_) {
+        WString realValue = value;
+        if (value.size() > maxLength) {
+            realValue.resize(maxLength);
+        }
+
         const String utf8(toUtf8(realValue));
         const UInt32 strLen =
             static_cast<UInt32>((std::min)(utf8.size(), maxLength));
@@ -131,14 +131,13 @@ void OBitStream::write(const WString& value, size_t maxLength,
         }
     }
     else {
-        const UInt32 strLen = static_cast<UInt32>(maxLength);
+        const UInt32 strLen =
+            static_cast<UInt32>((std::min)(value.size(), maxLength));
         write(strLen, sizeBitCount);
 
-        WString::const_iterator pos = realValue.begin();
-        const WString::const_iterator end = realValue.end();
-        for (; pos != end; ++pos) {
-            const srpc::UInt32 ch = *pos;
-            writeBits(ch, Bits<WString::value_type>::size);
+        for (UInt32 i = 0; i < strLen; ++i) {
+            writeBits(static_cast<srpc::UInt32>(value[i]),
+                Bits<WString::value_type>::size);
         }
     }
 }

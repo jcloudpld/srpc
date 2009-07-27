@@ -227,7 +227,7 @@ TEST_F(IBitStreamTest, testReadWString)
 {
     WString original(L"0123456789");
     ostream_->write(original, USHRT_MAX, Bits<UInt16>::size);
-    EXPECT_EQ(2 + original.size(),
+    EXPECT_EQ(2 + (bytesForRpcChar * original.size()),
         ostream_->getTotalSize());
 
     WString value;
@@ -242,6 +242,9 @@ TEST_F(IBitStreamTest, testReadWShortString)
 {
     WString original(L"0123456789");
     ostream_->write(original, UCHAR_MAX, Bits<UInt8>::size);
+    EXPECT_EQ(1 + (bytesForRpcChar * original.size()),
+        ostream_->getTotalSize());
+
     WString value;
     istream_->read(value, USHRT_MAX, Bits<UInt8>::size);
     EXPECT_TRUE(original == value);
