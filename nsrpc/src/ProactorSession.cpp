@@ -111,8 +111,8 @@ void ProactorSession::disconnect()
     if (connected) {
         onDisconnected();
 
-        NSRPC_LOG_DEBUG3(ACE_TEXT("ProactorSession Stats - %d/%d."),
-            stats_.sentBytes_, stats_.recvBytes_);
+        NSRPC_LOG_DEBUG4(ACE_TEXT("ProactorSession Stats - %u/%u, %u used."),
+            stats_.sentBytes_, stats_.recvBytes_, stats_.useCount_);
         sessionDestroyer_.release(this);
     }
 }
@@ -353,8 +353,14 @@ void ProactorSession::open(ACE_HANDLE new_handle, ACE_Message_Block& /*message_b
         assert(isSafeToDelete());
         reset();
 
+        ++stats_.useCount_;
+
         if (stream_->open(*this, new_handle, 0, proactor_, true)) {
-            onConnected();
+            if (! onConnected()) {
+                disconnect();
+                return;
+            }
+
             if (readMessageHeader()) {
                 return; // success
             }
@@ -417,8 +423,11 @@ void ProactorSession::handle_write_stream(
 
 void ProactorSession::handle_time_out(const ACE_Time_Value& /*tv*/, const void* act)
 {
+    ACE_GUARD(ACE_Thread_Mutex, recvMonitor, recvLock_);
+    ACE_GUARD(ACE_Thread_Mutex, sendMonitor, sendLock_);
+
     if (act == &disconnectTimer_) {
-        NSRPC_LOG_DEBUG(ACE_TEXT("Disconnect timer fired"));
+        //NSRPC_LOG_DEBUG(ACE_TEXT("Disconnect timer fired"));
         disconnectTimer_ = -1;
         if (pendingWriteCount_ > 0) {
             startDisconnectTimer();

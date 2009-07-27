@@ -44,7 +44,7 @@ public:
 
 protected:
     // = Session overriding
-    virtual void onConnected();
+    virtual bool onConnected();
     virtual void onDisconnected();
     virtual bool onMessageArrived(CsMessageType messageType);
 private:
