@@ -26,7 +26,8 @@ SessionRpcNetwork::SessionRpcNetwork(bool useBitPacking) :
     callback_(0),
     messageBlockProvider_(0),
     enabled_(false),
-    useBitPacking_(useBitPacking)
+    useBitPacking_(useBitPacking),
+    shouldUseUtf8ForString_(true)
 {
 }
 
@@ -37,10 +38,11 @@ SessionRpcNetwork::~SessionRpcNetwork()
 
 
 void SessionRpcNetwork::initialize(SessionRpcNetworkCallback& callback,
-    MessageBlockProvider& messageBlockProvider)
+    MessageBlockProvider& messageBlockProvider, bool shouldUseUtf8ForString)
 {
     callback_ = &callback;
     messageBlockProvider_ = &messageBlockProvider;
+    shouldUseUtf8ForString_ = shouldUseUtf8ForString;
 
     reset();
 }
@@ -167,8 +169,8 @@ void SessionRpcNetwork::initInputStream(ACE_Message_Block& mblock)
     if (! istream_.get()) { // lazy evaluation
         rstreamBuffer_.reset(new MessageBlockStreamBuffer(&mblock));
         istream_.reset(
-            srpc::StreamFactory::createIStream(
-                getStreamType(useBitPacking_), *rstreamBuffer_));
+            srpc::StreamFactory::createIStream(shouldUseUtf8ForString_,
+                getStreamType(useBitPacking_), *rstreamBuffer_).release());
     }
     else {
         istream_->reset(false);
@@ -183,8 +185,8 @@ ACE_Message_Block* SessionRpcNetwork::initOutputStream()
     if (! ostream_.get()) { // lazy evaluation
         wstreamBuffer_.reset(new MessageBlockStreamBuffer(wblock));
         ostream_.reset(
-            srpc::StreamFactory::createOStream(
-                getStreamType(useBitPacking_), *wstreamBuffer_));
+            srpc::StreamFactory::createOStream(shouldUseUtf8ForString_,
+                getStreamType(useBitPacking_), *wstreamBuffer_).release());
     }
     else {
         ostream_->reset(false);

@@ -24,6 +24,8 @@ namespace nsrpc
 namespace detail
 {
 
+const bool shouldUseUtf8ForString = true;
+
 P2pRpcNetwork::P2pRpcNetwork(PeerNetworkSender& networkSender,
     ACE_Message_Block& recvBlock, ACE_Message_Block& sendBlock,
     bool useBitPacking) :
@@ -31,11 +33,11 @@ P2pRpcNetwork::P2pRpcNetwork(PeerNetworkSender& networkSender,
     useBitPacking_(useBitPacking),
     rstreamBuffer_(new MessageBlockStreamBuffer(&recvBlock)),
     istream_(
-        srpc::StreamFactory::createIStream(
+        srpc::StreamFactory::createIStream(shouldUseUtf8ForString,
             getStreamType(useBitPacking_), *rstreamBuffer_)),
     wstreamBuffer_(new MessageBlockStreamBuffer(&sendBlock)),
     ostream_(
-        srpc::StreamFactory::createOStream(
+        srpc::StreamFactory::createOStream(shouldUseUtf8ForString,
             getStreamType(useBitPacking_), *wstreamBuffer_))
 {
 }

@@ -29,7 +29,8 @@ class NSRPC_API RpcReactorSession : public ReactorSession,
 public:
     explicit RpcReactorSession(ACE_Reactor* reactor = 0,
         PacketCoderFactory* packetCoderFactory = 0,
-        bool useBitPacking = true);
+        bool useBitPacking = true,
+        bool shouldUseUtf8ForString = true);
     virtual ~RpcReactorSession();
 
     void registerRpcForwarder(srpc::RpcForwarder& forwarder);

@@ -19,8 +19,9 @@ private:
     virtual void SetUp() {
         rpcNetwork_ = new MockRpcNetwork;
         request_ = new DummyRpcClient(rpcNetwork_);
-        istream_ = StreamFactory::createIStream(StreamFactory::stBit,
-            rpcNetwork_->getStreamBuffer());
+        istream_ =
+            StreamFactory::createIStream(true, StreamFactory::stBit,
+                rpcNetwork_->getStreamBuffer()).release();
     }
 
     virtual void TearDown() {

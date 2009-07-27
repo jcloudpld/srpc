@@ -6,8 +6,8 @@
 #endif
 
 #define SRPC_MAJOR_VERSION 1
-#define SRPC_MINOR_VERSION 7
-#define SRPC_RELEASE_VERSION 34
-#define SRPC_VERSION "1.7.34"  
+#define SRPC_MINOR_VERSION 8
+#define SRPC_RELEASE_VERSION 39
+#define SRPC_VERSION "1.8.39"  
 
 #endif // SRPC__VERSION_H

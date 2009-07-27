@@ -4,8 +4,8 @@
 
 MockRpcNetwork::MockRpcNetwork() :
     ostream_(
-        srpc::StreamFactory::createOStream(
-            srpc::StreamFactory::stBit, buffer_)),
+        srpc::StreamFactory::createOStream(true,
+            srpc::StreamFactory::stBit, buffer_).release()),
     sendFailed_(false)
 {
 }

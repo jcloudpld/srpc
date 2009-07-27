@@ -7,31 +7,36 @@
 
 namespace srpc {
 
-IStream* StreamFactory::createIStream(StreamType streamType,
-    StreamBuffer& streamBuffer)
+std::auto_ptr<IStream> StreamFactory::createIStream(
+    bool shouldUseUtf8ForString,
+    StreamType streamType, StreamBuffer& streamBuffer)
 {
     switch (streamType) {
     case stBit:
-        return new IBitStream(streamBuffer);
+        return std::auto_ptr<IStream>(
+            new IBitStream(streamBuffer, shouldUseUtf8ForString));
     case stByte:
-        return new IByteStream(streamBuffer);
+        return std::auto_ptr<IStream>(
+            new IByteStream(streamBuffer, shouldUseUtf8ForString));
     }
     assert(false && "Unknown stream type");
-    return 0;
+    return std::auto_ptr<IStream>();
 }
 
 
-OStream* StreamFactory::createOStream(StreamType streamType,
-    StreamBuffer& streamBuffer)
+std::auto_ptr<OStream> StreamFactory::createOStream(bool shouldUseUtf8ForString,
+    StreamType streamType, StreamBuffer& streamBuffer)
 {
     switch (streamType) {
     case stBit:
-        return new OBitStream(streamBuffer);
+        return std::auto_ptr<OStream>(
+            new OBitStream(streamBuffer, shouldUseUtf8ForString));
     case stByte:
-        return new OByteStream(streamBuffer);
+        return std::auto_ptr<OStream>(
+            new OByteStream(streamBuffer, shouldUseUtf8ForString));
     }
     assert(false && "Unknown stream type");
-    return 0;
+    return std::auto_ptr<OStream>();
 }
 
 } // namespace srpc

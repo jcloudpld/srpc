@@ -19,7 +19,7 @@ class StreamBuffer;
 class OBitStream : public OStream
 {
 public:
-    OBitStream(StreamBuffer& streamBuffer);
+    OBitStream(StreamBuffer& streamBuffer, bool shouldUseUtf8ForString);
 
     /// 테스트용
     int getHoldingBitCount() const {
@@ -93,6 +93,7 @@ private:
     }
 private:
     StreamBuffer& streamBuffer_;
+    const bool shouldUseUtf8ForString_;
     /// 저장할 비트 수
     int holdingBitCount_;
     /// 저장된 비트 수

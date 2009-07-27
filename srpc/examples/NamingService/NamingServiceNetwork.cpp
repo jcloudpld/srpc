@@ -16,10 +16,10 @@ NamingServiceNetwork::NamingServiceNetwork(bool useBitStream) :
     const srpc::StreamFactory::StreamType streamType = useBitStream ?
         srpc::StreamFactory::stBit : srpc::StreamFactory::stByte;
     
-    ostream_.reset(
-        srpc::StreamFactory::createOStream(streamType, *sendBuffer_));
-    istream_.reset(
-        srpc::StreamFactory::createIStream(streamType, *receiveBuffer_));
+    ostream_.reset(srpc::StreamFactory::createOStream(
+        true, streamType, *sendBuffer_).release());
+    istream_.reset(srpc::StreamFactory::createIStream(
+        true, streamType, *receiveBuffer_).release());
 }
 
 

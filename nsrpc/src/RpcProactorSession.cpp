@@ -26,7 +26,7 @@ RpcProactorSession::RpcProactorSession(const RpcSessionConfig& config) :
     seedExchanger_(config.seedExchanger_)
 {
     assert(rpcNetwork_.get() != 0);
-    rpcNetwork_->initialize(*this, *this);
+    rpcNetwork_->initialize(*this, *this, config.shouldUseUtf8ForString_);
 
     seedExchanger_->initialize(*config.packetCoder_, *rpcNetwork_);
 }

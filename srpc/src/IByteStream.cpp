@@ -6,8 +6,10 @@
 
 namespace srpc {
 
-IByteStream::IByteStream(StreamBuffer& streamBuffer) :
-    streamBuffer_(streamBuffer)
+IByteStream::IByteStream(StreamBuffer& streamBuffer,
+    bool shouldUseUtf8ForString) :
+    streamBuffer_(streamBuffer),
+    shouldUseUtf8ForString_(shouldUseUtf8ForString)
 {
 }
 
@@ -41,13 +43,23 @@ void IByteStream::read(WString& value, size_t maxLength, int sizeBitCount)
 
     value.clear();
 
-    const UInt32 size = readStringSize(sizeBitCount);
+    const UInt32 strLen = readStringSize(sizeBitCount);
 
-    String utf8;
-    utf8.resize(size);
-    readBytes(&(utf8[0]), size);
+    if (shouldUseUtf8ForString_) {
+        String utf8;
+        utf8.resize(strLen);
+        readBytes(&(utf8[0]), strLen);
 
-    value = fromUtf8(utf8);
+        value = fromUtf8(utf8);
+    }
+    else {
+        value.reserve(strLen);
+        for (UInt32 i = 0; i < strLen; ++i) {
+            WString::value_type ch;
+            readNumeric(ch);
+            value.push_back(ch);
+        }
+    }
 
     if (value.size() > maxLength) {
         value.resize(maxLength);
