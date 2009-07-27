@@ -13,8 +13,9 @@ namespace nsrpc
 
 // = ProactorTask
 
-ProactorTask::ProactorTask(NSRPC_Proactor* proactor, bool deleteProactor) :
-    proactor_(proactor),
+ProactorTask::ProactorTask(std::auto_ptr<NSRPC_Proactor> proactor,
+    bool deleteProactor) :
+    proactor_(proactor.release()),
     deleteProactor_(deleteProactor)
 {
     if (! proactor_) {

@@ -7,6 +7,7 @@
 #if defined (NSRPC_HAS_PROACTOR)
 
 #include <srpc/StringTypes.h>
+#include <memory>
 
 // forward decl.
 class NSRPC_Proactor;
@@ -68,7 +69,7 @@ struct NSRPC_API ProactorFactory
      * @param proactorType Proactor Type.
      * @return Proactor instance. you must deallocate memory.
      */
-    static NSRPC_Proactor* create(ProactorType proactorType);
+    static std::auto_ptr<NSRPC_Proactor> create(ProactorType proactorType);
 };
 
 /** @} */ // addtogroup proactor

@@ -158,14 +158,14 @@ bool isSupportedProactor(ProactorType proactorType)
 
 // = ProactorFactory
 
-NSRPC_Proactor* ProactorFactory::create(ProactorType proactorType)
+std::auto_ptr<NSRPC_Proactor> ProactorFactory::create(ProactorType proactorType)
 {
-    NSRPC_Proactor_Impl* proactorImpl = 0;
+    std::auto_ptr<NSRPC_Proactor_Impl> proactorImpl;
 
 # if defined (ACE_WIN32) && !defined (ACE_HAS_WINCE)
 
     if (proactorType == ptWin32) {
-        proactorImpl = new NSRPC_WIN32_Proactor;
+        proactorImpl.reset(new NSRPC_WIN32_Proactor);
     }
 
 # else
@@ -186,36 +186,36 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType proactorType)
 
     switch (proactorType) {
     case ptSelect:
-        proactorImpl = new TRB_Select_Proactor(maxAioOperations,
-            signalToInterrupt, leaderType, startAioType);
+        proactorImpl.reset(new TRB_Select_Proactor(maxAioOperations,
+            signalToInterrupt, leaderType, startAioType));
         break;
     case ptPoll:
-        proactorImpl = new TRB_Poll_Proactor(maxAioOperations,
-            signalToInterrupt, leaderType, startAioType);
+        proactorImpl.reset(new TRB_Poll_Proactor(maxAioOperations,
+            signalToInterrupt, leaderType, startAioType));
         break;
     case ptEpoll:
-        proactorImpl = new TRB_Event_Poll_Proactor(maxAioOperations,
-            signalToInterrupt, leaderType, startAioType);
+        proactorImpl.reset(new TRB_Event_Poll_Proactor(maxAioOperations,
+            signalToInterrupt, leaderType, startAioType));
         break;
     case ptLinuxRt:
-        proactorImpl = new TRB_Linux_RT_Proactor(maxAioOperations,
-            signalToInterrupt, 1, startAioType);
+        proactorImpl.reset(new TRB_Linux_RT_Proactor(maxAioOperations,
+            signalToInterrupt, 1, startAioType));
         break;
     case ptLinux:
-        proactorImpl = new TRB_LINUX_Proactor(maxAioOperations,
-            signalToInterrupt, leaderType, startAioType);
+        proactorImpl.reset(new TRB_LINUX_Proactor(maxAioOperations,
+            signalToInterrupt, leaderType, startAioType));
         break;
     case ptSig:
-        proactorImpl = new TRB_POSIX_SIG_Proactor(maxAioOperations,
-            signalToInterrupt, leaderType, startAioType);
+        proactorImpl.reset(new TRB_POSIX_SIG_Proactor(maxAioOperations,
+            signalToInterrupt, leaderType, startAioType));
         break;
     case ptDevPoll:
-        proactorImpl = new TRB_Dev_Poll_Proactor(maxAioOperations,
-            signalToInterrupt, leaderType, 1); // start only in leader thread
+        proactorImpl.reset(new TRB_Dev_Poll_Proactor(maxAioOperations,
+            signalToInterrupt, leaderType, 1)); // start only in leader thread
         break;
     case ptSunPort:
-        proactorImpl = new TRB_SUN_Port_Proactor(maxAioOperations,
-            signalToInterrupt, leaderType, startAioType);
+        proactorImpl.reset(new TRB_SUN_Port_Proactor(maxAioOperations,
+            signalToInterrupt, leaderType, startAioType));
         break;
     default:
         break;
@@ -225,25 +225,25 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType proactorType)
 
 #   if defined (ACE_POSIX_AIOCB_PROACTOR)
     if (ptAioCb == proactorType) {
-        proactorImpl = new ACE_POSIX_AIOCB_Proactor(maxAioOperations);
+        proactorImpl.reset(new ACE_POSIX_AIOCB_Proactor(maxAioOperations));
     }
 #   endif
 
 #   if defined (ACE_POSIX_SIG_PROACTOR) || defined (ACE_HAS_POSIX_REALTIME_SIGNALS)
     if (ptSig == proactorType) {
-        proactorImpl = new ACE_POSIX_SIG_Proactor(maxAioOperations);
+        proactorImpl.reset(new ACE_POSIX_SIG_Proactor(maxAioOperations));
     }
 #   endif
 
 #   if !defined(ACE_HAS_BROKEN_SIGEVENT_STRUCT)
     if (ptCallback == proactorType) {
-        proactorImpl = new ACE_POSIX_CB_Proactor(maxAioOperations);
+        proactorImpl.reset(new ACE_POSIX_CB_Proactor(maxAioOperations));
     }
 #   endif
 
 #   if defined (sun)
     if (ptSun == proactorType) {
-        proactorImpl = new ACE_SUN_Proactor(maxAioOperations);
+        proactorImpl.reset(new ACE_SUN_Proactor(maxAioOperations));
     }
 #   endif
 
@@ -251,11 +251,12 @@ NSRPC_Proactor* ProactorFactory::create(ProactorType proactorType)
 
 #endif // (ACE_WIN32) && !defined (ACE_HAS_WINCE)
 
-    if ((! proactorImpl) && (ptAny != proactorType)) {
+    if ((! proactorImpl.get()) && (ptAny != proactorType)) {
         assert(false && "Unknown Proactor Type");
     }
 
-    return new NSRPC_Proactor(proactorImpl, 1);
+    return std::auto_ptr<NSRPC_Proactor>(
+        new NSRPC_Proactor(proactorImpl.release(), 1));
 }
 
 } // namespace nsrpc

@@ -30,7 +30,7 @@ protected:
         nsrpc::disableSignals(SIGPIPE, SIGPIPE);
         nsrpc::disableSignals(SIGIO, SIGIO);
 
-        NSRPC_Proactor* proactor = 0;
+        std::auto_ptr<NSRPC_Proactor> proactor;
 
 #if defined (ACE_WIN32)
         proactor = nsrpc::ProactorFactory::create(nsrpc::ptWin32);
