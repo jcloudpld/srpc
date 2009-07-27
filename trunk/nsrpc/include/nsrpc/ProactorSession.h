@@ -59,14 +59,17 @@ public:
     {
         size_t recvBytes_;
         size_t sentBytes_;
+        size_t useCount_;
 
-        Stats() {
+        Stats() :
+            useCount_(0) {
             reset();
         }
 
         void reset() {
             recvBytes_ = 0;
             sentBytes_ = 0;
+            ////useCount_ = 0;
         }
     };
 public:
@@ -128,7 +131,10 @@ protected:
     }
 protected:
     /// 접속될 경우 호출된다.
-    virtual void onConnected() {}
+    /// @return false이면 접속을 해제한다
+    virtual bool onConnected() {
+        return true;
+    }
 private:
     /// 클라이언트로 부터 메세지가 도착하였다.
     virtual bool onMessageArrived(CsMessageType messageType) = 0;

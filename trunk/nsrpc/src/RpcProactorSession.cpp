@@ -62,11 +62,13 @@ srpc::RpcNetwork* RpcProactorSession::getRpcNetwork()
 }
 
 
-void RpcProactorSession::onConnected()
+bool RpcProactorSession::onConnected()
 {
     rpcNetwork_->reset();
 
     seedExchanger_->exchangeFirstSeed();
+
+    return true;
 }
 
 
