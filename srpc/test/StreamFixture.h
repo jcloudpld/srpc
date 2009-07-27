@@ -12,11 +12,16 @@
 class StreamFixture : public testing::Test
 {
 protected:
+    static const bool shouldUseUtf8ForString = true;
+    static const size_t bytesForRpcChar =
+        shouldUseUtf8ForString ? 1 : sizeof(wchar_t);
+
+protected:
     virtual void SetUp() {
         ostream_.reset(srpc::StreamFactory::createOStream(
-            true, getStreamType(), buffer_).release());
+            shouldUseUtf8ForString, getStreamType(), buffer_).release());
         istream_.reset(srpc::StreamFactory::createIStream(
-            true, getStreamType(), buffer_).release());
+            shouldUseUtf8ForString, getStreamType(), buffer_).release());
     }
 
 private:

@@ -29,24 +29,24 @@ void OByteStream::write(const String& value, size_t maxLength,
 void OByteStream::write(const WString& value, size_t maxLength,
     int sizeBitCount)
 {
-    WString realValue(value);
-    if (realValue.size() > maxLength) {
-        realValue.resize(maxLength);
-    }
-
     if (shouldUseUtf8ForString_) {
+        WString realValue(value);
+        if (realValue.size() > maxLength) {
+            realValue.resize(maxLength);
+        }
+
         const String utf8(toUtf8(realValue));
         const UInt16 strLen = static_cast<UInt16>(utf8.size());
         writeStringLength(strLen, sizeBitCount);
         writeBytes(utf8.data(), utf8.size());
     }
     else {
-        writeNumeric(static_cast<UInt32>(maxLength));
+        const UInt16 strLen =
+            static_cast<UInt16>((std::min)(value.size(), maxLength));
+        writeStringLength(strLen, sizeBitCount);
 
-        WString::const_iterator pos = realValue.begin();
-        const WString::const_iterator end = realValue.end();
-        for (; pos != end; ++pos) {
-            writeNumeric(static_cast<WString::value_type>(*pos));
+        for (UInt32 i = 0; i < strLen; ++i) {
+            writeNumeric(value[i]);
         }
     }
 }
