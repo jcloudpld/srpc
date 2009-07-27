@@ -13,10 +13,10 @@ class StreamFixture : public testing::Test
 {
 protected:
     virtual void SetUp() {
-        ostream_.reset(
-            srpc::StreamFactory::createOStream(getStreamType(), buffer_));
-        istream_.reset(
-            srpc::StreamFactory::createIStream(getStreamType(), buffer_));
+        ostream_.reset(srpc::StreamFactory::createOStream(
+            true, getStreamType(), buffer_).release());
+        istream_.reset(srpc::StreamFactory::createIStream(
+            true, getStreamType(), buffer_).release());
     }
 
 private:

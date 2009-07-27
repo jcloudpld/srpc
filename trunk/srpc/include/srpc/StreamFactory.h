@@ -26,12 +26,14 @@ struct SRPC_API StreamFactory
     };
 
     /// 입력 스트림을 생성한다
-    static IStream* createIStream(StreamType streamType,
-        StreamBuffer& streamBuffer);
+    /// @param shouldUseUtf8ForString 문자열을 UTF-8로 전환?
+    static std::auto_ptr<IStream> createIStream(bool shouldUseUtf8ForString,
+        StreamType streamType, StreamBuffer& streamBuffer);
 
     /// 출력 스트림을 생성한다
-    static OStream* createOStream(StreamType streamType,
-        StreamBuffer& streamBuffer);
+    /// @param shouldUseUtf8ForString 문자열을 UTF-8로 전환?
+    static std::auto_ptr<OStream> createOStream(bool shouldUseUtf8ForString,
+        StreamType streamType, StreamBuffer& streamBuffer);
 };
 
 /** @} */ // addtogroup serialization

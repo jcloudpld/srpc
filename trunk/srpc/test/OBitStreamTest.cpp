@@ -14,7 +14,8 @@ class OBitStreamTest : public testing::Test
 {
 private:
     virtual void SetUp() {
-        ostream_ = StreamFactory::createOStream(StreamFactory::stBit, buffer_);
+        ostream_ = StreamFactory::createOStream(
+            true, StreamFactory::stBit, buffer_).release();
     }
 
     virtual void TearDown() {

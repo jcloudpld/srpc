@@ -59,8 +59,10 @@ void writeBitsImpl(DataType value, int bitCount,
 
 // = OBitStream
 
-OBitStream::OBitStream(StreamBuffer& streamBuffer) :
+OBitStream::OBitStream(StreamBuffer& streamBuffer,
+    bool shouldUseUtf8ForString) :
     streamBuffer_(streamBuffer),
+    shouldUseUtf8ForString_(shouldUseUtf8ForString),
     holdingBitCount_(0),
     totalBitCount_(0)
 {
@@ -118,12 +120,26 @@ void OBitStream::write(const WString& value, size_t maxLength,
     if (value.size() > maxLength) {
         realValue.resize(maxLength);
     }
-    const String utf8(toUtf8(realValue));
-    const UInt32 strLen =
-        static_cast<UInt32>((std::min)(utf8.size(), maxLength));
-    write(strLen, sizeBitCount);
-    for (String::size_type i = 0; i < strLen; ++i) {
-        writeByte(utf8[i]);
+
+    if (shouldUseUtf8ForString_) {
+        const String utf8(toUtf8(realValue));
+        const UInt32 strLen =
+            static_cast<UInt32>((std::min)(utf8.size(), maxLength));
+        write(strLen, sizeBitCount);
+        for (String::size_type i = 0; i < strLen; ++i) {
+            writeByte(utf8[i]);
+        }
+    }
+    else {
+        const UInt32 strLen = static_cast<UInt32>(maxLength);
+        write(strLen, sizeBitCount);
+
+        WString::const_iterator pos = realValue.begin();
+        const WString::const_iterator end = realValue.end();
+        for (; pos != end; ++pos) {
+            const srpc::UInt32 ch = *pos;
+            writeBits(ch, Bits<WString::value_type>::size);
+        }
     }
 }
 

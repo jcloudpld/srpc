@@ -25,6 +25,7 @@ namespace nsrpc
 
 RpcNetworkForBroadcast::RpcNetworkForBroadcast() :
     useBitPacking_(false),
+    shouldUseUtf8ForString_(true),
     sendBlock_(0)
 {
     srpc::RpcForwarder::setRpcNetwork(*this);
@@ -38,9 +39,11 @@ RpcNetworkForBroadcast::~RpcNetworkForBroadcast()
 
 
 void RpcNetworkForBroadcast::initialize(bool useBitPacking,
-    PacketCoderFactory& packetCoderFactory)
+    PacketCoderFactory& packetCoderFactory,
+    bool shouldUseUtf8ForString)
 {
     useBitPacking_ = useBitPacking;
+    shouldUseUtf8ForString_ = shouldUseUtf8ForString;
 
     packetCoder_.reset(packetCoderFactory.create());
     messageBlockManager_.reset(
@@ -106,8 +109,8 @@ ACE_Message_Block* RpcNetworkForBroadcast::initOutputStream()
     if (! ostream_.get()) { // lazy evaluation
         wstreamBuffer_.reset(new MessageBlockStreamBuffer(wblock));
         ostream_.reset(
-            srpc::StreamFactory::createOStream(
-                getStreamType(useBitPacking_), *wstreamBuffer_));
+            srpc::StreamFactory::createOStream(shouldUseUtf8ForString_,
+                getStreamType(useBitPacking_), *wstreamBuffer_).release());
     }
     else {
         ostream_->reset(false);

@@ -20,7 +20,7 @@ class StreamBuffer;
 class IByteStream : public IStream
 {
 public:
-    IByteStream(StreamBuffer& streamBuffer);
+    IByteStream(StreamBuffer& streamBuffer, bool shouldUseUtf8ForString);
 private:
     virtual void read(UInt64& value, int /*bitCount*/) {
         readNumeric(value);
@@ -90,6 +90,7 @@ private:
     UInt8 readByte();
 private:
     StreamBuffer& streamBuffer_;
+    const bool shouldUseUtf8ForString_;
 };
 
 /** @} */ // addtogroup serialization

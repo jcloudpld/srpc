@@ -13,12 +13,13 @@ namespace nsrpc
 // = RpcReactorSession
 
 RpcReactorSession::RpcReactorSession(ACE_Reactor* reactor,
-    PacketCoderFactory* packetCoderFactory, bool useBitPacking) :
+    PacketCoderFactory* packetCoderFactory, bool useBitPacking,
+    bool shouldUseUtf8ForString) :
     ReactorSession(reactor, packetCoderFactory),
     rpcNetwork_(new SessionRpcNetwork(useBitPacking)),
     seedExchanger_(PacketSeedExchangerFactory::createForClient())
 {
-    rpcNetwork_->initialize(*this, *this);
+    rpcNetwork_->initialize(*this, *this, shouldUseUtf8ForString);
 
     seedExchanger_->initialize(getPacketCoder(), *rpcNetwork_);
 }

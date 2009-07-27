@@ -48,7 +48,8 @@ public:
     virtual ~SessionRpcNetwork();
 
     void initialize(SessionRpcNetworkCallback& callback,
-        MessageBlockProvider& messageBlockProvider);
+        MessageBlockProvider& messageBlockProvider,
+        bool shouldUseUtf8ForString);
 
     /// 입력 스트림을 초기화한다
     void reset();
@@ -84,6 +85,7 @@ private:
     bool enabled_;
 
     bool useBitPacking_;
+    bool shouldUseUtf8ForString_;
 
     boost::scoped_ptr<MessageBlockStreamBuffer> rstreamBuffer_;
     boost::scoped_ptr<srpc::IStream> 

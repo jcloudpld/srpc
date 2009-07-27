@@ -50,7 +50,8 @@ public:
 
 protected:
     void initialize(bool useBitPacking,
-        PacketCoderFactory& packetCoderFactory);
+        PacketCoderFactory& packetCoderFactory,
+        bool shouldUseUtf8ForString);
 
 private:
     virtual void registerRpcReceiver(srpc::RpcReceiver* /*receiver*/) {
@@ -73,6 +74,7 @@ private:
 
 private:
     bool useBitPacking_;
+    bool shouldUseUtf8ForString_;
     boost::scoped_ptr<PacketCoder> packetCoder_;
     boost::scoped_ptr<SynchMessageBlockManager> messageBlockManager_;
     boost::scoped_ptr<MessageBlockStreamBuffer> wstreamBuffer_;

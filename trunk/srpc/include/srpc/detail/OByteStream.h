@@ -20,7 +20,7 @@ class StreamBuffer;
 class OByteStream : public OStream
 {
 public:
-    OByteStream(StreamBuffer& streamBuffer);
+    OByteStream(StreamBuffer& streamBuffer, bool shouldUseUtf8ForString);
 private:
     virtual void write(UInt64 value, int /*bitCount*/) {
         writeNumeric(value);
@@ -89,6 +89,7 @@ private:
     void writeByte(UInt8 value);
 private:
     StreamBuffer& streamBuffer_;
+    const bool shouldUseUtf8ForString_;
 };
 
 /** @} */ // addtogroup serialization

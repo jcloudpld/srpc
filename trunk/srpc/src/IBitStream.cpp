@@ -46,8 +46,10 @@ void readBitsImpl(DataType& value, int bitCount,
 
 // = IBitStream
 
-IBitStream::IBitStream(StreamBuffer& streamBuffer) :
+IBitStream::IBitStream(StreamBuffer& streamBuffer,
+    bool shouldUseUtf8ForString) :
     streamBuffer_(streamBuffer),
+    shouldUseUtf8ForString_(shouldUseUtf8ForString),
     bitReadCount_(0)
 {
 }
@@ -99,13 +101,24 @@ void IBitStream::read(WString& value, size_t maxLength, int sizeBits)
     UInt32 strLen;
     read(strLen, sizeBits);
 
-    String utf8;
-    utf8.reserve(strLen);
-    for (UInt32 i = 0; i < strLen; ++i) {
-        utf8 += static_cast<String::value_type>(readByte());
+    if (shouldUseUtf8ForString_) {
+        String utf8;
+        utf8.reserve(strLen);
+        for (UInt32 i = 0; i < strLen; ++i) {
+            utf8 += static_cast<String::value_type>(readByte());
+        }
+
+        value = fromUtf8(utf8);
+    }
+    else {
+        value.reserve(strLen);
+        for (UInt32 i = 0; i < strLen; ++i) {
+            WString::value_type ch;
+            readNumeric(ch, Bits<WString::value_type>::size);
+            value.push_back(ch);
+        }
     }
 
-    value = fromUtf8(utf8);
     if (value.size() > maxLength) {
         value.resize(maxLength);
     }

@@ -19,7 +19,7 @@ class StreamBuffer;
 class IBitStream : public IStream
 {
 public:
-    IBitStream(StreamBuffer& streamBuffer);
+    IBitStream(StreamBuffer& streamBuffer, bool shouldUseUtf8ForString);
 
     /// 테스트용
     int getReadBitCount() const {
@@ -120,6 +120,8 @@ private:
     }
 private:
     StreamBuffer& streamBuffer_;
+    const bool shouldUseUtf8ForString_;
+
     /// 읽혀진 데이터의 비트 수(<= 8)
     int bitReadCount_;
 };
