@@ -153,20 +153,19 @@ bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result
     ACE_Message_Block& mblock = result.message_block();
     assert(&mblock == recvBlock_);
 
-    const size_t neededBytes = result.bytes_to_read() - bytesTransferred;
-    if (neededBytes > 0) {
-        return readMessageBody(neededBytes);
+    const size_t leftBytes = result.bytes_to_read() - bytesTransferred;
+    if (leftBytes > 0) {
+        return readMessageFragment(leftBytes);
     }
 
     if (mblock.length() == packetCoder_->getHeaderSize()) {
-        if (packetCoder_->readHeader(headerForReceive_, mblock)) {
-            return readMessageBody(headerForReceive_.bodySize_);
-        }
-        else {
+        if (! packetCoder_->readHeader(headerForReceive_, mblock)) {
             NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::readMessage() - ")
                 ACE_TEXT("Invalid Message Header(%m)."));
             return false;
         }
+
+        return readMessageFragment(headerForReceive_.bodySize_);
     }
 
     if (! packetCoder_->decode(mblock)) {
@@ -207,7 +206,7 @@ bool ProactorSession::readMessageHeader()
 }
 
 
-bool ProactorSession::readMessageBody(size_t neededBytes)
+bool ProactorSession::readMessageFragment(size_t neededBytes)
 {
     if (recvBlock_->space() < neededBytes) {
         recvBlock_->size(recvBlock_->size() + neededBytes);

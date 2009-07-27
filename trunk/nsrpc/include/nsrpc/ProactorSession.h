@@ -158,7 +158,7 @@ protected:
 private:
     bool readMessage(const NSRPC_Asynch_Read_Stream::Result& result);
     bool readMessageHeader();
-    bool readMessageBody(size_t neededBytes);
+    bool readMessageFragment(size_t neededBytes);
     bool read(size_t neededBytes);
 
     bool write(ACE_Message_Block& mblock);
