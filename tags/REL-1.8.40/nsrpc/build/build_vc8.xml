@@ -1,0 +1,91 @@
+<project name="nsrpc" default="all" basedir=".">
+  <property name="project" value="nsrpc"/>
+  <property name="cc.dir" value="${basedir}/cruisecontrol"/>
+  <property name="root.dir" value="${basedir}/.."/>
+  <property name="build.dir" value="${basedir}"/>
+  <property name="build.script" value="${build.dir}/rebuild_all_vc8.bat"/>
+  <property name="unit.test.bin" value="${project}Test"/>
+  <property name="bin.dir" value="${root.dir}/bin"/>
+  <property name="lib.dir" value="${root.dir}/lib"/>
+  <property name="build.log.dir" value="${root.dir}/build_log"/>
+  <property name="test.log.dir" value="${build.log.dir}/test_log"/>
+
+  <taskdef name="text2xml"
+    classname="com.gb.bci.ant.taskdefs.TextToXml"
+    classpath="${cc.dir}/TextToXml.jar"/>
+
+  <target name="all" depends="init,builder,unittest" description="all"/>
+
+  <target name="init" description="Setup build system">
+    <delete includeemptydirs="true" quiet="true">
+      <fileset dir="${build.log.dir}" includes="**/*"/>
+    </delete>
+    <mkdir dir="${build.log.dir}"/>
+  </target>
+
+  <target name="builder">
+    <!-- to get correct resultproperty value, you should use "cmd.exe /c call XXX" -->
+    <exec dir="${build.dir}" executable="cmd.exe"
+	    output="${build.log.dir}/${project}.log"
+	    failonerror="false"
+      failifexecutionfails="false"
+      resultproperty="build.result">
+      <arg line="/C" />
+      <arg line="CALL " />
+      <arg line="${build.script} nowait notproactor" />
+    </exec>
+
+    <text2xml srcfile="${build.log.dir}/${project}.log"
+      destfile="${build.log.dir}/${project}_log.xml"
+      element="compilerlog"
+      attribute="name"
+      value="${project}"
+    />
+
+    <delete file="${build.log.dir}/${project}.log" quiet="true" />
+    <concat destfile="${build.log.dir}/${project}.build">${build.result}</concat>
+
+    <fail message="Build Failed!">
+      <condition>
+        <isfailure code="${build.result}"/>
+      </condition>
+    </fail>
+  </target>
+
+  <target name="unittest" description="Unit Testing">
+    <!-- Debug version -->
+    <exec dir="${bin.dir}" executable="${bin.dir}/${unit.test.bin}_d.exe"
+      failonerror="false"
+      failifexecutionfails="false">
+      <arg value="--gtest_output=xml:${test.log.dir}/${unit.test.bin}_d.xml" />
+    </exec>
+
+    <!-- Release version -->
+    <exec dir="${bin.dir}" executable="${bin.dir}/${unit.test.bin}.exe"
+	    failonerror="false"
+      failifexecutionfails="false">
+      <arg value="--gtest_output=xml:${test.log.dir}/${unit.test.bin}.xml" />
+    </exec>
+
+    <condition property = "test.failed">
+      <equals arg1="${test.ret}" arg2="1"/>
+    </condition>
+
+    <fail if="test.failed">
+Unit tests failed. For error messages, check the log files in ${test.log.dir} or run "ant test-reports" to generate reports at ${test.log.dir}/reports.
+    </fail>
+  </target>
+  
+  <!-- task that use generated xml result, to produce html report: -->
+  <target name="test-reports" description="Generate test reports from data collected after a running test">
+    <mkdir dir="${test.log.dir}/reports"/>
+    <junitreport todir="${test.log.dir}/reports">
+      <fileset dir="${test.log.dir}">
+        <include name="*.xml"/>
+      </fileset>
+      <report format="frames" todir="${test.log.dir}/reports"/>
+    </junitreport>
+  </target>
+
+</project>
+
