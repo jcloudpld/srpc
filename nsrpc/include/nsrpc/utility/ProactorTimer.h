@@ -1,6 +1,7 @@
 #ifndef NSRPC_PROACTORTIMER_H
 #define NSRPC_PROACTORTIMER_H
 
+#include "../nsrpc.h"
 #include "../config/Proactor.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>
@@ -22,7 +23,7 @@ class ProactorTimerImpl;
 /**
  * @class ProactorTimerCallback
  */
-class ProactorTimerCallback : public boost::noncopyable
+class NSRPC_API ProactorTimerCallback : public boost::noncopyable
 {
 public:
     virtual ~ProactorTimerCallback() {}
@@ -35,7 +36,7 @@ public:
  * Proactor 기반의 Timer 클래스
  * - PIMPL idiom
  */
-class ProactorTimer : public boost::noncopyable
+class NSRPC_API ProactorTimer : public boost::noncopyable
 {
 public:
     ProactorTimer(ProactorTimerCallback& callback,
