@@ -21,6 +21,7 @@ namespace nsrpc
 {
 
 class SessionCreator;
+class SessionValidator;
 
 /** @addtogroup session
 * @{
@@ -38,8 +39,10 @@ class NSRPC_API ProactorSessionAcceptor :
 {
     typedef NSRPC_Asynch_Acceptor<NSRPC_Service_Handler> Parent;
 public:
-    ProactorSessionAcceptor(SessionCreator& sessionCreator) :
+    ProactorSessionAcceptor(SessionCreator& sessionCreator,
+        SessionValidator* validator = 0) :
         sessionCreator_(sessionCreator),
+        validator_(validator),
         shouldFinish_(false)
 #if defined (NSRPC_USE_TPROACTOR)
         , pendingCount_(0)
@@ -83,6 +86,7 @@ private:
 
 private:
     SessionCreator& sessionCreator_;
+    SessionValidator* validator_;
     bool shouldFinish_;
 #if defined (NSRPC_USE_TPROACTOR)
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingCount_;

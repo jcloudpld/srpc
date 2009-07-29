@@ -343,7 +343,7 @@
 				RelativePath=".\CachedSessionManager.cpp">
 			</File>
 			<File
-				RelativePath=".\ClientSession.cpp">
+				RelativePath=".\ReactorSession.cpp">
 			</File>
 			<File
 				RelativePath=".\CsPacketCoder.h">
@@ -376,22 +376,26 @@
 				RelativePath=".\ProactorTask.cpp">
 			</File>
 			<File
+				RelativePath=".\ProactorTimer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ReactorTask.cpp">
 			</File>
 			<File
-				RelativePath=".\RpcClientSession.cpp">
+				RelativePath=".\RpcReactorSession.cpp">
 			</File>
 			<File
-				RelativePath=".\RpcSession.cpp">
+				RelativePath=".\RpcProactorSession.cpp">
 			</File>
 			<File
-				RelativePath=".\Session.cpp">
+				RelativePath=".\ProactorSession.cpp">
 			</File>
 			<File
-				RelativePath=".\SessionAcceptor.cpp">
+				RelativePath=".\ProactorSessionAcceptor.cpp">
 			</File>
 			<File
-				RelativePath=".\SessionConnector.cpp">
+				RelativePath=".\ProactorSessionConnector.cpp">
 			</File>
 			<File
 				RelativePath=".\SessionRpcNetwork.cpp">
@@ -567,25 +571,25 @@
 					RelativePath="..\include\nsrpc\ReactorTask.h">
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\RpcClientSession.h">
+					RelativePath="..\include\nsrpc\RpcReactorSession.h">
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\RpcSession.h">
+					RelativePath="..\include\nsrpc\RpcProactorSession.h">
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\RpcSessionConfig.h">
+					RelativePath="..\include\nsrpc\RpcProactorSessionConfig.h">
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\Session.h">
+					RelativePath="..\include\nsrpc\ProactorSession.h">
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\SessionAcceptor.h">
+					RelativePath="..\include\nsrpc\ProactorSessionAcceptor.h">
 				</File>
 				<File
 					RelativePath="..\include\nsrpc\SessionConfig.h">
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\SessionConnector.h">
+					RelativePath="..\include\nsrpc\ProactorSessionConnector.h">
 				</File>
 				<File
 					RelativePath="..\include\nsrpc\SessionFactory.h">
@@ -597,7 +601,7 @@
 						RelativePath="..\include\nsrpc\detail\Asynch_RW.h">
 					</File>
 					<File
-						RelativePath="..\include\nsrpc\detail\ClientSession.h">
+						RelativePath="..\include\nsrpc\detail\ReactorSession.h">
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\detail\CsProtocol.h">
@@ -682,6 +686,10 @@
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\utility\ObjectPool.h">
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\utility\ProactorTimer.h"
+						>
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\utility\SmartPtr.h">
