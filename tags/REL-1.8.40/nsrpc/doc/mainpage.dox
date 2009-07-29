@@ -1,8 +1,0 @@
-/** @mainpage nsrpc - No Simple RPC(Remote Procedure Call)
- <hr>
-
-C++의 템플릿과 매크로를 이용하여 사용하기 쉽고 효율적이며 단순한 구조의 멀티플랫폼 원격 프로시져 호출(Remote Procedure Call)을 구현합니다.
-
-<center>http://srpc.googlecode.com/</center>
-*/
- 
