@@ -4,6 +4,7 @@
 
 #include <nsrpc/ProactorSessionAcceptor.h>
 #include <nsrpc/ProactorSession.h>
+#include <nsrpc/SessionValidator.h>
 #include <nsrpc/detail/SessionCreator.h>
 #include <nsrpc/utility/SystemUtil.h>
 #include <nsrpc/utility/Logger.h>
@@ -100,11 +101,18 @@ int ProactorSessionAcceptor::validate_connection(
         return -1;
     }
 
+    ACE_TCHAR address[MAXHOSTNAMELEN];
+    if ((validator_ != 0) && (! validator_->isValidated())) {
+        NSRPC_LOG_DEBUG3(ACE_TEXT("Blocked connection from %s:%d."),
+            remote.get_host_addr(address, MAXHOSTNAMELEN),
+            remote.get_port_number());
+        return -1;
+    }
+
     if (! result.success()) {
         return -1;
     }
 
-    ACE_TCHAR address[MAXHOSTNAMELEN];
     NSRPC_LOG_DEBUG3(ACE_TEXT("Connecting from %s:%d..."),
         remote.get_host_addr(address, MAXHOSTNAMELEN),
         remote.get_port_number());

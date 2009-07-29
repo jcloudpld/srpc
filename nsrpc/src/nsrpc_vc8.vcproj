@@ -1050,6 +1050,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ProactorTimer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ReactorSession.cpp"
 				>
 			</File>
@@ -1070,15 +1074,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Session.cpp"
+				RelativePath=".\ProactorSession.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SessionAcceptor.cpp"
+				RelativePath=".\ProactorSessionAcceptor.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SessionConnector.cpp"
+				RelativePath=".\ProactorSessionConnector.cpp"
 				>
 			</File>
 			<File
@@ -1425,11 +1429,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\RpcSessionConfig.h"
+					RelativePath="..\include\nsrpc\RpcProactorSessionConfig.h"
 					>
 				</File>
 				<File
-					RelativePath="..\include\nsrpc\Session.h"
+					RelativePath="..\include\nsrpc\ProactorSession.h"
 					>
 				</File>
 				<File
@@ -1557,6 +1561,10 @@
 					</File>
 					<File
 						RelativePath="..\include\nsrpc\utility\ObjectPool.h"
+						>
+					</File>
+					<File
+						RelativePath="..\include\nsrpc\utility\ProactorTimer.h"
 						>
 					</File>
 					<File
