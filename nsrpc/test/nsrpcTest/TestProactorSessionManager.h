@@ -56,14 +56,15 @@ public:
     virtual bool isSafeToDelete() const {
         return true;
     }
+
+    virtual size_t getSessionCount() const {
+        return sessionCount_;
+    }
 public:
     TestProactorSession& getSession() const {
         return *lastSession_;
     }
 
-    int getSessionCount() const {
-        return sessionCount_;
-    }
 private:
     NSRPC_Proactor* proactor_;
     boost::scoped_ptr<nsrpc::SynchMessageBlockManager> messageBlockManager_;
