@@ -50,6 +50,9 @@ public:
 
     /// 안전하게 메모리를 해제할 수 있는가?
     virtual bool isSafeToDelete() const = 0;
+
+    /// 세션수를 얻는다
+    virtual size_t getSessionCount() const = 0;
 };
 
 /** @} */ // addtogroup session

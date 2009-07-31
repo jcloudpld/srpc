@@ -51,6 +51,7 @@ public:
 
     /// 대기 중인 세션 수를 얻는다.
     size_t getInactiveSessionCount() const;
+
 protected: // for Test
     // = implementation
     virtual void initialize();
@@ -61,6 +62,10 @@ protected: // for Test
     virtual bool isSafeToDelete() const {
         return getActiveSessionCount() == 0;
     }
+    virtual size_t getSessionCount() const {
+        return getActiveSessionCount();
+    }
+
 private:
     /// 이 세션 매니저에서 공유할 메세지 블럭 매니저.
     boost::scoped_ptr<SessionAllocator> sessionAllocator_;

@@ -218,9 +218,11 @@ bool ProactorSession::readMessageFragment(size_t neededBytes)
 bool ProactorSession::read(size_t neededBytes)
 {
     if (stream_->read(*recvBlock_, neededBytes) != 0) {
-        NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession::read() - ")
-            ACE_TEXT("Asynch_RW_Stream::read(%d) FAILED(%m)."),
-            neededBytes);
+        if (0 != ACE_OS::last_error()) {
+            NSRPC_LOG_DEBUG3(ACE_TEXT("ProactorSession::read() - ")
+                ACE_TEXT("Asynch_RW_Stream::read(%d) FAILED(%m, %d)."),
+                neededBytes, errno);
+        }
         return false;
     }
 
@@ -232,9 +234,11 @@ bool ProactorSession::read(size_t neededBytes)
 bool ProactorSession::write(ACE_Message_Block& mblock)
 {
     if (stream_->write(mblock, mblock.length()) != 0) {
-        NSRPC_LOG_DEBUG4(ACE_TEXT("ProactorSession(0x%X)::write() - ")
-            ACE_TEXT("Asynch_RW_Stream::write(%d) FAILED(%m, %d)."),
-            this, mblock.length(), errno);
+        if (0 != ACE_OS::last_error()) {
+            NSRPC_LOG_DEBUG4(ACE_TEXT("ProactorSession(0x%X)::write() - ")
+                ACE_TEXT("Asynch_RW_Stream::write(%d) FAILED(%m, %d)."),
+                this, mblock.length(), errno);
+        }
         return false;
     }
 
@@ -322,7 +326,7 @@ void ProactorSession::checkPendingCount()
             return;
         }
 
-        NSRPC_LOG_ERROR3(
+        NSRPC_LOG_WARNING3(
             "ProactorSession(0x%X): will disconnect - Too many output pending(%d).",
             this, writeCount);
         disconnect();
@@ -365,7 +369,8 @@ void ProactorSession::open(ACE_HANDLE new_handle, ACE_Message_Block& /*message_b
             }
         }
 
-        NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::open() - FAILED(%m)."));
+        NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession::open() - FAILED(%m,%d)."),
+            errno);
     }
 
     disconnect();
