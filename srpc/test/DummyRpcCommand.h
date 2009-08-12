@@ -12,12 +12,8 @@ class DummyRpcCommand : public srpc::RpcCommand
 {
 public:
     DummyRpcCommand(const srpc::RInt32& p1, const srpc::RInt32& p2) :
-      srpc::RpcCommand(DummyRpcCommand::getStaticRpcId()),
+        srpc::RpcCommand(DummyRpcCommand::getStaticRpcId(), marshalFunctor_),
         marshalFunctor_(p1, p2) {}
-private:
-    virtual srpc::ForwardingFunctor& getMarshaler() {
-        return marshalFunctor_;
-    }
 
 private:
     static const srpc::RRpcId& getStaticRpcId() {
