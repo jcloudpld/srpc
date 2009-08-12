@@ -15,12 +15,13 @@ namespace srpc {
 */
 
 /// Rpc 부호 없는 숫자 타입 base template class
-template <typename T, size_t bits = Bits<T>::size, typename T2 = T>
+template <typename NativeType, size_t bits = Bits<NativeType>::size,
+    typename StreamingType = NativeType>
 class RpcUIntType
 {
 public:
-    typedef T NativeType;
-    typedef T2 StreamingType;
+    static size_t getBits() { return bits; }
+
 public:
     RpcUIntType() {}
     RpcUIntType(const RpcUIntType& t) :
@@ -66,12 +67,13 @@ private:
 
 
 /// Rpc 부호 있는 숫자 타입 base template class
-template <typename T, size_t bits = Bits<T>::size, typename T2 = T>
+template <typename NativeType, size_t bits = Bits<NativeType>::size,
+    typename StreamingType = NativeType>
 class RpcIntType
 {
 public:
-    typedef T NativeType;
-    typedef T2 StreamingType;
+    static size_t getBits() { return bits; }
+
 public:
     RpcIntType() {}
     RpcIntType(const RpcIntType& t) :
@@ -134,9 +136,13 @@ template <typename StringType, size_t maxLength,
 class RpcStringType : public StringType
 {
 public:
-    typedef typename StringType::value_type value_type;
+    static size_t getMaxLength() { return maxLength; }
+    static size_t getSizeBits() { return sizeBits; }
+
 public:
+    typedef typename StringType::value_type value_type;
     typedef StringType NativeType;
+
 public:
     RpcStringType() {}
     RpcStringType(const StringType& s) :

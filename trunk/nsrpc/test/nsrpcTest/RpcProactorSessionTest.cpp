@@ -16,23 +16,6 @@ using namespace srpc;
 using namespace nsrpc;
 
 /**
- * @class TestRpcCommand
- */
-class TestRpcCommand : public RpcCommand
-{
-public:
-    TestRpcCommand(const RRpcId& rpcId, const RUInt32& value) :
-        RpcCommand(rpcId),
-        marshaler_(value) {}
-private:
-    virtual ForwardingFunctor& getMarshaler() {
-        return marshaler_;
-    }
-private:
-    ForwardingFunctorT<SRPC_TYPELIST_1(RUInt32)> marshaler_;
-};
-
-/**
 * @class RpcProactorSessionTest
 *
 * RpcProactorSession Test
@@ -84,7 +67,8 @@ TEST_F(RpcProactorSessionTest, testSendRpcCommands)
     const int sendCount = 5;
     const RRpcId rpcId("testRpcId");
     for (int i = 0; i < sendCount; ++i) {
-        TestRpcCommand command(rpcId, valueExpected);
+        ForwardingFunctorT<SRPC_TYPELIST_1(RUInt32)> marshaler(valueExpected);
+        RpcCommand command(rpcId, marshaler);
         getLastSession().sendRpcCommand(command);
     }
 
