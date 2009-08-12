@@ -6,7 +6,9 @@
 // 취지에서 boost::mpl::vector로 대체하였다.
 // 결론적으로 소스 크기는 줄었고 컴파일 시간은 늘게 되었다.
 
+#include <boost/call_traits.hpp>
 #include <boost/mpl/vector.hpp>
+
 
 #define SRPC_TYPELIST_0() \
     boost::mpl::vector<>
@@ -40,5 +42,25 @@
 
 #define SRPC_TYPELIST_10(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) \
     boost::mpl::vector<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
+
+// = Type utility
+
+#define SRPC_VALUE_TYPE(T)  typename boost::call_traits<T>::value_type
+#define SRPC_PARAM_TYPE(T)  typename boost::call_traits<T>::param_type
+
+#define SRPC_VALUE_TYPE_4_FORWARDER(T) typename boost::call_traits<T>::param_type
+
+namespace srpc
+{
+
+template <typename T>
+struct remove_const_from_value_type
+{
+    typedef
+        typename boost::remove_const<SRPC_VALUE_TYPE_4_FORWARDER(T) >::type
+        type;
+};
+
+} // namespace srpc
 
 #endif // SRPC_TYPELIST_H
