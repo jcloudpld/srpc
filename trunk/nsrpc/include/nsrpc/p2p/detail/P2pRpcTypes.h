@@ -21,10 +21,10 @@ typedef srpc::RpcUIntType<P2pOptions, 8> RP2pOptions;
  */
 struct RP2pProperty
 {
-    srpc::RUInt8 maxPeers_;
+    srpc::UInt8 maxPeers_;
     srpc::RShortString sessionPassword_;
-    srpc::RBool hostMigration_;
-    srpc::RUInt32 sessionKey_;
+    bool hostMigration_;
+    srpc::UInt32 sessionKey_;
     RPeerIds hostPrecedence_;
 
     RP2pProperty() {
@@ -40,18 +40,18 @@ struct RP2pProperty
     }
 
     void write(srpc::OStream& ostream) {
-        maxPeers_.write(ostream);
+        ostream.write(maxPeers_);
         sessionPassword_.write(ostream);
-        hostMigration_.write(ostream);
-        sessionKey_.write(ostream);
+        ostream.write(hostMigration_);
+        ostream.write(sessionKey_);
         hostPrecedence_.write(ostream);
     }
 
     void read(srpc::IStream& istream) {
-        maxPeers_.read(istream);
+        istream.read(maxPeers_);
         sessionPassword_.read(istream);
-        hostMigration_.read(istream);
-        sessionKey_.read(istream);
+        istream.read(hostMigration_);
+        istream.read(sessionKey_);
         hostPrecedence_.read(istream);
     }
 };
