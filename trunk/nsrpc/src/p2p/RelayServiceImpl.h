@@ -35,12 +35,12 @@ public:
     OVERRIDE_SRPC_METHOD_6(rpcRelay,
         RPeerIdPair, peerIdPair, RAddress, peerAddress,
         RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
-        RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
+        SequenceNumber, sequenceNumber, PeerTime, sentTime);
 
     OVERRIDE_SRPC_P2P_METHOD_5(rpcRelayed,
-        RPeerId, peerId, RMessageBuffer, messageBlock,
-        srpc::RRpcPacketType, packetType, RSequenceNumber, sequenceNumber,
-        RRelativeTime, sentTime);
+        PeerId, peerId, RMessageBuffer, messageBlock,
+        srpc::RRpcPacketType, packetType, SequenceNumber, sequenceNumber,
+        PeerTime, sentTime);
 private:
     RelayServiceHandler& serviceHandler_;
 };

@@ -40,7 +40,7 @@ struct StreamWriter<T, ParamType, false>
 };
 
 template <typename T>
-inline void write(OStream& ostream, SRPC_VALUE_TYPE_4_FORWARDER(T) value)
+inline void write(OStream& ostream, typename SRPC_VALUE_TYPE_4_FORWARDER(T) value)
 {
     StreamWriter<T, SRPC_VALUE_TYPE_4_FORWARDER(T),
         boost::is_fundamental<T>::value>::write(ostream, value);
@@ -81,14 +81,14 @@ struct ForwardingFunctorT<SRPC_TYPELIST_0()> : public ForwardingFunctor
 template <typename P1>
 struct ForwardingFunctorT<SRPC_TYPELIST_1(P1)> : public ForwardingFunctor
 {
-    ForwardingFunctorT(SRPC_PARAM_TYPE(P1) p1) :
+    ForwardingFunctorT(typename SRPC_PARAM_TYPE(P1) p1) :
         p1_(p1) {}
 
     virtual void marshal(OStream& ostream) {
         write<P1>(ostream, p1_);
     }
 
-    SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
 };
 
 
@@ -96,7 +96,8 @@ struct ForwardingFunctorT<SRPC_TYPELIST_1(P1)> : public ForwardingFunctor
 template <typename P1, typename P2>
 struct ForwardingFunctorT<SRPC_TYPELIST_2(P1, P2)> : public ForwardingFunctor
 {
-    ForwardingFunctorT(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2) :
+    ForwardingFunctorT(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2) :
         p1_(p1), p2_(p2) {}
 
     virtual void marshal(OStream& ostream) {
@@ -104,8 +105,8 @@ struct ForwardingFunctorT<SRPC_TYPELIST_2(P1, P2)> : public ForwardingFunctor
         write<P2>(ostream, p2_);
     }
 
-    SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
 };
 
 
@@ -114,8 +115,8 @@ template <typename P1, typename P2, typename P3>
 struct ForwardingFunctorT<SRPC_TYPELIST_3(P1, P2, P3)> :
     public ForwardingFunctor
 {
-    ForwardingFunctorT(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3) :
+    ForwardingFunctorT(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3) :
         p1_(p1), p2_(p2), p3_(p3) {}
 
     virtual void marshal(OStream& ostream) {
@@ -124,9 +125,9 @@ struct ForwardingFunctorT<SRPC_TYPELIST_3(P1, P2, P3)> :
         write<P3>(ostream, p3_);
     }
 
-    SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
 };
 
 
@@ -135,8 +136,9 @@ template <typename P1, typename P2, typename P3, typename P4>
 struct ForwardingFunctorT<SRPC_TYPELIST_4(P1, P2, P3, P4)> :
     public ForwardingFunctor
 {
-    ForwardingFunctorT(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, SRPC_PARAM_TYPE(P4) p4) :
+    ForwardingFunctorT(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3,
+        typename SRPC_PARAM_TYPE(P4) p4) :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4) {}
 
     virtual void marshal(OStream& ostream) {
@@ -146,10 +148,10 @@ struct ForwardingFunctorT<SRPC_TYPELIST_4(P1, P2, P3, P4)> :
         write<P4>(ostream, p4_);
     }
 
-    SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P4) p4_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P4) p4_;
 };
 
 
@@ -158,9 +160,9 @@ template <typename P1, typename P2, typename P3, typename P4, typename P5>
 struct ForwardingFunctorT<SRPC_TYPELIST_5(P1, P2, P3, P4, P5)> :
     public ForwardingFunctor
 {
-    ForwardingFunctorT(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, SRPC_PARAM_TYPE(P4) p4,
-        SRPC_PARAM_TYPE(P5) p5) :
+    ForwardingFunctorT(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3,
+        typename SRPC_PARAM_TYPE(P4) p4, typename SRPC_PARAM_TYPE(P5) p5) :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5) {}
 
     virtual void marshal(OStream& ostream) {
@@ -171,11 +173,11 @@ struct ForwardingFunctorT<SRPC_TYPELIST_5(P1, P2, P3, P4, P5)> :
         write<P5>(ostream, p5_);
     }
 
-    SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P4) p4_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P5) p5_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P4) p4_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P5) p5_;
 };
 
 
@@ -185,9 +187,10 @@ template <typename P1, typename P2, typename P3, typename P4, typename P5,
 struct ForwardingFunctorT<SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
     public ForwardingFunctor
 {
-    ForwardingFunctorT(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, SRPC_PARAM_TYPE(P4) p4,
-        SRPC_PARAM_TYPE(P5) p5, SRPC_PARAM_TYPE(P6) p6) :
+    ForwardingFunctorT(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3,
+        typename SRPC_PARAM_TYPE(P4) p4, typename SRPC_PARAM_TYPE(P5) p5,
+        typename SRPC_PARAM_TYPE(P6) p6) :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5), p6_(p6) {}
 
     virtual void marshal(OStream& ostream) {
@@ -199,12 +202,12 @@ struct ForwardingFunctorT<SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
         write<P6>(ostream, p6_);
     }
 
-    SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P4) p4_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P5) p5_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P6) p6_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P4) p4_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P5) p5_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P6) p6_;
 };
 
 
@@ -214,10 +217,10 @@ template <typename P1, typename P2, typename P3, typename P4, typename P5,
 struct ForwardingFunctorT<SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7)> :
     public ForwardingFunctor
 {
-    ForwardingFunctorT(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, SRPC_PARAM_TYPE(P4) p4,
-        SRPC_PARAM_TYPE(P5) p5, SRPC_PARAM_TYPE(P6) p6,
-        SRPC_PARAM_TYPE(P7) p7) :
+    ForwardingFunctorT(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3,
+        typename SRPC_PARAM_TYPE(P4) p4, typename SRPC_PARAM_TYPE(P5) p5,
+        typename SRPC_PARAM_TYPE(P6) p6, typename SRPC_PARAM_TYPE(P7) p7) :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5), p6_(p6), p7_(p7) {}
 
     virtual void marshal(OStream& ostream) {
@@ -230,13 +233,13 @@ struct ForwardingFunctorT<SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7)> :
         write<P7>(ostream, p7_);
     }
 
-    SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P4) p4_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P5) p5_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P6) p6_;
-    SRPC_VALUE_TYPE_4_FORWARDER(P7) p7_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P2) p2_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P3) p3_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P4) p4_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P5) p5_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P6) p6_;
+    typename SRPC_VALUE_TYPE_4_FORWARDER(P7) p7_;
 };
 
 /** @} */ // addtogroup RpcForwarding

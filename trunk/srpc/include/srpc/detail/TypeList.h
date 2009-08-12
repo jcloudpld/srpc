@@ -45,9 +45,9 @@
 
 // = Type utility
 
-#define SRPC_VALUE_TYPE(T)  typename boost::call_traits<T>::value_type
-#define SRPC_PARAM_TYPE(T)  typename boost::call_traits<T>::param_type
+#define SRPC_VALUE_TYPE(T)  boost::call_traits<T>::value_type
+#define SRPC_PARAM_TYPE(T)  boost::call_traits<T>::param_type
 
-#define SRPC_VALUE_TYPE_4_FORWARDER(T) typename boost::call_traits<T>::param_type
+#define SRPC_VALUE_TYPE_4_FORWARDER(T) boost::call_traits<T>::param_type
 
 #endif // SRPC_TYPELIST_H

@@ -23,7 +23,7 @@ public:
     // = request
 
     DECLARE_SRPC_METHOD_0(DummyRpc, rpc0);
-    DECLARE_SRPC_METHOD_1(DummyRpc, rpc1, RInt32, p1);
+    DECLARE_SRPC_METHOD_1(DummyRpc, rpc1, Int32, p1);
     DECLARE_SRPC_METHOD_2(DummyRpc, rpc2, RInt32, p1, RInt32, p2);
     DECLARE_SRPC_METHOD_3(DummyRpc, rpc3, RInt32, p1, RInt32, p2,
         RInt32, p3);
@@ -49,7 +49,7 @@ public:
     virtual ~DummyRpc2() {}
 
     // = request
-    DECLARE_SRPC_METHOD_1(DummyRpc2, rpc1, RInt32, p1);
+    DECLARE_SRPC_METHOD_1(DummyRpc2, rpc1, Int32, p1);
 };
 
 #endif // SRPC_DUMMYINTERFACE_H

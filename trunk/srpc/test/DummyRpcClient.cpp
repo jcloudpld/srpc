@@ -11,7 +11,7 @@ DummyRpcClient::DummyRpcClient(srpc::RpcNetwork* rpcNetwork) :
 
 
 FORWARD_SRPC_METHOD_0(DummyRpcClient, rpc0);
-FORWARD_SRPC_METHOD_1(DummyRpcClient, rpc1, RInt32, p1);
+FORWARD_SRPC_METHOD_1(DummyRpcClient, rpc1, Int32, p1);
 FORWARD_SRPC_METHOD_2(DummyRpcClient, rpc2, RInt32, p1, RInt32, p2);
 FORWARD_SRPC_METHOD_3(DummyRpcClient, rpc3, RInt32, p1, RInt32, p2,
     RInt32, p3);

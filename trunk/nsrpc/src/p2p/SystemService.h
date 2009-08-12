@@ -22,7 +22,7 @@ namespace detail
  */
 struct RPeerInfo
 {
-    RPeerId peerId_;
+    PeerId peerId_;
     RAddresses addresses_;
     RP2pOptions p2pOptions_;
 
@@ -36,13 +36,13 @@ struct RPeerInfo
         p2pOptions_(p2pOptions) {}
 
     void write(srpc::OStream& ostream) {
-        peerId_.write(ostream);
+        ostream.write(peerId_);
         addresses_.write(ostream);
         p2pOptions_.write(ostream);
     }
 
     void read(srpc::IStream& istream) {
-        peerId_.read(istream);
+        istream.read(peerId_);
         addresses_.read(istream);
         p2pOptions_.read(istream);
     }
@@ -51,10 +51,6 @@ struct RPeerInfo
 
 /// RPeerInfo list
 typedef srpc::RVector<RPeerInfo> RPeerInfos;
-
-
-/// RpcType for SequenceNumber
-typedef srpc::RpcUIntType<SequenceNumber> RSequenceNumber;
 
 
 /**
@@ -97,7 +93,7 @@ public:
 
     /// 신뢰 보장 메세지에 대한 응답(ack)를 보낸다.
     DECLARE_SRPC_METHOD_2(RpcSystemService, rpcAcknowledgement,
-        RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
+        SequenceNumber, sequenceNumber, PeerTime, sentTime);
 
     /// 호스트 마이그레이션이 일어났다.
     DECLARE_SRPC_METHOD_0(RpcSystemService, rpcHostMigrated);
@@ -112,11 +108,11 @@ public:
 
     /// 그룹에 참여했음을 알린다
     DECLARE_SRPC_METHOD_2(RpcSystemService, rpcGroupJoined,
-        RGroupId, groupId, RPeerId, peerId);
+        RGroupId, groupId, PeerId, peerId);
 
     /// 그룹에서 퇴장했음을 알린다
     DECLARE_SRPC_METHOD_2(RpcSystemService, rpcGroupLeft,
-        RGroupId, groupId, RPeerId, peerId);
+        RGroupId, groupId, PeerId, peerId);
 };
 
 /** @} */ // addtogroup p2p

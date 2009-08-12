@@ -58,12 +58,12 @@ public:
     OVERRIDE_SRPC_P2P_METHOD_6(rpcRelay,
         RPeerIdPair, peerIdPair, RAddress, peerAddress,
         RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
-        RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
+        SequenceNumber, sequenceNumber, PeerTime, sentTime);
     OVERRIDE_SRPC_METHOD_5(rpcRelayed,
-        RPeerId, peerId, RMessageBuffer, messageBlock,
+        PeerId, peerId, RMessageBuffer, messageBlock,
         srpc::RRpcPacketType, packetType,
-        RSequenceNumber, sequenceNumber,
-        RRelativeTime, sentTime);
+        SequenceNumber, sequenceNumber,
+        PeerTime, sentTime);
 private:
     // = PeerNotifier overriding
     virtual void onMessageArrived(const ACE_INET_Addr& peerAddress);

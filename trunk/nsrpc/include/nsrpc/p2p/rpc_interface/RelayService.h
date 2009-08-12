@@ -31,15 +31,15 @@ public:
     DECLARE_SRPC_METHOD_6(RpcRelayService, rpcRelay,
         RPeerIdPair, peerIdPair, RAddress, peerAddress,
         RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
-        RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
+        SequenceNumber, sequenceNumber, PeerTime, sentTime);
 
     // = event
 
     /// relay 메세지가 도착했다
     DECLARE_SRPC_METHOD_5(RpcRelayService, rpcRelayed,
-        RPeerId, peerId, RMessageBuffer, messageBlock,
-        srpc::RRpcPacketType, packetType, RSequenceNumber, sequenceNumber,
-        RRelativeTime, sentTime);
+        PeerId, peerId, RMessageBuffer, messageBlock,
+        srpc::RRpcPacketType, packetType, SequenceNumber, sequenceNumber,
+        PeerTime, sentTime);
 };
 
 /** @} */ // addtogroup p2p

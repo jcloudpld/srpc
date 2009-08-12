@@ -20,7 +20,7 @@ public:
     }
 private: // encapsulation
     OVERRIDE_SRPC_METHOD_0(rpc0);
-    OVERRIDE_SRPC_METHOD_1(rpc1, RInt32, p1);
+    OVERRIDE_SRPC_METHOD_1(rpc1, Int32, p1);
     OVERRIDE_SRPC_METHOD_2(rpc2, RInt32, p1, RInt32, p2);
     OVERRIDE_SRPC_METHOD_3(rpc3, RInt32, p1, RInt32, p2, RInt32, p3);
     OVERRIDE_SRPC_METHOD_4(rpc4, RInt32, p1, RInt32, p2, RInt32, p3,

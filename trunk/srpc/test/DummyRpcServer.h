@@ -18,7 +18,7 @@ public:
     DummyRpcServer(srpc::RpcNetwork* rpcNetwork = 0);
 
     OVERRIDE_SRPC_METHOD_0(rpc0);
-    OVERRIDE_SRPC_METHOD_1(rpc1, RInt32, p1);
+    OVERRIDE_SRPC_METHOD_1(rpc1, Int32, p1);
     OVERRIDE_SRPC_METHOD_2(rpc2, RInt32, p1, RInt32, p2);
     OVERRIDE_SRPC_METHOD_3(rpc3, RInt32, p1, RInt32, p2, RInt32, p3);
     OVERRIDE_SRPC_METHOD_4(rpc4, RInt32, p1, RInt32, p2, RInt32, p3,
@@ -104,7 +104,7 @@ class DummyRpcServer2 : public DummyRpc2,
 public:
     DummyRpcServer2(srpc::RpcNetwork* rpcNetwork = 0);
 
-    OVERRIDE_SRPC_METHOD_1(rpc1, RInt32, p1);
+    OVERRIDE_SRPC_METHOD_1(rpc1, Int32, p1);
 public:
     const srpc::RpcId getRpcId() const {
         return rpcId_;

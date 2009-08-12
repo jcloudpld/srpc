@@ -284,7 +284,7 @@ EXCHANGE_SRPC_P2P_METHOD_0(RpcSystemServiceImpl, rpcPing, srpc::ptReliable)
 
 
 EXCHANGE_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcAcknowledgement,
-    RSequenceNumber, sequenceNumber, RRelativeTime, sentTime,
+    SequenceNumber, sequenceNumber, PeerTime, sentTime,
     srpc::ptUnreliable)
 {
     assert(rpcHint != 0);
@@ -338,7 +338,7 @@ EXCHANGE_SRPC_P2P_METHOD_1(RpcSystemServiceImpl, rpcGroupDestroyed,
 
 
 EXCHANGE_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
-    RGroupId, groupId, RPeerId, peerId,
+    RGroupId, groupId, PeerId, peerId,
     srpc::ptReliable)
 {
     assert(rpcHint != 0);
@@ -351,7 +351,7 @@ EXCHANGE_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupJoined,
 
 
 EXCHANGE_SRPC_P2P_METHOD_2(RpcSystemServiceImpl, rpcGroupLeft,
-    RGroupId, groupId, RPeerId, peerId,
+    RGroupId, groupId, PeerId, peerId,
     srpc::ptReliable)
 {
     assert(rpcHint != 0);
