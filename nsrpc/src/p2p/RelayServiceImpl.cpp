@@ -28,14 +28,14 @@ RpcRelayServiceImpl::RpcRelayServiceImpl(RelayServiceHandler& serviceHandler,
 FORWARD_SRPC_P2P_METHOD_6(RpcRelayServiceImpl, rpcRelay,
     RPeerIdPair, peerIdPair, RAddress, peerAddress,
     RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
-    RSequenceNumber, sequenceNumber, RRelativeTime, sentTime,
+    SequenceNumber, sequenceNumber, PeerTime, sentTime,
     srpc::ptUnreliable);
 
 
 EXCHANGE_SRPC_P2P_METHOD_5(RpcRelayServiceImpl, rpcRelayed,
-    RPeerId, peerId, RMessageBuffer, messageBlock,
-    srpc::RRpcPacketType, packetType, RSequenceNumber, sequenceNumber,
-    RRelativeTime, sentTime, srpc::ptUnreliable)
+    PeerId, peerId, RMessageBuffer, messageBlock,
+    srpc::RRpcPacketType, packetType, SequenceNumber, sequenceNumber,
+    PeerTime, sentTime, srpc::ptUnreliable)
 {
     assert(rpcHint != 0);
     const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);

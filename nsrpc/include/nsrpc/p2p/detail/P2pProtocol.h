@@ -20,13 +20,6 @@ typedef srpc::UInt32 SequenceNumber;
 const SequenceNumber invalidSequenceNumber = 0;
 const SequenceNumber firstSequenceNumber = invalidSequenceNumber + 1;
 
-/// RpcType for SequenceNumber
-typedef srpc::RpcUIntType<SequenceNumber> RSequenceNumber;
-
-
-/// RpcType for PeerTime
-typedef srpc::RpcUIntType<PeerTime> RRelativeTime;
-
 
 /**
 * @class P2pPacketHeader

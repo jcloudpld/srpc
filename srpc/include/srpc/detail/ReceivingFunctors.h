@@ -97,7 +97,8 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_0()> : public ReceivingFunctor
 template <class T, typename P1>
 struct ReceivingFunctorT<T, SRPC_TYPELIST_1(P1)> : public ReceivingFunctor
 {
-    typedef void (T::*MemFnPtr)(SRPC_PARAM_TYPE(P1) p1, const void* rpcHint);
+    typedef void (T::*MemFnPtr)(typename SRPC_PARAM_TYPE(P1) p1,
+        const void* rpcHint);
 
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
@@ -120,8 +121,8 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_1(P1)> : public ReceivingFunctor
 template <class T, typename P1, typename P2>
 struct ReceivingFunctorT<T, SRPC_TYPELIST_2(P1, P2)> : public ReceivingFunctor
 {
-    typedef void (T::*MemFnPtr)(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        const void* rpcHint);
+    typedef void (T::*MemFnPtr)(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, const void* rpcHint);
 
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
@@ -147,8 +148,9 @@ template <class T, typename P1, typename P2, typename P3>
 struct ReceivingFunctorT<T, SRPC_TYPELIST_3(P1, P2, P3)> :
     public ReceivingFunctor
 {
-    typedef void (T::*MemFnPtr)(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, const void* rpcHint);
+    typedef void (T::*MemFnPtr)(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3,
+        const void* rpcHint);
 
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
@@ -176,8 +178,9 @@ template <class T, typename P1, typename P2, typename P3, typename P4>
 struct ReceivingFunctorT<T, SRPC_TYPELIST_4(P1, P2, P3, P4)> :
     public ReceivingFunctor
 {
-    typedef void (T::*MemFnPtr)(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, SRPC_PARAM_TYPE(P4) p4, const void* rpcHint);
+    typedef void (T::*MemFnPtr)(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2,typename SRPC_PARAM_TYPE(P3) p3,
+        typename SRPC_PARAM_TYPE(P4) p4, const void* rpcHint);
 
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
@@ -208,8 +211,9 @@ template <class T, typename P1, typename P2, typename P3, typename P4,
 struct ReceivingFunctorT<T, SRPC_TYPELIST_5(P1, P2, P3, P4, P5)> :
     public ReceivingFunctor
 {
-    typedef void (T::*MemFnPtr)(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, SRPC_PARAM_TYPE(P4) p4, SRPC_PARAM_TYPE(P5) p5,
+    typedef void (T::*MemFnPtr)(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3,
+        typename SRPC_PARAM_TYPE(P4) p4, typename SRPC_PARAM_TYPE(P5) p5,
         const void* rpcHint);
 
     ReceivingFunctorT(MemFnPtr memFnPtr) :
@@ -244,9 +248,10 @@ template <class T, typename P1, typename P2, typename P3, typename P4,
 struct ReceivingFunctorT<T, SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
     public ReceivingFunctor
 {
-    typedef void (T::*MemFnPtr)(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, SRPC_PARAM_TYPE(P4) p4, SRPC_PARAM_TYPE(P5) p5,
-        SRPC_PARAM_TYPE(P6) p6, const void* rpcHint);
+    typedef void (T::*MemFnPtr)(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3,
+        typename SRPC_PARAM_TYPE(P4) p4, typename SRPC_PARAM_TYPE(P5) p5,
+        typename SRPC_PARAM_TYPE(P6) p6, const void* rpcHint);
 
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}
@@ -283,9 +288,11 @@ template <class T, typename P1, typename P2, typename P3, typename P4,
 struct ReceivingFunctorT<T, SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7)> :
     public ReceivingFunctor
 {
-    typedef void (T::*MemFnPtr)(SRPC_PARAM_TYPE(P1) p1, SRPC_PARAM_TYPE(P2) p2,
-        SRPC_PARAM_TYPE(P3) p3, SRPC_PARAM_TYPE(P4) p4, SRPC_PARAM_TYPE(P5) p5,
-        SRPC_PARAM_TYPE(P6) p6, SRPC_PARAM_TYPE(P7) p7, const void* rpcHint);
+    typedef void (T::*MemFnPtr)(typename SRPC_PARAM_TYPE(P1) p1,
+        typename SRPC_PARAM_TYPE(P2) p2, typename SRPC_PARAM_TYPE(P3) p3,
+        typename SRPC_PARAM_TYPE(P4) p4, typename SRPC_PARAM_TYPE(P5) p5,
+        typename SRPC_PARAM_TYPE(P6) p6, typename SRPC_PARAM_TYPE(P7) p7,
+        const void* rpcHint);
 
     ReceivingFunctorT(MemFnPtr memFnPtr) :
         memFnPtr_(memFnPtr) {}

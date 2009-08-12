@@ -31,7 +31,8 @@ public:
         CipherKeyMap::const_iterator pos = cipherKeys_.find(peerId);
         if (pos == cipherKeys_.end()) {
             const PacketCoder::Seed seed =
-                packetCoder_.generateCipherSeed(peerId);
+                packetCoder_.generateCipherSeed(
+                    static_cast<srpc::UInt32>(peerId));
             cipherKeys_.insert(CipherKeyMap::value_type(peerId, seed));
             pos = cipherKeys_.find(peerId);
         }

@@ -25,6 +25,10 @@ class OStream : public boost::noncopyable
 public:
     virtual ~OStream() {}
 
+    void write(int value, int bitCount = Bits<int>::size) {
+        write(static_cast<Int32>(value), bitCount);
+    }
+
     /// 64비트 부호 없는 정수를 스트림버퍼에 기록한다
     virtual void write(UInt64 value, int bitCount = Bits<UInt64>::size) = 0;
 

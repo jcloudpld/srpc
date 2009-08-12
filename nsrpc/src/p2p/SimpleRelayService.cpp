@@ -179,7 +179,7 @@ FORWARD_SRPC_P2P_METHOD_2(SimpleRelayService, rpcResolved,
 EXCHANGE_SRPC_P2P_METHOD_6(SimpleRelayService, rpcRelay,
     RPeerIdPair, peerIdPair, RAddress, peerAddress,
     RMessageBuffer, messageBlock, srpc::RRpcPacketType, packetType,
-    RSequenceNumber, sequenceNumber, RRelativeTime, sentTime,
+    SequenceNumber, sequenceNumber, PeerTime, sentTime,
     srpc::ptUnreliable)
 {
     assert(rpcHint != 0);
@@ -207,9 +207,9 @@ EXCHANGE_SRPC_P2P_METHOD_6(SimpleRelayService, rpcRelay,
 
 
 FORWARD_SRPC_P2P_METHOD_5(SimpleRelayService, rpcRelayed,
-    RPeerId, peerId, RMessageBuffer, messageBlock,
-    srpc::RRpcPacketType, packetType, RSequenceNumber, sequenceNumber,
-    RRelativeTime, sentTime, srpc::ptUnreliable);
+    PeerId, peerId, RMessageBuffer, messageBlock,
+    srpc::RRpcPacketType, packetType, SequenceNumber, sequenceNumber,
+    PeerTime, sentTime, srpc::ptUnreliable);
 
 } // namespace detail
 

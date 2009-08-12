@@ -53,16 +53,16 @@ public:
     OVERRIDE_SRPC_P2P_METHOD_0(rpcDisconnect);
     OVERRIDE_SRPC_P2P_METHOD_0(rpcPing);
     OVERRIDE_SRPC_P2P_METHOD_2(rpcAcknowledgement,
-        RSequenceNumber, sequenceNumber, RRelativeTime, sentTime);
+        SequenceNumber, sequenceNumber, PeerTime, sentTime);
     OVERRIDE_SRPC_P2P_METHOD_0(rpcHostMigrated);
     OVERRIDE_SRPC_P2P_METHOD_1(rpcGroupCreated,
         RGroupInfo, groupInfo);
     OVERRIDE_SRPC_P2P_METHOD_1(rpcGroupDestroyed,
         RGroupId, groupId);
     OVERRIDE_SRPC_P2P_METHOD_2(rpcGroupJoined,
-        RGroupId, groupId, RPeerId, peerId);
+        RGroupId, groupId, PeerId, peerId);
     OVERRIDE_SRPC_P2P_METHOD_2(rpcGroupLeft,
-        RGroupId, groupId, RPeerId, peerId);
+        RGroupId, groupId, PeerId, peerId);
 private:
     void connectToNewPeer(const RPeerInfo& pi);
     void reconnectToPeer(PeerId peerId, const RAddresses& peerAddresses);

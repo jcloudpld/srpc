@@ -25,7 +25,7 @@ RECEIVE_SRPC_METHOD_WITH_HINT_0(DummyRpcServer, rpc0)
 }
 
 
-RECEIVE_SRPC_METHOD_WITH_HINT_1(DummyRpcServer, rpc1, RInt32, p1)
+RECEIVE_SRPC_METHOD_WITH_HINT_1(DummyRpcServer, rpc1, Int32, p1)
 {
     rpcId_ = getRpcId_rpc1();
     p1_ = p1;
@@ -135,7 +135,7 @@ DummyRpcServer2::DummyRpcServer2(srpc::RpcNetwork* rpcNetwork) :
 }
 
 
-RECEIVE_SRPC_METHOD_WITH_HINT_1(DummyRpcServer2, rpc1, RInt32, p1)
+RECEIVE_SRPC_METHOD_WITH_HINT_1(DummyRpcServer2, rpc1, Int32, p1)
 {
     rpcId_ = getRpcId_rpc1();
     p1_ = p1;
