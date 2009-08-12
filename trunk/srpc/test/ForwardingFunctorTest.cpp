@@ -25,14 +25,15 @@ TEST_F(ForwardingFunctorTest, testP0)
 
 TEST_F(ForwardingFunctorTest, testP1)
 {
-    ForwardingFunctorT<SRPC_TYPELIST_1(RInt32)> functor(1234);
+    const RInt32 expected = 1234;
+    ForwardingFunctorT<SRPC_TYPELIST_1(RInt32)> functor(expected);
     functor.marshal(*ostream_);
     EXPECT_EQ(4, ostream_->getTotalSize());
 
     Int32 value;
     istream_->read(value);
 
-    EXPECT_EQ(1234, value);
+    EXPECT_EQ(expected.get(), value);
 }
 
 
@@ -151,4 +152,17 @@ TEST_F(ForwardingFunctorTest, testComplex)
     String value4;
     istream_->read(value4, USHRT_MAX, Bits<UInt16>::size);
     EXPECT_EQ(s.ref(), value4);
+}
+
+
+TEST_F(ForwardingFunctorTest, testP1_with_PrimitiveType)
+{
+    ForwardingFunctorT<SRPC_TYPELIST_1(Int32)> functor(1234);
+    functor.marshal(*ostream_);
+    EXPECT_EQ(4, ostream_->getTotalSize());
+
+    Int32 value;
+    istream_->read(value);
+
+    EXPECT_EQ(1234, value);
 }
