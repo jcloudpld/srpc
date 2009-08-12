@@ -128,6 +128,11 @@ public:
         callee_ = "handler10";
     }
 
+    void handler1_with_PrimitiveType(Int32 p1, const void* /*rpcHint*/) {
+        EXPECT_EQ(0, p1);
+        callee_ = "handler1_with_PrimitiveType";
+    }
+
 protected:
     String callee_;
 };
@@ -238,4 +243,17 @@ TEST_F(ReceivingFunctorTest, testP7)
 
     functor.call(this, 0);
     EXPECT_EQ(String("handler7"), callee_);
+}
+
+
+TEST_F(ReceivingFunctorTest, testP1_with_PrimitiveType)
+{
+    ReceivingFunctorT<ReceivingFunctorTest, SRPC_TYPELIST_1(Int32)>
+        functor(&ReceivingFunctorTest::handler1_with_PrimitiveType);
+    functor.unmarshal(*istream_);
+    EXPECT_EQ((4 * 10) - 4, istream_->getTotalSize());
+    EXPECT_EQ(0, functor.p1_);
+
+    functor.call(this, 0);
+    EXPECT_EQ(String("handler1_with_PrimitiveType"), callee_);
 }

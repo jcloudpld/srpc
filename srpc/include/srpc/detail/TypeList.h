@@ -50,17 +50,4 @@
 
 #define SRPC_VALUE_TYPE_4_FORWARDER(T) typename boost::call_traits<T>::param_type
 
-namespace srpc
-{
-
-template <typename T>
-struct remove_const_from_value_type
-{
-    typedef
-        typename boost::remove_const<SRPC_VALUE_TYPE_4_FORWARDER(T) >::type
-        type;
-};
-
-} // namespace srpc
-
 #endif // SRPC_TYPELIST_H
