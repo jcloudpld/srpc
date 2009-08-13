@@ -1,6 +1,8 @@
 #ifndef NSRPC_PACKETSEEDEXCHANGERFACTORY_H
 #define NSRPC_PACKETSEEDEXCHANGERFACTORY_H
 
+#include "nsrpc.h"
+
 namespace nsrpc
 {
 

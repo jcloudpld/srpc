@@ -9,6 +9,7 @@
 #  pragma warning (disable: 4819)
 #endif
 #include <boost/type_traits/integral_constant.hpp>
+#include <boost/type_traits/is_fundamental.hpp>
 #include <boost/utility.hpp>
 #ifdef _MSC_VER
 #  pragma warning (pop)

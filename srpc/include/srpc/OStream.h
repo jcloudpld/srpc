@@ -4,7 +4,17 @@
 #include "Types.h"
 #include "StringTypes.h"
 #include "utility/Bits.h"
+#ifdef _MSC_VER
+#  pragma warning (push)
+#  pragma warning (disable: 4819)
+#endif
+#include <boost/type_traits/is_fundamental.hpp>
+#include <boost/type_traits/remove_const.hpp>
+#include <boost/type_traits/remove_reference.hpp>
 #include <boost/utility.hpp>
+#ifdef _MSC_VER
+#  pragma warning (pop)
+#endif
 #include <string>
 #include <cassert>
 
