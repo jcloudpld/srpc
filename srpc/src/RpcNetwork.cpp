@@ -37,8 +37,8 @@ void RpcNetwork::unregisterRpcReceiver(RpcReceiver& receiver)
 
 void RpcNetwork::onReceive(IStream& istream, const void* rpcHint)
 {
-    RRpcId rpcId;
-    rpcId.read(istream);
+    RpcId rpcId;
+    istream.read(rpcId);
 
     if (handleMessage(rpcId, istream, rpcHint)) {
         return; // succeeded
@@ -49,7 +49,7 @@ void RpcNetwork::onReceive(IStream& istream, const void* rpcHint)
 #  pragma warning (push)
 #  pragma warning (disable: 4996)
 #endif
-    snprintf(msg, sizeof(msg) - 1, "RPC Id: %u", rpcId.get());
+    snprintf(msg, sizeof(msg) - 1, "RPC Id: %u", rpcId);
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif

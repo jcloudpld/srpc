@@ -20,7 +20,7 @@ TEST_F(RpcCommandTest, testMarshal)
     rpcCommand.marshal(*ostream_);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(rpcCommand.getRpcId().get(), id.get());
     Int32 p1;
     istream_->read(p1);

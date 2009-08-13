@@ -13,40 +13,6 @@ class IStream;
 * @{
 */
 
-namespace
-{
-
-/// 기본 데이터형이 아닌 것은 무조건 RpcType으로 가정
-template <typename T, bool isFundamental>
-struct StreamReader;
-
-
-template <typename T>
-struct StreamReader<T, true>
-{
-    static void read(IStream& istream, T& value) {
-        istream.read(value);
-    }
-};
-
-
-template <typename T>
-struct StreamReader<T, false>
-{
-    static void read(IStream& istream, T& value) {
-        value.read(istream);
-    }
-};
-
-template <typename T>
-inline void read(IStream& istream, T& value)
-{
-    StreamReader<T,
-        boost::is_fundamental<T>::value>::read(istream, value);
-}
-
-} // namespace
-
 /**
  * @class ReceivingFunctor
  *
@@ -104,7 +70,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_1(P1)> : public ReceivingFunctor
         memFnPtr_(memFnPtr) {}
 
     virtual void unmarshal(IStream& istream) {
-        read(istream, p1_);
+        istream >> p1_;
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
@@ -128,8 +94,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_2(P1, P2)> : public ReceivingFunctor
         memFnPtr_(memFnPtr) {}
 
     virtual void unmarshal(IStream& istream) {
-        read(istream, p1_);
-        read(istream, p2_);
+        istream >> p1_ >> p2_;
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
@@ -156,9 +121,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_3(P1, P2, P3)> :
         memFnPtr_(memFnPtr) {}
 
     virtual void unmarshal(IStream& istream) {
-        read(istream, p1_);
-        read(istream, p2_);
-        read(istream, p3_);
+        istream >> p1_ >> p2_ >> p3_;
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
@@ -186,10 +149,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_4(P1, P2, P3, P4)> :
         memFnPtr_(memFnPtr) {}
 
     virtual void unmarshal(IStream& istream) {
-        read(istream, p1_);
-        read(istream, p2_);
-        read(istream, p3_);
-        read(istream, p4_);
+        istream >> p1_ >> p2_ >> p3_ >> p4_;
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
@@ -220,11 +180,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_5(P1, P2, P3, P4, P5)> :
         memFnPtr_(memFnPtr) {}
 
     virtual void unmarshal(IStream& istream) {
-        read(istream, p1_);
-        read(istream, p2_);
-        read(istream, p3_);
-        read(istream, p4_);
-        read(istream, p5_);
+        istream >> p1_ >> p2_ >> p3_ >> p4_ >> p5_;
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
@@ -257,13 +213,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
         memFnPtr_(memFnPtr) {}
 
     virtual void unmarshal(IStream& istream) {
-        read(istream, p1_);
-        read(istream, p2_);
-        read(istream, p3_);
-        read(istream, p4_);
-        read(istream, p5_);
-
-        read(istream, p6_);
+        istream >> p1_ >> p2_ >> p3_ >> p4_ >> p5_ >> p6_;
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {
@@ -298,13 +248,7 @@ struct ReceivingFunctorT<T, SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7)> :
         memFnPtr_(memFnPtr) {}
 
     virtual void unmarshal(IStream& istream) {
-        read(istream, p1_);
-        read(istream, p2_);
-        read(istream, p3_);
-        read(istream, p4_);
-        read(istream, p5_);
-        read(istream, p6_);
-        read(istream, p7_);
+        istream >> p1_ >> p2_ >> p3_ >> p4_ >> p5_ >> p6_ >> p7_;
     }
 
     virtual void call(void* objPtr, const void* rpcHint) {

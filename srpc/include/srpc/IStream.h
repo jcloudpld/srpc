@@ -18,9 +18,38 @@
 
 namespace srpc {
 
+class IStream;
+
 /** @addtogroup serialization
 * @{
 */
+
+namespace
+{
+
+/// 기본 데이터형이 아닌 것은 무조건 RpcType으로 가정
+template <typename T, bool isFundamental>
+struct StreamReaderImpl;
+
+
+template <typename T>
+struct StreamReaderImpl<T, true>
+{
+    static void read(IStream& istream, T& value) {
+        istream.read(value);
+    }
+};
+
+
+template <typename T>
+struct StreamReaderImpl<T, false>
+{
+    static void read(IStream& istream, T& value) {
+        value.serialize(istream);
+    }
+};
+
+} // namespace
 
 /**
  * @class IStream
@@ -32,6 +61,19 @@ class IStream : public boost::noncopyable
 {
 public:
     virtual ~IStream() {}
+
+    template <typename T>
+    IStream& operator>>(T& value) {
+        StreamReaderImpl<T, boost::is_fundamental<T>::value>::
+            read(*this, value);
+        return *this;
+    }
+
+    /// same as boost.serialization
+    template <typename T>
+    IStream& operator&(T& value) {
+        return operator>>(value);
+    }
 
     /// 스트림버퍼로 부터 64비트 부호 없는 정수 타입을 읽어 온다
     virtual void read(UInt64& value, int bitCount = Bits<UInt64>::size) = 0;

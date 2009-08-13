@@ -10,9 +10,39 @@
 
 namespace srpc {
 
+class OStream;
+
 /** @addtogroup serialization
 * @{
 */
+
+namespace
+{
+
+/// 기본 데이터형이 아닌 것은 무조건 RpcType으로 가정
+template <typename T, bool isFundamental>
+struct StreamWriterImpl;
+
+
+template <typename T>
+struct StreamWriterImpl<T, true>
+{
+    static void write(OStream& ostream, T value) {
+        ostream.write(value);
+    }
+};
+
+
+template <typename T>
+struct StreamWriterImpl<T, false>
+{
+    static void write(OStream& ostream, const T& value) {
+        const_cast<boost::remove_const<T>::type&>(value).
+            serialize(ostream);
+    }
+};
+
+} // namespace
 
 /**
  * @class OStream
@@ -25,6 +55,26 @@ class OStream : public boost::noncopyable
 public:
     virtual ~OStream() {}
 
+    /// TODO: value타입에 레퍼런스를 사용하지 않을 경우 RpcType이 값으로 넘어오는
+    ///       문제가 있다. 이 문제를 해결하기 위해 레퍼런스를 쓰긴 했지만,
+    ///       그로인해 Primitive-type이 레퍼런스로 넘어오는 다른 문제가 생김.
+    ///       최적화 방법 없나?
+    template <typename T>
+    OStream& operator<<(const T& value) {
+        typedef boost::remove_reference<T>::type RawType;
+
+        StreamWriterImpl<T, boost::is_fundamental<RawType>::value>::
+            write(*this, value);
+        return *this;
+    }
+
+    /// same as boost.serialization
+    template <typename T>
+    OStream& operator&(const T& value) {
+        return operator<<(value);
+    }
+
+    /// for enum data type
     void write(int value, int bitCount = Bits<int>::size) {
         write(static_cast<Int32>(value), bitCount);
     }

@@ -138,11 +138,11 @@ TEST_F(ForwardingFunctorTest, testComplex)
     EXPECT_EQ(1 + 1 + 2 + (2 + 10), ostream_->getTotalSize());
 
     RUInt4 value1;
-    value1.read(*istream_);
+    value1.serialize(*istream_);
     EXPECT_EQ(0x0F, static_cast<int>(value1));
 
     RInt8 value2;
-    value2.read(*istream_);
+    value2.serialize(*istream_);
     EXPECT_EQ(-1, static_cast<int>(value2));
 
     Int16 value3;

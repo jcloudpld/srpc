@@ -14,40 +14,6 @@ class OStream;
 * @{
 */
 
-namespace
-{
-
-/// 기본 데이터형이 아닌 것은 무조건 RpcType으로 가정
-template <typename T, typename ParamType, bool isFundamental>
-struct StreamWriter;
-
-
-template <typename T, typename ParamType>
-struct StreamWriter<T, ParamType, true>
-{
-    static void write(OStream& ostream, ParamType value) {
-        ostream.write(value);
-    }
-};
-
-
-template <typename T, typename ParamType>
-struct StreamWriter<T, ParamType, false>
-{
-    static void write(OStream& ostream, ParamType value) {
-        const_cast<T&>(value).write(ostream);
-    }
-};
-
-template <typename T>
-inline void write(OStream& ostream, typename SRPC_VALUE_TYPE_4_FORWARDER(T) value)
-{
-    StreamWriter<T, SRPC_VALUE_TYPE_4_FORWARDER(T),
-        boost::is_fundamental<T>::value>::write(ostream, value);
-}
-
-} // namespace
-
 /**
  * @struct ForwardingFunctor
  *
@@ -85,7 +51,7 @@ struct ForwardingFunctorT<SRPC_TYPELIST_1(P1)> : public ForwardingFunctor
         p1_(p1) {}
 
     virtual void marshal(OStream& ostream) {
-        write<P1>(ostream, p1_);
+        ostream << p1_;
     }
 
     typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
@@ -101,8 +67,7 @@ struct ForwardingFunctorT<SRPC_TYPELIST_2(P1, P2)> : public ForwardingFunctor
         p1_(p1), p2_(p2) {}
 
     virtual void marshal(OStream& ostream) {
-        write<P1>(ostream, p1_);
-        write<P2>(ostream, p2_);
+        ostream << p1_ << p2_;
     }
 
     typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
@@ -120,9 +85,7 @@ struct ForwardingFunctorT<SRPC_TYPELIST_3(P1, P2, P3)> :
         p1_(p1), p2_(p2), p3_(p3) {}
 
     virtual void marshal(OStream& ostream) {
-        write<P1>(ostream, p1_);
-        write<P2>(ostream, p2_);
-        write<P3>(ostream, p3_);
+        ostream << p1_ << p2_ << p3_;
     }
 
     typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
@@ -142,10 +105,7 @@ struct ForwardingFunctorT<SRPC_TYPELIST_4(P1, P2, P3, P4)> :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4) {}
 
     virtual void marshal(OStream& ostream) {
-        write<P1>(ostream, p1_);
-        write<P2>(ostream, p2_);
-        write<P3>(ostream, p3_);
-        write<P4>(ostream, p4_);
+        ostream << p1_ << p2_ << p3_ << p4_;
     }
 
     typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
@@ -166,11 +126,7 @@ struct ForwardingFunctorT<SRPC_TYPELIST_5(P1, P2, P3, P4, P5)> :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5) {}
 
     virtual void marshal(OStream& ostream) {
-        write<P1>(ostream, p1_);
-        write<P2>(ostream, p2_);
-        write<P3>(ostream, p3_);
-        write<P4>(ostream, p4_);
-        write<P5>(ostream, p5_);
+        ostream << p1_ << p2_ << p3_ << p4_ << p5_;
     }
 
     typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
@@ -194,12 +150,7 @@ struct ForwardingFunctorT<SRPC_TYPELIST_6(P1, P2, P3, P4, P5, P6)> :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5), p6_(p6) {}
 
     virtual void marshal(OStream& ostream) {
-        write<P1>(ostream, p1_);
-        write<P2>(ostream, p2_);
-        write<P3>(ostream, p3_);
-        write<P4>(ostream, p4_);
-        write<P5>(ostream, p5_);
-        write<P6>(ostream, p6_);
+        ostream << p1_ << p2_ << p3_ << p4_ << p5_ << p6_;
     }
 
     typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
@@ -224,13 +175,7 @@ struct ForwardingFunctorT<SRPC_TYPELIST_7(P1, P2, P3, P4, P5, P6, P7)> :
         p1_(p1), p2_(p2), p3_(p3), p4_(p4), p5_(p5), p6_(p6), p7_(p7) {}
 
     virtual void marshal(OStream& ostream) {
-        write<P1>(ostream, p1_);
-        write<P2>(ostream, p2_);
-        write<P3>(ostream, p3_);
-        write<P4>(ostream, p4_);
-        write<P5>(ostream, p5_);
-        write<P6>(ostream, p6_);
-        write<P7>(ostream, p7_);
+        ostream << p1_ << p2_ << p3_ << p4_ << p5_ << p6_ << p7_;
     }
 
     typename SRPC_VALUE_TYPE_4_FORWARDER(P1) p1_;
