@@ -1,6 +1,10 @@
 #ifndef NSRPC_SYSTEMUTIL_H
 #define NSRPC_SYSTEMUTIL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 
 namespace nsrpc

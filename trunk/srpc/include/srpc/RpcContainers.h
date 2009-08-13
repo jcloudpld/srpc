@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCCONTAINERS_H
 #define SRPC_RPCCONTAINERS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "ContainerTypes.h"
 #include "RpcTypes.h"
 #include "Exception.h"

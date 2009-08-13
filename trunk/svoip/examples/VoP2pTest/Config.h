@@ -1,6 +1,10 @@
 #ifndef VOP2PTEST_CONFIG_H
 #define VOP2PTEST_CONFIG_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/PeerAddress.h>
 #include <nsrpc/p2p/PeerId.h>
 

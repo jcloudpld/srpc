@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PSESSIONTESTFIXTURE_H
 #define NSRPC_P2PSESSIONTESTFIXTURE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "AceTestFixture.h"
 #include <nsrpc/p2p/P2pSessionFactory.h>
 #include <nsrpc/p2p/P2pEventHandler.h>

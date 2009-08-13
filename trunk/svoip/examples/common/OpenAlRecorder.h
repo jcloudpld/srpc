@@ -1,6 +1,10 @@
 #ifndef SVOIP_OPENAL_PLAYER_H
 #define SVOIP_OPENAL_PLAYER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "svoip/Recorder.h"
 #include "alc.h"
 #include <boost/array.hpp>

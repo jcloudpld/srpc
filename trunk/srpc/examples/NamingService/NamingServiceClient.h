@@ -1,6 +1,10 @@
 #ifndef SRPC_NAMINGSERVICECLIENT_H
 #define SRPC_NAMINGSERVICECLIENT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "NamingService.h"
 #include <srpc/RpcForwarder.h>
 #include <srpc/RpcReceiver.h>

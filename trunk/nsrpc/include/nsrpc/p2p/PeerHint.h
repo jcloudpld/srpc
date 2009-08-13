@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERHINT_H
 #define NSRPC_PEERHINT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/Group.h>
 #include <nsrpc/p2p/P2pConfig.h>
 #include <cassert>

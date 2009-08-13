@@ -1,6 +1,10 @@
 #ifndef SRPC_STDAFX_H
 #define SRPC_STDAFX_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/srpc.h>
 
 #ifdef _MSC_VER

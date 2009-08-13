@@ -1,6 +1,10 @@
 #ifndef SRPC_STREAMBUFFER_H
 #define SRPC_STREAMBUFFER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "Types.h"
 
 namespace srpc {

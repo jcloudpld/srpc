@@ -1,6 +1,10 @@
 #ifndef NSRPC_RELAYSERVICE_H
 #define NSRPC_RELAYSERVICE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../detail/P2pRpcTypes.h"
 #include "../detail/P2pProtocol.h"
 #include "../PeerId.h"

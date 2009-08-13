@@ -1,6 +1,10 @@
 #ifndef NSRPC_RPCPLUGIN_H
 #define NSRPC_RPCPLUGIN_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "PlugIn.h"
 #include "../nsrpc.h"
 #include <srpc/RpcP2p.h>

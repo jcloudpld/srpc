@@ -1,6 +1,10 @@
 #ifndef SVOIP_RECORDERCALLBACK_H
 #define SVOIP_RECORDERCALLBACK_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "config/config.h"
 #include <nsrpc/p2p/PeerId.h>
 #include <nsrpc/p2p/Group.h>

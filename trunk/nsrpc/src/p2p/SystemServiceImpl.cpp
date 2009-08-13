@@ -99,7 +99,7 @@ void RpcSystemServiceImpl::logRpc(const char* rpc, const P2pPeerHint& hint,
 
 EXCHANGE_SRPC_P2P_METHOD_4(RpcSystemServiceImpl, rpcConnect,
     RAddresses, peerAddresses, RP2pOptions, p2pOptions,
-    srpc::RShortString, sessionPassword, srpc::RUInt32, sessionKey,
+    srpc::RShortString, sessionPassword, srpc::UInt32, sessionKey,
     srpc::ptReliable)
 {
     assert(rpcHint != 0);
@@ -151,7 +151,7 @@ EXCHANGE_SRPC_P2P_METHOD_4(RpcSystemServiceImpl, rpcConnect,
 
 
 EXCHANGE_SRPC_P2P_METHOD_5(RpcSystemServiceImpl, rpcConnected,
-    RAddresses, peerAddresses, srpc::RBool, isHost, RP2pProperty, p2pProperty,
+    RAddresses, peerAddresses, bool, isHost, RP2pProperty, p2pProperty,
     RP2pOptions, p2pOptions,
     RGroupMap, groups,
     srpc::ptReliable)

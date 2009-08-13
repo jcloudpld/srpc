@@ -1,6 +1,10 @@
 #ifndef SRPC_OSTREAM_H
 #define SRPC_OSTREAM_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "Types.h"
 #include "StringTypes.h"
 #include "utility/Bits.h"

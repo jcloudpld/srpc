@@ -1,6 +1,10 @@
 #ifndef VOP2PTEST_STDAFX_H
 #define VOP2PTEST_STDAFX_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <svoip/config/config.h>
 
 // OpenAL

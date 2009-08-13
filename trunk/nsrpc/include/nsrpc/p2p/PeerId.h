@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERID_H
 #define NSRPC_PEERID_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/RpcTypes.h>
 #include <srpc/RpcContainers.h>
 

@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCEVENT_H
 #define SRPC_RPCEVENT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "ReceivingFunctors.h"
 #include "RpcId.h"
 #include <boost/noncopyable.hpp>

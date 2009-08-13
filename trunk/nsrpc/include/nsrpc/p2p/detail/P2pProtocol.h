@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PPROTOCOL_H
 #define NSRPC_P2PPROTOCOL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "PeerTime.h"
 #include "../../detail/Protocol.h"
 #include "../PeerId.h"

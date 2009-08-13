@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PRELAYTESTFIXTURE_H
 #define NSRPC_P2PRELAYTESTFIXTURE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "P2pSessionTestFixture.h"
 #include <nsrpc/p2p/server/SimpleRelayService.h>
 #include <nsrpc/ReactorTask.h>

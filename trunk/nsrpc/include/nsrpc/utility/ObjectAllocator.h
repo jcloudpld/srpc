@@ -1,6 +1,10 @@
 #ifndef NSRPC_OBJECTALLOCATOR_H
 #define NSRPC_OBJECTALLOCATOR_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "detail/BaseAllocator.h"
 #include <srpc/ContainerTypes.h>
 #include <ace/Guard_T.h>

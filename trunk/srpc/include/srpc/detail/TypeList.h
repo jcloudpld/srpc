@@ -1,6 +1,10 @@
 #ifndef SRPC_TYPELIST_H
 #define SRPC_TYPELIST_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 // 원래 Modern C++ Design책의 예제 및 Loki 라이브러리를 이용했었지만,
 // DRTW(Don't Reinvent The Wheel) 원칙과 Boost 라이브러리를 적극 활용하자는
 // 취지에서 boost::mpl::vector로 대체하였다.

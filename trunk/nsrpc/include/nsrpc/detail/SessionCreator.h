@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONCREATOR_H
 #define NSRPC_SESSIONCREATOR_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 namespace nsrpc
 {
 

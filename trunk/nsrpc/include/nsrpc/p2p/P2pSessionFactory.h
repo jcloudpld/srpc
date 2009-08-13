@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PSESSIONFACTORY_H
 #define NSRPC_P2PSESSIONFACTORY_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include "P2pSession.h"
 #include "P2pConfig.h"

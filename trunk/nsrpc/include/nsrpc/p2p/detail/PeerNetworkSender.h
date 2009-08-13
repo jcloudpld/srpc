@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERNETWORKSENDER_H
 #define NSRPC_PEERNETWORKSENDER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "P2pProtocol.h"
 #include "P2pAddress.h"
 #include <srpc/RpcPacketType.h>

@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCFORWARDER_H
 #define SRPC_RPCFORWARDER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "srpc.h"
 #include "srpc_macros.h"
 #include "detail/RpcForwarderDetail.h"

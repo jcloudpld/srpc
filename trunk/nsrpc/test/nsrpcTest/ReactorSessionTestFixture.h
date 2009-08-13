@@ -1,6 +1,10 @@
 #ifndef NSRPC_REACTORSESSIONTESTFIXTURE_H
 #define NSRPC_REACTORSESSIONTESTFIXTURE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/nsrpc.h>
 #include <nsrpc/config/Proactor.h>
 

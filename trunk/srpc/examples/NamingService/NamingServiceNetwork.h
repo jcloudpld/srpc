@@ -1,6 +1,10 @@
 #ifndef SRPC_NAMINGSERVICENETWORK_H
 #define SRPC_NAMINGSERVICENETWORK_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/RpcNetwork.h>
 #include <boost/scoped_ptr.hpp>
 

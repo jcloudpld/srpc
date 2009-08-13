@@ -1,6 +1,10 @@
 #ifndef SRPC_VECTORSTREAMBUFFER_H
 #define SRPC_VECTORSTREAMBUFFER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../StreamBuffer.h"
 #include "../Exception.h"
 #include "../ContainerTypes.h"

@@ -1,8 +1,11 @@
 #ifndef NSRPC_PEERNOTIFIER_H
 #define NSRPC_PEERNOTIFIER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 class ACE_INET_Addr;
-class ACE_Message_Block;
 
 namespace nsrpc
 {

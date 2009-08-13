@@ -135,7 +135,7 @@ void VoP2pPlugInImpl::sampled(nsrpc::PeerId targetPeerId,
 
 EXCHANGE_SRPC_P2P_METHOD_4(VoP2pPlugInImpl, say,
     nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
-    RSpeech, speech, RSequence, sequence,
+    Speech, speech, Sequence, sequence,
     srpc::ptUnreliable)
 {
     assert(player_);

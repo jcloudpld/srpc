@@ -1,6 +1,10 @@
 #ifndef NSRPC_PROTOCOL_H
 #define NSRPC_PROTOCOL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include <srpc/Types.h>
 #include <srpc/utility/Endian.h>

@@ -1,6 +1,10 @@
 #ifndef NSRPC_SECURITYSERVICE_H
 #define NSRPC_SECURITYSERVICE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/RpcInterface.h>
 #include <srpc/RpcTypes.h>
 

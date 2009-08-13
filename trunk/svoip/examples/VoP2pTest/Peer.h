@@ -1,6 +1,10 @@
 #ifndef VOP2PTEST_PEER_H
 #define VOP2PTEST_PEER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "svoip/VoP2pPlugIn.h"
 #include <nsrpc/p2p/P2pEventHandler.h>
 #include <nsrpc/p2p/detail/PeerTime.h>

@@ -1,6 +1,10 @@
 #ifndef NSRPC_PLUGINMANAGER_H
 #define NSRPC_PLUGINMANAGER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "nsrpc/p2p/PlugIn.h"
 #include <srpc/ContainerTypes.h>
 

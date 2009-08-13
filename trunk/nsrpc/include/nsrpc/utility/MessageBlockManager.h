@@ -1,6 +1,10 @@
 #ifndef NSRPC_MESSAGEBLOCKMANAGER_H
 #define NSRPC_MESSAGEBLOCKMANAGER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include "ObjectAllocator.h"
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER

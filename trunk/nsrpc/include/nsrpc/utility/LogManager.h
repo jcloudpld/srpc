@@ -1,6 +1,10 @@
 #ifndef NSRPC_LOGMANAGER_H
 #define NSRPC_LOGMANAGER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include <srpc/StringTypes.h>
 #include <boost/scoped_ptr.hpp>

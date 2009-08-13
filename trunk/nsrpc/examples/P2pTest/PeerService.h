@@ -1,6 +1,10 @@
 #ifndef P2PTEST_PEERSERVICE_H
 #define P2PTEST_PEERSERVICE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/detail/P2pProtocol.h>
 #include <nsrpc/p2p/PeerId.h>
 #include <srpc/RpcP2p.h>

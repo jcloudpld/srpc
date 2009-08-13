@@ -1,6 +1,10 @@
 #ifndef SVOIP_DECODER_H
 #define SVOIP_DECODER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "svoip/config/config.h"
 #include <nsrpc/utility/SmartPtr.h>
 #include <boost/scoped_ptr.hpp>

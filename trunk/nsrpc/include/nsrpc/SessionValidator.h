@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONVALIDATOR_H
 #define NSRPC_SESSIONVALIDATOR_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "nsrpc.h"
 
 namespace nsrpc

@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERMESSAGEHANDLER_H
 #define NSRPC_PEERMESSAGEHANDLER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/PeerId.h>
 #include <srpc/RpcPacketType.h>
 #include <boost/noncopyable.hpp>

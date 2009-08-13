@@ -1,6 +1,10 @@
 #ifndef NSRPC_RELAYSERVICEIMPL_H
 #define NSRPC_RELAYSERVICEIMPL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/rpc_interface/RelayService.h>
 
 namespace srpc

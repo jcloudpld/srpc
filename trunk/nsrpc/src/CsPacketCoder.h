@@ -1,6 +1,10 @@
 #ifndef NSRPC_CSPACKETCODER_H
 #define NSRPC_CSPACKETCODER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/detail/CsProtocol.h>
 

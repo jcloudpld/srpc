@@ -1,6 +1,10 @@
 #ifndef NSRPC_ASYNCH_RW_H
 #define NSRPC_ASYNCH_RW_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../utility/AceUtil.h"
 #include "../utility/Logger.h"
 #include "../config/Proactor.h"

@@ -1,6 +1,10 @@
 #ifndef NSRPC_SIMPLERELAYSERVICE_H
 #define NSRPC_SIMPLERELAYSERVICE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../rpc_interface/StunService.h"
 #include "../rpc_interface/RelayService.h"
 #include "../detail/P2pEndpoint.h"
@@ -52,7 +56,7 @@ public:
     // = RpcStunService
     OVERRIDE_SRPC_P2P_METHOD_0(rpcResolve);
     OVERRIDE_SRPC_METHOD_2(rpcResolved,
-        srpc::RShortString, ipAddress, srpc::RUInt16, port);
+        srpc::RShortString, ipAddress, srpc::UInt16, port);
 
     // = RpcRelayService
     OVERRIDE_SRPC_P2P_METHOD_6(rpcRelay,

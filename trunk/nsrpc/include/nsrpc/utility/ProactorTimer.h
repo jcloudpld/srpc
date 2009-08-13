@@ -1,6 +1,10 @@
 #ifndef NSRPC_PROACTORTIMER_H
 #define NSRPC_PROACTORTIMER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include "../config/Proactor.h"
 #include <boost/scoped_ptr.hpp>

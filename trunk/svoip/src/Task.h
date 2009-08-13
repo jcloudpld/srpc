@@ -1,6 +1,10 @@
 #ifndef SVOIP_THREAD_H
 #define SVOIP_THREAD_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <ace/Thread.h>
 #include <boost/noncopyable.hpp>
 

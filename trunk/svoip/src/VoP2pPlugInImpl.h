@@ -1,6 +1,10 @@
 #ifndef SVOIP_VOP2PPLUGINIMPL_H
 #define SVOIP_VOP2PPLUGINIMPL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "svoip/VoP2pPlugIn.h"
 #include "svoip/RecorderCallback.h"
 #include <nsrpc/p2p/PeerHint.h>
@@ -21,9 +25,6 @@ namespace svoip
 class Recorder;
 class Player;
 
-typedef srpc::RpcUIntType<Speech> RSpeech;
-typedef srpc::RpcUIntType<Sequence> RSequence;
-
 /**
  * @class RpcVoP2pService
  */
@@ -34,7 +35,7 @@ public:
 
     DECLARE_SRPC_METHOD_4(RpcVoP2pService, say,
         nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
-        RSpeech, speech, RSequence, sequence);
+        Speech, speech, Sequence, sequence);
 };
 
 
@@ -100,7 +101,7 @@ public:
     // = RpcVoP2pService overriding
     OVERRIDE_SRPC_P2P_METHOD_4(say,
         nsrpc::detail::RMessageBuffer, samples, srpc::RUInt8, frames,
-        RSpeech, speech, RSequence, sequence);
+        Speech, speech, Sequence, sequence);
 
 private:
     boost::scoped_ptr<Recorder> recorder_;

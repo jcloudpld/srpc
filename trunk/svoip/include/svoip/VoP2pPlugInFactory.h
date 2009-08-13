@@ -1,6 +1,10 @@
 #ifndef SVOIP_VOP2PPLUGINFACTORY_H
 #define SVOIP_VOP2PPLUGINFACTORY_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "VoP2pPlugIn.h"
 #include <boost/noncopyable.hpp>
 #include <memory>

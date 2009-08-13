@@ -1,6 +1,10 @@
 #if !defined(NSRPC_SMARTPTR_H)
 #define NSRPC_SMARTPTR_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include <boost/cstdint.hpp>
 #include <boost/noncopyable.hpp>

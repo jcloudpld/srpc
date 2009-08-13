@@ -1,6 +1,10 @@
 #ifndef SRPC_STREAMTEXTURE_H
 #define SRPC_STREAMTEXTURE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "DummyStreamBuffer.h"
 #include <srpc/StreamFactory.h>
 #include <boost/scoped_ptr.hpp>

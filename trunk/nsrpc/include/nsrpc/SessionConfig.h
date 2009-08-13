@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONCONFIG_H
 #define NSRPC_SESSIONCONFIG_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "config/Proactor.h"
 
 namespace nsrpc

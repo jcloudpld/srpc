@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCID_H
 #define SRPC_RPCID_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../RpcTypes.h"
 #include "../utility/Hash.h"
 #include <cstring>

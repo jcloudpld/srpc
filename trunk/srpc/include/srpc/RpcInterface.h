@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCINTERFACE_H
 #define SRPC_RPCINTERFACE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "detail/RpcInterfaceDetail.h"
 #include "detail/TypeList.h"
 

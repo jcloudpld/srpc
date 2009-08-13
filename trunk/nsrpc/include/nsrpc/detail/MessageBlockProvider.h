@@ -1,6 +1,10 @@
 #ifndef NSRPC_MESSAGEBLOCKPROVIDER_H
 #define NSRPC_MESSAGEBLOCKPROVIDER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 class ACE_Message_Block;
 
 namespace nsrpc

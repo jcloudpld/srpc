@@ -1,6 +1,10 @@
 #ifndef NSRPC_SYSTEMSERVICE_H
 #define NSRPC_SYSTEMSERVICE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/detail/P2pProtocol.h>
 #include <nsrpc/p2p/detail/P2pRpcTypes.h>
 #include <nsrpc/p2p/Group.h>
@@ -59,11 +63,11 @@ public:
     DECLARE_SRPC_METHOD_4(RpcSystemService, rpcConnect,
         RAddresses, peerAddresses, RP2pOptions, p2pOptions,
         srpc::RShortString, sessionPassword,
-        srpc::RUInt32, sessionKey);
+        srpc::UInt32, sessionKey);
 
     /// 연결 요청에 대한 응답을 한다
     DECLARE_SRPC_METHOD_5(RpcSystemService, rpcConnected,
-        RAddresses, peerAddresses, srpc::RBool, isHost,
+        RAddresses, peerAddresses, bool, isHost,
         RP2pProperty, p2pProperty, RP2pOptions, P2pOptions, RGroupMap, groups);
 
     /// 호스트에게 직접 연결을 요청한다

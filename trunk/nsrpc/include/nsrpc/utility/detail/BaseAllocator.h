@@ -1,6 +1,10 @@
 #ifndef NSRPC_BASEALLOCATOR_H
 #define NSRPC_BASEALLOCATOR_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <ace/Malloc_Base.h>
 
 namespace nsrpc

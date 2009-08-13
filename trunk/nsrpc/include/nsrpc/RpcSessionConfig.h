@@ -1,6 +1,10 @@
 #ifndef NSRPC_RPCSESSIONCONFIG_H
 #define NSRPC_RPCSESSIONCONFIG_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "SessionConfig.h"
 
 namespace nsrpc

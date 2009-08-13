@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCPROTOTYPE_H
 #define SRPC_RPCPROTOTYPE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "detail/RpcPrototypeDetail.h"
 
 /** @addtogroup RpcPrototype

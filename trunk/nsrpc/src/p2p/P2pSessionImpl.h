@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PSESSIONIMPL_H
 #define NSRPC_P2PSESSIONIMPL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "SystemServiceImpl.h"
 #include "StunServiceImpl.h"
 #include "RelayServiceImpl.h"

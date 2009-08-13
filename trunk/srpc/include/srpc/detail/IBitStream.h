@@ -1,6 +1,10 @@
 #ifndef SRPC_IBITSTREAM_H
 #define SRPC_IBITSTREAM_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../IStream.h"
 
 namespace srpc {

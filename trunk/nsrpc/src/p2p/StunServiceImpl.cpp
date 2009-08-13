@@ -62,7 +62,7 @@ void RpcStunServiceImpl::resolve()
 FORWARD_SRPC_P2P_METHOD_0(RpcStunServiceImpl, rpcResolve, srpc::ptUnreliable);
 
 EXCHANGE_SRPC_P2P_METHOD_2(RpcStunServiceImpl, rpcResolved,
-    srpc::RShortString, ipAddress, srpc::RUInt16, port, srpc::ptUnreliable)
+    srpc::RShortString, ipAddress, srpc::UInt16, port, srpc::ptUnreliable)
 {
     assert(rpcHint != 0);
     const P2pPeerHint& hint = *static_cast<const P2pPeerHint*>(rpcHint);

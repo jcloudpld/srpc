@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PADDRESS_H
 #define NSRPC_P2PADDRESS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../PeerAddress.h"
 #include <srpc/ContainerTypes.h>
 #ifdef _MSC_VER

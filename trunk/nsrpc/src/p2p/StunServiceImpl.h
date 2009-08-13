@@ -1,6 +1,10 @@
 #ifndef NSRPC_STUNSERVICEIMPL_H
 #define NSRPC_STUNSERVICEIMPL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/rpc_interface/StunService.h>
 
 namespace srpc
@@ -43,7 +47,7 @@ public:
 public:
     OVERRIDE_SRPC_METHOD_0(rpcResolve);
     OVERRIDE_SRPC_P2P_METHOD_2(rpcResolved,
-        srpc::RShortString, ipAddress, srpc::RUInt16, port);
+        srpc::RShortString, ipAddress, srpc::UInt16, port);
 private:
     StunServiceHandler& serviceHandler_;
 

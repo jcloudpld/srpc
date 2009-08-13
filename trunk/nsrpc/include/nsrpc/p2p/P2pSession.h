@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PSESSION_H
 #define NSRPC_P2PSESSION_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "P2pConfig.h"
 #include "PeerId.h"
 #include "PeerStats.h"

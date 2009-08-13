@@ -1,6 +1,10 @@
 #ifndef NSRPC_PACKETCODER_H
 #define NSRPC_PACKETCODER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include "Protocol.h"
 #include <srpc/utility/Endian.h>

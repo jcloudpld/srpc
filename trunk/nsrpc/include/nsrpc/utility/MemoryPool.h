@@ -1,6 +1,10 @@
 #ifndef NSRPC_MEMORYPOOL_H
 #define NSRPC_MEMORYPOOL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/ContainerTypes.h>
 #include <ace/Guard_T.h>
 #ifdef _MSC_VER

@@ -1,6 +1,10 @@
 #ifndef ECHOTEST_CONFIG_H
 #define ECHOTEST_CONFIG_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/Types.h>
 #include <srpc/StringTypes.h>
 #include <string>

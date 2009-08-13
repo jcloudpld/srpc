@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCFORWARDERDETAIL_H
 #define SRPC_RPCFORWARDERDETAIL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "RpcCommand.h"
 #include "ForwardingFunctors.h"
 #include "../RpcPrototype.h"

@@ -1,6 +1,10 @@
 #if !defined(NSRPC_RPCREACTORSESSION_H)
 #define NSRPC_RPCREACTORSESSION_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "ReactorSession.h"
 #include "detail/SessionRpcNetworkCallback.h"
 #include <boost/scoped_ptr.hpp>

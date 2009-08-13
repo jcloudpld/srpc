@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONPOOL_H
 #define NSRPC_SESSIONPOOL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../Session.h"
 #include "../utility/ObjectPool.h"
 #include <algorithm>

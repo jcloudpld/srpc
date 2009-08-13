@@ -1,6 +1,10 @@
 #ifndef SVOIP_OPENAL_RECORDER_H
 #define SVOIP_OPENAL_RECORDER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "svoip/Player.h"
 #include "al.h"
 

@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCINTERFACEDETAIL_H
 #define SRPC_RPCINTERFACEDETAIL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "RpcId.h"
 
 /** @addtogroup RpcInterface

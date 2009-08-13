@@ -1,6 +1,10 @@
 #ifndef SRPC_STRINGTYPES_H
 #define SRPC_STRINGTYPES_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 // 문자열 관련 타입을 정의한다
 
 #include "detail/Allocator.h"

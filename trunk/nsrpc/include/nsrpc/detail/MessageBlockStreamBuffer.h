@@ -1,6 +1,10 @@
 #ifndef NSRPC_MESSAGEBLOCKSTREAMBUFFER_H
 #define NSRPC_MESSAGEBLOCKSTREAMBUFFER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/StreamBuffer.h>
 #include <srpc/Exception.h>
 #include <srpc/utility/StlUtils.h>

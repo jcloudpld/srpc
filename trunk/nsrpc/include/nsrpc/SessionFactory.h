@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONFACTORY_H
 #define NSRPC_SESSIONFACTORY_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/config/Proactor.h>
 #include <boost/noncopyable.hpp>
 

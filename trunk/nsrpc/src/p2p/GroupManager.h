@@ -1,6 +1,10 @@
 #ifndef NSRPC_GROUPMANAGER_H
 #define NSRPC_GROUPMANAGER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "nsrpc/p2p/Group.h"
 #include <boost/noncopyable.hpp>
 
