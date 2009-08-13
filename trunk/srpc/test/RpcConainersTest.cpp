@@ -20,10 +20,10 @@ TEST_F(RpcConainersTest, testRVector)
     expected.push_back(1);
     expected.push_back(3);
     expected.push_back(5);
-    expected.write(*ostream_);
+    expected.serialize(*ostream_);
 
     RVector<RInt32> actual;
-    actual.read(*istream_);
+    actual.serialize(*istream_);
 
     EXPECT_EQ(expected.size(), actual.size());
 
@@ -37,10 +37,10 @@ TEST_F(RpcConainersTest, testRList)
     expected.push_back(1);
     expected.push_back(3);
     expected.push_back(5);
-    expected.write(*ostream_);
+    expected.serialize(*ostream_);
 
     RList<RInt32> actual;
-    actual.read(*istream_);
+    actual.serialize(*istream_);
 
     EXPECT_EQ(expected.size(), actual.size());
 
@@ -54,10 +54,10 @@ TEST_F(RpcConainersTest, testRSet)
     expected.insert("1234");
     expected.insert("abcd");
     expected.insert("4567");
-    expected.write(*ostream_);
+    expected.serialize(*ostream_);
 
     RSet<RShortString> actual;
-    actual.read(*istream_);
+    actual.serialize(*istream_);
 
     EXPECT_EQ(expected.size(), actual.size());
 
@@ -72,10 +72,10 @@ TEST_F(RpcConainersTest, testRMap)
     expected.insert(MapType::value_type(3, "1234"));
     expected.insert(MapType::value_type(1, "1234"));
     expected.insert(MapType::value_type(2, "1234"));
-    expected.write(*ostream_);
+    expected.serialize(*ostream_);
 
     MapType actual;
-    actual.read(*istream_);
+    actual.serialize(*istream_);
 
     EXPECT_EQ(expected.size(), actual.size());
 

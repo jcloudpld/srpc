@@ -37,7 +37,7 @@ protected:
 TEST_F(RpcReceiverTest, testParm0)
 {
     RRpcId rpcId("DummyRpc_rpc0_0");
-    rpcId.write(*ostream_);
+    rpcId.serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, 0);
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -48,8 +48,8 @@ TEST_F(RpcReceiverTest, testParm0)
 TEST_F(RpcReceiverTest, testParm1)
 {
     RRpcId rpcId("DummyRpc_rpc1_1");
-    rpcId.write(*ostream_);
-    RInt32(1).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(1).serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(1));
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -61,9 +61,9 @@ TEST_F(RpcReceiverTest, testParm1)
 TEST_F(RpcReceiverTest, testParm2)
 {
     RRpcId rpcId("DummyRpc_rpc2_2");
-    rpcId.write(*ostream_);
-    RInt32(1).write(*ostream_);
-    RInt32(2).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(1).serialize(*ostream_);
+    RInt32(2).serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(2));
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -76,10 +76,10 @@ TEST_F(RpcReceiverTest, testParm2)
 TEST_F(RpcReceiverTest, testParm3)
 {
     RRpcId rpcId("DummyRpc_rpc3_3");
-    rpcId.write(*ostream_);
-    RInt32(1).write(*ostream_);
-    RInt32(2).write(*ostream_);
-    RInt32(3).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(1).serialize(*ostream_);
+    RInt32(2).serialize(*ostream_);
+    RInt32(3).serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(3));
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -93,11 +93,11 @@ TEST_F(RpcReceiverTest, testParm3)
 TEST_F(RpcReceiverTest, testParm4)
 {
     RRpcId rpcId("DummyRpc_rpc4_4");
-    rpcId.write(*ostream_);
-    RInt32(1).write(*ostream_);
-    RInt32(2).write(*ostream_);
-    RInt32(3).write(*ostream_);
-    RInt32(4).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(1).serialize(*ostream_);
+    RInt32(2).serialize(*ostream_);
+    RInt32(3).serialize(*ostream_);
+    RInt32(4).serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(4));
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -112,12 +112,12 @@ TEST_F(RpcReceiverTest, testParm4)
 TEST_F(RpcReceiverTest, testParm5)
 {
     RRpcId rpcId("DummyRpc_rpc5_5");
-    rpcId.write(*ostream_);
-    RInt32(1).write(*ostream_);
-    RInt32(2).write(*ostream_);
-    RInt32(3).write(*ostream_);
-    RInt32(4).write(*ostream_);
-    RInt32(5).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(1).serialize(*ostream_);
+    RInt32(2).serialize(*ostream_);
+    RInt32(3).serialize(*ostream_);
+    RInt32(4).serialize(*ostream_);
+    RInt32(5).serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(5));
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -133,13 +133,13 @@ TEST_F(RpcReceiverTest, testParm5)
 TEST_F(RpcReceiverTest, testParm6)
 {
     RRpcId rpcId("DummyRpc_rpc6_6");
-    rpcId.write(*ostream_);
-    RInt32(1).write(*ostream_);
-    RInt32(2).write(*ostream_);
-    RInt32(3).write(*ostream_);
-    RInt32(4).write(*ostream_);
-    RInt32(5).write(*ostream_);
-    RInt32(6).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(1).serialize(*ostream_);
+    RInt32(2).serialize(*ostream_);
+    RInt32(3).serialize(*ostream_);
+    RInt32(4).serialize(*ostream_);
+    RInt32(5).serialize(*ostream_);
+    RInt32(6).serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(6));
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -156,14 +156,14 @@ TEST_F(RpcReceiverTest, testParm6)
 TEST_F(RpcReceiverTest, testParm7)
 {
     RRpcId rpcId("DummyRpc_rpc7_7");
-    rpcId.write(*ostream_);
-    RInt32(1).write(*ostream_);
-    RInt32(2).write(*ostream_);
-    RInt32(3).write(*ostream_);
-    RInt32(4).write(*ostream_);
-    RInt32(5).write(*ostream_);
-    RInt32(6).write(*ostream_);
-    RInt32(7).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(1).serialize(*ostream_);
+    RInt32(2).serialize(*ostream_);
+    RInt32(3).serialize(*ostream_);
+    RInt32(4).serialize(*ostream_);
+    RInt32(5).serialize(*ostream_);
+    RInt32(6).serialize(*ostream_);
+    RInt32(7).serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, reinterpret_cast<const void*>(7));
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -181,9 +181,9 @@ TEST_F(RpcReceiverTest, testParm7)
 TEST_F(RpcReceiverTest, testParmBits)
 {
     RRpcId rpcId("DummyRpc_rpcBits_2");
-    rpcId.write(*ostream_);
-    RInt15(1).write(*ostream_);
-    RInt31(2).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt15(1).serialize(*ostream_);
+    RInt31(2).serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_);
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -197,9 +197,9 @@ TEST_F(RpcReceiverTest, testAlign)
     RRpcId rpcId("DummyRpc_rpcBits_2");
 
     for (int i = 0; i < 3; ++i) {
-        rpcId.write(*ostream_);
-        RInt15(1).write(*ostream_);
-        RInt31(-1).write(*ostream_);
+        rpcId.serialize(*ostream_);
+        RInt15(1).serialize(*ostream_);
+        RInt31(-1).serialize(*ostream_);
         ostream_->align();
     }
 
@@ -225,7 +225,7 @@ TEST_F(RpcReceiverTest, testUnmarshalingError)
 TEST_F(RpcReceiverTest, testUnknownRpcMethod)
 {
     RRpcId rpcId("DummyRpc_rpc0_unknown");
-    rpcId.write(*ostream_);
+    rpcId.serialize(*ostream_);
 
     EXPECT_THROW(rpcNetwork_->onReceive(*istream_), UnknownRpcMethodException);
 }
@@ -234,7 +234,7 @@ TEST_F(RpcReceiverTest, testUnknownRpcMethod)
 TEST_F(RpcReceiverTest, testRpcFailed)
 {
     RRpcId rpcId("DummyRpc_rpcFailed_0");
-    rpcId.write(*ostream_);
+    rpcId.serialize(*ostream_);
 
     EXPECT_THROW(rpcNetwork_->onReceive(*istream_), RpcFailedException);
 }
@@ -243,7 +243,7 @@ TEST_F(RpcReceiverTest, testRpcFailed)
 TEST_F(RpcReceiverTest, testRpcPrototype)
 {
     RRpcId rpcId("DummyRpc_rpc0_0");
-    rpcId.write(*ostream_);
+    rpcId.serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, 0);
     EXPECT_EQ(std::string("rpc0"),
@@ -254,7 +254,7 @@ TEST_F(RpcReceiverTest, testRpcPrototype)
 TEST_F(RpcReceiverTest, testOnReceiving)
 {
     RRpcId rpcId("DummyRpc_rpc0_0");
-    rpcId.write(*ostream_);
+    rpcId.serialize(*ostream_);
 
     rpcNetwork_->onReceive(*istream_, 0);
     EXPECT_EQ(std::string("rpc0"),

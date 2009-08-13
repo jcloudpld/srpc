@@ -75,16 +75,9 @@ struct RGroupInfo
         return std::find(peerIds_.begin(), peerIds_.end(), peerId);
     }
 
-    void write(srpc::OStream& os) {
-        groupId_.write(os);
-        groupName_.write(os);
-        peerIds_.write(os);
-    }
-
-    void read(srpc::IStream& is) {
-        groupId_.read(is);
-        groupName_.read(is);
-        peerIds_.read(is);
+    template <typename Stream>
+    void serialize(Stream& stream) {
+        stream & groupId_ & groupName_ & peerIds_;
     }
 };
 

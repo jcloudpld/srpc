@@ -49,11 +49,11 @@ public:
         return value_;
     }
 
-    void write(OStream& ostream) {
+    void serialize(OStream& ostream) {
         ostream.write(value_, bits);
     }
 
-    void read(IStream& istream) {
+    void serialize(IStream& istream) {
         typedef boost::integral_constant<bool,
             ::boost::is_enum<StreamingType>::value> truth_type;
         StreamingType v;
@@ -105,11 +105,11 @@ public:
         return value_;
     }
 
-    void write(OStream& ostream) {
+    void serialize(OStream& ostream) {
         ostream.write(value_, bits);
     }
 
-    void read(IStream& istream) {
+    void serialize(IStream& istream) {
         typedef boost::integral_constant<bool,
             ::boost::is_enum<StreamingType>::value> truth_type;
         StreamingType v;
@@ -166,13 +166,13 @@ public:
         return *this;
     }
 
-    void write(OStream& ostream) {
+    void serialize(OStream& ostream) {
         BOOST_STATIC_ASSERT((maxLength >= 0) && (maxLength <= USHRT_MAX));
         BOOST_STATIC_ASSERT((sizeBits == 8) || (sizeBits == 16));
         ostream.write(*this, maxLength, sizeBits);
     }
 
-    void read(IStream& istream) {
+    void serialize(IStream& istream) {
         BOOST_STATIC_ASSERT((maxLength >= 0) && (maxLength <= USHRT_MAX));
         BOOST_STATIC_ASSERT((sizeBits == 8) || (sizeBits == 16));
         istream.read(*this, maxLength, sizeBits);

@@ -104,8 +104,8 @@ public:
         }
 #else
 #   define DEFINE_GET_SRPC_EVENT_MAP(RpcClass) \
+        static srpc::RpcEventMap RpcClass##_staticEventMap(false); \
         srpc::RpcEventMap& RpcClass :: getStaticEventMap() { \
-            static srpc::RpcEventMap RpcClass##_staticEventMap(false); \
             return RpcClass##_staticEventMap; \
         }
 #endif

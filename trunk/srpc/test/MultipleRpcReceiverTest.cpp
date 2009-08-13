@@ -39,8 +39,8 @@ protected:
 TEST_F(MultipleRpcReceiverTest, testDummyRpcParm1)
 {
     RRpcId rpcId("DummyRpc_rpc1_1");
-    rpcId.write(*ostream_);
-    RInt32(-1).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(-1).serialize(*ostream_);
     ostream_->align();
     rpcNetwork_->onReceive(*istream_);
     EXPECT_EQ(rpcId.get(), response_->getRpcId().get());
@@ -51,8 +51,8 @@ TEST_F(MultipleRpcReceiverTest, testDummyRpcParm1)
 TEST_F(MultipleRpcReceiverTest, testDummyRpc2Parm1)
 {
     RRpcId rpcId("DummyRpc2_rpc1_1");
-    rpcId.write(*ostream_);
-    RInt32(1).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(1).serialize(*ostream_);
     ostream_->align();
     rpcNetwork_->onReceive(*istream_);
     EXPECT_EQ(rpcId.get(), response2_->getRpcId());
@@ -63,8 +63,8 @@ TEST_F(MultipleRpcReceiverTest, testDummyRpc2Parm1)
 TEST_F(MultipleRpcReceiverTest, testUnknownRpcMethod)
 {
     RRpcId rpcId("DummyRpc_rpc1_unknown");
-    rpcId.write(*ostream_);
-    RInt32(-1).write(*ostream_);
+    rpcId.serialize(*ostream_);
+    RInt32(-1).serialize(*ostream_);
     ostream_->align();
 
     EXPECT_THROW(

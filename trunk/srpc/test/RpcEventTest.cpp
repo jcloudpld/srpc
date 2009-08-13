@@ -16,8 +16,8 @@ class RpcEventTest : public BitStreamFixture
 
 TEST_F(RpcEventTest, testCalling)
 {
-    RInt32(100).write(*ostream_);
-    RInt32(-100).write(*ostream_);
+    RInt32(100).serialize(*ostream_);
+    RInt32(-100).serialize(*ostream_);
 
     DummyRpcEvent event;
     event.dispatch(&event, *istream_);

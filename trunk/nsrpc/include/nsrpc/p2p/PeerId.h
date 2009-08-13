@@ -77,14 +77,9 @@ struct RPeerIdPair : PeerIdPair
     RPeerIdPair(const PeerIdPair& rhs) :
         PeerIdPair(rhs) {}
 
-    void write(srpc::OStream& ostream) {
-        ostream.write(from_);
-        ostream.write(to_);
-    }
-
-    void read(srpc::IStream& istream) {
-        istream.read(from_);
-        istream.read(to_);
+    template <typename Stream>
+    void serialize(Stream& ostream) {
+        ostream & from_ & to_;
     }
 };
 

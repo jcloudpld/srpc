@@ -35,16 +35,9 @@ struct RPeerInfo
         addresses_(addresses),
         p2pOptions_(p2pOptions) {}
 
-    void write(srpc::OStream& ostream) {
-        ostream.write(peerId_);
-        addresses_.write(ostream);
-        p2pOptions_.write(ostream);
-    }
-
-    void read(srpc::IStream& istream) {
-        istream.read(peerId_);
-        addresses_.read(istream);
-        p2pOptions_.read(istream);
+    template <typename Stream>
+    void serialize(Stream& ostream) {
+        ostream & peerId_ & addresses_ & p2pOptions_;
     }
 };
 

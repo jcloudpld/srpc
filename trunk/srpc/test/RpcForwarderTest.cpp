@@ -50,7 +50,7 @@ TEST_F(RpcForwarderTest, testParm0)
     request_->rpc0(reinterpret_cast<const void*>(12345));
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpc0_0"), id);
     EXPECT_EQ(12345, rpcNetwork_->getSentRpcHint());
 }
@@ -61,7 +61,7 @@ TEST_F(RpcForwarderTest, testParm1)
     request_->rpc1(1);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpc1_1"), id);
     Int32 p1;
     istream_->read(p1);
@@ -74,7 +74,7 @@ TEST_F(RpcForwarderTest, testParm2)
     request_->rpc2(1, 2);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpc2_2"), id);
     Int32 p1;
     istream_->read(p1);
@@ -90,7 +90,7 @@ TEST_F(RpcForwarderTest, testParm3)
     request_->rpc3(1, 2, 3);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpc3_3"), id);
     Int32 p1;
     istream_->read(p1);
@@ -109,7 +109,7 @@ TEST_F(RpcForwarderTest, testParm4)
     request_->rpc4(1, 2, 3, 4);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpc4_4"), id);
     Int32 p1;
     istream_->read(p1);
@@ -131,7 +131,7 @@ TEST_F(RpcForwarderTest, testParm5)
     request_->rpc5(1, 2, 3, 4, 5);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpc5_5"), id);
     Int32 p1;
     istream_->read(p1);
@@ -156,7 +156,7 @@ TEST_F(RpcForwarderTest, testParm6)
     request_->rpc6(1, 2, 3, 4, 5, 6);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpc6_6"), id);
     Int32 p1;
     istream_->read(p1);
@@ -184,7 +184,7 @@ TEST_F(RpcForwarderTest, testParm7)
     request_->rpc7(1, 2, 3, 4, 5, 6, 7);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpc7_7"), id);
     Int32 p1;
     istream_->read(p1);
@@ -215,7 +215,7 @@ TEST_F(RpcForwarderTest, testParmBits)
     request_->rpcBits(1, 2);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(RRpcId("DummyRpc_rpcBits_2"), id);
     Int32 p1;
     istream_->read(p1, 15);
@@ -248,7 +248,7 @@ TEST_F(RpcForwarderTest, testOnForwarding)
     DummyRpcClient* client = static_cast<DummyRpcClient*>(request_);
 
     RRpcId id;
-    id.read(*istream_);
+    id.serialize(*istream_);
     EXPECT_EQ(id.get(), client->getLastRpcId().get());
 
     EXPECT_EQ(std::string("rpc6"),

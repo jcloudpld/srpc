@@ -18,7 +18,7 @@ private:
 
         for (int i = 0; i < 10; ++i) {
             RInt32 value(i);
-            value.write(*ostream_);
+            value.serialize(*ostream_);
         }
     }
 

@@ -26,8 +26,8 @@ void run(bool useBitStream, const char* state, RType defvalue)
         try {
             for (int i = 0; i < count; ++i) {
                 RType value = defvalue;
-                value.write(*ostream);
-                value.read(*istream);
+                value.serialize(*ostream);
+                value.serialize(*istream);
             }
         }
         catch (const Exception& e) {

@@ -38,17 +38,17 @@ public:
     typedef typename Base::value_type RpcType;
     typedef typename Base::iterator iterator;
 public:
-    void write(OStream& ostream) {
+    void serialize(OStream& ostream) {
         ostream.write(static_cast<UInt32>(this->size()), sizeBits);
         size_t maxNumber = MaxNumber<sizeBits>::value;
         iterator pos = this->begin();
         const iterator end = this->end();
         for (; (pos != end) && (maxNumber > 0); ++pos, --maxNumber) {
-            (*pos).write(ostream);
+            (*pos).serialize(ostream);
         }
     }
 
-    void read(IStream& istream) {
+    void serialize(IStream& istream) {
         this->clear();
 
         UInt32 size;
@@ -60,7 +60,7 @@ public:
         ReservePolicy::reserve(*this, size);
         for (UInt32 i = 0; i < size; ++i) {
             RpcType rt;
-            rt.read(istream);
+            rt.serialize(istream);
             this->push_back(rt);
         }
     }
@@ -90,17 +90,17 @@ public:
     typedef typename Base::iterator iterator;
     typedef typename Base::key_type RpcType;
 public:
-    void write(OStream& ostream) {
+    void serialize(OStream& ostream) {
         ostream.write(static_cast<UInt32>(this->size()), sizeBits);
         size_t maxNumber = MaxNumber<sizeBits>::value;
         iterator pos = this->begin();
         const iterator end = this->end();
         for (; (pos != end) && (maxNumber > 0); ++pos, --maxNumber) {
-            const_cast<RpcType&>((*pos)).write(ostream);
+            const_cast<RpcType&>((*pos)).serialize(ostream);
         }
     }
 
-    void read(IStream& istream) {
+    void serialize(IStream& istream) {
         this->clear();
 
         UInt32 size;
@@ -111,7 +111,7 @@ public:
         }
         for (UInt32 i = 0; i < size; ++i) {
             RpcType rt;
-            rt.read(istream);
+            rt.serialize(istream);
             this->insert(rt);
         }
     }
@@ -139,18 +139,18 @@ public:
     typedef typename Base::value_type value_type;
     typedef typename Base::iterator iterator;
 public:
-    void write(OStream& ostream) {
+    void serialize(OStream& ostream) {
         ostream.write(static_cast<UInt32>(this->size()), sizeBits);
         size_t maxNumber = MaxNumber<sizeBits>::value;
         iterator pos = this->begin();
         const iterator end = this->end();
         for (; (pos != end) && (maxNumber > 0); ++pos, --maxNumber) {
-            const_cast<K&>((*pos).first).write(ostream);
-            const_cast<V&>((*pos).second).write(ostream);
+            const_cast<K&>((*pos).first).serialize(ostream);
+            const_cast<V&>((*pos).second).serialize(ostream);
         }
     }
 
-    void read(IStream& istream) {
+    void serialize(IStream& istream) {
         this->clear();
 
         UInt32 size;
@@ -162,8 +162,8 @@ public:
         K key;
         V value;
         for (UInt32 i = 0; i < size; ++i) {
-            key.read(istream);
-            value.read(istream);
+            key.serialize(istream);
+            value.serialize(istream);
             this->insert(value_type(key, value));
         }
     }

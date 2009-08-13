@@ -39,20 +39,10 @@ struct RP2pProperty
         hostPrecedence_.clear();
     }
 
-    void write(srpc::OStream& ostream) {
-        ostream.write(maxPeers_);
-        sessionPassword_.write(ostream);
-        ostream.write(hostMigration_);
-        ostream.write(sessionKey_);
-        hostPrecedence_.write(ostream);
-    }
-
-    void read(srpc::IStream& istream) {
-        istream.read(maxPeers_);
-        sessionPassword_.read(istream);
-        istream.read(hostMigration_);
-        istream.read(sessionKey_);
-        hostPrecedence_.read(istream);
+    template <typename Stream>
+    void serialize(Stream& ostream) {
+        ostream & maxPeers_ & sessionPassword_ & hostMigration_ &
+            sessionKey_ & hostPrecedence_;
     }
 };
 
@@ -72,21 +62,21 @@ struct RAddress : ACE_INET_Addr
         set(address);
     }
 
-    RAddress& operator = (const ACE_INET_Addr& address) {
+    RAddress& operator=(const ACE_INET_Addr& address) {
         set(address);
         return *this;
     }
 
-    void write(srpc::OStream& ostream) {
-        srpc::RUInt32(get_ip_address()).write(ostream);
-        srpc::RUInt16(get_port_number()).write(ostream);
+    void serialize(srpc::OStream& ostream) {
+        ostream.write(srpc::UInt32(get_ip_address()));
+        ostream.write(srpc::UInt16(get_port_number()));
     }
 
-    void read(srpc::IStream& istream) {
-        srpc::RUInt32 ip;
-        ip.read(istream);
-        srpc::RUInt16 port;
-        port.read(istream);
+    void serialize(srpc::IStream& istream) {
+        srpc::UInt32 ip;
+        istream.read(ip);
+        srpc::UInt16 port;
+        istream.read(port);
         set(port, ip);
     }
 };
@@ -173,12 +163,13 @@ struct RMessageBuffer
         return bufferLength_;
     }
 
-    void write(srpc::OStream& ostream) {
+    void serialize(srpc::OStream& ostream) {
+        assert(bufferLength_ <= maxBufferLength);
         ostream.write(bufferLength_);
         ostream.write(buffer_, bufferLength_);
     }
 
-    void read(srpc::IStream& istream) {
+    void serialize(srpc::IStream& istream) {
         istream.read(bufferLength_);
         assert(bufferLength_ <= maxBufferLength);
         istream.read(buffer_, bufferLength_);
