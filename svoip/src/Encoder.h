@@ -1,6 +1,10 @@
 #ifndef SVOIP_ENCODER_H
 #define SVOIP_ENCODER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "svoip/config/config.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/noncopyable.hpp>

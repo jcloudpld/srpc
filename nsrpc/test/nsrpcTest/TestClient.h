@@ -1,6 +1,10 @@
 #ifndef NSRPC_TESTCLIENT_H
 #define NSRPC_TESTCLIENT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/utility/AceUtil.h>
 #include <nsrpc/utility/Logger.h>

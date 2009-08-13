@@ -1,6 +1,10 @@
 #ifndef NSRPC_REACTORTASK_H
 #define NSRPC_REACTORTASK_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "nsrpc.h"
 #include <boost/scoped_ptr.hpp>
 

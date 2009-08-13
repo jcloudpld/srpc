@@ -1,6 +1,10 @@
 #ifndef SVOIP_VOP2PPLUGIN_H
 #define SVOIP_VOP2PPLUGIN_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "config/config.h"
 #include <nsrpc/p2p/P2pConfig.h>
 #include <nsrpc/p2p/RpcPlugIn.h>

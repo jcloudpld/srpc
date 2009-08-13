@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCRECEIVERDETAIL_H
 #define SRPC_RPCRECEIVERDETAIL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "ReceivingFunctors.h"
 #include "RpcEvent.h"
 #include "RpcId.h"
@@ -104,8 +108,8 @@ public:
         }
 #else
 #   define DEFINE_GET_SRPC_EVENT_MAP(RpcClass) \
-        static srpc::RpcEventMap RpcClass##_staticEventMap(false); \
         srpc::RpcEventMap& RpcClass :: getStaticEventMap() { \
+            static srpc::RpcEventMap RpcClass##_staticEventMap(false); \
             return RpcClass##_staticEventMap; \
         }
 #endif

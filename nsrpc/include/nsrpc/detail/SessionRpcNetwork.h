@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONRPCNETWORK_H
 #define NSRPC_SESSIONRPCNETWORK_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/detail/CsProtocol.h>
 #include <nsrpc/nsrpc.h>
 #include <srpc/RpcNetwork.h>

@@ -1,6 +1,10 @@
 #ifndef P2PTEST_STDAFX_H
 #define P2PTEST_STDAFX_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/nsrpc.h>
 
 // boost

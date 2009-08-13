@@ -1,6 +1,10 @@
 #ifndef SRS_STDAFX_H
 #define SRS_STDAFX_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/nsrpc.h>
 
 // ACE

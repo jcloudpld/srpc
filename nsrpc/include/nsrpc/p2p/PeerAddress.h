@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERADDRESS_H
 #define NSRPC_PEERADDRESS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/Types.h>
 #include <srpc/StringTypes.h>
 #include <srpc/ContainerTypes.h>

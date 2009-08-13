@@ -1,6 +1,10 @@
 #ifndef SVOIP_PLAYER_H
 #define SVOIP_PLAYER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "config/config.h"
 #include <nsrpc/p2p/PeerId.h>
 #include <nsrpc/utility/SmartPtr.h>

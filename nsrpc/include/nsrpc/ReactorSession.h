@@ -1,6 +1,10 @@
 #if !defined(NSRPC_REACTORSESSION_H)
 #define NSRPC_REACTORSESSION_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "nsrpc.h"
 #include "Session.h"
 #include "detail/CsProtocol.h"

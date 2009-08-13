@@ -1,6 +1,10 @@
 #ifndef SRPC_DUMMYINTERFACE_H
 #define SRPC_DUMMYINTERFACE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/RpcInterface.h>
 #include <srpc/RpcTypes.h>
 

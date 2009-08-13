@@ -1,6 +1,10 @@
 #ifndef NSRPC_OBJECTPOOL_H
 #define NSRPC_OBJECTPOOL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "MemoryPool.h"
 
 namespace nsrpc

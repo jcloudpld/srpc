@@ -1,6 +1,10 @@
 #ifndef SRPC_CUTILS_H
 #define SRPC_CUTILS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <cstdio>
 
 #ifdef _MSC_VER

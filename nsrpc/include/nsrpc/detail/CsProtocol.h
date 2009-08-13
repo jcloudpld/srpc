@@ -1,6 +1,10 @@
 #ifndef NSRPC_CSPROTOCOL_H
 #define NSRPC_CSPROTOCOL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "Protocol.h"
 
 namespace nsrpc

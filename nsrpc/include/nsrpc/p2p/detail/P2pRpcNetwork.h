@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PRPCNETWORK_H
 #define NSRPC_P2PRPCNETWORK_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/nsrpc.h>
 #include <nsrpc/p2p/PeerId.h>
 #include <srpc/RpcNetwork.h>

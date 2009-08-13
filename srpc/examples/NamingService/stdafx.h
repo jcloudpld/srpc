@@ -2,6 +2,10 @@
 #define SRPC_STDAFX_H
 
 #ifdef _MSC_VER
+#  pragma once
+#endif
+
+#ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4819)
 #endif

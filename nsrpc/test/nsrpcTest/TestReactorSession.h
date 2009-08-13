@@ -1,6 +1,10 @@
 #ifndef NSRPC_TESTREACTORSESSION_H
 #define NSRPC_TESTREACTORSESSION_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/ReactorSession.h>
 
 /**

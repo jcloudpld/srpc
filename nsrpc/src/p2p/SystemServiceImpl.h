@@ -1,6 +1,10 @@
 #ifndef NSRPC_SYSTEMSERVICEIMPL_H
 #define NSRPC_SYSTEMSERVICEIMPL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "SystemService.h"
 
 namespace srpc
@@ -41,9 +45,9 @@ public:
 public:
     OVERRIDE_SRPC_P2P_METHOD_4(rpcConnect, RAddresses, peerAddresses,
         RP2pOptions, p2pOptions, srpc::RShortString, sessionPassword,
-        srpc::RUInt32, sessionKey);
+        srpc::UInt32, sessionKey);
     OVERRIDE_SRPC_P2P_METHOD_5(rpcConnected, RAddresses, peerAddresses,
-        srpc::RBool, isHost, RP2pProperty, p2pProperty, RP2pOptions, p2pOptions,
+        bool, isHost, RP2pProperty, p2pProperty, RP2pOptions, p2pOptions,
         RGroupMap, groups);
     OVERRIDE_SRPC_P2P_METHOD_1(rpcRequestConnectReversal,
         RAddresses, peerAddresses);

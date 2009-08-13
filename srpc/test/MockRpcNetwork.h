@@ -1,6 +1,10 @@
 #ifndef SRPC_MOCKRPCNETWORK_H
 #define SRPC_MOCKRPCNETWORK_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "DummyStreamBuffer.h"
 #include <srpc/RpcNetwork.h>
 #include <srpc/detail/RpcCommand.h>

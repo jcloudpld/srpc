@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONRPCNETWORKCALLBACK_H
 #define NSRPC_SESSIONRPCNETWORKCALLBACK_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "CsProtocol.h"
 #include <boost/noncopyable.hpp>
 

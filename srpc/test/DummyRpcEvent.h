@@ -1,6 +1,10 @@
 #ifndef SRPC_DUMMYRPCEVENT_H
 #define SRPC_DUMMYRPCEVENT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/detail/RpcEvent.h>
 #include <srpc/detail/ReceivingFunctors.h>
 #include <srpc/RpcTypes.h>

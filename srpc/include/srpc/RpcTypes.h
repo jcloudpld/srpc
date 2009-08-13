@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCTYPES_H
 #define SRPC_RPCTYPES_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "Types.h"
 #include "StringTypes.h"
 #include "IStream.h"

@@ -1,6 +1,10 @@
 #ifndef ECHOTEST_ECHOSERVER_H
 #define ECHOTEST_ECHOSERVER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/nsrpc.h>
 #include <nsrpc/config/Proactor.h>
 

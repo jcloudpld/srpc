@@ -1,6 +1,10 @@
 #ifndef SRPC_HASH_H
 #define SRPC_HASH_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../Types.h"
 #ifdef _MSC_VER
 #  pragma warning (push)

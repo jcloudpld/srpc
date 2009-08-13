@@ -1,6 +1,10 @@
 #ifndef SRPC_ENDIAN_H
 #define SRPC_ENDIAN_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../Types.h"
 #include <boost/detail/endian.hpp>
 #include <cassert>

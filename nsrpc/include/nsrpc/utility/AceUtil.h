@@ -1,6 +1,10 @@
 #ifndef NSRPC_ACEUTIL_H
 #define NSRPC_ACEUTIL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include "../config/Proactor.h"
 #include <srpc/StringTypes.h>

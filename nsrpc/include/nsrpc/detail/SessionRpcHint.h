@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONRPCHINT_H
 #define NSRPC_SESSIONRPCHINT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "CsProtocol.h"
 
 namespace nsrpc

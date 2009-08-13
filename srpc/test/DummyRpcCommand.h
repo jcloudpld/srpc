@@ -1,6 +1,10 @@
 #ifndef SRPC_DUMMYRPCCOMMAND_H
 #define SRPC_DUMMYRPCCOMMAND_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/detail/RpcCommand.h>
 #include <srpc/RpcTypes.h>
 #include <srpc/detail/ForwardingFunctors.h>

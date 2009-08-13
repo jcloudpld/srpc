@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONMANAGER_H
 #define NSRPC_SESSIONMANAGER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "SessionCreator.h"
 #include "SessionDestroyer.h"
 #include <boost/noncopyable.hpp>

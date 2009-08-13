@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PCONFIG_H
 #define NSRPC_P2PCONFIG_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 namespace nsrpc
 {
 

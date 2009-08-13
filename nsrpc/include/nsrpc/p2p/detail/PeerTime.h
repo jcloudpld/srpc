@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERTIME_H
 #define NSRPC_PEERTIME_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../../nsrpc.h"
 #include <srpc/Types.h>
 

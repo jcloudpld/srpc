@@ -1,6 +1,10 @@
 #ifndef SRPC_STLUTILS_H
 #define SRPC_STLUTILS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <boost/checked_delete.hpp>
 #include <algorithm>
 

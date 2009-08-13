@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERCANDIDATE_H
 #define NSRPC_PEERCANDIDATE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "P2pMessages.h"
 #include <nsrpc/p2p/detail/P2pAddress.h>
 #include <nsrpc/utility/SmartPtr.h>

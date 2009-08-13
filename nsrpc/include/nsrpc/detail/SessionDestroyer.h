@@ -1,6 +1,10 @@
 #ifndef NSRPC_SESSIONDESTROYER_H
 #define NSRPC_SESSIONDESTROYER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 namespace nsrpc
 {
 

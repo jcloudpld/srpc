@@ -171,7 +171,7 @@ EXCHANGE_SRPC_P2P_METHOD_0(SimpleRelayService, rpcResolve, srpc::ptUnreliable)
 
 
 FORWARD_SRPC_P2P_METHOD_2(SimpleRelayService, rpcResolved,
-    srpc::RShortString, ipAddress, srpc::RUInt16, port,
+    srpc::RShortString, ipAddress, srpc::UInt16, port,
     srpc::ptUnreliable);
 
 // = RpcRelayService

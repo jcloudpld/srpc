@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCRECEIVER_H
 #define SRPC_RPCRECEIVER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "srpc.h"
 #include "srpc_macros.h"
 #include "detail/RpcReceiverDetail.h"

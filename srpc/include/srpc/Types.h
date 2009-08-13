@@ -1,6 +1,10 @@
 #ifndef SRPC_TYPES_H
 #define SRPC_TYPES_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 // 기본 데이터 타입(primitive type)을 정의한다
 
 #include <boost/cstdint.hpp>

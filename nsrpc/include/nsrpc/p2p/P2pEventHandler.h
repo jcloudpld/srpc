@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PEVENTHANDLER_H
 #define NSRPC_P2PEVENTHANDLER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "Group.h"
 #include <boost/noncopyable.hpp>
 

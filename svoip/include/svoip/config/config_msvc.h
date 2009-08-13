@@ -1,6 +1,10 @@
 #ifndef SVOIP_CONFIG_MSVC_H
 #define SVOIP_CONFIG_MSVC_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 // MSVC configuration
 
 #ifdef SVOIP_DLL

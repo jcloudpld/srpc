@@ -1,6 +1,10 @@
 #ifndef NSRPC_ACETESTFIXTURE_H
 #define NSRPC_ACETESTFIXTURE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/utility/LogManager.h>
 
 //#define PRINT_ACE_LOG

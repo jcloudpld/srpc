@@ -1,6 +1,10 @@
 #ifndef NSRPC_LOGGER_H
 #define NSRPC_LOGGER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #if defined (_MSC_VER)
 #  pragma warning ( push )
 #  pragma warning ( disable: 4127 4244 4267 4311 4312 4996)

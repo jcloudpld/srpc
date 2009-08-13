@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCNETWORK_H
 #define SRPC_RPCNETWORK_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "srpc.h"
 #include "RpcPacketType.h"
 #include "ContainerTypes.h"

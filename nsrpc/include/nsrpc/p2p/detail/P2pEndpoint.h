@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PENDPOINT_H
 #define NSRPC_P2PENDPOINT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "P2pAddress.h"
 #include "../PeerId.h"
 #include "../../nsrpc.h"

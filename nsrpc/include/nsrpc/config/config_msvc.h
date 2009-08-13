@@ -1,6 +1,10 @@
 #ifndef NSRPC_CONFIG_MSVC_H
 #define NSRPC_CONFIG_MSVC_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 // MSVC configuration
 
 #ifdef NSRPC_DLL

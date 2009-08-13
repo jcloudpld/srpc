@@ -1,6 +1,10 @@
 #ifndef NSRPC_PLUGIN_H
 #define NSRPC_PLUGIN_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "PeerId.h"
 #include "../utility/SmartPtr.h"
 

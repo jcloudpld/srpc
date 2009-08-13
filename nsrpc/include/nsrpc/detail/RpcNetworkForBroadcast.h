@@ -1,6 +1,10 @@
 #ifndef NSRPC_RPCNETWORKFORBROADCAST_H
 #define NSRPC_RPCNETWORKFORBROADCAST_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/detail/MessageBlockProvider.h>
 #include <nsrpc/nsrpc.h>
 #include <srpc/RpcNetwork.h>

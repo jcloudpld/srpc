@@ -1,6 +1,10 @@
 #ifndef SVOIP_STDAFX_H
 #define SVOIP_STDAFX_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 // Speex
 #include "speex/speex.h"
 #include "speex/speex_preprocess.h"

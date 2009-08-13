@@ -1,6 +1,10 @@
 #ifndef SRPC_RECEIVINGFUNCTORS_H
 #define SRPC_RECEIVINGFUNCTORS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../srpc.h"
 #include "TypeList.h"
 #include <boost/utility.hpp>

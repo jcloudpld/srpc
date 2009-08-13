@@ -1,6 +1,10 @@
 #ifndef SVOIP_RECORDER_H
 #define SVOIP_RECORDER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "config/config.h"
 #include <nsrpc/p2p/PeerId.h>
 #include <nsrpc/p2p/Group.h>

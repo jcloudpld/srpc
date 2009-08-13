@@ -1,6 +1,10 @@
 #ifndef NSRPC_STUNSERVICEHANDLER_H
 #define NSRPC_STUNSERVICEHANDLER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/Types.h>
 #include <boost/noncopyable.hpp>
 

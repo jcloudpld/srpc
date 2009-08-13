@@ -1,6 +1,10 @@
 #ifndef SRPC_EXCEPTION_H
 #define SRPC_EXCEPTION_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "srpc.h"
 #include "utility/CUtils.h"
 #include <stdexcept>

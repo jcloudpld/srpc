@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERSTATS_H
 #define NSRPC_PEERSTATS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/Types.h>
 
 namespace nsrpc

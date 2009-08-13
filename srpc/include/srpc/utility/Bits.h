@@ -1,6 +1,10 @@
 #ifndef SRPC_BITS_H
 #define SRPC_BITS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <climits>
 #include <cassert>
 

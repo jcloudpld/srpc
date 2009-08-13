@@ -1,6 +1,10 @@
 #ifndef NSRPC_PROACTORSESSIONACCEPTOR_H
 #define NSRPC_PROACTORSESSIONACCEPTOR_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "nsrpc.h"
 #include "config/Proactor.h"
 

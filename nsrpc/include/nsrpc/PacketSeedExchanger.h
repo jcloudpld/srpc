@@ -1,6 +1,10 @@
 #ifndef NSRPC_PACKETSEEDEXCHANGER_H
 #define NSRPC_PACKETSEEDEXCHANGER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "detail/rpc_interface/SecurityService.h"
 #include "nsrpc.h"
 #include <srpc/RpcForwarder.h>

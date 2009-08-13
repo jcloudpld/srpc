@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERMANAGER_H
 #define NSRPC_PEERMANAGER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "Peer.h"
 #include <nsrpc/p2p/Group.h>
 #include <srpc/ContainerTypes.h>

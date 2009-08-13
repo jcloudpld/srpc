@@ -1,6 +1,10 @@
 #ifndef NSRPC_GROUP_H
 #define NSRPC_GROUP_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "PeerId.h"
 
 namespace nsrpc

@@ -1,6 +1,10 @@
 #ifndef SRPC_DUMMYSTREAMBUFFER_H
 #define SRPC_DUMMYSTREAMBUFFER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <srpc/detail/VectorStreamBuffer.h>
 #include <srpc/Exception.h>
 

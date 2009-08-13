@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PPEERHINT_H
 #define NSRPC_P2PPEERHINT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../PeerHint.h"
 #include <ace/INET_Addr.h>
 

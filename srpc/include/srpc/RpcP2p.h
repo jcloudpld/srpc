@@ -1,6 +1,10 @@
 #ifndef SRPC_RPCP2P_H
 #define SRPC_RPCP2P_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "RpcReceiver.h"
 #include "RpcForwarder.h"
 #include "RpcInterface.h"

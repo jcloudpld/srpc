@@ -1,6 +1,10 @@
 #ifndef NSRPC_SAO_SCHEDULER_H
 #define NSRPC_SAO_SCHEDULER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #pragma warning ( push )
 #pragma warning ( disable: 4251 4800 4996 )
 #include <ace/Task.h>

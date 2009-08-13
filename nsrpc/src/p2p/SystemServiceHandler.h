@@ -1,6 +1,10 @@
 #ifndef NSRPC_SYSTEMSERVICEHANDLER_H
 #define NSRPC_SYSTEMSERVICEHANDLER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/Group.h>
 #include <nsrpc/p2p/detail/P2pAddress.h>
 #include <boost/noncopyable.hpp>

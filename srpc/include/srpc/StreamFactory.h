@@ -1,6 +1,10 @@
 #ifndef SRPC_STREAMFACTORY_H
 #define SRPC_STREAMFACTORY_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "srpc.h"
 #include "IStream.h"
 #include "OStream.h"

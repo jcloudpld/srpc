@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PMESSAGES_H
 #define NSRPC_P2PMESSAGES_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/detail/PeerTime.h>
 #include <nsrpc/p2p/detail/P2pProtocol.h>
 #include <nsrpc/p2p/detail/P2pAddress.h>

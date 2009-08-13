@@ -1,6 +1,10 @@
 #ifndef SRPC_OBYTESTREAM_H
 #define SRPC_OBYTESTREAM_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../OStream.h"
 #include "../utility/Endian.h"
 

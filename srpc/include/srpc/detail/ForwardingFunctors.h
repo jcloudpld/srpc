@@ -1,6 +1,10 @@
 #ifndef SRPC_FORWARDINGFUNCTORS_H
 #define SRPC_FORWARDINGFUNCTORS_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "TypeList.h"
 #include "../RpcTypes.h"
 #include "../srpc.h"

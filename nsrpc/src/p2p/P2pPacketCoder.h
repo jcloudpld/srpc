@@ -1,6 +1,10 @@
 #ifndef NSRPC_P2PPACKETCODER_H
 #define NSRPC_P2PPACKETCODER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/P2pConfig.h>
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/p2p/detail/P2pProtocol.h>

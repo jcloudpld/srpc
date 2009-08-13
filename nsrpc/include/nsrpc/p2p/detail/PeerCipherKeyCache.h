@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEERCIPHERKEYCACHE_H
 #define NSRPC_PEERCIPHERKEYCACHE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/PeerId.h>
 #include <nsrpc/detail/PacketCoder.h>
 #include <srpc/ContainerTypes.h>

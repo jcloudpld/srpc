@@ -1,6 +1,10 @@
 #ifndef NSRPC_PEER_H
 #define NSRPC_PEER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "SystemService.h"
 #include "P2pMessages.h"
 #include <nsrpc/p2p/PeerId.h>

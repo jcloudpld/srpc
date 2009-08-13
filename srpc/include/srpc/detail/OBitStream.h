@@ -1,6 +1,10 @@
 #ifndef SRPC_OBITSTREAM_H
 #define SRPC_OBITSTREAM_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../OStream.h"
 
 namespace srpc {

@@ -1,6 +1,10 @@
 #ifndef NSRPC_BANDWIDTHLIMIT_H
 #define NSRPC_BANDWIDTHLIMIT_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/SessionConfig.h>
 #include <ctime>
 

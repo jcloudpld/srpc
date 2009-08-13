@@ -1,6 +1,10 @@
 #ifndef MESSAGEBLOCKMANAGERTEST_STDAFX_H
 #define MESSAGEBLOCKMANAGERTEST_STDAFX_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/nsrpc.h>
 
 // ACE

@@ -1,6 +1,10 @@
 #ifndef NSRPC_PACKETCODERFACTORY_H
 #define NSRPC_PACKETCODERFACTORY_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "../nsrpc.h"
 #include <boost/noncopyable.hpp>
 

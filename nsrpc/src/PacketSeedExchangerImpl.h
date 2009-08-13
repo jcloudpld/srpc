@@ -1,6 +1,10 @@
 #ifndef NSRPC_PACKETSEEDEXCHANGERIMPL_H
 #define NSRPC_PACKETSEEDEXCHANGERIMPL_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/PacketSeedExchanger.h>
 
 namespace nsrpc

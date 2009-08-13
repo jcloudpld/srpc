@@ -1,6 +1,10 @@
 #ifndef NSRPC_STUNSERVICE_H
 #define NSRPC_STUNSERVICE_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include <nsrpc/p2p/detail/P2pProtocol.h>
 #include <srpc/RpcP2p.h>
 
@@ -32,7 +36,7 @@ public:
 
     /// address resolving에 대한 응답
     DECLARE_SRPC_METHOD_2(RpcStunService, rpcResolved,
-        srpc::RShortString, ipAddress, srpc::RUInt16, port);
+        srpc::RShortString, ipAddress, srpc::UInt16, port);
 };
 
 /** @} */ // addtogroup p2p

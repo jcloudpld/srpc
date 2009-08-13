@@ -1,6 +1,10 @@
 #ifndef SRPC_CONTAINERTYPES_H
 #define SRPC_CONTAINERTYPES_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 // 컨테이너 타입(STL)을 정의한다
 
 #include "detail/Allocator.h"

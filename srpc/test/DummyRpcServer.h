@@ -1,6 +1,10 @@
 #ifndef SRPC_DUMMYRPCSERVER_H
 #define SRPC_DUMMYRPCSERVER_H
 
+#ifdef _MSC_VER
+#  pragma once
+#endif
+
 #include "DummyRpcInterface.h"
 #include <srpc/RpcForwarder.h>
 #include <srpc/RpcReceiver.h>
