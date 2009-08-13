@@ -124,7 +124,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(ProjectDir)..\..\include;..\common"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;SVOIP_DLL"
+				PreprocessorDefinitions="WIN32;NDEBUG;_SECURE_SCL=0;_CONSOLE;SVOIP_DLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
