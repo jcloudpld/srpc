@@ -57,10 +57,9 @@ IBitStream::IBitStream(StreamBuffer& streamBuffer,
 
 void IBitStream::read(void* buffer, UInt16 length)
 {
-    UInt8* byteBuffer = static_cast<UInt8*>(buffer);
-    for (UInt16 i = 0; i < length; ++i) {
-        byteBuffer[i] = readByte();
-    }
+    align();
+    streamBuffer_.copyTo(
+        static_cast<StreamBuffer::Item*>(buffer), length);
 }
 
 
@@ -83,10 +82,8 @@ void IBitStream::read(String& value, size_t maxLength, int sizeBits)
     UInt32 strLen;
     read(strLen, sizeBits);
 
-    value.reserve(strLen);
-    for (UInt32 i = 0; i < strLen; ++i) {
-        value += static_cast<String::value_type>(readByte());
-    }
+    value.resize(strLen);
+    read(&value[0], static_cast<UInt16>(strLen));
 
     if (value.size() > maxLength) {
         value.resize(maxLength);
@@ -103,20 +100,15 @@ void IBitStream::read(WString& value, size_t maxLength, int sizeBits)
 
     if (shouldUseUtf8ForString_) {
         String utf8;
-        utf8.reserve(strLen);
-        for (UInt32 i = 0; i < strLen; ++i) {
-            utf8 += static_cast<String::value_type>(readByte());
-        }
+        utf8.resize(strLen);
+        read(&utf8[0], static_cast<UInt16>(strLen));
 
         value = fromUtf8(utf8);
     }
     else {
-        value.reserve(strLen);
-        for (UInt32 i = 0; i < strLen; ++i) {
-            WString::value_type ch;
-            readNumeric(ch, Bits<WString::value_type>::size);
-            value.push_back(ch);
-        }
+        value.resize(strLen);
+        read(&value[0],
+            static_cast<UInt16>(strLen * sizeof(WString::value_type)));
     }
 
     if (value.size() > maxLength) {

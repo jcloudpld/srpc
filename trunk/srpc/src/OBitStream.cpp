@@ -107,9 +107,8 @@ void OBitStream::write(const String& value, size_t maxLength, int sizeBitCount)
     const UInt32 strLen =
         static_cast<UInt32>((std::min)(value.size(), maxLength));
     write(strLen, sizeBitCount);
-    for (String::size_type i = 0; i < strLen; ++i) {
-        writeByte(value[i]);
-    }
+
+    write(&value[0], static_cast<UInt16>(strLen));
 }
 
 
@@ -126,29 +125,26 @@ void OBitStream::write(const WString& value, size_t maxLength,
         const UInt32 strLen =
             static_cast<UInt32>((std::min)(utf8.size(), maxLength));
         write(strLen, sizeBitCount);
-        for (String::size_type i = 0; i < strLen; ++i) {
-            writeByte(utf8[i]);
-        }
+
+        write(&utf8[0], static_cast<UInt16>(strLen));
     }
     else {
         const UInt32 strLen =
             static_cast<UInt32>((std::min)(value.size(), maxLength));
         write(strLen, sizeBitCount);
 
-        for (UInt32 i = 0; i < strLen; ++i) {
-            writeBits(static_cast<srpc::UInt32>(value[i]),
-                Bits<WString::value_type>::size);
-        }
+        write(&value[0],
+            static_cast<UInt16>(strLen * sizeof(WString::value_type)));
     }
 }
 
 
 void OBitStream::write(const void* buffer, UInt16 length)
 {
-    const UInt8* byteBuffer = static_cast<const UInt8*>(buffer);
-    for (UInt16 i = 0; i < length; ++i) {
-        writeByte(byteBuffer[i]);
-    }
+    align();
+    streamBuffer_.copyFrom(
+        static_cast<const StreamBuffer::Item*>(buffer), length);
+    totalBitCount_ += (length * CHAR_BIT);
 }
 
 
