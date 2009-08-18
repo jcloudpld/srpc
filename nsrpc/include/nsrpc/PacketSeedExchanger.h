@@ -13,6 +13,7 @@
 namespace nsrpc
 {
 
+class PacketSeedExchangerCallback;
 class PacketCoder;
 class SessionRpcNetwork;
 
@@ -27,22 +28,30 @@ class NSRPC_API PacketSeedExchanger :
     DECLARE_SRPC_EVENT_DISPATCHER(PacketSeedExchanger);
 public:
     PacketSeedExchanger() :
+        callback_(0),
         packetCoder_(0) {}
 
     /// @internal
-    void initialize(PacketCoder& packetCoder, SessionRpcNetwork& rpcNetwork);
+    void initialize(PacketSeedExchangerCallback& callback,
+        PacketCoder& packetCoder, SessionRpcNetwork& rpcNetwork);
 
-    /// 클라이언트가 서버에 접속했을 경우 서버에서 초기 시드값을 교환한다
-    virtual void exchangeFirstSeed() = 0;
+    /// 시드값 교환을 위해 공개키 알고리즘을 사용할 경우 공개키를 교환한다
+    virtual void exchangePublicKey() = 0;
 
     /// 서버에서 주기적으로 시드값을 교환한다
     virtual void exchangeNextSeed() = 0;
 protected:
+    PacketSeedExchangerCallback& getCallback() {
+        assert(callback_ != 0);
+        return *callback_;
+    }
+
     PacketCoder& getPacketCoder() {
         assert(packetCoder_ != 0);
         return *packetCoder_;
     }
 private:
+    PacketSeedExchangerCallback* callback_;
     PacketCoder* packetCoder_;
 };
 

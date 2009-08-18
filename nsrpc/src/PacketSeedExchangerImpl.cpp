@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PacketSeedExchangerImpl.h"
+#include <nsrpc/PacketSeedExchangerCallback.h>
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/detail/SessionRpcHint.h>
 
@@ -8,71 +9,157 @@ namespace nsrpc
 
 // = PacketSeedExchangerForServer
 
-void PacketSeedExchangerForServer::exchangeFirstSeed()
+void PacketSeedExchangerForServer::exchangePublicKey()
 {
-    exchangingDecryptSeed_.clear();
-    if (getPacketCoder().shouldExchangeCipherSeed()) {
-        exchangeSeed();
+    if (! getPacketCoder().hasPacketCipher()) {
+        getCallback().seedExchanged();
     }
 }
 
 
 void PacketSeedExchangerForServer::exchangeNextSeed()
 {
-    if (getPacketCoder().isCipherKeyExpired()) {
-        exchangeSeed();
-        getPacketCoder().extendCipherKeyTimeLimit();
+    if ((! getPacketCoder().shouldExchangeCipherSeed()) ||
+        (! getPacketCoder().isCipherKeyExpired())) {
+        return;
     }
+
+    exchangeSeed("");
+    getPacketCoder().extendCipherKeyTimeLimit();
 }
 
 
-void PacketSeedExchangerForServer::exchangeSeed()
+void PacketSeedExchangerForServer::exchangeFirstSeed(const srpc::String& publicKey)
+{
+    if (! getPacketCoder().shouldExchangeCipherSeed()) {
+        return;
+    }
+
+    exchangingDecryptSeed_.clear();
+    exchangeSeed(publicKey);
+}
+
+
+void PacketSeedExchangerForServer::exchangeSeed(const srpc::String& publicKey)
 {
     if (! exchangingDecryptSeed_.empty()) {
         return;
     }
 
-    PacketCoder::Seed encryptSeed;
-    PacketCoder::Seed decryptSeed;
-    getPacketCoder().generateCipherSeed(encryptSeed, decryptSeed);
+    PacketCoder::Seed seedForEncrypt;
+    PacketCoder::Seed seedForDecrypt;
+    getPacketCoder().generateCipherSeed(seedForEncrypt, seedForDecrypt);
+
+    exchangingDecryptSeed_ = seedForDecrypt;
+
+    const PacketCoder::Seed seedForEncryptTemp = seedForEncrypt;
+    getCallback().encryptSeed(seedForEncrypt, otherSidePublicKey_);
+    getCallback().encryptSeed(seedForDecrypt, otherSidePublicKey_);
 
     SessionRpcHint rpcHint(0, mtSystem);
-    exchangeSeed(encryptSeed, decryptSeed, &rpcHint);
-    getPacketCoder().setEncryptSeed(encryptSeed);
+    exchangeSeed(publicKey, seedForEncrypt, seedForDecrypt, &rpcHint);
 
-    exchangingDecryptSeed_ = decryptSeed;
+    getPacketCoder().setEncryptSeed(seedForEncryptTemp);
 }
 
 
-FORWARD_SRPC_METHOD_2(PacketSeedExchangerForServer, exchangeSeed,
-    srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed);
+RECEIVE_SRPC_METHOD_1(PacketSeedExchangerForServer, exchangePublicKey,
+    srpc::RShortString, publicKey)
+{
+    if (! getPacketCoder().shouldExchangeCipherSeed()) {
+        // 패킷 암호화는 사용하고, 키 교환은 하지 않는 경우
+        SessionRpcHint rpcHint(0, mtSystem);
+        exchangeSeed("", "", "", &rpcHint);
+        getCallback().seedExchanged();
+        return;
+    }
+
+    otherSidePublicKey_ = publicKey;
+
+    srpc::String myPublicKey;
+    if (! getCallback().generatePublicAndPrivateKey(myPublicKey, privateKey_)) {
+        assert(false && "why failed?");
+        return;
+    }
+
+    exchangeFirstSeed(myPublicKey);
+}
 
 
-RECEIVE_SRPC_METHOD_1(PacketSeedExchangerForServer, onConfirmSeed,
-    srpc::RShortString, encryptSeed)
+FORWARD_SRPC_METHOD_3(PacketSeedExchangerForServer, exchangeSeed,
+    srpc::RShortString, publicKey,
+    srpc::RShortString, seedForEncrypt, srpc::RShortString, seedForDecrypt);
+
+
+RECEIVE_SRPC_METHOD_0(PacketSeedExchangerForServer, onConfirmSeed)
 {
     assert(getPacketCoder().shouldExchangeCipherSeed());
 
-    getPacketCoder().setDecryptSeed(encryptSeed);
+    getPacketCoder().setDecryptSeed(exchangingDecryptSeed_);
+    exchangingDecryptSeed_.clear();
 
-    if (exchangingDecryptSeed_ == encryptSeed) {
-        exchangingDecryptSeed_.clear();
-    }
+    getCallback().seedExchanged();
 }
 
 // = PacketSeedExchangerForClient
 
-RECEIVE_SRPC_METHOD_2(PacketSeedExchangerForClient, exchangeSeed,
-    srpc::RShortString, encryptSeed, srpc::RShortString, decryptSeed)
+void PacketSeedExchangerForClient::exchangePublicKey()
 {
-    getPacketCoder().setDecryptSeed(encryptSeed);
+    if (! getPacketCoder().hasPacketCipher()) {
+        getCallback().seedExchanged();
+        return;
+    }
+
+    srpc::String publicKey;
+    if (! getCallback().generatePublicAndPrivateKey(publicKey, privateKey_)) {
+        getCallback().seedExchanged();
+        return;
+    }
+
     SessionRpcHint rpcHint(0, mtSystem);
-    onConfirmSeed(decryptSeed, &rpcHint);
-    getPacketCoder().setEncryptSeed(decryptSeed);
+    exchangePublicKey(publicKey, &rpcHint);
 }
 
 
-FORWARD_SRPC_METHOD_1(PacketSeedExchangerForClient, onConfirmSeed,
-    srpc::RShortString, encryptSeed);
+FORWARD_SRPC_METHOD_1(PacketSeedExchangerForClient, exchangePublicKey,
+    srpc::RShortString, publicKey);
+
+
+RECEIVE_SRPC_METHOD_3(PacketSeedExchangerForClient, exchangeSeed,
+    srpc::RShortString, publicKey,
+    srpc::RShortString, seedForEncrypt, srpc::RShortString, seedForDecrypt)
+{
+    if (publicKey.empty() && seedForEncrypt.empty() && seedForDecrypt.empty()) {
+        // 패킷 암호화는 사용하고, 키 교환은 하지 않는 경우
+        getCallback().seedExchanged();
+        return;
+    }
+
+    otherSidePublicKey_ = publicKey;
+
+    srpc::String decryptedSeedForEncrypt = seedForEncrypt;
+    if (! getCallback().decryptSeed(decryptedSeedForEncrypt)) {
+        assert(false && "why failed?");
+        return;
+    }
+
+    srpc::String decryptedSeedForDecrypt = seedForDecrypt;
+    if (! getCallback().decryptSeed(decryptedSeedForDecrypt)) {
+        assert(false && "why failed?");
+        return;
+    }
+
+    getPacketCoder().setDecryptSeed(decryptedSeedForEncrypt);
+
+    SessionRpcHint rpcHint(0, mtSystem);
+    onConfirmSeed(&rpcHint);
+
+    getPacketCoder().setEncryptSeed(decryptedSeedForDecrypt);
+
+    getCallback().seedExchanged();
+}
+
+
+FORWARD_SRPC_METHOD_0(PacketSeedExchangerForClient, onConfirmSeed);
 
 } // namespace nsrpc

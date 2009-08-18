@@ -6,7 +6,9 @@
 #endif
 
 #include "ReactorSession.h"
+#include "PacketSeedExchangerCallback.h"
 #include "detail/SessionRpcNetworkCallback.h"
+#include <srpc/srpc_macros.h>
 #include <boost/scoped_ptr.hpp>
 
 namespace srpc
@@ -26,9 +28,11 @@ class PacketSeedExchanger;
 /**
  * @class RpcReactorSession
  * RPC ReactorSession
+ * - 현재는 클라이언트용 세션만 지원한다.
  */
 class NSRPC_API RpcReactorSession : public ReactorSession,
-    private SessionRpcNetworkCallback
+    private SessionRpcNetworkCallback,
+    protected PacketSeedExchangerCallback
 {
 public:
     explicit RpcReactorSession(ACE_Reactor* reactor = 0,
@@ -65,6 +69,7 @@ private:
     virtual void unmarshalingErrorOccurred() {
         receivingFailed();
     }
+
 private:
     boost::scoped_ptr<SessionRpcNetwork> rpcNetwork_;
     boost::scoped_ptr<PacketSeedExchanger> seedExchanger_;

@@ -91,6 +91,11 @@ public:
 
     /// 암호화 키의 유효기간이 만료되었는가?
     virtual bool isCipherKeyExpired() const = 0;
+
+    /// 패킷 암호화 알고리즘을 가지고 있는가?
+    virtual bool hasPacketCipher() const {
+        return false;
+    }
 public:
     /// 패킷 헤더를 위한 공간을 예약한다.
     void reserveHeader(ACE_Message_Block& mblock);

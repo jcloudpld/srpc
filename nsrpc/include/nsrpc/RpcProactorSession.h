@@ -11,8 +11,10 @@
 #if defined (NSRPC_HAS_PROACTOR)
 
 #include "ProactorSession.h"
+#include "PacketSeedExchangerCallback.h"
 #include "detail/SessionRpcNetworkCallback.h"
 #include "detail/rpc_interface/SecurityService.h"
+#include <srpc/srpc_macros.h>
 #include <boost/scoped_ptr.hpp>
 
 namespace srpc
@@ -37,7 +39,8 @@ struct RpcSessionConfig;
  * RPC enabled Session
  */
 class NSRPC_API RpcProactorSession : public ProactorSession,
-    private SessionRpcNetworkCallback
+    private SessionRpcNetworkCallback,
+    protected PacketSeedExchangerCallback
 {
 public:
     RpcProactorSession(const RpcSessionConfig& config);
@@ -63,6 +66,7 @@ private:
     virtual void unmarshalingErrorOccurred() {
         disconnect();
     }
+
 protected:
     srpc::RpcNetwork* getRpcNetwork();
 private:

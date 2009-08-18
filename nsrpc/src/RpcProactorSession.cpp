@@ -5,6 +5,7 @@
 #include <nsrpc/RpcProactorSession.h>
 #include <nsrpc/RpcSessionConfig.h>
 #include <nsrpc/PacketSeedExchanger.h>
+#include <nsrpc/PacketSeedExchangerCallback.h>
 #include <nsrpc/detail/SessionRpcNetwork.h>
 #include <nsrpc/detail/PacketCoder.h>
 #include <srpc/RpcForwarder.h>
@@ -28,7 +29,7 @@ RpcProactorSession::RpcProactorSession(const RpcSessionConfig& config) :
     assert(rpcNetwork_.get() != 0);
     rpcNetwork_->initialize(*this, *this, config.shouldUseUtf8ForString_);
 
-    seedExchanger_->initialize(*config.packetCoder_, *rpcNetwork_);
+    seedExchanger_->initialize(*this, *config.packetCoder_, *rpcNetwork_);
 }
 
 #ifdef _MSC_VER
@@ -66,7 +67,7 @@ bool RpcProactorSession::onConnected()
 {
     rpcNetwork_->reset();
 
-    seedExchanger_->exchangeFirstSeed();
+    seedExchanger_->exchangePublicKey();
 
     return true;
 }

@@ -4,6 +4,7 @@
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/PacketSeedExchangerFactory.h>
 #include <nsrpc/PacketSeedExchanger.h>
+#include <nsrpc/PacketSeedExchangerCallback.h>
 #include <srpc/RpcForwarder.h>
 #include <srpc/RpcReceiver.h>
 
@@ -21,7 +22,7 @@ RpcReactorSession::RpcReactorSession(ACE_Reactor* reactor,
 {
     rpcNetwork_->initialize(*this, *this, shouldUseUtf8ForString);
 
-    seedExchanger_->initialize(getPacketCoder(), *rpcNetwork_);
+    seedExchanger_->initialize(*this, getPacketCoder(), *rpcNetwork_);
 }
 
 
@@ -64,7 +65,7 @@ void RpcReactorSession::onConnected()
 {
     rpcNetwork_->reset();
 
-    seedExchanger_->exchangeFirstSeed();
+    seedExchanger_->exchangePublicKey();
 }
 
 
