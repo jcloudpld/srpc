@@ -7,13 +7,13 @@ namespace nsrpc
 
 PacketSeedExchanger* PacketSeedExchangerFactory::createForServer()
 {
-    return new PacketSeedExchangerForServer;
+    return new PacketSeedExchangerForServer();
 }
 
 
 PacketSeedExchanger* PacketSeedExchangerFactory::createForClient()
 {
-    return new PacketSeedExchangerForClient;
+    return new PacketSeedExchangerForClient();
 }
 
 } // namespace nsrpc

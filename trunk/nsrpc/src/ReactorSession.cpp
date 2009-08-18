@@ -106,13 +106,12 @@ bool ReactorSession::connect(const srpc::String& ip, u_short port,
         return false;
     }
 
-    onConnected();
-
     if (! initSession()) {
         disconnect_i(false);
         return false;
     }
 
+    onConnected();
     return true;
 }
 

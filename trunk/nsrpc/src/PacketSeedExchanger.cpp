@@ -7,9 +7,12 @@ namespace nsrpc
 
 IMPLEMENT_SRPC_EVENT_DISPATCHER(PacketSeedExchanger);
 
-void PacketSeedExchanger::initialize(PacketCoder& packetCoder,
+void PacketSeedExchanger::initialize(
+    PacketSeedExchangerCallback& callback,
+    PacketCoder& packetCoder,
     SessionRpcNetwork& rpcNetwork)
 {
+    callback_ = &callback;
     packetCoder_ = &packetCoder;
 
     srpc::RpcReceiver::setRpcNetwork(rpcNetwork);
