@@ -24,6 +24,10 @@
 #endif
 #include <boost/noncopyable.hpp>
 #include <cassert>
+#ifdef WINDOWS
+#  define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+#  include <windows.h>
+#endif
 
 class NSRPC_Handler;
 class NSRPC_Proactor;
@@ -175,10 +179,10 @@ public:
         const ACE_TCHAR* name = 0,
         ACE_mutexattr_t* arg = 0) :
         ACE_Thread_Mutex(name, arg) {
-#ifdef ACE_HAS_WTHREADS
+#ifdef WINDOWS
         (void)::SetCriticalSectionSpinCount(&this->lock_, spinCount);
 #else
-        SRPC_UNUSED_ARG(spinCount);
+        ACE_UNUSED_ARG(spinCount);
 #endif
     }
 };
