@@ -34,7 +34,7 @@ void new_delete_speed_test(ACE_UINT32 loops)
     timer.start();
 
     while (i--) {
-        ACE_Message_Block* block = new ACE_Message_Block(chunk_size);
+        ACE_Message_Block* block = new ACE_Message_Block(i % chunk_size);
         block->release();
     }
 
@@ -81,7 +81,7 @@ void NoSynchMessageBlockManager_speed_test(ACE_UINT32 loops)
     timer.start();
 
     while (i--) {
-        ACE_Message_Block* block = manager.create(chunk_size);
+        ACE_Message_Block* block = manager.create(i % chunk_size);
         block->release();
     }
 
@@ -128,7 +128,7 @@ void SynchMessageBlockManager_speed_test(ACE_UINT32 loops)
     timer.start();
 
     while (i--) {
-        ACE_Message_Block* block = manager.create(chunk_size);
+        ACE_Message_Block* block = manager.create(i % chunk_size);
         block->release();
     }
 
@@ -155,7 +155,7 @@ void SynchMessageBlockManager_speed_test(ACE_UINT32 loops)
 
 int ACE_TMAIN(int /*argc*/, ACE_TCHAR* /*argv*/[])
 {
-    ACE_UINT32 loops = 10000000;
+    const ACE_UINT32 loops = 100000;
     new_delete_speed_test(loops);
     NoSynchMessageBlockManager_speed_test(loops);
     SynchMessageBlockManager_speed_test(loops);
