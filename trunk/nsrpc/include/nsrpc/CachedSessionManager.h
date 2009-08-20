@@ -7,6 +7,7 @@
 
 #include "nsrpc.h"
 #include "config/Proactor.h"
+#include "utility/AceUtil.h"
 
 #if defined (NSRPC_HAS_PROACTOR)
 
@@ -36,7 +37,8 @@ template <class Allocator, class Mutex> class SessionPool;
  */
 class NSRPC_API CachedSessionManager : public SessionManager
 {
-    typedef SessionPool<SessionAllocator, ACE_Thread_Mutex> CachedSessionPool;
+    typedef SessionPool<SessionAllocator, Thread_Mutex_With_SpinLock>
+        CachedSessionPool;
 public:
     /**
      * ctor
