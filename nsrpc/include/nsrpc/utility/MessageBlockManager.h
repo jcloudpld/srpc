@@ -6,6 +6,7 @@
 #endif
 
 #include "../nsrpc.h"
+#include "AceUtil.h"
 #include "ObjectAllocator.h"
 #ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
 #include "VariousMemoryAllocator.h"
@@ -16,7 +17,6 @@
 #  pragma warning (push)
 #  pragma warning (disable: 4127)
 #endif
-#include <ace/Thread_Mutex.h>
 #include <ace/Null_Mutex.h>
 #ifdef _MSC_VER
 #  pragma warning (pop)
@@ -99,11 +99,12 @@ protected: // for Test
  * thread-safe MessageBlockManager
  * - forward decl.를 위해 상속함
  */
-class SynchMessageBlockManager : public MessageBlockManager<ACE_Thread_Mutex>
+class SynchMessageBlockManager :
+    public MessageBlockManager<Thread_Mutex_With_SpinLock>
 {
 public:
     SynchMessageBlockManager(size_t poolSize, size_t blockSize) :
-        MessageBlockManager<ACE_Thread_Mutex>(poolSize, blockSize) {}
+        MessageBlockManager<Thread_Mutex_With_SpinLock>(poolSize, blockSize) {}
 };
 
 
@@ -112,7 +113,8 @@ public:
  * thread-nosafe MessageBlockManager
  * - forward decl.를 위해 상속함
  */
-class NoSynchMessageBlockManager : public MessageBlockManager<ACE_Null_Mutex>
+class NoSynchMessageBlockManager :
+    public MessageBlockManager<ACE_Null_Mutex>
 {
 public:
     NoSynchMessageBlockManager(size_t poolSize, size_t blockSize) :

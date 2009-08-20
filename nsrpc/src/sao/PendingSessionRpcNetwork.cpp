@@ -4,6 +4,7 @@
 #include <nsrpc/sao/detail/RpcMethod.h>
 #include <nsrpc/sao/Proxy.h>
 #include <nsrpc/utility/Logger.h>
+#include <nsrpc/utility/AceUtil.h>
 
 namespace nsrpc
 {
@@ -14,7 +15,7 @@ namespace sao
 namespace
 {
 
-MethodMemoryManager<RpcMethod, ACE_Thread_Mutex> rpcMethodManager_;
+MethodMemoryManager<RpcMethod, Thread_Mutex_With_SpinLock> rpcMethodManager_;
 
 } // namespace
 

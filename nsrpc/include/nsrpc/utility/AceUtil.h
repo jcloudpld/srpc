@@ -7,12 +7,14 @@
 
 #include "../nsrpc.h"
 #include "../config/Proactor.h"
+#include <srpc/Types.h>
 #include <srpc/StringTypes.h>
 #include <srpc/ContainerTypes.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4244 4267 4312 4996)
 #endif
+#include <ace/Thread_Mutex.h>
 #include <ace/Message_Block.h>
 #include <ace/Time_Value.h>
 #include <ace/INET_Addr.h>
@@ -159,6 +161,27 @@ srpc::String NSRPC_API obtainPublicIpAddress();
 * -- http://www.gamedev.net/community/forums/topic.asp?topic_id=307848
 */
 void NSRPC_API workaroundWinsockConnectionResetProblem(ACE_HANDLE socket);
+
+
+/**
+ * @class Thread_Mutex_With_SpinLock
+ * - currently, only supported in Windows
+ */
+class Thread_Mutex_With_SpinLock : public ACE_Thread_Mutex
+{
+    enum { defaultSpintCount = 4000 };
+public:
+    Thread_Mutex_With_SpinLock(srpc::UInt32 spinCount = defaultSpintCount,
+        const ACE_TCHAR* name = 0,
+        ACE_mutexattr_t* arg = 0) :
+        ACE_Thread_Mutex(name, arg) {
+#ifdef ACE_HAS_WTHREADS
+        (void)::SetCriticalSectionSpinCount(&this->lock_, spinCount);
+#else
+        SRPC_UNUSED_ARG(spinCount);
+#endif
+    }
+};
 
 /** @} */ // addtogroup utility
 
