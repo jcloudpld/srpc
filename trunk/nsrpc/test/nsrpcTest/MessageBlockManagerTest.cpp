@@ -15,16 +15,6 @@ public:
     const MessageBlockAllocator& getMessageBlockAllocator() const {
         return messageBlockAllocator_;
     }
-
-    const DataBlockAllocator& getDataBlockAllocator() const {
-        return dataBlockAllocator_;
-    }
-
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    const BufferAllocator& getBufferAllocator() const {
-        return bufferAllocator_;
-    }
-#endif
 };
 
 static const size_t poolSize = 2;
@@ -56,12 +46,6 @@ TEST_F(MessageBlockManagerTest, testInitialize)
 {
     EXPECT_EQ(poolSize,
         manager_->getMessageBlockAllocator().getCachedMemoryCount());
-    EXPECT_EQ(poolSize,
-        manager_->getDataBlockAllocator().getCachedMemoryCount());
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    EXPECT_EQ(poolSize,
-        manager_->getBufferAllocator().getCachedMemoryCount());
-#endif
 }
 
 
@@ -72,12 +56,6 @@ TEST_F(MessageBlockManagerTest, testAcquire)
 
     EXPECT_EQ(poolSize - 1,
         manager_->getMessageBlockAllocator().getCachedMemoryCount());
-    EXPECT_EQ(poolSize - 1,
-        manager_->getDataBlockAllocator().getCachedMemoryCount());
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    EXPECT_EQ(poolSize - 1,
-        manager_->getBufferAllocator().getCachedMemoryCount());
-#endif
 }
 
 
@@ -87,12 +65,6 @@ TEST_F(MessageBlockManagerTest, testRelease)
 
     EXPECT_EQ(poolSize,
         manager_->getMessageBlockAllocator().getCachedMemoryCount());
-    EXPECT_EQ(poolSize,
-        manager_->getDataBlockAllocator().getCachedMemoryCount());
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    EXPECT_EQ(poolSize,
-        manager_->getBufferAllocator().getCachedMemoryCount());
-#endif
 }
 
 
@@ -107,12 +79,6 @@ TEST_F(MessageBlockManagerTest, testDuplicate)
 
     EXPECT_EQ(poolSize,
         manager_->getMessageBlockAllocator().getCachedMemoryCount());
-    EXPECT_EQ(poolSize,
-        manager_->getDataBlockAllocator().getCachedMemoryCount());
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    EXPECT_EQ(poolSize,
-        manager_->getBufferAllocator().getCachedMemoryCount());
-#endif
 }
 
 
@@ -124,22 +90,10 @@ TEST_F(MessageBlockManagerTest, testClone)
 
     EXPECT_EQ(poolSize - 2,
         manager_->getMessageBlockAllocator().getCachedMemoryCount());
-    EXPECT_EQ(poolSize - 2,
-        manager_->getDataBlockAllocator().getCachedMemoryCount());
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    EXPECT_EQ(poolSize - 2,
-        manager_->getBufferAllocator().getCachedMemoryCount());
-#endif
 
     mblock->release();
     cloned->release();
 
     EXPECT_EQ(poolSize,
         manager_->getMessageBlockAllocator().getCachedMemoryCount());
-    EXPECT_EQ(poolSize,
-        manager_->getDataBlockAllocator().getCachedMemoryCount());
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    EXPECT_EQ(poolSize,
-        manager_->getBufferAllocator().getCachedMemoryCount());
-#endif
 }
