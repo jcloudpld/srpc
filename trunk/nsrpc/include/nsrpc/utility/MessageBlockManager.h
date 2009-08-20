@@ -7,9 +7,8 @@
 
 #include "../nsrpc.h"
 #include "AceUtil.h"
-#include "ObjectAllocator.h"
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-#include "VariousMemoryAllocator.h"
+#if defined(USE_MEMORY_POOL_IN_MESSAGE_BLOCK_MANAGER)
+#  include "ObjectAllocator.h"
 #endif
 #include <srpc/srpc_macros.h>
 #include <ace/Message_Block.h>
@@ -36,60 +35,55 @@ namespace nsrpc
 template <class Mutex>
 class MessageBlockManager : public boost::noncopyable
 {
+#if defined(USE_MEMORY_POOL_IN_MESSAGE_BLOCK_MANAGER)
 protected:
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    typedef VariousMemoryAllocator<Mutex> BufferAllocator;
-#endif
     typedef ObjectAllocator<ACE_Message_Block, Mutex> MessageBlockAllocator;
-    typedef ObjectAllocator<ACE_Data_Block, Mutex> DataBlockAllocator;
+#endif
+
 public:
     /**
      * ctor
      * @param poolSize 기본 Pool 크기.
      * @param blockSize IO에 사용할 버퍼의 처음 크기
      */
-    MessageBlockManager(size_t poolSize, size_t blockSize) :
-        messageBlockAllocator_(poolSize),
-        dataBlockAllocator_(poolSize)
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-        ,
-        bufferAllocator_(poolSize, blockSize)
+    MessageBlockManager(size_t poolSize, size_t blockSize)
+#if defined(USE_MEMORY_POOL_IN_MESSAGE_BLOCK_MANAGER)
+        : messageBlockAllocator_(poolSize)
 #endif
-        { SRPC_UNUSED_ARG(blockSize); }
+        { SRPC_UNUSED_ARG(poolSize); SRPC_UNUSED_ARG(blockSize); }
 
     /// ACE_Message_Block을 요청한다.
     ACE_Message_Block* create(size_t size) {
+
+#if defined(USE_MEMORY_POOL_IN_MESSAGE_BLOCK_MANAGER)
+
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4127)
 #endif
-
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-        ACE_Allocator* allocator_strategy = &bufferAllocator_;
-#else
-        ACE_Allocator* allocator_strategy = 0;
-#endif
-
         ACE_Message_Block* nb = 0;
         ACE_NEW_MALLOC_RETURN(nb,
             static_cast<ACE_Message_Block*> (
                 messageBlockAllocator_.malloc(sizeof(ACE_Message_Block))),
-            ACE_Message_Block(size, ACE_Message_Block::MB_DATA, 0, 0,
-                allocator_strategy,
-                0, ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, ACE_Time_Value::zero,
-                ACE_Time_Value::max_time, &dataBlockAllocator_,
+            ACE_Message_Block(size,
+                ACE_Message_Block::MB_DATA, 0, 0, 0, 0,
+                ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, ACE_Time_Value::zero,
+                ACE_Time_Value::max_time, 0,
                 &messageBlockAllocator_),
             0);
         return nb;
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
+
+#else
+        return new ACE_Message_Block(size);
+#endif
     }
+
+#if defined(USE_MEMORY_POOL_IN_MESSAGE_BLOCK_MANAGER)
 protected: // for Test
     MessageBlockAllocator messageBlockAllocator_;
-    DataBlockAllocator dataBlockAllocator_;
-#ifdef USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
-    BufferAllocator bufferAllocator_;
 #endif
 };
 
@@ -118,7 +112,7 @@ class NoSynchMessageBlockManager :
 {
 public:
     NoSynchMessageBlockManager(size_t poolSize, size_t blockSize) :
-      MessageBlockManager<ACE_Null_Mutex>(poolSize, blockSize) {}
+        MessageBlockManager<ACE_Null_Mutex>(poolSize, blockSize) {}
 };
 
 } // namespace nsrpc

@@ -8,7 +8,7 @@
 #include "Version.h"
 #include <srpc/srpc.h>
 
-#define USE_VARIOUS_MEMORY_ALLOCATOR_IN_MESSAGE_BLOCK_MANAGER
+#define USE_MEMORY_POOL_IN_MESSAGE_BLOCK_MANAGER
 
 #if defined (_MSC_VER)
 #   include "config/config_msvc.h"
