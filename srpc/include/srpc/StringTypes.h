@@ -7,6 +7,7 @@
 
 // 문자열 관련 타입을 정의한다
 
+#include "srpc.h"
 #include "detail/Allocator.h"
 #include <sstream>
 #include <string>
@@ -50,6 +51,12 @@ typedef std::basic_ostringstream<wchar_t,
         std::char_traits<wchar_t>,
         SrpcStringAllocator<wchar_t> >
     WOStringStream;
+
+/// ""
+SRPC_API extern const String null_string;
+
+/// L""
+SRPC_API extern const WString null_wstring;
 
 /** @} */ // addtogroup types
 
