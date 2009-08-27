@@ -105,7 +105,7 @@ public:
     }
 
     PeerStats getStats() const;
-    std::string getStatsString() const;
+    srpc::String getStatsString() const;
 public:
     // = 피어 상태 관련
 

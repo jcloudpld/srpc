@@ -846,10 +846,10 @@ PeerStats Peer::getStats() const
 }
 
 
-std::string Peer::getStatsString() const
+srpc::String Peer::getStatsString() const
 {
     const nsrpc::PeerStats stats = getStats();
-    std::ostringstream oss;
+    srpc::OStringStream oss;
     oss << "* Peer(P" << peerId_ << ") Stats:\n" <<
         "  TargetAddress=" << targetAddress_.get_host_addr() << ":" <<
             targetAddress_.get_port_number() << ",\n" <<

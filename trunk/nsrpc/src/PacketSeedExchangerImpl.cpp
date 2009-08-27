@@ -24,7 +24,7 @@ void PacketSeedExchangerForServer::exchangeNextSeed()
         return;
     }
 
-    exchangeSeed("");
+    exchangeSeed(srpc::null_string);
     getPacketCoder().extendCipherKeyTimeLimit();
 }
 
@@ -69,7 +69,8 @@ RECEIVE_SRPC_METHOD_1(PacketSeedExchangerForServer, exchangePublicKey,
     if (! getPacketCoder().shouldExchangeCipherSeed()) {
         // 패킷 암호화는 사용하고, 키 교환은 하지 않는 경우
         SessionRpcHint rpcHint(0, mtSystem);
-        exchangeSeed("", "", "", &rpcHint);
+        exchangeSeed(srpc::null_string, srpc::null_string, srpc::null_string,
+            &rpcHint);
         getCallback().seedExchanged();
         return;
     }

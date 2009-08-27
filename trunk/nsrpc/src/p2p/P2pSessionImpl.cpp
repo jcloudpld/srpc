@@ -307,13 +307,13 @@ PeerStats P2pSessionImpl::getStats(PeerId peerId) const
 }
 
 
-std::string P2pSessionImpl::getStatsString(PeerId peerId) const
+srpc::String P2pSessionImpl::getStatsString(PeerId peerId) const
 {
     const PeerPtr peer(peerManager_.getPeer(peerId));
     if (! peer.isNull()) {
         return peer->getStatsString();
     }
-    return "";
+    return srpc::null_string;
 }
 
 

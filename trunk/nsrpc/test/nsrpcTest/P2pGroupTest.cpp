@@ -228,14 +228,14 @@ TEST_F(P2pGroupTest, testMulticast)
     hostRpcPlugIn_->hello("hi", &hint);
     doTick();
 
-    EXPECT_EQ(std::string(""), peerRpcPlugIn_->getLastWorld());
+    EXPECT_EQ("", peerRpcPlugIn_->getLastWorld());
     EXPECT_EQ(invalidPeerId, peerRpcPlugIn_->getLastPeerId()) << "from host";
 
     const PeerHint hint2(secondGroupId);
     hostRpcPlugIn_->hello("hi", &hint2);
     doTick();
 
-    EXPECT_EQ(std::string("hi"), peerRpcPlugIn_->getLastWorld());
+    EXPECT_EQ("hi", peerRpcPlugIn_->getLastWorld());
     EXPECT_EQ(PeerId(1), peerRpcPlugIn_->getLastPeerId()) << "from host";
 }
 

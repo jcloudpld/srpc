@@ -43,7 +43,8 @@ public:
      * @param password P2P session password
      * @param p2pOptions P2P options for each peer
      */
-    virtual bool open(srpc::UInt16 port, const srpc::String& password = "",
+    virtual bool open(srpc::UInt16 port,
+        const srpc::String& password = srpc::null_string,
         P2pOptions p2pOptions = poNone) = 0;
 
     /// Disconnect & Deinitialize this session.
@@ -81,7 +82,7 @@ public:
      *                  If the key is null string, a default key is used.
      */
     virtual void setRelayServer(const PeerAddress& address,
-        const srpc::String& cipherKey = "") = 0;
+        const srpc::String& cipherKey = srpc::null_string) = 0;
 
     /**
      * Set host by manually.
@@ -145,7 +146,7 @@ public:
     virtual PeerStats getStats(PeerId peerId) const = 0;
 
     /// Get the statistics string of the peer.
-    virtual std::string getStatsString(PeerId peerId) const = 0;
+    virtual srpc::String getStatsString(PeerId peerId) const = 0;
 
     /// get the RpcNetwork instance for RPC bind.
     virtual srpc::RpcNetwork& getRpcNetwork() = 0;

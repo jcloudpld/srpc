@@ -54,7 +54,7 @@ private:
     srpc::String getLog() {
         srpc::String log;
         if (! logEventHandler_) {
-            ACE_GUARD_RETURN(ACE_Lock, monitor, *lock_, "");
+            ACE_GUARD_RETURN(ACE_Lock, monitor, *lock_, srpc::null_string);
             if (hasLog_i()) {
                 log = logs_.front();
                 logs_.pop();

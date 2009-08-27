@@ -196,8 +196,8 @@ protected:
     virtual PeerAddresses getHostAddresses() const;
 
 protected:
-    void openHost(const srpc::String& password = "", size_t maxPeers = 0,
-        bool hostMigration = false);
+    void openHost(const srpc::String& password = srpc::null_string,
+        size_t maxPeers = 0, bool hostMigration = false);
 
 protected:
     P2pSession* hostSession_;
