@@ -45,7 +45,8 @@ public:
     /**
      * @param cipherKey If the key is null string, a default key is used.
      */
-    bool open(srpc::UInt16 port, const srpc::String& cipherKey = "");
+    bool open(srpc::UInt16 port,
+        const srpc::String& cipherKey = srpc::null_string);
     void close();
 public:
     // = for Test

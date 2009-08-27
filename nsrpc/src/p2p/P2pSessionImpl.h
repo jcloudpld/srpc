@@ -104,7 +104,7 @@ private: // information hiding
     virtual P2pOptions getP2pOptions(PeerId peerId) const;
 
     virtual PeerStats getStats(PeerId peerId) const;
-    virtual std::string getStatsString(PeerId peerId) const;
+    virtual srpc::String getStatsString(PeerId peerId) const;
 
     virtual srpc::RpcNetwork& getRpcNetwork() {
         return rpcNetwork_;

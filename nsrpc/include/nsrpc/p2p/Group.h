@@ -47,7 +47,8 @@ struct RGroupInfo
     RGroupName groupName_;
     RPeerIds peerIds_; ///< participants
 
-    RGroupInfo(GroupId groupId = giUnknown, const RGroupName& groupName = "") :
+    RGroupInfo(GroupId groupId = giUnknown,
+        const RGroupName& groupName = srpc::null_string) :
         groupId_(groupId),
         groupName_(groupName) {}
 
