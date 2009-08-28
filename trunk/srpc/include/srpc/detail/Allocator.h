@@ -5,6 +5,8 @@
 #  pragma once
 #endif
 
+#include "../srpc.h"
+
 #if defined(USE_BOOST_POOL_ALLOCATOR_FOR_SRPC) || \
     defined(USE_BOOST_FAST_POOL_ALLOCATOR_FOR_SRPC) || \
     defined(USE_BOOST_POOL_ALLOCATOR_FOR_SRPC_STRING)
