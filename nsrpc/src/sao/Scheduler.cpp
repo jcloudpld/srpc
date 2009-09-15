@@ -36,7 +36,7 @@ void Scheduler::stop()
         ACE_GUARD(ACE_Thread_Mutex, monitor, lock_);
 
         stop_ = true;
-        available_.signal();
+        available_.broadcast();
     }
 
     wait();
