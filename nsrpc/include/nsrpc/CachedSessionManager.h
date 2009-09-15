@@ -79,7 +79,7 @@ private:
     srpc::String name_;
     SessionManagerCallback* callback_;
 
-    bool shouldFinish_;
+    volatile bool enabled_;
 };
 
 /** @} */ // addtogroup session
