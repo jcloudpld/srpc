@@ -25,9 +25,11 @@ class SessionManagerCallback : public boost::noncopyable
 public:
     virtual ~SessionManagerCallback() {}
 
-    virtual void sessionAcquired(size_t acquiredSessionCount) = 0;
+    /// @return is allowed to acquire more?
+    virtual bool sessionAcquired(size_t acquiredSessionCount) = 0;
 
-    virtual void sessionReleased(size_t acquiredSessionCount) = 0;
+    /// @return is allowed to acquire more?
+    virtual bool sessionReleased(size_t acquiredSessionCount) = 0;
 };
 
 

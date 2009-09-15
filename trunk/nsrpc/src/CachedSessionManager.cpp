@@ -55,7 +55,7 @@ CachedSessionManager::CachedSessionManager(const srpc::String& name,
         new CachedSessionPool(poolSize, poolSize / 10, *sessionAllocator_)),
     name_(name),
     callback_(callback),
-    shouldFinish_(false)
+    enabled_(false)
 {
 }
 
@@ -71,12 +71,14 @@ CachedSessionManager::~CachedSessionManager()
 void CachedSessionManager::initialize()
 {
     sessionPool_->initialize();
+
+    enabled_ = true;
 }
 
 
 Session* CachedSessionManager::acquire()
 {
-    if (shouldFinish_) {
+    if (! enabled_) {
         return 0;
     }
 
@@ -90,7 +92,12 @@ Session* CachedSessionManager::acquire()
         name_.c_str(), sessionCount);
 
     if (callback_ != 0) {
-        callback_->sessionAcquired(sessionCount);
+        const bool prevState = enabled_;
+        enabled_ = callback_->sessionAcquired(sessionCount);
+        if ((! enabled_) && prevState) {
+            NSRPC_LOG_DEBUG2("CachedSessionManager(%s) - disabled.",
+                name_.c_str());
+        }
     }
     return session;
 }
@@ -107,14 +114,19 @@ void CachedSessionManager::release(Session* session)
         name_.c_str(), sessionCount);
 
     if (callback_ != 0) {
-        callback_->sessionReleased(sessionCount);
+        const bool prevState = enabled_;
+        enabled_ = callback_->sessionReleased(sessionCount);
+        if ((! prevState) && enabled_) {
+            NSRPC_LOG_DEBUG2("CachedSessionManager(%s) - enabled.",
+                name_.c_str());
+        }
     }
 }
 
 
 void CachedSessionManager::cancel()
 {
-    shouldFinish_ = true;
+    enabled_ = false;
     sessionPool_->cancel();
 }
 
