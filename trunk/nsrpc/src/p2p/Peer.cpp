@@ -85,7 +85,7 @@ void Peer::putOutgoingMessage(srpc::RpcPacketType packetType,
             ReliableMessage(outgoingReliableSequenceNumber_, mblockCloned,
                 targetAddress, sentTime))) {
             mblockCloned->release();
-            assert(false && "절대로 실패하면 안됨");
+            assert(false && "Don't have to fail!");
         }
     }
     else if (srpc::isUnreliable(packetType)) {
