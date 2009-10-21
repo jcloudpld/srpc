@@ -67,7 +67,7 @@ void ProactorSession::sendMessage(ACE_Message_Block& mblock,
 {
     AceMessageBlockGuard block(&mblock);
 
-    ACE_GUARD(ACE_Thread_Mutex, monitor, sendLock_);
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
 
     if (! isConnected()) {
         return;
@@ -97,8 +97,7 @@ void ProactorSession::disconnect()
 {
     bool connected = false;
     {
-        ACE_GUARD(ACE_Thread_Mutex, recvMonitor, recvLock_);
-        ACE_GUARD(ACE_Thread_Mutex, sendMonitor, sendLock_);
+        ACE_GUARD(ACE_Recursive_Thread_Mutex, recvMonitor, lock_);
 
         stopDisconnectTimer();
         stopThrottleTimer();
@@ -120,8 +119,7 @@ void ProactorSession::disconnect()
 
 void ProactorSession::disconnectGracefully()
 {
-    ACE_GUARD(ACE_Thread_Mutex, recvMonitor, recvLock_);
-    ACE_GUARD(ACE_Thread_Mutex, sendMonitor, sendLock_);
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, recvMonitor, lock_);
 
     if (! disconnectReserved_) {
         disconnectReserved_ = true;
@@ -139,7 +137,7 @@ bool ProactorSession::isConnected() const
 
 bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result)
 {
-    ACE_GUARD_RETURN(ACE_Thread_Mutex, monitor, recvLock_, false);
+    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
 
     const size_t bytesTransferred = result.bytes_transferred();
     stats_.recvBytes_ += bytesTransferred;
@@ -310,7 +308,7 @@ void ProactorSession::checkPendingCount()
     const long writeCount = pendingWriteCount_.value();
 
     {
-        ACE_GUARD(ACE_Thread_Mutex, sendMonitor, sendLock_);
+        ACE_GUARD(ACE_Recursive_Thread_Mutex, sendMonitor, lock_);
 
         const long diffWrite =
             std::abs(writeCount - prevLoggedPendingWriteCount_);
@@ -347,11 +345,11 @@ void ProactorSession::onThrottling(size_t readBytes, size_t maxBytesPerSecond)
 
 // = NSRPC_Service_Handler overriding
 
-void ProactorSession::open(ACE_HANDLE new_handle, ACE_Message_Block& /*message_block*/)
+void ProactorSession::open(ACE_HANDLE new_handle,
+    ACE_Message_Block& /*message_block*/)
 {
     {
-        ACE_GUARD(ACE_Thread_Mutex, recvMonitor, recvLock_);
-        ACE_GUARD(ACE_Thread_Mutex, sendMonitor, sendLock_);
+        ACE_GUARD(ACE_Recursive_Thread_Mutex, recvMonitor, lock_);
 
         assert(isSafeToDelete());
         reset();
@@ -425,27 +423,34 @@ void ProactorSession::handle_write_stream(
 }
 
 
-void ProactorSession::handle_time_out(const ACE_Time_Value& /*tv*/, const void* act)
+void ProactorSession::handle_time_out(const ACE_Time_Value& /*tv*/,
+    const void* act)
 {
-    ACE_GUARD(ACE_Thread_Mutex, recvMonitor, recvLock_);
-    ACE_GUARD(ACE_Thread_Mutex, sendMonitor, sendLock_);
+    bool shouldDisconnect = false;
+    {
+        ACE_GUARD(ACE_Recursive_Thread_Mutex, recvMonitor, lock_);
 
-    if (act == &disconnectTimer_) {
-        //NSRPC_LOG_DEBUG(ACE_TEXT("Disconnect timer fired"));
-        disconnectTimer_ = -1;
-        if (pendingWriteCount_ > 0) {
-            startDisconnectTimer();
+        if (act == &disconnectTimer_) {
+            //NSRPC_LOG_DEBUG(ACE_TEXT("Disconnect timer fired"));
+            disconnectTimer_ = -1;
+            if (pendingWriteCount_ > 0) {
+                startDisconnectTimer();
+            }
+            else {
+                shouldDisconnect = true;
+            }
         }
-        else {
-            disconnect();
+        else if (act == &throttleTimer_) {
+            throttleTimer_ = -1;
+            inboundBandwidthLimiter_->reset();
+            if (! readMessageHeader()) {
+                shouldDisconnect = true;
+            }
         }
     }
-    else if (act == &throttleTimer_) {
-        throttleTimer_ = -1;
-        inboundBandwidthLimiter_->reset();
-        if (! readMessageHeader()) {
-            disconnect();
-        }
+
+    if (shouldDisconnect) {
+        disconnect();
     }
 }
 
