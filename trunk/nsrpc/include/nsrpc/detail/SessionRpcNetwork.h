@@ -12,7 +12,7 @@
 #  pragma warning (push)
 #  pragma warning (disable: 4127 4244 4267 4312 4996)
 #endif
-#include <ace/Thread_Mutex.h>
+#include <ace/Recursive_Thread_Mutex.h>
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
@@ -98,8 +98,7 @@ private:
     boost::scoped_ptr<MessageBlockStreamBuffer> wstreamBuffer_;
     boost::scoped_ptr<srpc::OStream> ostream_;
 
-    ACE_Thread_Mutex sendLock_;
-    ACE_Thread_Mutex recvLock_;
+    ACE_Recursive_Thread_Mutex lock_;
 };
 
 /** @} */ // addtogroup session

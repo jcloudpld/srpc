@@ -50,7 +50,7 @@ void SessionRpcNetwork::initialize(SessionRpcNetworkCallback& callback,
 
 void SessionRpcNetwork::reset()
 {
-    ACE_GUARD(ACE_Thread_Mutex, monitor, recvLock_);
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
 
     initInputStream(*getRecvBlock());
 
@@ -66,7 +66,7 @@ bool SessionRpcNetwork::messageArrived(CsMessageType /*messageType*/)
 
 bool SessionRpcNetwork::handleMessageNow(ACE_Message_Block& mblock)
 {
-    ACE_GUARD_RETURN(ACE_Thread_Mutex, monitor, recvLock_, false);
+    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
 
     if (! enabled_) {
         return true;
@@ -101,7 +101,7 @@ ACE_Message_Block* SessionRpcNetwork::getRecvBlock()
 
 void SessionRpcNetwork::registerRpcReceiver(srpc::RpcReceiver& receiver)
 {
-    ACE_GUARD(ACE_Thread_Mutex, monitor, recvLock_);
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
 
     srpc::RpcNetwork::registerRpcReceiver(receiver);
 }
@@ -109,7 +109,7 @@ void SessionRpcNetwork::registerRpcReceiver(srpc::RpcReceiver& receiver)
 
 void SessionRpcNetwork::unregisterRpcReceiver(srpc::RpcReceiver& receiver)
 {
-    ACE_GUARD(ACE_Thread_Mutex, monitor, recvLock_);
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
 
     srpc::RpcNetwork::unregisterRpcReceiver(receiver);
 }
@@ -121,7 +121,7 @@ void SessionRpcNetwork::send(srpc::RpcCommand& command,
     const SessionRpcHint sessionRpcHint = toSessionRpcHint(rpcHint);
     assert(isValidCsMessageType(sessionRpcHint.messageType_));
 
-    ACE_GUARD(ACE_Thread_Mutex, monitor, sendLock_);
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
 
     ACE_Message_Block* wblock = 0;
     if (sessionRpcHint.isValidSendBlock()) {

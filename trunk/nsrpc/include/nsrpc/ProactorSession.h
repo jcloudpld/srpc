@@ -25,7 +25,7 @@
 #endif // NSRPC_USE_TPROACTOR
 #include <ace/INET_Addr.h>
 #include <ace/Atomic_Op.h>
-#include <ace/Thread_Mutex.h>
+#include <ace/Recursive_Thread_Mutex.h>
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
@@ -127,12 +127,6 @@ protected:
     PacketCoder& getPacketCoder() {
         return *packetCoder_;
     }
-    ACE_Thread_Mutex& getSendLock() {
-        return sendLock_;
-    }
-    ACE_Thread_Mutex& getRecvLock() {
-        return recvLock_;
-    }
 protected:
     /// 접속될 경우 호출된다.
     /// @return false이면 접속을 해제한다
@@ -207,8 +201,7 @@ private:
 
     Stats stats_;
 
-    ACE_Thread_Mutex sendLock_;
-    ACE_Thread_Mutex recvLock_;
+    ACE_Recursive_Thread_Mutex lock_;
 };
 
 /** @} */ // addtogroup session
