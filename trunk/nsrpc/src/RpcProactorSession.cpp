@@ -85,7 +85,12 @@ bool RpcProactorSession::onMessageArrived(CsMessageType messageType)
         return false;
     }
 
-    seedExchanger_->exchangeNextSeed();
+    {
+        ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, getLock(), false);
+
+        seedExchanger_->exchangeNextSeed();
+    }
+
     return true;
 }
 

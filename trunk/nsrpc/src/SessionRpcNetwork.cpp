@@ -7,6 +7,7 @@
 #include <nsrpc/utility/Logger.h>
 #include <srpc/detail/RpcCommand.h>
 #include <srpc/StreamFactory.h>
+#include <ace/Lock_Adapter_T.h>
 
 namespace
 {
@@ -27,7 +28,8 @@ SessionRpcNetwork::SessionRpcNetwork(bool useBitPacking) :
     messageBlockProvider_(0),
     enabled_(false),
     useBitPacking_(useBitPacking),
-    shouldUseUtf8ForString_(true)
+    shouldUseUtf8ForString_(true),
+    lock_(0)
 {
 }
 
@@ -38,11 +40,19 @@ SessionRpcNetwork::~SessionRpcNetwork()
 
 
 void SessionRpcNetwork::initialize(SessionRpcNetworkCallback& callback,
-    MessageBlockProvider& messageBlockProvider, bool shouldUseUtf8ForString)
+    MessageBlockProvider& messageBlockProvider, bool shouldUseUtf8ForString,
+    ACE_Recursive_Thread_Mutex* lock)
 {
     callback_ = &callback;
     messageBlockProvider_ = &messageBlockProvider;
     shouldUseUtf8ForString_ = shouldUseUtf8ForString;
+
+    if (lock != 0) {
+        lock_.reset(new ACE_Lock_Adapter<ACE_Recursive_Thread_Mutex>(*lock));
+    }
+    else {
+        lock_.reset(new ACE_Lock_Adapter<ACE_Null_Mutex>);
+    }
 
     reset();
 }
@@ -50,7 +60,9 @@ void SessionRpcNetwork::initialize(SessionRpcNetworkCallback& callback,
 
 void SessionRpcNetwork::reset()
 {
-    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
+    assert(lock_ != 0);
+
+    ACE_GUARD(ACE_Lock, monitor, *lock_);
 
     initInputStream(*getRecvBlock());
 
@@ -66,7 +78,9 @@ bool SessionRpcNetwork::messageArrived(CsMessageType /*messageType*/)
 
 bool SessionRpcNetwork::handleMessageNow(ACE_Message_Block& mblock)
 {
-    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+    assert(lock_ != 0);
+
+    ACE_GUARD_RETURN(ACE_Lock, monitor, *lock_, false);
 
     if (! enabled_) {
         return true;
@@ -101,7 +115,9 @@ ACE_Message_Block* SessionRpcNetwork::getRecvBlock()
 
 void SessionRpcNetwork::registerRpcReceiver(srpc::RpcReceiver& receiver)
 {
-    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
+    assert(lock_ != 0);
+
+    ACE_GUARD(ACE_Lock, monitor, *lock_);
 
     srpc::RpcNetwork::registerRpcReceiver(receiver);
 }
@@ -109,7 +125,9 @@ void SessionRpcNetwork::registerRpcReceiver(srpc::RpcReceiver& receiver)
 
 void SessionRpcNetwork::unregisterRpcReceiver(srpc::RpcReceiver& receiver)
 {
-    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
+    assert(lock_ != 0);
+
+    ACE_GUARD(ACE_Lock, monitor, *lock_);
 
     srpc::RpcNetwork::unregisterRpcReceiver(receiver);
 }
@@ -121,7 +139,9 @@ void SessionRpcNetwork::send(srpc::RpcCommand& command,
     const SessionRpcHint sessionRpcHint = toSessionRpcHint(rpcHint);
     assert(isValidCsMessageType(sessionRpcHint.messageType_));
 
-    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
+    assert(lock_ != 0);
+
+    ACE_GUARD(ACE_Lock, monitor, *lock_);
 
     ACE_Message_Block* wblock = 0;
     if (sessionRpcHint.isValidSendBlock()) {

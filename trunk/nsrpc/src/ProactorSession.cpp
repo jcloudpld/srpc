@@ -137,40 +137,43 @@ bool ProactorSession::isConnected() const
 
 bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result)
 {
-    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+    bool isKarmaRemained = false;
+    {
+        ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
 
-    const size_t bytesTransferred = result.bytes_transferred();
-    stats_.recvBytes_ += bytesTransferred;
-    assert(result.bytes_to_read() >= bytesTransferred);
+        const size_t bytesTransferred = result.bytes_transferred();
+        stats_.recvBytes_ += bytesTransferred;
+        assert(result.bytes_to_read() >= bytesTransferred);
 
-    inboundBandwidthLimiter_->add(bytesTransferred);
-    const bool isKarmaRemained = inboundBandwidthLimiter_->check();
-    //NSRPC_LOG_DEBUG3("BandwidthLimit left bytes = %d(-%d)",
-    //    inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
+        inboundBandwidthLimiter_->add(bytesTransferred);
+        isKarmaRemained = inboundBandwidthLimiter_->check();
+        //NSRPC_LOG_DEBUG3("BandwidthLimit left bytes = %d(-%d)",
+        //    inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
 
-    ACE_Message_Block& mblock = result.message_block();
-    assert(&mblock == recvBlock_);
+        ACE_Message_Block& mblock = result.message_block();
+        assert(&mblock == recvBlock_);
 
-    const size_t leftBytes = result.bytes_to_read() - bytesTransferred;
-    if (leftBytes > 0) {
-        return readMessageFragment(leftBytes);
-    }
+        const size_t leftBytes = result.bytes_to_read() - bytesTransferred;
+        if (leftBytes > 0) {
+            return readMessageFragment(leftBytes);
+        }
 
-    if (mblock.length() == packetCoder_->getHeaderSize()) {
-        if (! packetCoder_->readHeader(headerForReceive_, mblock)) {
-            NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::readMessage() - ")
-                ACE_TEXT("Invalid Message Header(%m)."));
+        if (mblock.length() == packetCoder_->getHeaderSize()) {
+            if (! packetCoder_->readHeader(headerForReceive_, mblock)) {
+                NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::readMessage() - ")
+                    ACE_TEXT("Invalid Message Header(%m)."));
+                return false;
+            }
+
+            return readMessageFragment(headerForReceive_.bodySize_);
+        }
+
+        if (! packetCoder_->decode(mblock)) {
             return false;
         }
 
-        return readMessageFragment(headerForReceive_.bodySize_);
+        packetCoder_->advanceToBody(mblock);
     }
-
-    if (! packetCoder_->decode(mblock)) {
-        return false;
-    }
-
-    packetCoder_->advanceToBody(mblock);
 
     if (! isValidCsMessageType(headerForReceive_.messageType_)) {
         NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::readMessage() - ")
@@ -182,13 +185,17 @@ bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result
         return false;
     }
 
-    if (isKarmaRemained) {
-        return readMessageHeader();
-    }
-    else {
-        startThrottleTimer();
-        onThrottling(inboundBandwidthLimiter_->getReadBytes(),
-            inboundBandwidthLimiter_->getMaxBytesPerSecond());
+    {
+        ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+
+        if (isKarmaRemained) {
+            return readMessageHeader();
+        }
+        else {
+            startThrottleTimer();
+            onThrottling(inboundBandwidthLimiter_->getReadBytes(),
+                inboundBandwidthLimiter_->getMaxBytesPerSecond());
+        }
     }
 
     return true;

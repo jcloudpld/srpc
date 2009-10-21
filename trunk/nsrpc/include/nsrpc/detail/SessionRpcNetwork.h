@@ -20,6 +20,7 @@
 
 class ACE_Recursive_Thread_Mutex;
 class ACE_Message_Block;
+class ACE_Lock;
 
 namespace srpc
 {
@@ -53,7 +54,8 @@ public:
 
     void initialize(SessionRpcNetworkCallback& callback,
         MessageBlockProvider& messageBlockProvider,
-        bool shouldUseUtf8ForString);
+        bool shouldUseUtf8ForString,
+        ACE_Recursive_Thread_Mutex* lock = 0);
 
     /// 입력 스트림을 초기화한다
     void reset();
@@ -98,7 +100,7 @@ private:
     boost::scoped_ptr<MessageBlockStreamBuffer> wstreamBuffer_;
     boost::scoped_ptr<srpc::OStream> ostream_;
 
-    ACE_Recursive_Thread_Mutex lock_;
+    mutable boost::scoped_ptr<ACE_Lock> lock_;
 };
 
 /** @} */ // addtogroup session

@@ -124,6 +124,9 @@ public:
         return localAddress_;
     }
 protected:
+    ACE_Recursive_Thread_Mutex& getLock() {
+        return lock_;
+    }
     PacketCoder& getPacketCoder() {
         return *packetCoder_;
     }
