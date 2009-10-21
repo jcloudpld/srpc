@@ -20,7 +20,7 @@ RpcReactorSession::RpcReactorSession(ACE_Reactor* reactor,
     rpcNetwork_(new SessionRpcNetwork(useBitPacking)),
     seedExchanger_(PacketSeedExchangerFactory::createForClient())
 {
-    rpcNetwork_->initialize(*this, *this, shouldUseUtf8ForString);
+    rpcNetwork_->initialize(*this, *this, shouldUseUtf8ForString, &getLock());
 
     seedExchanger_->initialize(*this, getPacketCoder(), *rpcNetwork_);
 }
