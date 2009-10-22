@@ -174,6 +174,10 @@ private:
 
     void checkPendingCount();
 
+    bool canSendMessage() const {
+        return isConnected() && (! shouldBlockWrite_);
+    }
+
     bool isSafeToDelete() const {
         return (pendingReadCount_ <= 0) && (pendingWriteCount_ <= 0);
     }
@@ -195,6 +199,8 @@ private:
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingReadCount_;
     ACE_Atomic_Op<ACE_Thread_Mutex, long> pendingWriteCount_;
     long prevLoggedPendingWriteCount_;
+
+    bool shouldBlockWrite_;
 
     long disconnectTimer_;
     bool disconnectReserved_;

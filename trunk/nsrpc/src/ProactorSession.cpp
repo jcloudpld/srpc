@@ -69,23 +69,26 @@ void ProactorSession::sendMessage(ACE_Message_Block& mblock,
 
     ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
 
-    if (! isConnected()) {
+    if (! canSendMessage()) {
         return;
     }
 
     if (! packetCoder_->isValidPacket(*block)) {
         NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession::sendMessage() - ")
             ACE_TEXT("Too short message(%d)."), block->length());
+        disconnectGracefully();
         return;
     }
 
     CsPacketHeader header(messageType);
     if (! packetCoder_->encode(*block, header)) {
         NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::sendMessage() encoding FAILED."));
+        disconnectGracefully();
         return;
     }
 
     if (! write(*block)) {
+        disconnectGracefully();
         return;
     }
 
@@ -123,6 +126,7 @@ void ProactorSession::disconnectGracefully()
 
     if (! disconnectReserved_) {
         disconnectReserved_ = true;
+        shouldBlockWrite_ = true;
         stream_->shutdown();
         startDisconnectTimer();
     }
@@ -263,6 +267,7 @@ void ProactorSession::reset()
     throttleTimer_ = -1;
     packetCoder_->reset();
     inboundBandwidthLimiter_->reset();
+    shouldBlockWrite_ = true;
 }
 
 
@@ -364,6 +369,7 @@ void ProactorSession::open(ACE_HANDLE new_handle,
         ++stats_.useCount_;
 
         if (stream_->open(*this, new_handle, 0, proactor_, true)) {
+            shouldBlockWrite_  = false;
             if (! onConnected()) {
                 disconnect();
                 return;

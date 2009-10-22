@@ -80,7 +80,8 @@ bool SessionRpcNetwork::handleMessageNow(ACE_Message_Block& mblock)
 {
     assert(lock_ != 0);
 
-    ACE_GUARD_RETURN(ACE_Lock, monitor, *lock_, false);
+    // 한번에 하나의 쓰레드에서만 호출하므로 lock이 필요 없다
+    //ACE_GUARD_RETURN(ACE_Lock, monitor, *lock_, false);
 
     if (! enabled_) {
         return true;
