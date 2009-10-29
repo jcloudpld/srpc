@@ -32,7 +32,7 @@ inline UInt32 hash(const char* str, size_t len)
     // CRC variant
     for (size_t i = 0; i < len; ++i) {
         const char ki = str[i];
-        const UINT32 highorder = h & 0xf8000000;
+        const UInt32 highorder = h & 0xf8000000;
         h <<= 5;
         h ^= (highorder >> 27);
         h ^= ki;
