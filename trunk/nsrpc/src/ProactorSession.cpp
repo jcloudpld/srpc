@@ -113,8 +113,12 @@ void ProactorSession::disconnect()
     if (connected) {
         onDisconnected();
 
-        NSRPC_LOG_DEBUG4(ACE_TEXT("ProactorSession Stats - %u/%u, %u used."),
-            stats_.sentBytes_, stats_.recvBytes_, stats_.useCount_);
+        NSRPC_LOG_DEBUG7(
+            ACE_TEXT("ProactorSession(0x%X) Stats: sent(%u/%u), recv(%u/%u)."),
+            this,
+            stats_.sentBytes_, stats_.sentMessageCount_,
+            stats_.recvBytes_, stats_.recvMessageCount_,
+            stats_.useCount_);
         sessionDestroyer_.release(this);
     }
 }
@@ -178,6 +182,8 @@ bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result
 
         packetCoder_->advanceToBody(mblock);
     }
+
+    ++stats_.recvMessageCount_;
 
     if (! isValidCsMessageType(headerForReceive_.messageType_)) {
         NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::readMessage() - ")
@@ -251,6 +257,7 @@ bool ProactorSession::write(ACE_Message_Block& mblock)
         return false;
     }
 
+    ++stats_.sentMessageCount_;
     ++pendingWriteCount_;
     return true;
 }
