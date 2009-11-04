@@ -63,6 +63,8 @@ public:
     {
         size_t recvBytes_;
         size_t sentBytes_;
+        size_t recvMessageCount_;
+        size_t sentMessageCount_;
         size_t useCount_;
 
         Stats() :
@@ -73,6 +75,8 @@ public:
         void reset() {
             recvBytes_ = 0;
             sentBytes_ = 0;
+            recvMessageCount_ = 0;
+            sentMessageCount_ = 0;
             ////useCount_ = 0;
         }
     };
