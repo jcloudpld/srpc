@@ -52,7 +52,8 @@ CachedSessionManager::CachedSessionManager(const srpc::String& name,
     SessionManagerCallback* callback) :
     sessionAllocator_(new SessionAllocator(sessionFactory, *this)),
     sessionPool_(
-        new CachedSessionPool(poolSize, poolSize / 10, *sessionAllocator_)),
+        new CachedSessionPool(poolSize, poolSize / 10, *sessionAllocator_,
+            this)),
     name_(name),
     callback_(callback),
     enabled_(false)
@@ -149,6 +150,23 @@ size_t CachedSessionManager::getInactiveSessionCount() const
 {
     return sessionPool_->getInactiveResourceCount();
 }
+
+// = MemoryPoolCallback overriding
+
+void CachedSessionManager::poolGrowing(size_t neededSize)
+{
+    NSRPC_LOG_DEBUG3("CachedSessionManager(%s) - SessionPool growing by %u.",
+        name_.c_str(), neededSize);
+}
+
+
+void CachedSessionManager::poolGrowed(size_t activeResourceSize,
+    size_t inactiveResourceSize)
+{
+    NSRPC_LOG_DEBUG4("CachedSessionManager(%s) - SessionPool growed(%u,%u).",
+        name_.c_str(), activeResourceSize, inactiveResourceSize);
+}
+
 
 } // namespace nsrpc
 

@@ -41,6 +41,21 @@ public:
 
 
 /**
+ * @class MemoryPoolCallback
+ */
+class MemoryPoolCallback
+{
+public:
+    virtual ~MemoryPoolCallback() {}
+
+    virtual void poolGrowing(size_t neededSize) = 0;
+
+    virtual void poolGrowed(size_t activeResourceSize,
+        size_t inactiveResourceSize) = 0;
+};
+
+
+/**
  * @class MemoryPool
  *
  * Resource pool
@@ -76,11 +91,12 @@ public:
      * @param spareSize 여유분 크기.
      */
     MemoryPool(size_t poolSize, Allocator& allocator, bool growable = true,
-        size_t spareSize = 0) :
+        size_t spareSize = 0, MemoryPoolCallback* callback = 0) :
         poolSize_(poolSize),
         allocator_(allocator),
         growable_(growable),
-        spareSize_(spareSize) {}
+        spareSize_(spareSize),
+        callback_(callback) {}
 
     ~MemoryPool() {
         destroy();
@@ -178,6 +194,11 @@ private:
     void prepareResources() {
         const size_t neededSize =
             (poolSize_ + spareSize_ - inactiveResources_.size());
+
+        if (callback_ != 0) {
+            callback_->poolGrowing(neededSize);
+        }
+
         for (size_t i = 0; i < neededSize; ++i) {
             inactiveResources_.push(allocator_.malloc());
         }
@@ -185,6 +206,11 @@ private:
         if ((activeResources_.capacity() - activeResources_.size()) <
             neededSize) {
             activeResources_.reserve(neededSize);
+        }
+
+        if (callback_ != 0) {
+            callback_->poolGrowed(activeResources_.size(),
+                inactiveResources_.size());
         }
     }
 
@@ -222,6 +248,8 @@ private:
 
     ActiveResources activeResources_;
     InactiveResources inactiveResources_;
+
+    MemoryPoolCallback* callback_;
 
     mutable Mutex lock_;
 };

@@ -11,6 +11,7 @@
 
 #if defined (NSRPC_HAS_PROACTOR)
 
+#include "utility/MemoryPool.h"
 #include "detail/SessionManager.h"
 #include <srpc/StringTypes.h>
 #include <boost/scoped_ptr.hpp>
@@ -35,7 +36,8 @@ template <class Allocator, class Mutex> class SessionPool;
  *   Session::open()을 오버라이딩하여 적절하게 초기화를 해주어야 한다.
  *   
  */
-class NSRPC_API CachedSessionManager : public SessionManager
+class NSRPC_API CachedSessionManager : public SessionManager,
+    private MemoryPoolCallback
 {
     typedef SessionPool<SessionAllocator, Thread_Mutex_With_SpinLock>
         CachedSessionPool;
@@ -71,6 +73,11 @@ protected: // for Test
     virtual size_t getSessionCount() const {
         return getActiveSessionCount();
     }
+
+private:
+    // = MemoryPoolCallback overriding
+    virtual void poolGrowing(size_t neededSize);
+    virtual void poolGrowed(size_t activeResourceSize, size_t inactiveResourceSize);
 
 private:
     /// 이 세션 매니저에서 공유할 메세지 블럭 매니저.
