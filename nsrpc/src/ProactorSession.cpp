@@ -47,7 +47,8 @@ bool ProactorSession::connect(const srpc::String& host, u_short port, size_t tim
     ACE_SOCK_Stream stream;
     ACE_SOCK_Connector connector;
     if (connector.connect(stream, address, &connectionTimeout) == -1) {
-        NSRPC_LOG_ERROR(ACE_TEXT("Connection Failed(%m)."));
+        NSRPC_LOG_ERROR2(ACE_TEXT("ProactorSession(0x%X) - Connection Failed(%m)."),
+            this);
         return false;
     }
 
@@ -74,15 +75,18 @@ void ProactorSession::sendMessage(ACE_Message_Block& mblock,
     }
 
     if (! packetCoder_->isValidPacket(*block)) {
-        NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession::sendMessage() - ")
-            ACE_TEXT("Too short message(%d)."), block->length());
+        NSRPC_LOG_DEBUG3(
+            ACE_TEXT("ProactorSession(0x%X)::sendMessage() - Too short message(%d)."),
+            this, block->length());
         disconnectGracefully();
         return;
     }
 
     CsPacketHeader header(messageType);
     if (! packetCoder_->encode(*block, header)) {
-        NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::sendMessage() encoding FAILED."));
+        NSRPC_LOG_DEBUG2(
+            ACE_TEXT("ProactorSession(0x%X)::sendMessage() encoding FAILED."),
+            this);
         disconnectGracefully();
         return;
     }
@@ -155,8 +159,8 @@ bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result
 
         inboundBandwidthLimiter_->add(bytesTransferred);
         isKarmaRemained = inboundBandwidthLimiter_->check();
-        //NSRPC_LOG_DEBUG3("BandwidthLimit left bytes = %d(-%d)",
-        //    inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
+        //NSRPC_LOG_DEBUG4("ProactorSession(0x%X) - BandwidthLimit left bytes = %d(-%d)",
+        //    this, inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
 
         ACE_Message_Block& mblock = result.message_block();
         assert(&mblock == recvBlock_);
@@ -168,8 +172,10 @@ bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result
 
         if (mblock.length() == packetCoder_->getHeaderSize()) {
             if (! packetCoder_->readHeader(headerForReceive_, mblock)) {
-                NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::readMessage() - ")
-                    ACE_TEXT("Invalid Message Header(%m)."));
+                NSRPC_LOG_DEBUG2(
+                    ACE_TEXT("ProactorSession(0x%X)::readMessage() - ")
+                    ACE_TEXT("Invalid Message Header(%m)."),
+                    this);
                 return false;
             }
 
@@ -186,8 +192,9 @@ bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result
     ++stats_.recvMessageCount_;
 
     if (! isValidCsMessageType(headerForReceive_.messageType_)) {
-        NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::readMessage() - ")
-            ACE_TEXT("Invalid Message Type."));
+        NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession(0x%X)::readMessage() - ")
+            ACE_TEXT("Invalid Message Type."),
+            this);
         return false;
     }
 
@@ -234,9 +241,9 @@ bool ProactorSession::read(size_t neededBytes)
 {
     if (stream_->read(*recvBlock_, neededBytes) != 0) {
         if (0 != ACE_OS::last_error()) {
-            NSRPC_LOG_DEBUG3(ACE_TEXT("ProactorSession::read() - ")
+            NSRPC_LOG_DEBUG4(ACE_TEXT("ProactorSession(0x%X)::read() - ")
                 ACE_TEXT("Asynch_RW_Stream::read(%d) FAILED(%m, %d)."),
-                neededBytes, errno);
+                this, neededBytes, errno);
         }
         return false;
     }
@@ -354,8 +361,9 @@ void ProactorSession::checkPendingCount()
 void ProactorSession::onThrottling(size_t readBytes, size_t maxBytesPerSecond)
 {
     ACE_TCHAR address[MAXHOSTNAMELEN];
-    NSRPC_LOG_INFO6("Client(%s:%d) is THROTTLED(%d > %d), "
+    NSRPC_LOG_INFO7("ProactorSession(0x%X) - Client(%s:%d) is THROTTLED(%d > %d), "
         "delaying read(%d sec).",
+        this,
         remoteAddress_.get_host_addr(address, MAXHOSTNAMELEN),
         remoteAddress_.get_port_number(),
         readBytes, maxBytesPerSecond,
@@ -383,12 +391,14 @@ void ProactorSession::open(ACE_HANDLE new_handle,
             }
 
             if (readMessageHeader()) {
+                NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession(0x%X) opened."),
+                    this);
                 return; // success
             }
         }
 
-        NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession::open() - FAILED(%m,%d)."),
-            errno);
+        NSRPC_LOG_DEBUG3(ACE_TEXT("ProactorSession(0x%X)::open() - FAILED(%m,%d)."),
+            this, errno);
     }
 
     disconnect();
@@ -407,12 +417,15 @@ void ProactorSession::handle_read_stream(
             }
         }
         //else {
-        //    NSRPC_LOG_DEBUG(ACE_TEXT("The client close the socket."));
+        //    NSRPC_LOG_DEBUG2(
+        //        ACE_TEXT("ProactorSession(0x%X) - The client close the socket."),
+        //        this);
         //}
     }
     //else if (! stream_->cancelled()) {
-    //    NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::handle_read_stream() - ")
-    //        ACE_TEXT("FAILED(%m)."));
+    //    NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession(0x%X)::handle_read_stream() - ")
+    //        ACE_TEXT("FAILED(%m)."),
+    //        this);
     //}
 
     disconnect();
@@ -435,8 +448,10 @@ void ProactorSession::handle_write_stream(
     }
 
     if (! stream_->cancelled()) {
-        NSRPC_LOG_DEBUG(ACE_TEXT("ProactorSession::handle_write_stream() - ")
-            ACE_TEXT("FAILED(%m)."));
+        NSRPC_LOG_DEBUG2(
+            ACE_TEXT("ProactorSession(0x%X)::handle_write_stream() - ")
+            ACE_TEXT("FAILED(%m)."),
+            this);
     }
 
     disconnect();
@@ -451,7 +466,6 @@ void ProactorSession::handle_time_out(const ACE_Time_Value& /*tv*/,
         ACE_GUARD(ACE_Recursive_Thread_Mutex, recvMonitor, lock_);
 
         if (act == &disconnectTimer_) {
-            //NSRPC_LOG_DEBUG(ACE_TEXT("Disconnect timer fired"));
             disconnectTimer_ = -1;
             if (pendingWriteCount_ > 0) {
                 startDisconnectTimer();
