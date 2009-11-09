@@ -28,9 +28,9 @@ class ObjectPool :
 {
 public:
     ObjectPool(size_t poolSize, Allocator& allocator, bool growable = true,
-        size_t spareSize = 0) :
+        size_t spareSize = 0, MemoryPoolCallback* callback = 0) :
         MemoryPool<sizeof(Resource), Resource, Allocator, Mutex>(
-            poolSize, allocator, growable, spareSize) {}
+            poolSize, allocator, growable, spareSize, callback) {}
 };
 
 /** @} */ // addtogroup utility
