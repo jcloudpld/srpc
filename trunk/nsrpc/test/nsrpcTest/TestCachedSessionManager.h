@@ -28,7 +28,7 @@ public:
         nsrpc::RpcProactorSession(config) {}
 
     void sendRpcCommand(srpc::RpcCommand& command) {
-        getRpcNetwork()->send(command);
+        getRpcNetwork().send(command);
     }
 private:
     virtual void onDisconnected() {}
