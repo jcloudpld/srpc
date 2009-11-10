@@ -23,14 +23,14 @@ namespace nsrpc
 
 RpcProactorSession::RpcProactorSession(const RpcSessionConfig& config) :
     ProactorSession(config),
+    sessionConfig_(config),
     rpcNetwork_(config.rpcNetwork_),
-    seedExchanger_(config.seedExchanger_)
+    seedExchanger_(config.seedExchanger_),
+    isInitialized_(false)
 {
     assert(rpcNetwork_.get() != 0);
-    rpcNetwork_->initialize(*this, *this, config.shouldUseUtf8ForString_,
-        &getLock());
 
-    seedExchanger_->initialize(*this, *config.packetCoder_, *rpcNetwork_);
+    initializeLazily();
 }
 
 #ifdef _MSC_VER
@@ -44,7 +44,9 @@ RpcProactorSession::~RpcProactorSession()
 
 void RpcProactorSession::registerRpcForwarder(srpc::RpcForwarder& forwarder)
 {
-    assert(rpcNetwork_.get() != 0);
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, getLock());
+
+    initializeLazily();
 
     forwarder.setRpcNetwork(*rpcNetwork_);
 }
@@ -52,24 +54,41 @@ void RpcProactorSession::registerRpcForwarder(srpc::RpcForwarder& forwarder)
 
 void RpcProactorSession::registerRpcReceiver(srpc::RpcReceiver& receiver)
 {
-    assert(rpcNetwork_.get() != 0);
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, getLock());
+
+    initializeLazily();
 
     receiver.setRpcNetwork(*rpcNetwork_);
 }
 
 
-srpc::RpcNetwork* RpcProactorSession::getRpcNetwork()
+srpc::RpcNetwork& RpcProactorSession::getRpcNetwork()
 {
-    return rpcNetwork_.get();
+    return *rpcNetwork_;
+}
+
+
+void RpcProactorSession::initializeLazily()
+{
+    if (isInitialized_) {
+        return;
+    }
+
+    rpcNetwork_->initialize(*this, *this,
+        sessionConfig_.shouldUseUtf8ForString_, &getLock());
+    seedExchanger_->initialize(*this, *sessionConfig_.packetCoder_,
+        *rpcNetwork_);
+    isInitialized_ = true;
+    return;
 }
 
 
 bool RpcProactorSession::onConnected()
 {
+    initializeLazily();
+
     rpcNetwork_->reset();
-
     seedExchanger_->exchangePublicKey();
-
     return true;
 }
 

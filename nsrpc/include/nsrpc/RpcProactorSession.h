@@ -12,6 +12,7 @@
 
 #include "ProactorSession.h"
 #include "PacketSeedExchangerCallback.h"
+#include "RpcSessionConfig.h"
 #include "detail/SessionRpcNetworkCallback.h"
 #include "detail/rpc_interface/SecurityService.h"
 #include <srpc/srpc_macros.h>
@@ -31,7 +32,6 @@ namespace nsrpc
 
 class SessionRpcNetwork;
 class PacketSeedExchanger;
-struct RpcSessionConfig;
 
 /**
  * @class RpcProactorSession
@@ -68,10 +68,14 @@ private:
     }
 
 protected:
-    srpc::RpcNetwork* getRpcNetwork();
+    srpc::RpcNetwork& getRpcNetwork();
 private:
+    void initializeLazily();
+private:
+    const RpcSessionConfig sessionConfig_;
     boost::scoped_ptr<SessionRpcNetwork> rpcNetwork_;
     boost::scoped_ptr<PacketSeedExchanger> seedExchanger_;
+    bool isInitialized_;
 };
 
 } // namespace nsrpc
