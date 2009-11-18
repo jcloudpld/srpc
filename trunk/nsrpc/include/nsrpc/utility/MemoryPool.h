@@ -6,6 +6,7 @@
 #endif
 
 #include <srpc/ContainerTypes.h>
+#include <srpc/Types.h>
 #include <ace/Guard_T.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -32,10 +33,10 @@ class MemoryAllocator
 {
 public:
     Resource* malloc() {
-        return static_cast<Resource*>(std::malloc(memorySize));
+        return static_cast<Resource*>(new srpc::UInt8[memorySize]);
     }
     void free(Resource* resource) {
-        std::free(resource);
+        delete[] resource;
     }
 };
 

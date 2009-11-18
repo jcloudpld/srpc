@@ -7,6 +7,7 @@
 
 #include "detail/BaseAllocator.h"
 #include <srpc/ContainerTypes.h>
+#include <srpc/Types.h>
 #include <ace/Guard_T.h>
 #include <algorithm>
 #include <functional>
@@ -47,7 +48,7 @@ private:
 
         Block(size_t chunkSize) :
             chunkSize_(chunkSize) {
-            chunk_ = std::malloc(chunkSize + headerSize);
+            chunk_ = new srpc::UInt8[chunkSize + headerSize];
             *static_cast<size_t*>(chunk_) = chunkSize;
         }
 
@@ -60,7 +61,7 @@ private:
         }
 
         void free() {
-            std::free(chunk_);
+            delete[] (chunk_);
             chunk_ = 0;
         }
     };
