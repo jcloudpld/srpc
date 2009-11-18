@@ -197,13 +197,13 @@ TEST_F(RpcTypesTest, testRWShortString)
 
 TEST_F(RpcTypesTest, testRVector)
 {
-    RVector<RInt32, 8> expected;
+    RVector<Int32, 8> expected;
     for (int i = 0; i < 10; ++i) {
         expected.push_back(i);
     }
     expected.serialize(*ostream_);
 
-    RVector<RInt32, 8> actual;
+    RVector<Int32, 8> actual;
     actual.serialize(*istream_);
     EXPECT_EQ(
         static_cast<int>(expected.size()),
@@ -214,13 +214,13 @@ TEST_F(RpcTypesTest, testRVector)
 
 TEST_F(RpcTypesTest, testRList)
 {
-    RList<RInt32, 7> expected;
+    RList<Int32, 7> expected;
     for (int i = 0; i < 10; ++i) {
         expected.push_back(i);
     }
     expected.serialize(*ostream_);
 
-    RList<RInt32, 7> actual;
+    RList<Int32, 7> actual;
     actual.serialize(*istream_);
     EXPECT_EQ(
         static_cast<int>(expected.size()),
@@ -231,13 +231,13 @@ TEST_F(RpcTypesTest, testRList)
 
 TEST_F(RpcTypesTest, testRSet)
 {
-    RSet<RInt32> expected;
+    RSet<Int32> expected;
     for (int i = 0; i < 10; ++i) {
         expected.insert(i);
     }
     expected.serialize(*ostream_);
 
-    RSet<RInt32> actual;
+    RSet<Int32> actual;
     actual.serialize(*istream_);
     EXPECT_EQ(
         static_cast<int>(expected.size()),
@@ -280,7 +280,7 @@ TEST_F(RpcTypesTest, testRUserDefinedString)
 
 TEST_F(RpcTypesTest, testRMap)
 {
-    RMap<RInt32, RShortString> expected;
+    RMap<Int32, RShortString> expected;
     for (int i = 0; i < 10; ++i) {
         OStringStream oss;
         oss << "#" << i;
@@ -288,7 +288,7 @@ TEST_F(RpcTypesTest, testRMap)
     }
     expected.serialize(*ostream_);
 
-    RMap<RInt32, RShortString> actual;
+    RMap<Int32, RShortString> actual;
     actual.serialize(*istream_);
     EXPECT_EQ(
         static_cast<int>(expected.size()),

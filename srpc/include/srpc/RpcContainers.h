@@ -44,11 +44,12 @@ public:
 public:
     void serialize(OStream& ostream) {
         ostream.write(static_cast<UInt32>(this->size()), sizeBits);
-        size_t maxNumber = MaxNumber<sizeBits>::value;
+        const size_t maxNumber = MaxNumber<sizeBits>::value;
+        assert(this->size() <= maxNumber);
         iterator pos = this->begin();
         const iterator end = this->end();
-        for (; (pos != end) && (maxNumber > 0); ++pos, --maxNumber) {
-            (*pos).serialize(ostream);
+        for (size_t s = 0; (pos != end) && (s < maxNumber); ++pos, ++s) {
+            ostream << (*pos);
         }
     }
 
@@ -64,7 +65,7 @@ public:
         ReservePolicy::reserve(*this, size);
         for (UInt32 i = 0; i < size; ++i) {
             RpcType rt;
-            rt.serialize(istream);
+            istream >> rt;
             this->push_back(rt);
         }
     }
@@ -96,11 +97,12 @@ public:
 public:
     void serialize(OStream& ostream) {
         ostream.write(static_cast<UInt32>(this->size()), sizeBits);
-        size_t maxNumber = MaxNumber<sizeBits>::value;
+        const size_t maxNumber = MaxNumber<sizeBits>::value;
+        assert(this->size() <= maxNumber);
         iterator pos = this->begin();
         const iterator end = this->end();
-        for (; (pos != end) && (maxNumber > 0); ++pos, --maxNumber) {
-            const_cast<RpcType&>((*pos)).serialize(ostream);
+        for (size_t s = 0; (pos != end) && (s < maxNumber); ++pos, ++s) {
+            ostream << (*pos);
         }
     }
 
@@ -115,7 +117,7 @@ public:
         }
         for (UInt32 i = 0; i < size; ++i) {
             RpcType rt;
-            rt.serialize(istream);
+            istream >> rt;
             this->insert(rt);
         }
     }
@@ -145,12 +147,13 @@ public:
 public:
     void serialize(OStream& ostream) {
         ostream.write(static_cast<UInt32>(this->size()), sizeBits);
-        size_t maxNumber = MaxNumber<sizeBits>::value;
+        const size_t maxNumber = MaxNumber<sizeBits>::value;
+        assert(this->size() <= maxNumber);
         iterator pos = this->begin();
         const iterator end = this->end();
-        for (; (pos != end) && (maxNumber > 0); ++pos, --maxNumber) {
-            const_cast<K&>((*pos).first).serialize(ostream);
-            const_cast<V&>((*pos).second).serialize(ostream);
+        for (size_t s = 0; (pos != end) && (s < maxNumber); ++pos, ++s) {
+            ostream << (*pos).first;
+            ostream << (*pos).second;
         }
     }
 
@@ -166,8 +169,8 @@ public:
         K key;
         V value;
         for (UInt32 i = 0; i < size; ++i) {
-            key.serialize(istream);
-            value.serialize(istream);
+            istream >> key;
+            istream >> value;
             this->insert(value_type(key, value));
         }
     }

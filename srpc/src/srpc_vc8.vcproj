@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="ks_c_5601-1987"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="srpc"
 	ProjectGUID="{FA6D2A28-B8E1-4D14-891C-E6FA636CC110}"
 	RootNamespace="srpc"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -49,6 +50,8 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				StructMemberAlignment="0"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -71,6 +74,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\$(TargetName).pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\lib\$(TargetName).lib"
 				TargetMachine="1"
 			/>
@@ -91,9 +96,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -131,6 +133,8 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				StructMemberAlignment="0"
+				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -153,6 +157,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\$(TargetName).pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\lib\$(TargetName).lib"
 				TargetMachine="17"
 			/>
@@ -173,9 +179,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -212,6 +215,8 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_USRDLL;_SECURE_SCL=0;SRPC_DLL;SRPC_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="2"
+				StructMemberAlignment="0"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -236,6 +241,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\lib\$(TargetName).lib"
 				TargetMachine="1"
 			/>
@@ -256,9 +263,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -296,6 +300,8 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_USRDLL;_SECURE_SCL=0;SRPC_DLL;SRPC_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="2"
+				StructMemberAlignment="0"
+				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -320,6 +326,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\lib\$(TargetName).lib"
 				TargetMachine="17"
 			/>
@@ -340,9 +348,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -379,7 +384,9 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
+				StructMemberAlignment="0"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="..\bin\$(TargetName).pdb"
 				WarningLevel="4"
@@ -448,7 +455,9 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
+				StructMemberAlignment="0"
+				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="..\bin\$(TargetName).pdb"
 				WarningLevel="4"
@@ -517,7 +526,9 @@
 				AdditionalIncludeDirectories="$(ProjectDir)..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
+				StructMemberAlignment="0"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="..\bin\$(TargetName).pdb"
 				WarningLevel="4"
@@ -587,7 +598,9 @@
 				AdditionalIncludeDirectories="$(ProjectDir)..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
+				StructMemberAlignment="0"
+				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="..\bin\$(TargetName).pdb"
 				WarningLevel="4"

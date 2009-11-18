@@ -16,13 +16,13 @@ class RpcConainersTest : public BitStreamFixture
 
 TEST_F(RpcConainersTest, testRVector)
 {
-    RVector<RInt32> expected;
+    RVector<Int32> expected;
     expected.push_back(1);
     expected.push_back(3);
     expected.push_back(5);
     expected.serialize(*ostream_);
 
-    RVector<RInt32> actual;
+    RVector<Int32> actual;
     actual.serialize(*istream_);
 
     EXPECT_EQ(expected.size(), actual.size());
@@ -33,13 +33,13 @@ TEST_F(RpcConainersTest, testRVector)
 
 TEST_F(RpcConainersTest, testRList)
 {
-    RList<RInt32> expected;
+    RList<Int32> expected;
     expected.push_back(1);
     expected.push_back(3);
     expected.push_back(5);
     expected.serialize(*ostream_);
 
-    RList<RInt32> actual;
+    RList<Int32> actual;
     actual.serialize(*istream_);
 
     EXPECT_EQ(expected.size(), actual.size());
@@ -67,7 +67,7 @@ TEST_F(RpcConainersTest, testRSet)
 
 TEST_F(RpcConainersTest, testRMap)
 {
-    typedef RMap<RInt32, RShortString> MapType;
+    typedef RMap<Int32, RShortString> MapType;
     MapType expected;
     expected.insert(MapType::value_type(3, "1234"));
     expected.insert(MapType::value_type(1, "1234"));
