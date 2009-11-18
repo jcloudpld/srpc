@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="ks_c_5601-1987"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="StreamingTest"
 	ProjectGUID="{6F38AFB1-DF28-430C-81E0-8027972C598E}"
 	RootNamespace="StreamingTest"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -50,9 +49,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				StructMemberAlignment="0"
 				BufferSecurityCheck="true"
-				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -75,8 +72,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/StreamingTest_d.pdb"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -96,6 +91,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -133,9 +131,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				StructMemberAlignment="0"
 				BufferSecurityCheck="true"
-				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -158,8 +154,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/StreamingTest_d.pdb"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -179,6 +173,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -215,8 +212,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_SECURE_SCL=0;_CONSOLE;SRPC_DLL"
 				StringPooling="true"
 				RuntimeLibrary="2"
-				StructMemberAlignment="0"
-				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -240,8 +235,6 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -261,6 +254,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -298,8 +294,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_SECURE_SCL=0;_CONSOLE;SRPC_DLL"
 				StringPooling="true"
 				RuntimeLibrary="2"
-				StructMemberAlignment="0"
-				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -323,8 +317,6 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -344,6 +336,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -379,10 +374,8 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				StructMemberAlignment="0"
+				RuntimeLibrary="1"
 				BufferSecurityCheck="true"
-				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -405,8 +398,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/StreamingTest_sd.pdb"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -426,6 +417,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -462,10 +456,8 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				StructMemberAlignment="0"
+				RuntimeLibrary="1"
 				BufferSecurityCheck="true"
-				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -488,8 +480,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/StreamingTest_sd.pdb"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -509,6 +499,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -545,9 +538,7 @@
 				AdditionalIncludeDirectories="$(ProjectDir)..\..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_SECURE_SCL=0;_CONSOLE"
 				StringPooling="true"
-				RuntimeLibrary="2"
-				StructMemberAlignment="0"
-				EnableEnhancedInstructionSet="1"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -572,8 +563,6 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -593,6 +582,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -630,9 +622,7 @@
 				AdditionalIncludeDirectories="$(ProjectDir)..\..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_SECURE_SCL=0;_CONSOLE"
 				StringPooling="true"
-				RuntimeLibrary="2"
-				StructMemberAlignment="0"
-				EnableEnhancedInstructionSet="0"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -657,8 +647,6 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -678,6 +666,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
