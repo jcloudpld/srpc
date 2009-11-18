@@ -64,6 +64,11 @@ public:
     virtual size_t getSessionCount() const {
         return sessionCount_;
     }
+
+    virtual size_t getTotalSessionCount() const {
+        return 0;
+    }
+
 public:
     TestProactorSession& getSession() const {
         return *lastSession_;

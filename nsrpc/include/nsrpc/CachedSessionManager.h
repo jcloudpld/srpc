@@ -74,6 +74,10 @@ protected: // for Test
         return getActiveSessionCount();
     }
 
+    virtual size_t getTotalSessionCount() const {
+        return getActiveSessionCount() + getInactiveSessionCount();
+    }
+
 private:
     // = MemoryPoolCallback overriding
     virtual void poolGrowing(size_t neededSize);
