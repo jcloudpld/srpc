@@ -59,6 +59,10 @@ public:
 
     /// 세션수를 얻는다
     virtual size_t getSessionCount() const = 0;
+
+    /// 전체 세션수(풀)를 얻는다
+    virtual size_t getTotalSessionCount() const = 0;
+
 };
 
 /** @} */ // addtogroup session

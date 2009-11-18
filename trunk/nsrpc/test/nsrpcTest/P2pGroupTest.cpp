@@ -102,14 +102,14 @@ TEST_F(P2pGroupTest, testJoinAGroup)
         (*hostSession_->getGroups().begin()).second;
     EXPECT_EQ(1, int(hostGroupInfo.peerIds_.size())) << "peer count";
     EXPECT_EQ(hostSession_->getPeerId(),
-        hostGroupInfo.peerIds_.front().get()) << "joined peer id";
+        hostGroupInfo.peerIds_.front()) << "joined peer id";
 
     EXPECT_TRUE(peerSession_->joinGroup(firstGroupId)) << "peer join";
     doTick();
 
     const RGroupInfo& peerGroupInfo = (*peerSession_->getGroups().begin()).second;
     EXPECT_EQ(2, int(peerGroupInfo.peerIds_.size()));
-    EXPECT_EQ(hostSession_->getPeerId(), peerGroupInfo.peerIds_.front().get());
+    EXPECT_EQ(hostSession_->getPeerId(), peerGroupInfo.peerIds_.front());
 
     EXPECT_EQ(giFirst, hostEventHandler_.getLastJoinedGroupId());
     EXPECT_EQ(peerSession_->getPeerId(),
@@ -142,11 +142,11 @@ TEST_F(P2pGroupTest, testJoinEachGroup)
     const RGroupInfo& hostGroupInfo =
         (*hostSession_->getGroups().begin()).second;
     EXPECT_EQ(1, int(hostGroupInfo.peerIds_.size()));
-    EXPECT_EQ(hostSession_->getPeerId(), hostGroupInfo.peerIds_.front().get());
+    EXPECT_EQ(hostSession_->getPeerId(), hostGroupInfo.peerIds_.front());
 
     const RGroupInfo& peerGroupInfo = (*peerSession_->getGroups().begin()).second;
     EXPECT_EQ(1, int(peerGroupInfo.peerIds_.size()));
-    EXPECT_EQ(hostSession_->getPeerId(), peerGroupInfo.peerIds_.front().get());
+    EXPECT_EQ(hostSession_->getPeerId(), peerGroupInfo.peerIds_.front());
 
     EXPECT_EQ(giFirst + 1, hostEventHandler_.getLastJoinedGroupId());
     EXPECT_EQ(peerSession_->getPeerId(), hostEventHandler_.getLastJoinedPeerId());

@@ -47,8 +47,7 @@ inline bool isRelayServer(PeerId peerId)
 
 typedef srpc::Vector<PeerId> PeerIds;
 
-typedef srpc::RpcUIntType<PeerId> RPeerId;
-typedef srpc::RVector<RPeerId> RPeerIds;
+typedef srpc::RVector<PeerId> RPeerIds;
 
 /**
  * @struct PeerIdPair
