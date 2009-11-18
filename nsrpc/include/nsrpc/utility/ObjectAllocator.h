@@ -7,6 +7,7 @@
 
 #include "detail/BaseAllocator.h"
 #include <srpc/ContainerTypes.h>
+#include <srpc/Types.h>
 #include <ace/Guard_T.h>
 #ifdef _MSC_VER
 #  pragma warning (push)
@@ -102,7 +103,8 @@ private:
             pool_.reserve(pool_.size() + poolSize_);
         }
         for (size_t i = 0; i < poolSize_; ++i) {
-            pool_.push_back(static_cast<Object*>(std::malloc(sizeof(Object))));
+            pool_.push_back(static_cast<Object*>(
+                static_cast<void*>(new srpc::UInt8[sizeof(Object)])));
         }
     }
 
@@ -112,7 +114,7 @@ private:
         typename Pool::iterator pos = pool_.begin();
         const typename Pool::iterator end = pool_.end();
         for (; pos != end; ++pos) {
-            std::free(*pos);
+            delete[] (*pos);
         }
         pool_.clear();
     }
