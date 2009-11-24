@@ -65,9 +65,44 @@ TEST_F(RpcConainersTest, testRSet)
 }
 
 
+TEST_F(RpcConainersTest, testRHashSet)
+{
+    RHashSet<RString> expected;
+    expected.insert("1234");
+    expected.insert("abcd");
+    expected.insert("4567");
+    expected.serialize(*ostream_);
+
+    RHashSet<RString> actual;
+    actual.serialize(*istream_);
+
+    EXPECT_EQ(expected.size(), actual.size());
+
+    EXPECT_EQ(*expected.begin(), *actual.begin());
+}
+
+
 TEST_F(RpcConainersTest, testRMap)
 {
     typedef RMap<Int32, RShortString> MapType;
+    MapType expected;
+    expected.insert(MapType::value_type(3, "1234"));
+    expected.insert(MapType::value_type(1, "1234"));
+    expected.insert(MapType::value_type(2, "1234"));
+    expected.serialize(*ostream_);
+
+    MapType actual;
+    actual.serialize(*istream_);
+
+    EXPECT_EQ(expected.size(), actual.size());
+
+    EXPECT_EQ((*expected.begin()).second, (*actual.begin()).second);
+}
+
+
+TEST_F(RpcConainersTest, testRHashMap)
+{
+    typedef RHashMap<Int32, RShortString> MapType;
     MapType expected;
     expected.insert(MapType::value_type(3, "1234"));
     expected.insert(MapType::value_type(1, "1234"));

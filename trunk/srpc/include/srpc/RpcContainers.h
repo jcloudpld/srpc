@@ -136,12 +136,25 @@ class RMultiSet : public RBaseSet<MultiSet<RpcType> >
 };
 
 
-/// std::map에 대한 RpcType
-template <typename K, typename V, size_t sizeBits = Bits<UInt8>::size>
-class RMap : public Map<K, V>
+/// HashSet에 대한 RpcType
+template <typename RpcType>
+class RHashSet : public RBaseSet<HashSet<RpcType> >
+{
+};
+
+/// HashMultiSet에 대한 RpcType
+template <typename RpcType>
+class RHashMultiSet : public RBaseSet<HashMultiSet<RpcType> >
+{
+};
+
+
+/// std::*map에 대한 RpcType
+template <typename BaseType, typename K, typename V, size_t sizeBits>
+class RBaseMap : public BaseType
 {
 public:
-    typedef Map<K, V> Base;
+    typedef BaseType Base;
     typedef typename Base::value_type value_type;
     typedef typename Base::iterator iterator;
 public:
@@ -174,6 +187,32 @@ public:
             this->insert(value_type(key, value));
         }
     }
+};
+
+
+/// std::map에 대한 RpcType
+template <typename K, typename V, size_t sizeBits = Bits<UInt8>::size>
+class RMap : public RBaseMap<Map<K, V>, K, V, sizeBits>
+{
+};
+
+/// std::multimap에 대한 RpcType
+template <typename K, typename V, size_t sizeBits = Bits<UInt8>::size>
+class RMultiMap : public RBaseMap<MultiMap<K, V>, K, V, sizeBits>
+{
+};
+
+
+/// HashMap에 대한 RpcType
+template <typename K, typename V, size_t sizeBits = Bits<UInt8>::size>
+class RHashMap : public RBaseMap<HashMap<K, V>, K, V, sizeBits>
+{
+};
+
+/// HashMultiMap에 대한 RpcType
+template <typename K, typename V, size_t sizeBits = Bits<UInt8>::size>
+class RHashMultiMap : public RBaseMap<HashMultiMap<K, V>, K, V, sizeBits>
+{
 };
 
 /** @} */ // addtogroup serialization

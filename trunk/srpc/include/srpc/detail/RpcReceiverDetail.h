@@ -34,7 +34,7 @@ namespace srpc {
 class RpcEventMap
 {
 public:
-    typedef srpc::Map<RpcId, RpcEvent*> RpcEvents;
+    typedef srpc::HashMap<RpcId, RpcEvent*> RpcEvents;
     typedef RpcEvents::value_type value_type;
 public:
     RpcEventMap(bool deleteRpcEvents) :
