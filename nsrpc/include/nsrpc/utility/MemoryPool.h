@@ -35,7 +35,7 @@ public:
     Resource* malloc() {
         return static_cast<Resource*>(new srpc::UInt8[memorySize]);
     }
-    void free(Resource* resource) {
+    void free(void* resource) {
         delete[] resource;
     }
 };

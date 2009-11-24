@@ -37,7 +37,7 @@ private: // encapsulation
     OVERRIDE_SRPC_METHOD_3(onResolve, srpc::RString, name, srpc::RString, value,
         srpc::RBool, succeeded);
 private:
-    typedef srpc::Map<srpc::String, srpc::String> NameValues;
+    typedef srpc::HashMap<srpc::String, srpc::String> NameValues;
     NameValues nameValues_;
 };
 

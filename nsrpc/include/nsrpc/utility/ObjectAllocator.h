@@ -36,7 +36,7 @@ namespace nsrpc
 template <typename Object, class Mutex = ACE_Null_Mutex>
 class ObjectAllocator : public BaseAllocator
 {
-    typedef srpc::Vector<Object*> Pool;
+    typedef srpc::Vector<void*> Pool;
 public:
     /**
      * ctor

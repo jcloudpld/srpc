@@ -5,7 +5,10 @@
 #  pragma once
 #endif
 
+#include <boost/functional/hash/hash.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/checked_delete.hpp>
+#include <functional>
 #include <algorithm>
 
 namespace srpc {
@@ -55,6 +58,35 @@ inline typename Map::value_type::second_type search_map(const Map& the_map,
     }
     return null_result;
 }
+
+
+/// 대소문자 구분하지 않는 equal_to (문자열 전용)
+template <typename T>
+struct iequal_to : public std::binary_function<T, T, bool>
+{
+    bool operator()(const T& x, const T& y) const {
+        return boost::algorithm::iequals(x, y, std::locale());
+    }
+};
+
+
+/// 대소문자 구분하지 않는 hash (문자열 전용)
+template <typename T>
+struct ihash : public std::unary_function<T, std::size_t>
+{
+    std::size_t operator()(const T& x) const {
+        std::size_t seed = 0;
+        std::locale locale;
+
+        T::const_iterator pos = x.begin();
+        const T::const_iterator end = x.end();
+        for(; pos != end; ++pos) {
+            boost::hash_combine(seed, std::toupper(*pos, locale));
+        }
+
+        return seed;
+    }
+};
 
 } // namespace srpc
 

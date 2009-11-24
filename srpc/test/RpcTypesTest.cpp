@@ -195,57 +195,6 @@ TEST_F(RpcTypesTest, testRWShortString)
 }
 
 
-TEST_F(RpcTypesTest, testRVector)
-{
-    RVector<Int32, 8> expected;
-    for (int i = 0; i < 10; ++i) {
-        expected.push_back(i);
-    }
-    expected.serialize(*ostream_);
-
-    RVector<Int32, 8> actual;
-    actual.serialize(*istream_);
-    EXPECT_EQ(
-        static_cast<int>(expected.size()),
-        static_cast<int>(actual.size()));
-    EXPECT_TRUE(std::equal(expected.begin(), expected.end(), actual.begin()));
-}
-
-
-TEST_F(RpcTypesTest, testRList)
-{
-    RList<Int32, 7> expected;
-    for (int i = 0; i < 10; ++i) {
-        expected.push_back(i);
-    }
-    expected.serialize(*ostream_);
-
-    RList<Int32, 7> actual;
-    actual.serialize(*istream_);
-    EXPECT_EQ(
-        static_cast<int>(expected.size()),
-        static_cast<int>(actual.size()));
-    EXPECT_TRUE(std::equal(expected.begin(), expected.end(), actual.begin()));
-}
-
-
-TEST_F(RpcTypesTest, testRSet)
-{
-    RSet<Int32> expected;
-    for (int i = 0; i < 10; ++i) {
-        expected.insert(i);
-    }
-    expected.serialize(*ostream_);
-
-    RSet<Int32> actual;
-    actual.serialize(*istream_);
-    EXPECT_EQ(
-        static_cast<int>(expected.size()),
-        static_cast<int>(actual.size()));
-    EXPECT_TRUE(std::equal(expected.begin(), expected.end(), actual.begin()));
-}
-
-
 enum EnumType { etA, etB, etC };
 typedef RpcIntType<EnumType, 3> REnumType;
 
@@ -275,25 +224,6 @@ TEST_F(RpcTypesTest, testRUserDefinedString)
     EXPECT_EQ(
         static_cast<int>(expected.size() - 2),
         static_cast<int>(actual.size()));
-}
-
-
-TEST_F(RpcTypesTest, testRMap)
-{
-    RMap<Int32, RShortString> expected;
-    for (int i = 0; i < 10; ++i) {
-        OStringStream oss;
-        oss << "#" << i;
-        expected.insert(std::make_pair(i, oss.str()));
-    }
-    expected.serialize(*ostream_);
-
-    RMap<Int32, RShortString> actual;
-    actual.serialize(*istream_);
-    EXPECT_EQ(
-        static_cast<int>(expected.size()),
-        static_cast<int>(actual.size()));
-    EXPECT_TRUE(std::equal(expected.begin(), expected.end(), actual.begin()));
 }
 
 

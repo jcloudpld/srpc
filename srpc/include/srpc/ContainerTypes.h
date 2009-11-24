@@ -8,6 +8,8 @@
 // 컨테이너 타입(STL)을 정의한다
 
 #include "detail/Allocator.h"
+#include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 #ifdef _MSC_VER
 #  pragma warning (push)
 #  pragma warning (disable: 4702)
@@ -22,10 +24,6 @@
 #ifdef _MSC_VER
 #  pragma warning (pop)
 #endif
-#ifdef _MSC_VER
-#  include <hash_map>
-#  include <hash_set>
-#endif //_MSC_VER
 
 namespace srpc {
 
@@ -90,46 +88,39 @@ template <typename Key, typename Traits = std::less<Key> >
 class MultiSet : public std::multiset<Key, Traits, SrpcNodeAllocator<Key> >
 {};
 
-#ifdef _MSC_VER
 
-/// HashMap - stdext::hash_map
-template <typename Key, typename Type,
-    typename Traits = stdext::hash_compare<Key, std::less<Key> > >
-class HashMap : public stdext::hash_map<Key, Type, Traits,
-    SrpcNodeAllocator<std::pair<const Key, Type> > >
+/// HashMap - boost::unordered_map
+template <typename Key, typename Mapped,
+    typename Hash = boost::hash<Key>,
+    typename Pred = std::equal_to<Key> >
+class HashMap : public boost::unordered_map<Key, Mapped, Hash, Pred,
+    SrpcNodeAllocator<Key> >
 {};
 
-/// HashMutliMap - stdext::hash_multimap
-template <typename Key, typename Type,
-    typename Traits = stdext::hash_compare<Key, std::less<Key> > >
-class HashMultiMap : public stdext::hash_multimap<Key, Type, Traits,
-    SrpcNodeAllocator<std::pair<const Key, Type> > >
+/// HashMutliMap - boost::unordered_multimap
+template <typename Key, typename Mapped,
+    typename Hash = boost::hash<Key>,
+    typename Pred = std::equal_to<Key> >
+class HashMultiMap : public boost::unordered_multimap<Key, Mapped, Hash, Pred,
+    SrpcNodeAllocator<Key> >
 {};
 
 
-/// HashSet - stdext::hash_set
+/// HashSet - boost::unordered_set
 template <typename Key,
-    typename Traits = stdext::hash_compare<Key, std::less<Key> > >
+    typename Hash = boost::hash<Key>,
+    typename Pred = std::equal_to<Key> >
 class HashSet :
-    public stdext::hash_set<Key, Traits, SrpcNodeAllocator<Key> >
+    public boost::unordered_set<Key, Hash, Pred, SrpcNodeAllocator<Key> >
 {};
 
-/// HashMultiSet - stdext::hash_multiset
+/// HashMultiSet - boost::unordered_multiset
 template <typename Key,
-    typename Traits = stdext::hash_compare<Key, std::less<Key> > >
+    typename Hash = boost::hash<Key>,
+    typename Pred = std::equal_to<Key> >
 class HashMultiSet :
-    public stdext::hash_multiset<Key, Traits, SrpcNodeAllocator<Key> >
+    public boost::unordered_multiset<Key, Hash, Pred, SrpcNodeAllocator<Key> >
 {};
-
-#else
-
-#define HashMap Map
-#define HashMultiMap MultiMap
-
-#define HashSet Set
-#define HashMultiSet MultiSet
-
-#endif //_MSC_VER
 
 /** @} */ // addtogroup types
 
