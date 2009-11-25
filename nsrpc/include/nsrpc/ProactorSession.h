@@ -12,6 +12,7 @@
 
 #include "detail/MessageBlockProvider.h"
 #include "detail/CsProtocol.h"
+#include "utility/AceUtil.h"
 #include "Session.h"
 #include <srpc/StringTypes.h>
 #ifdef _MSC_VER
@@ -193,7 +194,7 @@ private:
     boost::scoped_ptr<PacketCoder> packetCoder_;
     CsPacketHeader headerForReceive_;
 
-    ACE_Message_Block* recvBlock_;
+    AceMessageBlockGuard recvBlock_;
 
     boost::scoped_ptr<Asynch_RW_Stream> stream_;
 

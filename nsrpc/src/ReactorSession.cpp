@@ -240,7 +240,7 @@ void ReactorSession::closeSocket()
 bool ReactorSession::read()
 {
     if (recvBlock_->space() <= 0) {
-        const size_t spare = recvBlock_->capacity() / 10;
+        const size_t spare = recvBlock_->capacity() / 50;
         assert(spare > 0);
         recvBlock_->size(recvBlock_->size() + spare);
     }
@@ -367,6 +367,12 @@ bool ReactorSession::parseMessage()
     }
     packetCoder_->advanceToBody(*msgBlock_);
 
+    if (! isValidCsMessageType(headerForReceive_.messageType_)) {
+        NSRPC_LOG_ERROR(ACE_TEXT("ReactorSession::handle_input() - ")
+            ACE_TEXT("Invalid Message Type."));
+        return false;
+    }
+
     return true;
 }
 
@@ -390,7 +396,7 @@ int ReactorSession::getWriteQueueSize()
     const size_t queueThreshold = 3;
 
     const time_t currentTime = time(0);
-    if ((currentTime - lastLogTime_) >= logInterval) {
+    if ((currentTime - lastLogTime_) <= logInterval) {
         const size_t currentQueueSize = msgQueue_.message_count();
         const size_t queueSizeDiff =
             (currentQueueSize > prevQueueSize_) ?
@@ -427,12 +433,6 @@ int ReactorSession::handle_input(ACE_HANDLE)
 
         if (! parseMessage()) {
             return -1;
-        }
-
-        if (! isValidCsMessageType(headerForReceive_.messageType_)) {
-            NSRPC_LOG_ERROR(ACE_TEXT("ReactorSession::handle_input() - ")
-                ACE_TEXT("Invalid Message Type."));
-            return false;
         }
 
         onMessageArrived(headerForReceive_.messageType_);

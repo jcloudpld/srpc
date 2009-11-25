@@ -24,18 +24,16 @@ ProactorSession::ProactorSession(const SessionConfig& config) :
     messageBlockManager_(*config.messageBlockManager_),
     proactor_(config.proactor_),
     packetCoder_(config.packetCoder_),
-    inboundBandwidthLimiter_(new BandwidthLimit(config.capacity_))
+    inboundBandwidthLimiter_(new BandwidthLimit(config.capacity_)),
+    recvBlock_(
+        messageBlockManager_.create(packetCoder_->getDefaultPacketSize()))
 {
-    recvBlock_ =
-        messageBlockManager_.create(packetCoder_->getDefaultPacketSize());
-
     reset();
 }
 
 
 ProactorSession::~ProactorSession()
 {
-    recvBlock_->release();
 }
 
 
@@ -163,7 +161,7 @@ bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result
         //    this, inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
 
         ACE_Message_Block& mblock = result.message_block();
-        assert(&mblock == recvBlock_);
+        assert(&mblock == recvBlock_.get());
 
         const size_t leftBytes = result.bytes_to_read() - bytesTransferred;
         if (leftBytes > 0) {
