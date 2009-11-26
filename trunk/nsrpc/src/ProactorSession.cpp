@@ -17,8 +17,6 @@
 namespace nsrpc
 {
 
-// = ProactorSession
-
 ProactorSession::ProactorSession(const SessionConfig& config) :
     sessionDestroyer_(*config.sessionDestroyer_),
     messageBlockManager_(*config.messageBlockManager_),
@@ -26,7 +24,10 @@ ProactorSession::ProactorSession(const SessionConfig& config) :
     packetCoder_(config.packetCoder_),
     inboundBandwidthLimiter_(new BandwidthLimit(config.capacity_)),
     recvBlock_(
-        messageBlockManager_.create(packetCoder_->getDefaultPacketSize()))
+        messageBlockManager_.create(packetCoder_->getDefaultPacketSize())),
+    msgBlock_(
+        messageBlockManager_.create(packetCoder_->getDefaultPacketSize())),
+    packetHeaderSize_(config.packetCoder_->getHeaderSize())
 {
     reset();
 }
@@ -145,93 +146,87 @@ bool ProactorSession::isConnected() const
 }
 
 
-bool ProactorSession::readMessage(const NSRPC_Asynch_Read_Stream::Result& result)
+bool ProactorSession::open(ACE_HANDLE new_handle)
 {
-    bool isKarmaRemained = false;
-    {
-        ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, recvMonitor, lock_, false);
 
-        const size_t bytesTransferred = result.bytes_transferred();
-        stats_.recvBytes_ += bytesTransferred;
-        assert(result.bytes_to_read() >= bytesTransferred);
+    assert(isSafeToDelete());
+    reset();
 
-        inboundBandwidthLimiter_->add(bytesTransferred);
-        isKarmaRemained = inboundBandwidthLimiter_->check();
-        //NSRPC_LOG_DEBUG4("ProactorSession(0x%X) - BandwidthLimit left bytes = %d(-%d)",
-        //    this, inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
+    ++stats_.useCount_;
 
-        ACE_Message_Block& mblock = result.message_block();
-        assert(&mblock == recvBlock_.get());
-
-        const size_t leftBytes = result.bytes_to_read() - bytesTransferred;
-        if (leftBytes > 0) {
-            return readMessageFragment(leftBytes);
-        }
-
-        if (mblock.length() == packetCoder_->getHeaderSize()) {
-            if (! packetCoder_->readHeader(headerForReceive_, mblock)) {
-                NSRPC_LOG_DEBUG2(
-                    ACE_TEXT("ProactorSession(0x%X)::readMessage() - ")
-                    ACE_TEXT("Invalid Message Header(%m)."),
-                    this);
-                return false;
-            }
-
-            return readMessageFragment(headerForReceive_.bodySize_);
-        }
-
-        if (! packetCoder_->decode(mblock)) {
-            return false;
-        }
-
-        packetCoder_->advanceToBody(mblock);
-    }
-
-    ++stats_.recvMessageCount_;
-
-    if (! isValidCsMessageType(headerForReceive_.messageType_)) {
-        NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession(0x%X)::readMessage() - ")
-            ACE_TEXT("Invalid Message Type."),
-            this);
+    if (! stream_->open(*this, new_handle, 0, proactor_, true)) {
+        NSRPC_LOG_DEBUG3(ACE_TEXT("ProactorSession(0x%X)::open() - FAILED(%m,%d)."),
+            this, errno);
         return false;
     }
 
-    if (! onMessageArrived(headerForReceive_.messageType_)) {
+    shouldBlockWrite_  = false;
+
+    if (! onConnected()) {
         return false;
-    }
-
-    {
-        ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
-
-        if (isKarmaRemained) {
-            return readMessageHeader();
-        }
-        else {
-            startThrottleTimer();
-            onThrottling(inboundBandwidthLimiter_->getReadBytes(),
-                inboundBandwidthLimiter_->getMaxBytesPerSecond());
-        }
     }
 
     return true;
 }
 
 
-bool ProactorSession::readMessageHeader()
+// @pre 재진입이 안된다
+bool ProactorSession::messageBlockReceived(
+    const NSRPC_Asynch_Read_Stream::Result& result)
 {
-    assert(recvBlock_->size() > packetCoder_->getHeaderSize());
+    const size_t bytesTransferred = result.bytes_transferred();
+    stats_.recvBytes_ += bytesTransferred;
+    assert(result.bytes_to_read() >= bytesTransferred);
 
-    recvBlock_->reset();
-    return read(packetCoder_->getHeaderSize());
+    const bool isKarmaRemained = addInboundBandwidth(bytesTransferred);
+
+    while (isPacketHeaderArrived()) {
+        if (! parseHeader()) {
+            return false;
+        }
+
+        if (! isMessageArrived()) {
+            break;
+        }
+
+        if (! parseMessage()) {
+            return false;
+        }
+
+        if (! onMessageArrived(headerForReceive_.messageType_)) {
+            return false;
+        }
+
+        headerForReceive_.reset();
+    }
+
+    if (isKarmaRemained) {
+        return readMessage();
+    }
+
+    throttleReceiving();
+    return true;
 }
 
 
-bool ProactorSession::readMessageFragment(size_t neededBytes)
+bool ProactorSession::readMessage()
 {
-    if (recvBlock_->space() < neededBytes) {
-        recvBlock_->size(recvBlock_->size() + neededBytes);
+    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+
+    return readMessage_i();
+}
+
+
+bool ProactorSession::readMessage_i()
+{
+    if (recvBlock_->space() <= 0) {
+        const size_t spare = recvBlock_->capacity() / 50;
+        assert(spare > 0);
+        recvBlock_->size(recvBlock_->size() + spare);
     }
-    return read(neededBytes);
+
+    return read(recvBlock_->space());
 }
 
 
@@ -262,7 +257,6 @@ bool ProactorSession::write(ACE_Message_Block& mblock)
         return false;
     }
 
-    ++stats_.sentMessageCount_;
     ++pendingWriteCount_;
     return true;
 }
@@ -278,6 +272,7 @@ void ProactorSession::reset()
     disconnectTimer_ = -1;
     throttleTimer_ = -1;
     packetCoder_->reset();
+    headerForReceive_.reset();
     inboundBandwidthLimiter_->reset();
     shouldBlockWrite_ = true;
 }
@@ -299,6 +294,16 @@ void ProactorSession::stopDisconnectTimer()
     if (disconnectTimer_ != -1) {
         cancelTimer(*proactor(), disconnectTimer_);
     }
+}
+
+
+void ProactorSession::throttleReceiving()
+{
+    ACE_GUARD(ACE_Recursive_Thread_Mutex, monitor, lock_);
+
+    startThrottleTimer();
+    onThrottling(inboundBandwidthLimiter_->getReadBytes(),
+        inboundBandwidthLimiter_->getMaxBytesPerSecond());
 }
 
 
@@ -324,7 +329,7 @@ void ProactorSession::stopThrottleTimer()
 }
 
 
-void ProactorSession::checkPendingCount()
+void ProactorSession::checkPendingWriteCount()
 {
     const long logThreshold = 10;
     const long maxThreshold = 1000;
@@ -356,6 +361,84 @@ void ProactorSession::checkPendingCount()
 }
 
 
+bool ProactorSession::addInboundBandwidth(size_t bytesTransferred)
+{
+    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+
+    inboundBandwidthLimiter_->add(bytesTransferred);
+    const bool isKarmaRemained = inboundBandwidthLimiter_->check();
+    //NSRPC_LOG_DEBUG4("ProactorSession(0x%X) - BandwidthLimit left bytes = %d(-%d)",
+    //    this, inboundBandwidthLimiter_->getLeftBytes(), bytes_transferred);
+    return isKarmaRemained;
+}
+
+
+bool ProactorSession::parseHeader()
+{
+    if (headerForReceive_.isValid()) {
+        return true;
+    }
+
+    ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+
+    assert(recvBlock_->length() >= packetHeaderSize_);
+    if (packetCoder_->readHeader(headerForReceive_, *recvBlock_)) {
+        return true;
+    }
+
+    NSRPC_LOG_DEBUG2(
+        ACE_TEXT("ProactorSession(0x%X)::parseHeader() - ")
+        ACE_TEXT("Invalid Message Header(%m)."),
+        this);
+    return false;
+}
+
+
+bool ProactorSession::parseMessage()
+{
+    const size_t messageSize = packetHeaderSize_ + headerForReceive_.bodySize_;
+
+    {
+        ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, monitor, lock_, false);
+
+        msgBlock_->reset();
+        msgBlock_->size(messageSize);
+        msgBlock_->copy(recvBlock_->rd_ptr(), messageSize);
+
+        recvBlock_->rd_ptr(messageSize);
+        recvBlock_->crunch();
+
+        if (! packetCoder_->decode(*msgBlock_)) {
+            return false;
+        }
+        packetCoder_->advanceToBody(*msgBlock_);
+    }
+
+    if (! isValidCsMessageType(headerForReceive_.messageType_)) {
+        NSRPC_LOG_ERROR(ACE_TEXT("ProactorSession::parseMessage() - ")
+            ACE_TEXT("Invalid Message Type."));
+        return false;
+    }
+
+    ++stats_.recvMessageCount_;
+
+    return true;
+}
+
+
+bool ProactorSession::isPacketHeaderArrived() const
+{
+    return recvBlock_->length() >= packetHeaderSize_;
+}
+
+
+bool ProactorSession::isMessageArrived() const
+{
+    return recvBlock_->length() >=
+        (packetHeaderSize_ + headerForReceive_.bodySize_);
+}
+
+
 void ProactorSession::onThrottling(size_t readBytes, size_t maxBytesPerSecond)
 {
     ACE_TCHAR address[MAXHOSTNAMELEN];
@@ -373,33 +456,17 @@ void ProactorSession::onThrottling(size_t readBytes, size_t maxBytesPerSecond)
 void ProactorSession::open(ACE_HANDLE new_handle,
     ACE_Message_Block& /*message_block*/)
 {
-    {
-        ACE_GUARD(ACE_Recursive_Thread_Mutex, recvMonitor, lock_);
-
-        assert(isSafeToDelete());
-        reset();
-
-        ++stats_.useCount_;
-
-        if (stream_->open(*this, new_handle, 0, proactor_, true)) {
-            shouldBlockWrite_  = false;
-            if (! onConnected()) {
-                disconnect();
-                return;
-            }
-
-            if (readMessageHeader()) {
-                NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession(0x%X) opened."),
-                    this);
-                return; // success
-            }
-        }
-
-        NSRPC_LOG_DEBUG3(ACE_TEXT("ProactorSession(0x%X)::open() - FAILED(%m,%d)."),
-            this, errno);
+    if (! open(new_handle)) {
+        disconnect();
+        return;
     }
 
-    disconnect();
+    if (! readMessage()) {
+        disconnect();
+        return;
+    }
+
+    NSRPC_LOG_DEBUG2(ACE_TEXT("ProactorSession(0x%X) opened."), this);
 }
 
 
@@ -410,7 +477,7 @@ void ProactorSession::handle_read_stream(
 
     if (result.success()) {
         if (result.bytes_transferred() > 0) {
-            if (readMessage(result)) {
+            if (messageBlockReceived(result)) {
                 return; // success
             }
         }
@@ -440,8 +507,9 @@ void ProactorSession::handle_write_stream(
     const size_t bytesTransferred = result.bytes_transferred();
     if ((result.error() == 0) && (bytesTransferred > 0)) {
         assert(result.bytes_to_write() == bytesTransferred);
+        ++stats_.sentMessageCount_;
         stats_.sentBytes_ += bytesTransferred;
-        checkPendingCount();
+        checkPendingWriteCount();
         return; // success
     }
 
@@ -475,7 +543,7 @@ void ProactorSession::handle_time_out(const ACE_Time_Value& /*tv*/,
         else if (act == &throttleTimer_) {
             throttleTimer_ = -1;
             inboundBandwidthLimiter_->reset();
-            if (! readMessageHeader()) {
+            if (! readMessage_i()) {
                 shouldDisconnect = true;
             }
         }
@@ -507,7 +575,8 @@ ACE_Message_Block& ProactorSession::acquireSendBlock()
 
 ACE_Message_Block& ProactorSession::acquireRecvBlock()
 {
-    return *recvBlock_;
+    assert(msgBlock_.get() != 0);
+    return *msgBlock_;
 }
 
 } // namespace nsrpc

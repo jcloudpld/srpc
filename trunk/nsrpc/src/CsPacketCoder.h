@@ -22,7 +22,7 @@ namespace nsrpc
 class CsPacketCoder : public PacketCoder
 {
     enum {
-        defaultPacketSize = 512,
+        defaultPacketSize = 2 * 1024,
         defaultPacketPoolSize = 10
     };
 public:

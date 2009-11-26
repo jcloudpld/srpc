@@ -16,6 +16,7 @@ namespace nsrpc
 
 enum CsMessageType
 {
+    mtUnknown = -1,
     mtSystem,
     mtGeneral
 };
@@ -40,6 +41,18 @@ struct NSRPC_API CsPacketHeader : public AbstractPacketHeader
 
     static size_t getHeaderSize() {
         return AbstractPacketHeader::getHeaderSize() + sizeof(srpc::UInt8);
+    }
+
+    virtual void reset() {
+        AbstractPacketHeader::reset();
+        messageType_ = mtUnknown;
+    }
+
+    virtual bool isValid() const {
+        if (! AbstractPacketHeader::isValid()) {
+            return false;
+        }
+        return isValidCsMessageType(messageType_);
     }
 
     virtual size_t write(void* buffer) const {

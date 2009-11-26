@@ -86,13 +86,17 @@ void NSRPC_API disableSignals(int sigmin = ACE_SIGRTMIN,
 class AceMessageBlockGuard : public boost::noncopyable
 {
 public:
-    AceMessageBlockGuard(ACE_Message_Block* mblk) :
+    explicit AceMessageBlockGuard(ACE_Message_Block* mblk = 0) :
         mblock_(mblk) {}
 
     ~AceMessageBlockGuard() {
         if (mblock_ != 0) {
             mblock_->release();
         }
+    }
+
+    void reset(ACE_Message_Block* mblk = 0) {
+        mblock_ = mblk;
     }
 
     ACE_Message_Block* release() {
