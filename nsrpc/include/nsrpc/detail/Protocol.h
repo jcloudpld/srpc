@@ -62,7 +62,11 @@ struct NSRPC_API AbstractPacketHeader
         return sizeof(BodySize);
     }
 
-    bool isValid() const {
+    virtual void reset() {
+        bodySize_ = 0;
+    }
+
+    virtual bool isValid() const {
         return bodySize_ > 0;
     }
 

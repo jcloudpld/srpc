@@ -9,6 +9,7 @@
 #include "Session.h"
 #include "detail/CsProtocol.h"
 #include "detail/MessageBlockProvider.h"
+#include "utility/AceUtil.h"
 #include <srpc/StringTypes.h>
 #ifdef _MSC_VER
 #  pragma warning( push)
@@ -92,10 +93,14 @@ public:
         return get_handle() != ACE_INVALID_HANDLE;
     }
 protected:
-    PacketCoder& getPacketCoder();
+    PacketCoder& getPacketCoder() {
+        return *packetCoder_;
+    }
+
     ACE_Recursive_Thread_Mutex& getLock() {
         return lock_;
     }
+
     ACE_SOCK_Stream& peer() {
         return stream_;
     }
@@ -133,7 +138,7 @@ protected: // for Test
 private:
     bool read();
     bool write();
-    void releaseMessageBlocks();
+    void releaseMessageQueue();
     bool parseHeader();
     bool parseMessage();
     bool isPacketHeaderArrived() const;
@@ -141,9 +146,10 @@ private:
 
     int getWriteQueueSize();
 private:
+    size_t packetHeaderSize_;
     boost::scoped_ptr<SynchMessageBlockManager> messageBlockManager_;
-    ACE_Message_Block* recvBlock_;
-    ACE_Message_Block* msgBlock_;
+    AceMessageBlockGuard recvBlock_;
+    AceMessageBlockGuard msgBlock_;
     boost::scoped_ptr<PacketCoder> packetCoder_;
     CsPacketHeader headerForReceive_;
 

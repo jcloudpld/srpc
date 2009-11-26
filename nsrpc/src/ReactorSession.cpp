@@ -4,7 +4,6 @@
 #include <nsrpc/detail/PacketCoder.h>
 #include <nsrpc/detail/CsProtocol.h>
 #include <nsrpc/utility/MessageBlockManager.h>
-#include <nsrpc/utility/AceUtil.h>
 #include <nsrpc/utility/Logger.h>
 #ifdef _MSC_VER
 #  pragma warning( push )
@@ -60,14 +59,15 @@ ReactorSession::ReactorSession(ACE_Reactor* reactor,
     else {
         packetCoder_.reset(PacketCoderFactory().create());
     }
+    packetHeaderSize_ = packetCoder_->getHeaderSize();
 
     messageBlockManager_.reset(new SynchMessageBlockManager(
         packetCoder_->getDefaultPacketPoolSize(),
         packetCoder_->getDefaultPacketSize()));
-    recvBlock_ =
-        messageBlockManager_->create(packetCoder_->getMaxPacketSize());
-    msgBlock_ =
-        messageBlockManager_->create(packetCoder_->getMaxPacketSize());
+    recvBlock_.reset(
+        messageBlockManager_->create(packetCoder_->getMaxPacketSize()));
+    msgBlock_.reset(
+        messageBlockManager_->create(packetCoder_->getMaxPacketSize()));
 }
 
 #ifdef _MSC_VER
@@ -80,7 +80,7 @@ ReactorSession::~ReactorSession()
 
     reactor(0);
 
-    releaseMessageBlocks();
+    releaseMessageQueue();
 }
 
 
@@ -180,16 +180,11 @@ bool ReactorSession::sendMessage(ACE_Message_Block& mblock,
 }
 
 
-PacketCoder& ReactorSession::getPacketCoder()
-{
-    return *packetCoder_;
-}
-
-
 bool ReactorSession::initSession()
 {
     packetCoder_->reset();
 
+    // turn off nagle-algorithm
     long nagle = 1;
     stream_.set_option(IPPROTO_TCP, TCP_NODELAY, &nagle, sizeof(nagle));
     stream_.enable(ACE_NONBLOCK);
@@ -205,6 +200,9 @@ bool ReactorSession::initSession()
 
     notifier_.reactor(reactor());
     msgQueue_.notification_strategy(&notifier_);
+
+    headerForReceive_.reset();
+
     assert(false == disconnectReserved_);
     assert(false == fireEventAfterFlush_);
 
@@ -322,7 +320,7 @@ bool ReactorSession::write()
 }
 
 
-void ReactorSession::releaseMessageBlocks()
+void ReactorSession::releaseMessageQueue()
 {
     ACE_Message_Block* mblock;
     ACE_Time_Value immediate(ACE_Time_Value::zero);
@@ -335,28 +333,27 @@ void ReactorSession::releaseMessageBlocks()
             break;
         }
     }
-
-    recvBlock_->release();
-    msgBlock_->release();
+    assert(msgQueue_.is_empty());
 }
 
 
 bool ReactorSession::parseHeader()
 {
-    assert(recvBlock_->length() >= packetCoder_->getHeaderSize());
+    if (headerForReceive_.isValid()) {
+        return true;
+    }
+
+    assert(recvBlock_->length() >= packetHeaderSize_);
     return packetCoder_->readHeader(headerForReceive_, *recvBlock_);
 }
 
 
 bool ReactorSession::parseMessage()
 {
-    const size_t messageSize =
-        packetCoder_->getHeaderSize() + headerForReceive_.bodySize_;
+    const size_t messageSize = packetHeaderSize_ + headerForReceive_.bodySize_;
 
     msgBlock_->reset();
-    if (msgBlock_->space() < messageSize) {
-        msgBlock_->size(messageSize);
-    }
+    msgBlock_->size(messageSize);
     msgBlock_->copy(recvBlock_->base(), messageSize);
 
     recvBlock_->rd_ptr(messageSize);
@@ -379,14 +376,14 @@ bool ReactorSession::parseMessage()
 
 bool ReactorSession::isPacketHeaderArrived() const
 {
-    return recvBlock_->length() >= packetCoder_->getHeaderSize();
+    return recvBlock_->length() >= packetHeaderSize_;
 }
 
 
 bool ReactorSession::isMessageArrived() const
 {
     return recvBlock_->length() >=
-        (packetCoder_->getHeaderSize() + headerForReceive_.bodySize_);
+        (packetHeaderSize_ + headerForReceive_.bodySize_);
 }
 
 
@@ -436,6 +433,8 @@ int ReactorSession::handle_input(ACE_HANDLE)
         }
 
         onMessageArrived(headerForReceive_.messageType_);
+
+        headerForReceive_.reset();
     }
 
     return 0;
@@ -477,7 +476,7 @@ ACE_Message_Block& ReactorSession::acquireSendBlock()
 {
     ACE_Message_Block* mblock =
         messageBlockManager_->create(packetCoder_->getDefaultPacketSize());
-    mblock->wr_ptr(packetCoder_->getHeaderSize());
+    packetCoder_->reserveHeader(*mblock);
     return *mblock;
 }
 

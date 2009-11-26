@@ -162,22 +162,35 @@ protected:
     virtual void addresses(const ACE_INET_Addr& remote_address,
         const ACE_INET_Addr& local_address);
 private:
-    bool readMessage(const NSRPC_Asynch_Read_Stream::Result& result);
-    bool readMessageHeader();
-    bool readMessageFragment(size_t neededBytes);
-    bool read(size_t neededBytes);
+    void reset();
 
+    bool open(ACE_HANDLE new_handle);
+
+    bool messageBlockReceived(const NSRPC_Asynch_Read_Stream::Result& result);
+
+    bool readMessage();
+    bool readMessage_i();
+
+    bool read(size_t neededBytes);
     bool write(ACE_Message_Block& mblock);
 
-    void reset();
+    bool addInboundBandwidth(size_t bytesTransferred);
+
+    bool parseHeader();
+    bool parseMessage();
 
     void startDisconnectTimer();
     void stopDisconnectTimer();
 
+    void throttleReceiving();
     void startThrottleTimer();
     void stopThrottleTimer();
 
-    void checkPendingCount();
+    void checkPendingWriteCount();
+
+private:
+    bool isPacketHeaderArrived() const;
+    bool isMessageArrived() const;
 
     bool canSendMessage() const {
         return isConnected() && (! shouldBlockWrite_);
@@ -187,6 +200,8 @@ private:
         return (pendingReadCount_ <= 0) && (pendingWriteCount_ <= 0);
     }
 private:
+    const size_t packetHeaderSize_;
+
     SessionDestroyer& sessionDestroyer_;
     SynchMessageBlockManager& messageBlockManager_;
 
@@ -195,6 +210,7 @@ private:
     CsPacketHeader headerForReceive_;
 
     AceMessageBlockGuard recvBlock_;
+    AceMessageBlockGuard msgBlock_;
 
     boost::scoped_ptr<Asynch_RW_Stream> stream_;
 
