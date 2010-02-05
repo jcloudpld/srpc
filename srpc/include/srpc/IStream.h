@@ -33,21 +33,32 @@ namespace
 {
 
 /// 기본 데이터형이 아닌 것은 무조건 RpcType으로 가정
-template <typename T, bool isFundamental>
+template <typename T, bool isFundamental, bool isEnum>
 struct StreamReaderImpl;
 
-
+// fundamental type
 template <typename T>
-struct StreamReaderImpl<T, true>
+struct StreamReaderImpl<T, true, false>
 {
     static void read(IStream& istream, T& value) {
         istream.read(value);
     }
 };
 
+// enum type
+template <typename T>
+struct StreamReaderImpl<T, false, true>
+{
+    static void read(IStream& istream, T& value) {
+        Int32 intValue;
+        istream.read(intValue);
+        value = static_cast<T>(intValue);
+    }
+};
+
 
 template <typename T>
-struct StreamReaderImpl<T, false>
+struct StreamReaderImpl<T, false, false>
 {
     static void read(IStream& istream, T& value) {
         value.serialize(istream);
@@ -69,8 +80,8 @@ public:
 
     template <typename T>
     IStream& operator>>(T& value) {
-        StreamReaderImpl<T, boost::is_fundamental<T>::value>::
-            read(*this, value);
+        StreamReaderImpl<T, boost::is_fundamental<T>::value,
+            boost::is_enum<T>::value>::read(*this, value);
         return *this;
     }
 

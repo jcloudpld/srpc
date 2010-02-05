@@ -34,25 +34,33 @@ namespace
 {
 
 /// 기본 데이터형이 아닌 것은 무조건 RpcType으로 가정
-template <typename T, bool isFundamental>
+template <typename T, bool isFundamental, bool isEnum>
 struct StreamWriterImpl;
 
-
+// fundamental type
 template <typename T>
-struct StreamWriterImpl<T, true>
+struct StreamWriterImpl<T, true, false>
 {
     static void write(OStream& ostream, T value) {
         ostream.write(value);
     }
 };
 
+// enum type
+template <typename T>
+struct StreamWriterImpl<T, false, true>
+{
+    static void write(OStream& ostream, T value) {
+        ostream.write(static_cast<Int32>(value));
+    }
+};
+
 
 template <typename T>
-struct StreamWriterImpl<T, false>
+struct StreamWriterImpl<T, false, false>
 {
     static void write(OStream& ostream, const T& value) {
-        const_cast<boost::remove_const<T>::type&>(value).
-            serialize(ostream);
+        const_cast<boost::remove_const<T>::type&>(value).serialize(ostream);
     }
 };
 
@@ -77,8 +85,8 @@ public:
     OStream& operator<<(const T& value) {
         typedef boost::remove_reference<T>::type RawType;
 
-        StreamWriterImpl<T, boost::is_fundamental<RawType>::value>::
-            write(*this, value);
+        StreamWriterImpl<T, ::boost::is_fundamental<RawType>::value,
+            ::boost::is_enum<RawType>::value>::write(*this, value);
         return *this;
     }
 
@@ -88,9 +96,9 @@ public:
         return operator<<(value);
     }
 
-    /// for enum data type
-    void write(int value, int bitCount = Bits<int>::size) {
-        write(static_cast<Int32>(value), bitCount);
+    /// for RPC enum data type
+    void write(int value, int /*bitCount*/) {
+        write(static_cast<Int32>(value), Bits<Int32>::size);
     }
 
     /// 64비트 부호 없는 정수를 스트림버퍼에 기록한다
