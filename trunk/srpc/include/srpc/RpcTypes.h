@@ -54,7 +54,7 @@ public:
     }
 
     void serialize(OStream& ostream) {
-        ostream.write(value_, bits);
+        ostream.write(static_cast<StreamingType>(value_), bits);
     }
 
     void serialize(IStream& istream) {
@@ -110,7 +110,7 @@ public:
     }
 
     void serialize(OStream& ostream) {
-        ostream.write(value_, bits);
+        ostream.write(static_cast<StreamingType>(value_), bits);
     }
 
     void serialize(IStream& istream) {
