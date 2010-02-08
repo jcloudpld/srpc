@@ -87,7 +87,7 @@ struct RGroupInfo
 };
 
 
-typedef srpc::RMap<RGroupId, RGroupInfo, 5> RGroupMap;
+typedef srpc::RHashMap<RGroupId, RGroupInfo, 5> RGroupMap;
 
 /** @} */ // addtogroup p2p
 
