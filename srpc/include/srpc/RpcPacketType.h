@@ -33,9 +33,8 @@ inline bool isUnreliable(RpcPacketType packetType)
 
 /**
  * RpcType for RpcPacketType
- * @warning enum은 int로 취급되므로 반드시 1비트(부호)를 더 추가해야 한다.
  */
-typedef RpcUIntType<RpcPacketType, 1 + 1> RRpcPacketType;
+typedef RpcNumericType<RpcPacketType, 1, UInt8> RRpcPacketType;
 
 } // namespace srpc
 

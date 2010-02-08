@@ -196,7 +196,7 @@ TEST_F(RpcTypesTest, testRWShortString)
 
 
 enum EnumType { etA, etB, etC };
-typedef RpcIntType<EnumType, 3> REnumType;
+typedef RpcNumericType<EnumType, 3> REnumType;
 
 TEST_F(RpcTypesTest, testEnum)
 {

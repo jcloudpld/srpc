@@ -18,16 +18,14 @@ typedef UInt32 RpcId;
  * @class RRpcId
  * RPC type for RPC ID
  */
-class RRpcId : public RpcUIntType<RpcId>
+class RRpcId : public RpcNumericType<RpcId>
 {
 public:
-    explicit RRpcId(RpcId rpcId = 0) :
-        methodName_("(unknown)") {
+    explicit RRpcId(RpcId rpcId = 0) {
         set(rpcId);
     }
 
-    explicit RRpcId(const String& id) :
-        methodName_("(unknown") {
+    explicit RRpcId(const String& id) {
         set(hash(id.c_str(), id.size()));
     }
 

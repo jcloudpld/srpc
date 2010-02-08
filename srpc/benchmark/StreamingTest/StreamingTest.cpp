@@ -43,8 +43,8 @@ void run(bool useBitStream, const char* state, RType defvalue)
 
 int main(int /*argc*/, char* /*argv*/[])
 {
-    run<RpcIntType<Int8, 3> >(true, "3 bits(signed)", -3);
-    run<RpcUIntType<Int8, 3> >(true, "3 bits(unsigned)", 2);
+    run<RpcNumericType<Int8, 3> >(true, "3 bits(signed)", -3);
+    run<RpcNumericType<Int8, 3> >(true, "3 bits(unsigned)", 2);
 
     run<RInt8>(true, "8 bits(signed)", SCHAR_MIN);
     run<RUInt8>(true, "8 bits(unsigned)", UCHAR_MAX);
@@ -55,8 +55,8 @@ int main(int /*argc*/, char* /*argv*/[])
     run<RInt32>(true, "32 bits(signed)", SCHAR_MIN);
     run<RUInt32>(true, "32 bits(unsigned)", UCHAR_MAX);
 
-    run<RpcIntType<Int8, 3> >(false, "3 bits(signed)", -3);
-    run<RpcUIntType<Int8, 3> >(false, "3 bits(unsigned)", 2);
+    run<RpcNumericType<Int8, 3> >(false, "3 bits(signed)", -3);
+    run<RpcNumericType<Int8, 3> >(false, "3 bits(unsigned)", 2);
 
     run<RInt8>(false, "8 bits(signed)", SCHAR_MIN);
     run<RUInt8>(false, "8 bits(unsigned)", UCHAR_MAX);

@@ -17,7 +17,7 @@ namespace nsrpc
 namespace detail
 {
 
-typedef srpc::RpcUIntType<P2pOptions, 8> RP2pOptions;
+typedef srpc::RpcNumericType<P2pOptions, 8, srpc::UInt8> RP2pOptions;
 
 /**
  * @struct RP2pProperty

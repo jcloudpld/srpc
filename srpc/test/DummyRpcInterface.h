@@ -11,10 +11,10 @@
 using srpc::Int16;
 using srpc::Int32;
 using srpc::RInt32;
-using srpc::RpcIntType;
+using srpc::RpcNumericType;
 
-typedef RpcIntType<Int16, 15> RInt15;
-typedef RpcIntType<Int32, 31> RInt31;
+typedef RpcNumericType<Int16, 15> RInt15;
+typedef RpcNumericType<Int32, 31> RInt31;
 
 /**
  * @class DummyRpc
