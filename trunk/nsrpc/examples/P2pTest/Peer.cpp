@@ -164,7 +164,7 @@ void Peer::onPeerConnected(nsrpc::PeerId peerId)
 
     srpc::OStringStream oss;
     oss << "Hi~ P" << peerId;
-    const nsrpc::PeerHint hint(peerId);
+    const nsrpc::PeerHint hint(peerId, 0);
     chat(oss.str(), &hint); // unicast
 
     if (! isJoiner(peerId)) {

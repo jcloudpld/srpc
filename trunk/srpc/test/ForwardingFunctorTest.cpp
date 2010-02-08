@@ -129,7 +129,7 @@ TEST_F(ForwardingFunctorTest, testP7)
 
 TEST_F(ForwardingFunctorTest, testComplex)
 {
-    typedef RpcUIntType<UInt8, 4> RUInt4;
+    typedef RpcNumericType<UInt8, 4> RUInt4;
 
     RString s("0123456789");
     ForwardingFunctorT<SRPC_TYPELIST_4(RUInt4, RInt8, RInt16, RString)>

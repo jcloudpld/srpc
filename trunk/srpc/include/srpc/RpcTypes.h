@@ -18,74 +18,27 @@ namespace srpc {
 * @{
 */
 
-/// Rpc 부호 없는 숫자 타입 base template class
+/**
+ * @class RpcIngerType
+ * Rpc 숫자 타입 base template class
+ * - StreamingType은 실제로 streaming할 때 쓰이는 타입으로 enum을 부호없는
+ *   정수로 취급할 때 쓰인다.
+ */
 template <typename NativeType, size_t bits = Bits<NativeType>::size,
     typename StreamingType = NativeType>
-class RpcUIntType
+class RpcNumericType
 {
 public:
     static size_t getBits() { return bits; }
 
 public:
-    RpcUIntType() {}
-    RpcUIntType(const RpcUIntType& t) :
+    RpcNumericType() {}
+    RpcNumericType(const RpcNumericType& t) :
         value_(t.value_) {}
-    RpcUIntType(NativeType v) :
+    RpcNumericType(NativeType v) :
         value_(v) {}
 
-    void operator=(const RpcUIntType& t) {
-        value_ = t.value_;
-    }
-
-    operator NativeType() const {
-        return value_;
-    }
-
-    NativeType get() const {
-        return value_;
-    }
-
-    void set(NativeType v) {
-        value_ = v;
-    }
-
-    NativeType& ref() {
-        return value_;
-    }
-
-    void serialize(OStream& ostream) {
-        ostream.write(static_cast<StreamingType>(value_), bits);
-    }
-
-    void serialize(IStream& istream) {
-        typedef boost::integral_constant<bool,
-            ::boost::is_enum<StreamingType>::value> truth_type;
-        StreamingType v;
-        istream.do_read(v, bits, truth_type());
-        value_ = static_cast<NativeType>(v);
-    }
-
-private:
-    NativeType value_;
-};
-
-
-/// Rpc 부호 있는 숫자 타입 base template class
-template <typename NativeType, size_t bits = Bits<NativeType>::size,
-    typename StreamingType = NativeType>
-class RpcIntType
-{
-public:
-    static size_t getBits() { return bits; }
-
-public:
-    RpcIntType() {}
-    RpcIntType(const RpcIntType& t) :
-        value_(t.value_) {}
-    RpcIntType(NativeType v) :
-        value_(v) {}
-
-    void operator=(const RpcIntType& t) {
+    void operator=(const RpcNumericType& t) {
         value_ = t.value_;
     }
 
@@ -123,6 +76,34 @@ public:
 
 private:
     NativeType value_;
+};
+
+
+/// @deprecated Rpc 부호 없는 숫자 타입 base template class
+template <typename NativeType, size_t bits = Bits<NativeType>::size,
+    typename StreamingType = NativeType>
+class RpcUIntType : public RpcNumericType<NativeType, bits, StreamingType>
+{
+public:
+    RpcUIntType() {}
+    RpcUIntType(const RpcUIntType& t) :
+        RpcNumericType<NativeType, bits, StreamingType>(t.get()) {}
+    RpcUIntType(NativeType v) :
+        RpcNumericType<NativeType, bits, StreamingType>(v) {}
+};
+
+
+/// @deprecated Rpc 부호 있는 숫자 타입 base template class
+template <typename NativeType, size_t bits = Bits<NativeType>::size,
+    typename StreamingType = NativeType>
+class RpcIntType : public RpcNumericType<NativeType, bits, StreamingType>
+{
+public:
+    RpcIntType() {}
+    RpcIntType(const RpcIntType& t) :
+        RpcNumericType<NativeType, bits, StreamingType>(t.get()) {}
+    RpcIntType(NativeType v) :
+        RpcNumericType<NativeType, bits, StreamingType>(v) {}
 };
 
 
@@ -186,22 +167,22 @@ public:
 
 // = basic Rpc Primitive Types
 
-typedef RpcUIntType<bool, Bits<bool>::size> RBool;
+typedef RpcNumericType<bool, Bits<bool>::size> RBool;
 
-typedef RpcIntType<Int8> RInt8;
-typedef RpcUIntType<UInt8> RUInt8;
+typedef RpcNumericType<Int8> RInt8;
+typedef RpcNumericType<UInt8> RUInt8;
 
-typedef RpcIntType<Int16> RInt16;
-typedef RpcUIntType<UInt16> RUInt16;
+typedef RpcNumericType<Int16> RInt16;
+typedef RpcNumericType<UInt16> RUInt16;
 
-typedef RpcIntType<Int32> RInt32;
-typedef RpcUIntType<UInt32> RUInt32;
+typedef RpcNumericType<Int32> RInt32;
+typedef RpcNumericType<UInt32> RUInt32;
 
-typedef RpcIntType<Int64> RInt64;
-typedef RpcUIntType<UInt64> RUInt64;
+typedef RpcNumericType<Int64> RInt64;
+typedef RpcNumericType<UInt64> RUInt64;
 
-typedef RpcIntType<Float32> RFloat32;
-typedef RpcIntType<Float64> RFloat64;
+typedef RpcNumericType<Float32> RFloat32;
+typedef RpcNumericType<Float64> RFloat64;
 
 typedef RpcStringType<String, USHRT_MAX> RString;
 typedef RpcStringType<String, UCHAR_MAX> RShortString;

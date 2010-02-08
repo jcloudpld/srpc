@@ -97,8 +97,8 @@ public:
     }
 
     /// for RPC enum data type
-    void write(int value, int /*bitCount*/) {
-        write(static_cast<Int32>(value), Bits<Int32>::size);
+    void write(int value, int bitCount) {
+        write(static_cast<Int32>(value), bitCount);
     }
 
     /// 64비트 부호 없는 정수를 스트림버퍼에 기록한다

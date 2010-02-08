@@ -34,7 +34,7 @@ inline bool isValid(GroupId groupId)
 
 
 /// group id's RPC type
-typedef srpc::RpcIntType<GroupId, 5 + 1> RGroupId;
+typedef srpc::RpcNumericType<GroupId, 5, srpc::UInt8> RGroupId;
 
 
 /**
